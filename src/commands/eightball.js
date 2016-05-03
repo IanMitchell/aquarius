@@ -1,3 +1,6 @@
+const debug = require('debug');
+const log = debug('Eightball');
+
 const responses = [
   'It is certain',
   'It is decidedly so',
@@ -21,7 +24,14 @@ const responses = [
   'Very doubtful',
 ];
 
-exports.triggered = (message) => message.startsWith('.8ball');
-exports.message = () => responses[Math.floor(Math.random() * responses.length)];
-exports.helpTriggered = (message) => message.includes('8ball') || message.includes('eightball');
-exports.help = () => '`.8ball [your question here]`. Randomly outputs a response.';
+exports.messageTriggered = message => message.startsWith('.8ball');
+exports.message = () => {
+  log('8ball request');
+  return responses[Math.floor(Math.random() * responses.length)];
+};
+
+exports.helpTriggered = message => message.includes('8ball') || message.includes('eightball');
+exports.help = () => {
+  log('8ball help request');
+  return '`.8ball [your question here]`. Randomly outputs a response.';
+};

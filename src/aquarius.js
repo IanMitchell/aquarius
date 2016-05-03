@@ -1,23 +1,38 @@
-const eightball = require('./commands/eightball');
+const fs = require('fs');
+const path = require('path');
+const debug = require('debug');
 const config = require('../config');
 const Discord = require('discord.js');
 
+const log = debug('Aquarius');
+
+
 const aquarius = new Discord.Client();
+const commands = [];
+const commandsPath = path.join(__dirname, 'commands/');
+
+fs.readdir(commandsPath, (err, files) => {
+  if (err) {
+    throw err;
+  }
+
+  files.forEach(file => {
+    log(`Loading ${file}`);
+    // eslint disable-line global-require
+    commands.push(require(path.join(commandsPath, file)));
+  });
+});
 
 aquarius.on('message', message => {
-  if (message.content.startsWith('.help')) {
-    if (eightball.helpTriggered(message.content)) {
-      aquarius.reply(message, eightball.help());
+  commands.forEach(command => {
+    if (command.messageTriggered(message.content)) {
+      aquarius.reply(message, command.message(message.content));
     }
-  }
 
-  if (eightball.triggered(message.content)) {
-    aquarius.reply(message, eightball.message());
-  }
-
-  if (message.content === 'ping') {
-    aquarius.reply(message, 'pong');
-  }
+    if (message.content.startsWith('.help') && command.helpTriggered(message.content)) {
+      aquarius.reply(message, command.help());
+    }
+  });
 });
 
 aquarius.loginWithToken(config.token);
