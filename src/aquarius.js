@@ -2,12 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const debug = require('debug');
 const config = require('../config');
-const Discord = require('discord.js');
+const aquarius = require('./client');
 
 const log = debug('Aquarius');
 
 
-const aquarius = new Discord.Client();
 const commands = [];
 const commandsPath = path.join(__dirname, 'commands/');
 
