@@ -21,6 +21,7 @@ const responses = [
   'Very doubtful',
 ];
 
-exports.trigger = (message) => message.startsWith('.8ball');
+exports.triggered = (message) => message.startsWith('.8ball');
 exports.message = () => responses[Math.floor(Math.random() * responses.length)];
-exports.help = () => '`.8ball your question`. Randomly outputs a response.';
+exports.helpTriggered = (message) => message.includes('8ball') || message.includes('eightball');
+exports.help = () => '`.8ball [your question here]`. Randomly outputs a response.';

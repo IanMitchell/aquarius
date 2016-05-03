@@ -5,13 +5,16 @@ const Discord = require('discord.js');
 const aquarius = new Discord.Client();
 
 aquarius.on('message', message => {
-  if (eightball.trigger(message.content)) {
-    if (message.content === '.8ball help') {
+  if (message.content.startsWith('.help')) {
+    if (eightball.helpTriggered(message.content)) {
       aquarius.reply(message, eightball.help());
-    } else {
-      aquarius.reply(message, eightball.message());
     }
   }
+
+  if (eightball.triggered(message.content)) {
+    aquarius.reply(message, eightball.message());
+  }
+
   if (message.content === 'ping') {
     aquarius.reply(message, 'pong');
   }
