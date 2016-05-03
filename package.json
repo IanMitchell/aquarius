@@ -1,0 +1,24 @@
+{
+  "name": "aquarius",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "ava test"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">6.0.0"
+  },
+  "dependencies": {
+    "discord.js": "^7.0.1"
+  },
+  "devDependencies": {
+    "ava": "^0.14.0",
+    "eslint": "^2.9.0",
+    "eslint-config-airbnb": "^8.0.0",
+    "eslint-plugin-import": "^1.6.1"
+  }
+}
