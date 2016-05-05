@@ -2,6 +2,7 @@ const debug = require('debug');
 const log = debug('Eightball');
 
 const responses = [
+  //yes answers
   'It is certain',
   'It is decidedly so',
   'Without a doubt',
@@ -12,11 +13,15 @@ const responses = [
   'Outlook good',
   'Yes',
   'Signs point to yes',
+  
+  //try again answers
   'Reply hazy try again',
   'Ask again later',
   'Better not tell you now',
   'Cannot predict now',
   'Concentrate and ask again',
+  
+  //no answers
   "Don't count on it",
   'My reply is no',
   'My sources say no',
