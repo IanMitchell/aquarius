@@ -90,23 +90,26 @@ const orderRange = order => {
 const orderRegex = /^[.!]o(?:rder)? (.+)$/i;
 const rangeRegex = /(-?\d+)-(-?\d+)$/i;
 
-const triggered = msg => msg.cleanContent.match(orderRegex);
 const message = msg => {
   const order = msg.cleanContent.match(orderRegex);
-  const range = msg.cleanContent.match(rangeRegex);
 
-  if (range) {
-    log(`Range input: ${range}`);
-    return orderRange(range);
+  if (order) {
+    const range = msg.cleanContent.match(rangeRegex);
+
+    if (range) {
+      log(`Range input: ${range}`);
+      return orderRange(range);
+    }
+
+    log(`Order input: ${order[1]}`);
+    return orderList(order[1]);
   }
 
-  log(`Order input: ${order[1]}`);
-  return orderList(order[1]);
+  return false;
 };
 
 module.exports = {
   name: 'order',
   help: 'TODO',
-  triggered,
   message,
 };

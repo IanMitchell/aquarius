@@ -9,15 +9,17 @@ responses.set('gj bot', 'thx');
 responses.set('thx bot', 'np');
 responses.set('bot pls', '( ¬‿¬)');
 
-const triggered = msg => responses.has(msg.cleanContent.toLowerCase());
 const message = msg => {
-  log(`input: ${msg.cleanContent}`);
-  return responses.get(msg.cleanContent.toLowerCase());
+  if (responses.has(msg.cleanContent.toLowerCase())) {
+    log(`input: ${msg.cleanContent}`);
+    return responses.get(msg.cleanContent.toLowerCase());
+  }
+
+  return false;
 };
 
 module.exports = {
   name: 'reply',
   help: 'Reply automatically responds to certain phrases.',
-  triggered,
   message,
 };

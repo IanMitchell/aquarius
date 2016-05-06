@@ -40,8 +40,9 @@ aquarius.on('message', message => {
     aquarius.reply(message, str);
   } else {
     commands.forEach(command => {
-      if (command.triggered(message)) {
-        aquarius.sendMessage(message.channel, command.message(message));
+      const response = command.message(message);
+      if (response) {
+        aquarius.sendMessage(message.channel, response);
       }
     });
   }

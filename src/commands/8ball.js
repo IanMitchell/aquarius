@@ -24,15 +24,17 @@ const responses = [
   'Very doubtful',
 ];
 
-const triggered = msg => msg.cleanContent.toLowerCase().startsWith('@aquarius 8ball');
-const message = () => {
-  log('8ball request');
-  return responses[Math.floor(Math.random() * responses.length)];
+const message = msg => {
+  if (msg.cleanContent.toLowerCase().startsWith('@aquarius 8ball')) {
+    log('8ball request');
+    return responses[Math.floor(Math.random() * responses.length)];
+  }
+
+  return false;
 };
 
 module.exports = {
   name: '8ball',
   help: '`@aquarius 8ball [your question here]`. Randomly outputs a response.',
-  triggered,
   message,
 };

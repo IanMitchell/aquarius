@@ -48,25 +48,24 @@ const isSame = message => {
   return false;
 };
 
-
-const triggered = msg => {
+const message = msg => {
   if (msg.cleanContent === '') {
     return false;
   }
 
   pushMessage(msg);
-  return isSame(msg);
-};
 
-const message = msg => {
-  log(`Sending '${msg.cleanContent}' to ${msg.channel.server.id}`);
-  messageStack.get(msg.channel.server.id).set(msg.channel.name, []);
-  return msg.cleanContent;
+  if (isSame(msg)) {
+    log(`Sending '${msg.cleanContent}' to ${msg.channel.server.id}`);
+    messageStack.get(msg.channel.server.id).set(msg.channel.name, []);
+    return msg.cleanContent;
+  }
+
+  return false;
 };
 
 module.exports = {
   name: 'same',
   help: 'Same automatically responds to certain phrases.',
-  triggered,
   message,
 };

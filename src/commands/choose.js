@@ -69,16 +69,18 @@ const choose = input => {
 const triggerRegex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/i;
 
 const helpMessage = 'lol';
-const triggered = msg => msg.cleanContent.match(triggerRegex);
 const message = msg => {
   const inputs = msg.cleanContent.match(triggerRegex);
-  log(`input: ${inputs[1]}`);
-  return choose(inputs[1]);
+  if (inputs) {
+    log(`input: ${inputs[1]}`);
+    return choose(inputs[1]);
+  }
+
+  return false;
 };
 
 module.exports = {
   name: 'choose',
   help: helpMessage,
-  triggered,
   message,
 };
