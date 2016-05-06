@@ -27,7 +27,8 @@ const responses = [
 const message = msg => {
   if (msg.cleanContent.toLowerCase().startsWith('@aquarius 8ball')) {
     log('8ball request');
-    return responses[Math.floor(Math.random() * responses.length)];
+    const response = responses[Math.floor(Math.random() * responses.length)];
+    return `${msg.author}: ${response}`;
   }
 
   return false;
