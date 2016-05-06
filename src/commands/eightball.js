@@ -15,11 +15,13 @@ const responses = [
   'Signs point to yes',
   
   //try again answers
-  'Reply hazy try again',
+  'Reply hazy, try again',
   'Ask again later',
   'Better not tell you now',
   'Cannot predict now',
   'Concentrate and ask again',
+  'Too lazy, try again',
+  'Ask someone who cares',
   
   //no answers
   "Don't count on it",
@@ -27,6 +29,11 @@ const responses = [
   'My sources say no',
   'Outlook not so good',
   'Very doubtful',
+  'Not a chance in hell',
+  'Ha! Yeah, right.',
+  'NOOOOOOOOOPE',
+  'Well it\'s not gonna happen if you just sit here talking with me.',
+  'Hahahahahahahahahahaha, no'
 ];
 
 exports.messageTriggered = message => message.startsWith('.8ball');
