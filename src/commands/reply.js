@@ -9,11 +9,15 @@ responses.set('gj bot', 'thx');
 responses.set('thx bot', 'np');
 responses.set('bot pls', '( ¬‿¬)');
 
-exports.messageTriggered = message => responses.has(message.toLowerCase());
-exports.message = message => {
-  log(`input: ${message}`);
-  return responses.get(message.toLowerCase());
+const triggered = msg => responses.has(msg.cleanContent.toLowerCase());
+const message = msg => {
+  log(`input: ${msg.cleanContent}`);
+  return responses.get(msg.cleanContent.toLowerCase());
 };
 
-exports.helpTriggered = (message) => message.includes('reply');
-exports.help = () => 'Reply automatically responds to certain phrases.';
+module.exports = {
+  name: 'reply',
+  help: 'Reply automatically responds to certain phrases.',
+  triggered,
+  message,
+};
