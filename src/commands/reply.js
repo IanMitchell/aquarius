@@ -10,6 +10,7 @@ responses.set('gj bot', 'thx');
 responses.set('thx bot', 'np');
 responses.set('bot pls', '( ¬‿¬)');
 responses.set('(╯°□°)╯︵ ┻━┻', '┬─┬﻿ ノ( ゜-゜ノ)');
+responses.set( '┬─┬﻿ ノ( ゜-゜ノ)', 'THAT\'S MY JOB');
 
 exports.messageTriggered = message => responses.has(message.toLowerCase());
 exports.message = message => {
