@@ -23,13 +23,15 @@ fs.readdir(commandsPath, (err, files) => {
 });
 
 aquarius.on('message', message => {
-  if (message.cleanContent.toLowerCase() === '@aquarius commands' ||
-      message.cleanContent.toLowerCase() === '@aquarius help') {
+  const botMention = aquarius.user.mention();
+
+  if (message.content.toLowerCase() === `${botMention} commands` ||
+      message.content.toLowerCase() === `${botMention} help`) {
     log('Generating command list');
     let str = 'Available commands: ';
     str += commands.map(command => command.name).join(', ');
     aquarius.reply(message, str);
-  } else if (message.cleanContent.toLowerCase().startsWith('@aquarius help')) {
+  } else if (message.content.toLowerCase().startsWith(`${botMention} help`)) {
     let str = '';
     commands.forEach(command => {
       if (message.cleanContent.toLowerCase().includes(command.name)) {

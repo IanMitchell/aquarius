@@ -25,7 +25,8 @@ const responses = [
 ];
 
 const message = msg => {
-  if (msg.cleanContent.toLowerCase().startsWith('@aquarius 8ball')) {
+  const botMention = msg.client.user.mention().toLowerCase();
+  if (msg.content.toLowerCase().startsWith(`${botMention} 8ball`)) {
     log('8ball request');
     const response = responses[Math.floor(Math.random() * responses.length)];
     return `${msg.author}: ${response}`;
@@ -36,6 +37,6 @@ const message = msg => {
 
 module.exports = {
   name: '8ball',
-  help: '`@aquarius 8ball [your question here]`. Randomly outputs a response.',
+  help: '`@bot 8ball [your question here]`. Randomly outputs a response.',
   message,
 };
