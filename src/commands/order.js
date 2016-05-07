@@ -90,19 +90,26 @@ const orderRange = order => {
 const orderRegex = /^[.!]o(?:rder)? (.+)$/i;
 const rangeRegex = /(-?\d+)-(-?\d+)$/i;
 
-exports.messageTriggered = message => message.match(orderRegex);
-exports.message = message => {
-  const order = message.match(orderRegex);
-  const range = message.match(rangeRegex);
+const message = msg => {
+  const order = msg.cleanContent.match(orderRegex);
 
-  if (range) {
-    log(`Range input: ${range}`);
-    return orderRange(range);
+  if (order) {
+    const range = msg.cleanContent.match(rangeRegex);
+
+    if (range) {
+      log(`Range input: ${range}`);
+      return orderRange(range);
+    }
+
+    log(`Order input: ${order[1]}`);
+    return orderList(order[1]);
   }
 
-  log(`Order input: ${order[1]}`);
-  return orderList(order[1]);
+  return false;
 };
 
-exports.helpTriggered = message => message.includes('order');
-exports.help = () => '`.o[rder] [options...]`. Randomly arranges the list. (Ex: .o s, n, i, p, e).';
+module.exports = {
+  name: 'order',
+  help: 'TODO',
+  message,
+};

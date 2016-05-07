@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const debug = require('debug');
+const Discord = require('discord.js');
 const config = require('../config');
-const aquarius = require('./client');
 
 const log = debug('Aquarius');
-
+const aquarius = new Discord.Client();
 
 const commands = [];
 const commandsPath = path.join(__dirname, 'commands/');
@@ -23,15 +23,31 @@ fs.readdir(commandsPath, (err, files) => {
 });
 
 aquarius.on('message', message => {
-  commands.forEach(command => {
-    if (command.messageTriggered(message.content)) {
-      aquarius.reply(message, command.message(message.content));
-    }
+  const botMention = aquarius.user.mention();
 
-    if (message.content.startsWith('.help') && command.helpTriggered(message.content)) {
-      aquarius.reply(message, command.help());
-    }
-  });
+  if (message.content.toLowerCase() === `${botMention} commands` ||
+      message.content.toLowerCase() === `${botMention} help`) {
+    log('Generating command list');
+    let str = 'Available commands: ';
+    str += commands.map(command => command.name).join(', ');
+    aquarius.reply(message, str);
+  } else if (message.content.toLowerCase().startsWith(`${botMention} help`)) {
+    let str = '';
+    commands.forEach(command => {
+      if (message.cleanContent.toLowerCase().includes(command.name)) {
+        log(`Help request for ${message.name}`);
+        str += `${command.help}\n`;
+      }
+    });
+    aquarius.reply(message, str);
+  } else {
+    commands.forEach(command => {
+      const response = command.message(message);
+      if (response) {
+        aquarius.sendMessage(message.channel, response);
+      }
+    });
+  }
 });
 
 aquarius.loginWithToken(config.token);

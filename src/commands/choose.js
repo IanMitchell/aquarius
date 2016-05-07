@@ -67,12 +67,20 @@ const choose = input => {
 
 
 const triggerRegex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/i;
-exports.messageTriggered = (message) => message.match(triggerRegex);
-exports.message = (message) => {
-  const inputs = message.match(triggerRegex);
-  log(`input: ${inputs[1]}`);
-  return choose(inputs[1]);
+
+const helpMessage = 'lol';
+const message = msg => {
+  const inputs = msg.cleanContent.match(triggerRegex);
+  if (inputs) {
+    log(`input: ${inputs[1]}`);
+    return choose(inputs[1]);
+  }
+
+  return false;
 };
 
-exports.helpTriggered = (message) => message.includes('choose') || message === 'c';
-exports.help = () => '`.c[hoose] [options...]`. randomly chooses from list. (Ex: .c 1, 2).';
+module.exports = {
+  name: 'choose',
+  help: helpMessage,
+  message,
+};

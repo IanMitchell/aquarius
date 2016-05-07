@@ -15,11 +15,17 @@ responses.set('go away bot', 'I just wanted to be friends');
 responses.set('(╯°□°)╯︵ ┻━┻', '┬─┬﻿ ノ( ゜-゜ノ)');
 responses.set( '┬─┬﻿ ノ( ゜-゜ノ)', 'THAT\'S MY JOB');
 
-exports.messageTriggered = message => responses.has(message.toLowerCase());
-exports.message = message => {
-  log(`input: ${message}`);
-  return responses.get(message.toLowerCase());
+const message = msg => {
+  if (responses.has(msg.cleanContent.toLowerCase())) {
+    log(`input: ${msg.cleanContent}`);
+    return responses.get(msg.cleanContent.toLowerCase());
+  }
+
+  return false;
 };
 
-exports.helpTriggered = (message) => message.includes('reply');
-exports.help = () => 'Reply automatically responds to certain phrases.';
+module.exports = {
+  name: 'reply',
+  help: 'Reply automatically responds to certain phrases.',
+  message,
+};

@@ -36,14 +36,19 @@ const responses = [
   'Hahahahahahahahahahaha, no'
 ];
 
-exports.messageTriggered = message => message.startsWith('.8ball');
-exports.message = () => {
-  log('8ball request');
-  return responses[Math.floor(Math.random() * responses.length)];
+const message = msg => {
+  const botMention = msg.client.user.mention().toLowerCase();
+  if (msg.content.toLowerCase().startsWith(`${botMention} 8ball`)) {
+    log('8ball request');
+    const response = responses[Math.floor(Math.random() * responses.length)];
+    return `${msg.author}: ${response}`;
+  }
+
+  return false;
 };
 
-exports.helpTriggered = message => message.includes('8ball') || message.includes('eightball');
-exports.help = () => {
-  log('8ball help request');
-  return '`.8ball [your question here]`. Randomly outputs a response.';
+module.exports = {
+  name: '8ball',
+  help: '`@bot 8ball [your question here]`. Randomly outputs a response.',
+  message,
 };
