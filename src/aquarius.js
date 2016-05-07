@@ -39,7 +39,12 @@ aquarius.on('message', message => {
         str += `${command.help}\n`;
       }
     });
-    aquarius.reply(message, str);
+
+    if (str !== '') {
+      aquarius.reply(message, str);
+    } else {
+      aquarius.reply(message, 'Module not found :(');
+    }
   } else {
     commands.forEach(command => {
       const response = command.message(message);
