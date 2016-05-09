@@ -36,7 +36,7 @@ aquarius.on('message', message => {
     let str = '';
     commands.forEach(command => {
       if (message.cleanContent.toLowerCase().includes(command.name)) {
-        log(`Help request for ${message.name}`);
+        log(`Help request for ${command.name}`);
         str += `${command.help}\n`;
       }
     });
