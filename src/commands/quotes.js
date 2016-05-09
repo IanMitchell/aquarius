@@ -49,7 +49,7 @@ const message = msg => {
     return false;
   }
 
-  const readRegex = /^@[\w]+ read quote #?([0-9]+)/i;
+  const readRegex = /^@[#\w]+ read quote #?([0-9]+)/i;
   const readMatch = msg.cleanContent.match(readRegex);
 
   if (readMatch) {
@@ -61,7 +61,7 @@ const message = msg => {
     return false;
   }
 
-  const newRegex = /^@[\w]+ (?:new|add) quote (.*)/i;
+  const newRegex = /^@[#\w]+ (?:new|add) quote (.*)/i;
   const newMatch = msg.cleanContent.match(newRegex);
 
   if (newMatch) {

@@ -66,14 +66,17 @@ const choose = input => {
 };
 
 
-const triggerRegex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/i;
-
-const helpMessage = 'lol';
 const message = msg => {
-  const inputs = msg.cleanContent.match(triggerRegex);
-  if (inputs) {
-    log(`input: ${inputs[1]}`);
-    return choose(inputs[1]);
+  const botMention = msg.client.user.mention().toLowerCase();
+
+  if (msg.content.startsWith(`${botMention} choose `)) {
+    const triggerRegex = /^@[#\w]+ choose (.+)/i;
+
+    const inputs = msg.cleanContent.match(triggerRegex);
+    if (inputs) {
+      log(`input: ${inputs[1]}`);
+      return choose(inputs[1]);
+    }
   }
 
   return false;
@@ -81,6 +84,6 @@ const message = msg => {
 
 module.exports = {
   name: 'choose',
-  help: helpMessage,
+  help: '`@bot choose 1, 2, 3, 3`. Randomly chooses from a comma or space separated list',
   message,
 };
