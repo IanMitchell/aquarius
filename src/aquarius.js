@@ -30,6 +30,7 @@ aquarius.on('message', message => {
     log('Generating command list');
     let str = 'Available commands: ';
     str += commands.map(command => command.name).join(', ');
+    str += '. For more information, use `@bot help [command]`.';
     aquarius.reply(message, str);
   } else if (message.content.toLowerCase().startsWith(`${botMention} help`)) {
     let str = '';
