@@ -1,18 +1,33 @@
 const debug = require('debug');
 const log = debug('Reply');
 
+const greetings = [
+  'hi',
+  'sup',
+  '~ohayo'
+];
+
+function randomGreeting() {
+  greeting = greetings[Math.floor(Math.random() * greetings.length)];
+  log(greeting);
+  return greeting;	
+}
+
 const responses = new Map();
 responses.set('ping', 'pong');
 responses.set('sing', 'song');
-responses.set('hi bot', 'hey beautiful c;');
+//this creates the response at startup time
+//want to dynamically create response
+responses.set('hi bot', randomGreeting());
 responses.set('bot respond', "I'm a pretty stupid bot.");
 responses.set('bot be nice', 'sorry :c');
 responses.set('gj bot', 'thx');
 responses.set('thx bot', 'np');
 responses.set('bot pls', '( ¬‿¬)');
 responses.set('not now bot', 'aww ok :c');
-responses.set('go away bot', 'I just wanted to be friends');
-responses.set('(╯°□°)╯︵ ┻━┻', '┬─┬﻿ ノ( ゜-゜ノ)');
+responses.set('go away bot', 'I have nowhere else to go');
+responses.set('not cool bot', 'I just wanted to be friends');
+responses.set('(╯°□°）╯︵ ┻━┻', '┬─┬﻿ ノ( ゜-゜ノ)');
 responses.set( '┬─┬﻿ ノ( ゜-゜ノ)', 'THAT\'S MY JOB');
 
 const message = msg => {
