@@ -87,13 +87,19 @@ const orderRange = order => {
 };
 
 const message = msg => {
+  const trigger = msg.cleanContent.split(' ')[0];
+  const isNotBot = !msg.author.bot;
   const botMention = msg.client.user.mention().toLowerCase();
 
-  if (msg.content.startsWith(`${botMention} order `)) {
-    const orderRegex = /^@[#\w]+ order (.+)$/i;
+  if (msg.content.startsWith(`${botMention} order `) || (trigger === '.order' && isNotBot)) {
+    let orderRegex = /^@[#\w]+ order (.+)$/i;
+    if(trigger === '.order'){
+      orderRegex = /.order (.+)$/i;
+    }
     const rangeRegex = /(-?\d+)-(-?\d+)$/i;
 
     const order = msg.cleanContent.match(orderRegex);
+    console.log(order + 'order')
 
     if (order) {
       const range = msg.cleanContent.match(rangeRegex);

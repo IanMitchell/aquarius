@@ -9,16 +9,19 @@ const log = debug('Seen');
 
 const message = msg => {
   const seenRegex = /^@[#\w]+ seen @[#\w]+/i;
+  const trigger = '.seen ' + msg.cleanContent.split(' ')[1];
   const seenMatch = msg.cleanContent.match(seenRegex);
+  const trigMatch= msg.cleanContent.match(trigger);
 
-  if (seenMatch) {
-    const user = msg.mentions[1];
-
+  if (seenMatch || trigMatch) {
+    let user = msg.mentions[0];
+    if (msg.mentions[1]){
+      user = msg.mentions[1];
+    }
     // untagged @mention, which Regex returns as a false positive
     if (user === undefined) {
       return false;
     }
-
     log(`Seen request for ${user}`);
 
     if (msg.client.users.get('id', user.id).status !== 'offline') {
