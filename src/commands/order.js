@@ -93,7 +93,7 @@ const message = msg => {
 
   if (msg.content.startsWith(`${botMention} order `) || (trigger === '.order' && isNotBot)) {
     let orderRegex = /^@[#\w]+ order (.+)$/i;
-    if(trigger === '.order'){
+    if (trigger === '.order') {
       orderRegex = /.order (.+)$/i;
     }
     const rangeRegex = /(-?\d+)-(-?\d+)$/i;
