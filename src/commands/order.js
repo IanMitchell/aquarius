@@ -99,7 +99,6 @@ const message = msg => {
     const rangeRegex = /(-?\d+)-(-?\d+)$/i;
 
     const order = msg.cleanContent.match(orderRegex);
-    console.log(order + 'order')
 
     if (order) {
       const range = msg.cleanContent.match(rangeRegex);
