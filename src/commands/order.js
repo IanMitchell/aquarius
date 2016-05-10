@@ -86,23 +86,26 @@ const orderRange = order => {
   return choices.join(', ');
 };
 
-
-const orderRegex = /^[.!]o(?:rder)? (.+)$/i;
-const rangeRegex = /(-?\d+)-(-?\d+)$/i;
-
 const message = msg => {
-  const order = msg.cleanContent.match(orderRegex);
+  const botMention = msg.client.user.mention().toLowerCase();
 
-  if (order) {
-    const range = msg.cleanContent.match(rangeRegex);
+  if (msg.content.startsWith(`${botMention} order `)) {
+    const orderRegex = /^@[#\w]+ order (.+)$/i;
+    const rangeRegex = /(-?\d+)-(-?\d+)$/i;
 
-    if (range) {
-      log(`Range input: ${range}`);
-      return orderRange(range);
+    const order = msg.cleanContent.match(orderRegex);
+
+    if (order) {
+      const range = msg.cleanContent.match(rangeRegex);
+
+      if (range) {
+        log(`Range input: ${range}`);
+        return orderRange(range);
+      }
+
+      log(`Order input: ${order[1]}`);
+      return orderList(order[1]);
     }
-
-    log(`Order input: ${order[1]}`);
-    return orderList(order[1]);
   }
 
   return false;
@@ -110,6 +113,6 @@ const message = msg => {
 
 module.exports = {
   name: 'order',
-  help: 'TODO',
+  help: '`@bot random 1, 2, 3, 3`. Randomly reorders elements from a comma or space separated list',
   message,
 };

@@ -16,6 +16,6 @@ Drop them into the `src/commands` folder and follow this format:
 exports.command = {
   name: 'command',
   help: 'this string is my help message',
-  message: func(message) // Returns string response, or false if no response 
+  message: func(message) // Returns string response, or false if no response
 }
 ```
