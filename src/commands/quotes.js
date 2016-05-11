@@ -33,8 +33,10 @@ const getQuote = (quoteId, serverId) => {
 const message = msg => {
   const isNotBot = !msg.author.bot;
   const botMention = msg.client.user.mention().toLowerCase();
+  const randomTrig = msg.cleanContent.match('.quote random');
 
-  if (msg.content.toLowerCase() === `${botMention} random quote`) {
+  if (msg.content.toLowerCase() === `${botMention} random quote`
+      || (msg.content.startsWith(randomTrig) && isNotBot)) {
     log('Reading random quote');
     Quote.count({
       where: {
@@ -96,7 +98,6 @@ const message = msg => {
           quote,
         }).then(() => msg.client.sendMessage(msg.channel, `Quote added as #${count + 1}.`));
       });
-
       return false;
     }
 
