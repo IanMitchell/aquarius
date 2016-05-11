@@ -9,14 +9,13 @@ const log = debug('Seen');
 
 const message = msg => {
   const seenRegex = /^@[#\w]+ seen @[#\w]+/i;
-  const trigger = '.seen ' + msg.cleanContent.split(' ')[1];
   const seenMatch = msg.cleanContent.match(seenRegex);
-  const trigMatch = msg.cleanContent.match(trigger);
+  const trigMatch = msg.cleanContent.match('.seen ');
   const isNotBot = !msg.author.bot;
 
-  if (seenMatch || (trigMatch && isNotBot)) {
+  if (seenMatch || (msg.content.startsWith(trigMatch) && isNotBot)) {
     let user = msg.mentions[0];
-    if (msg.mentions[1]){
+    if (msg.mentions[1]) {
       user = msg.mentions[1];
     }
     // untagged @mention, which Regex returns as a false positive
