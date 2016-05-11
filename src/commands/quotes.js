@@ -81,7 +81,6 @@ const message = msg => {
     } else if (newMatch) {
       quote = newMatch[1];
     }
-    console.log(quote)
     if (quote) {
       log(`Adding new quote: ${quote}`);
 
