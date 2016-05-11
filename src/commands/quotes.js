@@ -31,6 +31,7 @@ const getQuote = (quoteId, serverId) => {
 };
 
 const message = msg => {
+  const isNotBot = !msg.author.bot;
   const botMention = msg.client.user.mention().toLowerCase();
 
   if (msg.content.toLowerCase() === `${botMention} random quote`) {
@@ -51,10 +52,17 @@ const message = msg => {
 
   const readRegex = /^@[#\w]+ read quote #?([0-9]+)/i;
   const readMatch = msg.cleanContent.match(readRegex);
-
-  if (readMatch) {
-    log(`Reading quote ${readMatch[1]}`);
-    getQuote(readMatch[1], msg.channel.server.id).then(response => {
+  const readTrig = msg.cleanContent.match('.quote read ');
+  if (readMatch || (msg.content.startsWith(readTrig) && isNotBot
+  && msg.cleanContent.split(' ').length === 3)) {
+    let read;
+    if (readTrig) {
+      read = msg.cleanContent.split(' ').slice(2).join(' ');
+    } else {
+      read = readMatch[1];
+    }
+    log(`Reading quote ${read}`);
+    getQuote(read, msg.channel.server.id).then(response => {
       msg.client.sendMessage(msg.channel, response);
     });
 
@@ -63,14 +71,12 @@ const message = msg => {
 
   const newRegex = /^@[#\w]+ (?:new|add) quote (.*)/i;
   const newMatch = msg.cleanContent.match(newRegex);
-  const isNotBot = !msg.author.bot;
   const newTrig = msg.cleanContent.match('.quote add ');
   if (newMatch || (msg.content.startsWith(newTrig) && isNotBot)) {
     let quote;
     if (newTrig) {
       quote = msg.cleanContent.split(' ').slice(2).join(' ');
-    }
-    else {
+    } else {
       quote = newMatch[1];
     }
     if (quote) {
