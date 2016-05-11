@@ -63,10 +63,16 @@ const message = msg => {
 
   const newRegex = /^@[#\w]+ (?:new|add) quote (.*)/i;
   const newMatch = msg.cleanContent.match(newRegex);
-
-  if (newMatch) {
-    const quote = newMatch[1];
-
+  const isNotBot = !msg.author.bot;
+  const newTrig = msg.cleanContent.match('.quote add ');
+  if (newMatch || (msg.content.startsWith(newTrig) && isNotBot)) {
+    let quote;
+    if (newTrig) {
+      quote = msg.cleanContent.split(' ').slice(2).join(' ');
+    }
+    else {
+      quote = newMatch[1];
+    }
     if (quote) {
       log(`Adding new quote: ${quote}`);
 
