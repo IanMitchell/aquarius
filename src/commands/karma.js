@@ -7,7 +7,7 @@ const Karma = sequelize.import('../models/karma');
 
 const log = debug('Karma');
 
-const KARMA_COOLDOWN = 60; // 1m (Unix Timestamp, so in seconds not ms)
+const KARMA_COOLDOWN = 5 * 60; // 1m (Unix Timestamp, so in seconds not ms)
 
 let helpMessage = '`@name [plus|minus] karma`. Modifies the users karma (+/- 1pt).\n';
 helpMessage += '`@bot karma leaderboard`. Displays the karma leaderboards.';
@@ -77,8 +77,8 @@ const message = msg => {
 
       if (KARMA_COOLDOWN > moment().unix() - karmaGiver.lastGiven) {
         log('Karma cooldown');
-        const future = moment() + ((moment().unix() - karmaGiver.lastGiven) * 1000);
-        const wait = moment().toNow(future, true);
+        const future = moment((karmaGiver.lastGiven + KARMA_COOLDOWN) * 1000);
+        const wait = future.toNow(true);
         msg.client.sendMessage(msg.channel, `You need to wait ${wait} to use karma!`);
         return false;
       }
