@@ -29,7 +29,7 @@ const message = msg => {
   const isNotBot = !msg.author.bot;
   const botMention = msg.client.user.mention().toLowerCase();
   if (msg.content.toLowerCase().startsWith(`${botMention} 8ball`)
-      || (trigger === '.8ball' && isNotBot)) {
+      || (trigger === '.8ball' && isNotBot && msg.cleanContent.split(' ').length > 1)) {
     log('8ball request');
     const response = responses[Math.floor(Math.random() * responses.length)];
     return `${msg.author}: ${response}`;

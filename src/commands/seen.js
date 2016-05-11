@@ -11,9 +11,10 @@ const message = msg => {
   const seenRegex = /^@[#\w]+ seen @[#\w]+/i;
   const trigger = '.seen ' + msg.cleanContent.split(' ')[1];
   const seenMatch = msg.cleanContent.match(seenRegex);
-  const trigMatch= msg.cleanContent.match(trigger);
+  const trigMatch = msg.cleanContent.match(trigger);
+  const isNotBot = !msg.author.bot;
 
-  if (seenMatch || trigMatch) {
+  if (seenMatch || (trigMatch && isNotBot)) {
     let user = msg.mentions[0];
     if (msg.mentions[1]){
       user = msg.mentions[1];
