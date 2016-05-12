@@ -1,6 +1,6 @@
 const client = require('../client.js');
 
-const mentionRegex = '(?:@[#\\w]+)|(?:<@!?\\d+>)';
+const mentionRegex = '(?:(?:@[#\\w]+)|(?:<@!?\\d+>))';
 const botMention = () => client.user.mention();
 
 const mentionTrigger = (msg) => msg.content.startsWith(botMention());

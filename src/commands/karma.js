@@ -43,7 +43,7 @@ const message = msg => {
   }
 
   const karmaRegex = new RegExp(
-    `${triggers.mentionRegex} (?:(?: (plus|minus) karma)|(?: ?(\\+\\+|--)))`,
+    `${triggers.mentionRegex}(?:(?: (?:(plus|minus) karma))|(?: ?(\\+\\+|--)))`,
     'i');
   const karmaInput = triggers.customTrigger(msg, karmaRegex);
 
