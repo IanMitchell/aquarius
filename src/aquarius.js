@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const debug = require('debug');
-const Discord = require('discord.js');
+const aquarius = require('./client.js');
 const config = require('../config');
 const moment = require('moment');
 const Sequelize = require('sequelize');
@@ -9,7 +9,6 @@ const sequelize = new Sequelize(config.development.url);
 const Seen = sequelize.import('./models/seen');
 
 const log = debug('Aquarius');
-const aquarius = new Discord.Client();
 
 const commands = [];
 const commandsPath = path.join(__dirname, 'commands/');

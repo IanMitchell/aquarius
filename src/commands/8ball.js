@@ -1,4 +1,6 @@
 const debug = require('debug');
+const triggers = require('../util/triggers');
+
 const log = debug('Eightball');
 
 const responses = [
@@ -25,11 +27,7 @@ const responses = [
 ];
 
 const message = msg => {
-  const trigger = msg.cleanContent.split(' ')[0];
-  const isNotBot = !msg.author.bot;
-  const botMention = msg.client.user.mention().toLowerCase();
-  if (msg.content.toLowerCase().startsWith(`${botMention} 8ball`)
-      || (trigger === '.8ball' && isNotBot && msg.cleanContent.split(' ').length > 1)) {
+  if (triggers.messageTriggered(msg, /^8ball .+$/i)) {
     log('8ball request');
     const response = responses[Math.floor(Math.random() * responses.length)];
     return `${msg.author}: ${response}`;

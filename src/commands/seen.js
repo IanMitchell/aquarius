@@ -1,5 +1,6 @@
 const debug = require('debug');
 const moment = require('moment');
+const triggers = require('../util/triggers');
 const config = require('../../config');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(config.development.url);
@@ -8,20 +9,16 @@ const Seen = sequelize.import('../models/seen');
 const log = debug('Seen');
 
 const message = msg => {
-  const seenRegex = /^@[#\w]+ seen @[#\w]+/i;
-  const seenMatch = msg.cleanContent.match(seenRegex);
-  const trigMatch = msg.cleanContent.match('.seen ');
-  const isNotBot = !msg.author.bot;
+  const seenRegex = new RegExp(`seen ${triggers.mentionRegex}`, 'i');
 
-  if (seenMatch || (msg.content.startsWith(trigMatch) && isNotBot)) {
-    let user = msg.mentions[0];
-    if (msg.mentions[1]) {
-      user = msg.mentions[1];
-    }
+  if (triggers.messageTriggered(msg, seenRegex)) {
+    const user = msg.mentions[msg.mentions.length - 1];
+
     // untagged @mention, which Regex returns as a false positive
     if (user === undefined) {
       return false;
     }
+
     log(`Seen request for ${user}`);
 
     if (msg.client.users.get('id', user.id).status !== 'offline') {
@@ -39,17 +36,15 @@ const message = msg => {
       let time = seen.lastSeen;
 
       if (created || seen.lastSeen === 0) {
-        msg.client.sendMessage(msg.channel, `I don't have a record for ${user}`);
+        msg.client.sendMessage(msg.channel, `I don't have a record for ${user.username}`);
         return;
       }
 
       time = moment(seen.lastSeen * 1000);
 
-      msg.client.sendMessage(msg.channel, `${user} last seen ${time.fromNow()}`);
+      msg.client.sendMessage(msg.channel, `${user.username} last seen ${time.fromNow()}`);
       return;
     });
-
-    return false;
   }
 
   return false;

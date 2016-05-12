@@ -1,4 +1,6 @@
 const debug = require('debug');
+const triggers = require('../util/triggers');
+
 const log = debug('Choose');
 
 
@@ -67,16 +69,11 @@ const choose = input => {
 
 
 const message = msg => {
-  const botMention = msg.client.user.mention().toLowerCase();
+  const inputs = triggers.messageTriggered(msg, /^c(?:hoose)? (.+)$/i);
 
-  if (msg.content.startsWith(`${botMention} choose `)) {
-    const triggerRegex = /^@[#\w]+ choose (.+)/i;
-
-    const inputs = msg.cleanContent.match(triggerRegex);
-    if (inputs) {
-      log(`input: ${inputs[1]}`);
-      return choose(inputs[1]);
-    }
+  if (inputs) {
+    log(`input: ${inputs[1]}`);
+    return choose(inputs[1]);
   }
 
   return false;
