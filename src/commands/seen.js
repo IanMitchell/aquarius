@@ -9,7 +9,7 @@ const Seen = sequelize.import('../models/seen');
 const log = debug('Seen');
 
 const message = msg => {
-  const seenRegex = new RegExp(`seen ${triggers.mentionRegex}`, 'i');
+  const seenRegex = new RegExp(`^seen ${triggers.mentionRegex}$`, 'i');
 
   if (triggers.messageTriggered(msg, seenRegex)) {
     const user = msg.mentions[msg.mentions.length - 1];
