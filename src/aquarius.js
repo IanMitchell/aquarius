@@ -27,7 +27,7 @@ fs.readdir(commandsPath, (err, files) => {
 });
 
 aquarius.on('message', message => {
-  if (triggers.messageTriggered(message, /^commands|help$/)) {
+  if (triggers.messageTriggered(message, /^(commands|help)$/)) {
     log('Generating command list');
     let str = 'Available commands: ';
     str += commands.map(command => command.name).join(', ');
