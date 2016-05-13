@@ -1,14 +1,13 @@
 const debug = require('debug');
+const triggers = require('../util/triggers');
 const permissions = require('../util/permissions');
 
 const log = debug('Broadcast');
 
 const message = msg => {
   if (permissions.isBotOwner(msg.author)) {
-    const botMention = msg.client.user.mention();
-
-    if (msg.content.toLowerCase().startsWith(`${botMention.toLowerCase()} broadcast`)) {
-      const broadcast = msg.content.split(`${botMention} broadcast `);
+    if (triggers.messageTriggered(msg, /^broadcast .+$/)) {
+      const broadcast = msg.content.split('broadcast ');
       log(`Broadcasting '${broadcast[1]}'`);
 
       msg.client.servers.forEach(server => {

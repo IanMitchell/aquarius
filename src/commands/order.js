@@ -1,4 +1,6 @@
 const debug = require('debug');
+const triggers = require('../util/triggers');
+
 const log = debug('Order');
 
 const ORDER_MAX_VALUE = 99999999999;
@@ -87,30 +89,19 @@ const orderRange = order => {
 };
 
 const message = msg => {
-  const trigger = msg.cleanContent.split(' ')[0];
-  const isNotBot = !msg.author.bot;
-  const botMention = msg.client.user.mention().toLowerCase();
+  const inputs = triggers.messageTriggered(msg, /^o(?:rder)? (.+)$/i);
 
-  if (msg.content.startsWith(`${botMention} order `) || (trigger === '.order' && isNotBot)) {
-    let orderRegex = /^@[#\w]+ order (.+)$/i;
-    if (trigger === '.order') {
-      orderRegex = /.order (.+)$/i;
-    }
+  if (inputs) {
     const rangeRegex = /(-?\d+)-(-?\d+)$/i;
+    const range = msg.cleanContent.match(rangeRegex);
 
-    const order = msg.cleanContent.match(orderRegex);
-
-    if (order) {
-      const range = msg.cleanContent.match(rangeRegex);
-
-      if (range) {
-        log(`Range input: ${range}`);
-        return orderRange(range);
-      }
-
-      log(`Order input: ${order[1]}`);
-      return orderList(order[1]);
+    if (range) {
+      log(`Range input: ${range}`);
+      return orderRange(range);
     }
+
+    log(`Order input: ${inputs[1]}`);
+    return orderList(inputs[1]);
   }
 
   return false;

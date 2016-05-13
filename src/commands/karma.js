@@ -1,5 +1,6 @@
 const debug = require('debug');
 const moment = require('moment');
+const triggers = require('../util/triggers');
 const config = require('../../config');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(config.development.url);
@@ -13,9 +14,7 @@ let helpMessage = '`@name [plus|minus] karma`. Modifies the users karma (+/- 1pt
 helpMessage += '`@bot karma leaderboard`. Displays the karma leaderboards.';
 
 const message = msg => {
-  const botMention = msg.client.user.mention().toLowerCase();
-
-  if (msg.content.toLowerCase() === `${botMention} karma leaderboard`) {
+  if (triggers.messageTriggered(msg, /^karma leaderboard$/)) {
     log('Server leaderboard requested');
     Karma.findAll({
       where: {
@@ -43,17 +42,20 @@ const message = msg => {
     return false;
   }
 
-  const karmaRegex = /^@[#\w]+(?:(?: (plus|minus) karma)|(?: ?(\+\+|--)))/i;
-  const karmaInput = msg.cleanContent.match(karmaRegex);
+  const karmaRegex = new RegExp(
+    `^${triggers.mentionRegex}(?:(?: (?:(plus|minus) karma))|(?: ?(\\+\\+|--)))$`,
+    'i');
+  const karmaInput = triggers.customTrigger(msg, karmaRegex);
 
   if (karmaInput) {
     const user = msg.mentions[0];
-    log(`Karma request for ${user}`);
 
     // untagged @mention, which Regex returns as a false positive
     if (user === undefined) {
       return false;
     }
+
+    log(`Karma request for ${user}`);
 
     if (user === msg.author) {
       msg.client.sendMessage(msg.channel, 'You cannot give karma to yourself!');

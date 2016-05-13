@@ -1,5 +1,6 @@
 const debug = require('debug');
 const moment = require('moment');
+const triggers = require('../util/triggers');
 const config = require('../../config');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(config.development.url);
@@ -31,12 +32,7 @@ const getQuote = (quoteId, serverId) => {
 };
 
 const message = msg => {
-  const isNotBot = !msg.author.bot;
-  const botMention = msg.client.user.mention().toLowerCase();
-  const randomTrig = msg.cleanContent.match('.quote random');
-
-  if (msg.content.toLowerCase() === `${botMention} random quote`
-      || (msg.content.startsWith(randomTrig) && isNotBot)) {
+  if (triggers.messageTriggered(msg, /^(?:random quote|quote random)$/)) {
     log('Reading random quote');
     Quote.count({
       where: {
@@ -52,35 +48,21 @@ const message = msg => {
     return false;
   }
 
-  const readRegex = /^@[#\w]+ read quote #?([0-9]+)/i;
-  const readMatch = msg.cleanContent.match(readRegex);
-  const readTrig = msg.cleanContent.match('.quote read ');
-  if (readMatch || (msg.content.startsWith(readTrig) && isNotBot
-  && msg.cleanContent.split(' ').length === 3)) {
-    let read;
-    if (readTrig) {
-      read = msg.cleanContent.split(' ').slice(2).join(' ');
-    } else {
-      read = readMatch[1];
-    }
-    log(`Reading quote ${read}`);
-    getQuote(read, msg.channel.server.id).then(response => {
+  const readInput = triggers.messageTriggered(msg, /^(?:read )?quote #?([0-9]+)$/i);
+  if (readInput) {
+    log(`Reading quote ${readInput[1]}`);
+    getQuote(readInput[1], msg.channel.server.id).then(response => {
       msg.client.sendMessage(msg.channel, response);
     });
 
     return false;
   }
 
-  const newRegex = /^@[#\w]+ (?:new|add) quote (.*)/i;
-  const newMatch = msg.cleanContent.match(newRegex);
-  const newTrig = msg.cleanContent.match('.quote add');
-  if (newMatch || (msg.content.startsWith(newTrig) && isNotBot)) {
-    let quote;
-    if (newTrig) {
-      quote = msg.cleanContent.split(' ').slice(2).join(' ');
-    } else if (newMatch) {
-      quote = newMatch[1];
-    }
+  const newInput = triggers.messageTriggered(msg,
+                    /^(?:(?:(?:new|add) quote)|(?:quote (?:new|add))) (.*)$/i);
+  if (newInput) {
+    const quote = newInput[1];
+
     if (quote) {
       log(`Adding new quote: ${quote}`);
 

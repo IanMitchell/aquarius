@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const debug = require('debug');
-const Discord = require('discord.js');
+const aquarius = require('./client.js');
+const triggers = require('./util/triggers');
 const config = require('../config');
 const moment = require('moment');
 const Sequelize = require('sequelize');
@@ -9,7 +10,6 @@ const sequelize = new Sequelize(config.development.url);
 const Seen = sequelize.import('./models/seen');
 
 const log = debug('Aquarius');
-const aquarius = new Discord.Client();
 
 const commands = [];
 const commandsPath = path.join(__dirname, 'commands/');
@@ -27,16 +27,13 @@ fs.readdir(commandsPath, (err, files) => {
 });
 
 aquarius.on('message', message => {
-  const botMention = aquarius.user.mention();
-
-  if (message.content.toLowerCase() === `${botMention} commands` ||
-      message.content.toLowerCase() === `${botMention} help`) {
+  if (triggers.messageTriggered(message, /^commands|help$/)) {
     log('Generating command list');
     let str = 'Available commands: ';
     str += commands.map(command => command.name).join(', ');
     str += '. For more information, use `@bot help [command]`.';
     aquarius.reply(message, str);
-  } else if (message.content.toLowerCase().startsWith(`${botMention} help`)) {
+  } else if (triggers.messageTriggered(message, /^help .+$/)) {
     let str = '';
     commands.forEach(command => {
       if (message.cleanContent.toLowerCase().includes(command.name)) {
