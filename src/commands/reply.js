@@ -11,11 +11,17 @@ responses.set('thx bot', 'np');
 responses.set('bot pls', '( ¬‿¬)');
 responses.set('(╯°□°)╯︵ ┻━┻', '┬─┬﻿ ノ( ゜-゜ノ)');
 
-exports.messageTriggered = message => responses.has(message.toLowerCase());
-exports.message = message => {
-  log(`input: ${message}`);
-  return responses.get(message.toLowerCase());
+const message = msg => {
+  if (responses.has(msg.cleanContent.toLowerCase())) {
+    log(`input: ${msg.cleanContent}`);
+    return responses.get(msg.cleanContent.toLowerCase());
+  }
+
+  return false;
 };
 
-exports.helpTriggered = (message) => message.includes('reply');
-exports.help = () => 'Reply automatically responds to certain phrases.';
+module.exports = {
+  name: 'reply',
+  help: 'Reply automatically responds to certain phrases.',
+  message,
+};

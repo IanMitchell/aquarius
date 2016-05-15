@@ -4,51 +4,68 @@ const log = debug('Same');
 const MESSAGE_STACK_SIZE = 4;
 const messageStack = new Map();
 
-const pushMessage = (channel, text) => {
-  if (!messageStack.get(channel)) {
-    log(`Creating entry for ${channel}`);
-    messageStack.set(channel, []);
+const pushMessage = msg => {
+  const server = msg.channel.server.id;
+  const channel = msg.channel.name;
+
+  if (!messageStack.get(server)) {
+    log(`Creating entry for ${server}`);
+    messageStack.set(server, new Map());
+
+    msg.channel.server.channels.forEach(chan => {
+      messageStack.get(server).set(chan.name, []);
+    });
   }
 
-  messageStack.get(channel).push(text);
+  messageStack.get(server).get(channel).push(msg.cleanContent);
 
   // Only track last couple messages
-  if (messageStack.get(channel).length > MESSAGE_STACK_SIZE) {
-    messageStack.get(channel).shift();
+  if (messageStack.get(server).get(channel).length > MESSAGE_STACK_SIZE) {
+    messageStack.get(server).get(channel).shift();
   }
 };
 
 const onlyUnique = (value, index, self) => self.indexOf(value) === index;
 
-const isSame = (channel, message) => {
-  if (!messageStack.get(channel)) {
+const isSame = msg => {
+  const server = msg.channel.server.id;
+  const channel = msg.channel.name;
+
+  if (!messageStack.get(server).get(channel)) {
     return false;
   }
 
-  if (messageStack.get(channel).length !== MESSAGE_STACK_SIZE) {
+  if (messageStack.get(server).get(channel).length !== MESSAGE_STACK_SIZE) {
     return false;
   }
 
-  const unique = messageStack.get(channel).filter(onlyUnique);
+  const unique = messageStack.get(server).get(channel).filter(onlyUnique);
 
-  if (unique.length === 1 && unique[0] === message) {
+  if (unique.length === 1 && unique[0] === msg.cleanContent) {
     return true;
   }
 
   return false;
 };
 
+const message = msg => {
+  if (msg.cleanContent === '') {
+    return false;
+  }
 
-exports.messageTriggered = message => {
-  // TODO: Set per-channel
-  pushMessage('discord', message);
-  return isSame('discord', message);
-};
-exports.message = message => {
-  log(`Sending ${message}`);
-  messageStack.set('discord', []);
-  return message;
+  pushMessage(msg);
+
+  if (isSame(msg)) {
+    log(`Sending '${msg.cleanContent}' to ${msg.channel.server.id}`);
+    messageStack.get(msg.channel.server.id).set(msg.channel.name, []);
+    return msg.cleanContent;
+  }
+
+  return false;
 };
 
-exports.helpTriggered = message => message.includes('same');
-exports.help = () => 'Same automatically responds to certain phrases.';
+module.exports = {
+  name: 'same',
+  help: 'Same automatically responds to certain phrases.',
+  message,
+};

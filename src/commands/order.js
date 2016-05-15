@@ -1,4 +1,6 @@
 const debug = require('debug');
+const triggers = require('../util/triggers');
+
 const log = debug('Order');
 
 const ORDER_MAX_VALUE = 99999999999;
@@ -86,23 +88,27 @@ const orderRange = order => {
   return choices.join(', ');
 };
 
+const message = msg => {
+  const inputs = triggers.messageTriggered(msg, /^o(?:rder)? (.+)$/i);
 
-const orderRegex = /^[.!]o(?:rder)? (.+)$/i;
-const rangeRegex = /(-?\d+)-(-?\d+)$/i;
+  if (inputs) {
+    const rangeRegex = /(-?\d+)-(-?\d+)$/i;
+    const range = msg.cleanContent.match(rangeRegex);
 
-exports.messageTriggered = message => message.match(orderRegex);
-exports.message = message => {
-  const order = message.match(orderRegex);
-  const range = message.match(rangeRegex);
+    if (range) {
+      log(`Range input: ${range}`);
+      return orderRange(range);
+    }
 
-  if (range) {
-    log(`Range input: ${range}`);
-    return orderRange(range);
+    log(`Order input: ${inputs[1]}`);
+    return orderList(inputs[1]);
   }
 
-  log(`Order input: ${order[1]}`);
-  return orderList(order[1]);
+  return false;
 };
 
-exports.helpTriggered = message => message.includes('order');
-exports.help = () => '`.o[rder] [options...]`. Randomly arranges the list. (Ex: .o s, n, i, p, e).';
+module.exports = {
+  name: 'order',
+  help: '`@bot random 1, 2, 3, 3`. Randomly reorders elements from a comma or space separated list',
+  message,
+};

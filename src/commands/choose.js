@@ -1,4 +1,6 @@
 const debug = require('debug');
+const triggers = require('../util/triggers');
+
 const log = debug('Choose');
 
 
@@ -66,13 +68,19 @@ const choose = input => {
 };
 
 
-const triggerRegex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/i;
-exports.messageTriggered = (message) => message.match(triggerRegex);
-exports.message = (message) => {
-  const inputs = message.match(triggerRegex);
-  log(`input: ${inputs[1]}`);
-  return choose(inputs[1]);
+const message = msg => {
+  const inputs = triggers.messageTriggered(msg, /^c(?:hoose)? (.+)$/i);
+
+  if (inputs) {
+    log(`input: ${inputs[1]}`);
+    return choose(inputs[1]);
+  }
+
+  return false;
 };
 
-exports.helpTriggered = (message) => message.includes('choose') || message === 'c';
-exports.help = () => '`.c[hoose] [options...]`. randomly chooses from list. (Ex: .c 1, 2).';
+module.exports = {
+  name: 'choose',
+  help: '`@bot choose 1, 2, 3, 3`. Randomly chooses from a comma or space separated list',
+  message,
+};
