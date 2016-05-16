@@ -1,9 +1,8 @@
 const debug = require('debug');
 const moment = require('moment');
 const triggers = require('../util/triggers');
-const config = require('../../config');
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize(config.development.url);
+const sequelize = new Sequelize(process.env.DATABASE_URL);
 const Quote = sequelize.import('../models/quote');
 
 

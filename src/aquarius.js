@@ -3,10 +3,9 @@ const path = require('path');
 const debug = require('debug');
 const aquarius = require('./client.js');
 const triggers = require('./util/triggers');
-const config = require('../config');
 const moment = require('moment');
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize(config.development.url);
+const sequelize = new Sequelize(process.env.DATABASE_URL);
 const Seen = sequelize.import('./models/seen');
 
 const log = debug('Aquarius');
@@ -77,4 +76,4 @@ aquarius.on('presence', (oldUser, newUser) => {
   }
 });
 
-aquarius.loginWithToken(config.token);
+aquarius.loginWithToken(process.env.TOKEN);
