@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "debug": "^2.2.0",
-    "discord.js": "^7.0.1",
+    "discord.js": "hydrabolt/discord.js#indev",
     "dotenv": "^2.0.0",
     "moment": "^2.13.0",
     "pg": "^4.5.5",
