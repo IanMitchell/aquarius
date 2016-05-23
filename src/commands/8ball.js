@@ -4,6 +4,7 @@ const triggers = require('../util/triggers');
 const log = debug('Eightball');
 
 const responses = [
+  //yes answers
   'It is certain',
   'It is decidedly so',
   'Without a doubt',
@@ -14,16 +15,27 @@ const responses = [
   'Outlook good',
   'Yes',
   'Signs point to yes',
-  'Reply hazy try again',
+  
+  //try again answers
+  'Reply hazy, try again',
   'Ask again later',
   'Better not tell you now',
   'Cannot predict now',
   'Concentrate and ask again',
+  'Too lazy, try again',
+  'Ask someone who cares',
+  
+  //no answers
   "Don't count on it",
   'My reply is no',
   'My sources say no',
   'Outlook not so good',
   'Very doubtful',
+  'Not a chance in hell',
+  'Ha! Yeah, right.',
+  'NOOOOOOOOOPE',
+  'Well it\'s not gonna happen if you just sit here talking with me.',
+  'Hahahahahahahahahahaha, no'
 ];
 
 const message = msg => {
