@@ -23,7 +23,7 @@ genericResponses.set('bot pls', '( ¬‿¬)');
 const addServer = (serverId) => {
   responses.set(serverId, new Map());
 
-  genericResponses.forEach((key, value) => {
+  genericResponses.forEach((value, key) => {
     responses.get(serverId).set(key, value);
   });
 };
