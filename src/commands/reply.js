@@ -8,8 +8,10 @@ const Reply = sequelize.import('../models/reply');
 
 const log = debug('Reply');
 
-// Server independent responses
+// All responses stored in memory
 const responses = new Map();
+
+// Cross server replies
 const genericResponses = new Map();
 genericResponses.set('ping', 'pong');
 genericResponses.set('bot respond', "I'm a pretty stupid bot.");
@@ -18,18 +20,28 @@ genericResponses.set('gj bot', 'thx');
 genericResponses.set('thx bot', 'np');
 genericResponses.set('bot pls', '( ¬‿¬)');
 
+const addServer = (serverId) => {
+  responses.set(serverId, new Map());
+
+  genericResponses.forEach((key, value) => {
+    responses.get(serverId).set(key, value);
+  });
+};
+
 // Create response map
 client.on('ready', () => {
   log('Creating generic response map');
-  client.servers.forEach(server => {
-    responses.set(server.id, genericResponses);
-  });
+  client.servers.forEach(server => addServer(server.id));
 
   // Load custom server replies
   log('Loading custom replies');
 
   Reply.findAll().then(replies => {
     replies.forEach(reply => {
+      if (!responses.has(reply.serverId)) {
+        addServer(reply.serverId);
+      }
+
       responses.get(reply.serverId).set(reply.trigger, reply.response);
     });
 
@@ -49,7 +61,11 @@ const message = msg => {
       return responses.get(msg.channel.server.id).get(msg.cleanContent.toLowerCase());
     }
   } else {
-    responses.set(msg.channel.server.id, genericResponses);
+    addServer(msg.channel.server.id);
+
+    if (genericResponses.has(msg.cleanContent.toLowerCase())) {
+      return genericResponses.get(msg.cleanContent.toLowerCase());
+    }
   }
 
   if (isBotModerator(msg.channel.server, msg.author)) {
