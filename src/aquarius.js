@@ -18,6 +18,7 @@ fs.readdir(commandsPath, (err, files) => {
     throw err;
   }
 
+  // TODO: Restrict to .js files
   files.forEach(file => {
     log(`Loading ${file}`);
     // eslint disable-line global-require

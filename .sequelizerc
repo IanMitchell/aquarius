@@ -1,9 +1,14 @@
+require('dotenv').config();
+
 var path = require('path')
 
+console.log(`Working on ${process.env.DATABASE_URL}`);
+
 module.exports = {
-  "development": {
-    "hostname": process.env.DATABASE_URL
-  }
+  'development': {
+    'url': process.env.DATABASE_URL,
+    'dialect': 'postgresql',
+  },
   'migrations-path': path.resolve('src', 'migrations'),
   'models-path':     path.resolve('src', 'models')
 };

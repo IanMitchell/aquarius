@@ -19,3 +19,12 @@ exports.command = {
   message: func(message) // Returns string response, or false if no response
 }
 ```
+
+## New Tables
+
+Since it's hard for me to remember...
+
+```
+$ node_modules/.bin/sequelize model:create --config ./.sequelizerc --name reply --attributes trigger,response
+$ node_modules/.bin/sequelize db:migrate --config ./.sequelizerc
+```
