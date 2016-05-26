@@ -111,7 +111,7 @@ const message = msg => {
       }).then(removedRows => {
         if (removedRows > 0) {
           msg.client.sendMessage(msg.channel, `Removed '${removeInputs[1]}' reply`);
-          responses.get(msg.channnel.server.id).delete(removeInputs[1]);
+          responses.get(msg.channel.server.id).delete(removeInputs[1]);
         } else {
           msg.client.sendMessage(msg.channel, `Could not find a reply with '${removeInputs[1]}'`);
         }
