@@ -7,7 +7,12 @@
     "start": "node index.js",
     "test": "ava test"
   },
-  "author": "",
+  "author": {
+    "name": "Ian Mitchell",
+    "email": "ian.mitchel1@live.com",
+    "url": "http://ianmitchell.io"
+  },
+  "repository": "ianmitchell/aquarius",
   "license": "ISC",
   "engines": {
     "node": ">6.0.0"

@@ -1,3 +1,4 @@
+const pkg = require('../package');
 const fs = require('fs');
 const path = require('path');
 const debug = require('debug');
@@ -47,6 +48,9 @@ aquarius.on('message', message => {
     } else {
       aquarius.reply(message, 'Module not found :(');
     }
+  } else if (triggers.messageTriggered(message, /^info$/)) {
+    log('Info request');
+    aquarius.reply(message, `Aquarius v${pkg.version}. \`@aquarius help\` for help. http://github.com/${pkg.repository}`);
   } else {
     commands.forEach(command => {
       const response = command.message(message);
