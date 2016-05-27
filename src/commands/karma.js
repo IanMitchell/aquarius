@@ -41,9 +41,10 @@ const message = msg => {
     return false;
   }
 
-  const karmaRegex = new RegExp(
-    `^${triggers.mentionRegex}(?:(?: (?:(plus|minus) karma))|(?: ?(\\+\\+|--)))$`,
-    'i');
+  const karmaRegex = new RegExp([
+    `^${triggers.mentionRegex}(?:(?: (?:(plus|minus) karma))|`,
+    '(?: ?(\\+\\+.*|--.*)))$',
+  ].join(''), 'i');
   const karmaInput = triggers.customTrigger(msg, karmaRegex);
 
   if (karmaInput) {

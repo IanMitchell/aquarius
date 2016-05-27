@@ -11,7 +11,7 @@ const message = msg => {
       log(`Broadcasting '${broadcast[1]}'`);
 
       msg.client.servers.forEach(server => {
-        server.client.sendMessage(server.defaultChannel, `BROADCAST: ${broadcast[1]}`);
+        server.client.sendMessage(server.defaultChannel, `[BROADCAST] ${broadcast[1]}`);
       });
 
       return 'Message broadcasted.';
