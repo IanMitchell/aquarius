@@ -1,4 +1,4 @@
-const client = require('../client.js');
+const client = require('../client');
 
 const mentionRegex = '(?:(?:@[#\\w]+)|(?:<@!?\\d+>))';
 const botMention = () => client.user.mention();

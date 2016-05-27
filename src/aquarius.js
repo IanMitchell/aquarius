@@ -2,7 +2,7 @@ const pkg = require('../package');
 const fs = require('fs');
 const path = require('path');
 const debug = require('debug');
-const aquarius = require('./client.js');
+const aquarius = require('./client');
 const triggers = require('./util/triggers');
 
 const log = debug('Aquarius');
