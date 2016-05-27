@@ -4,10 +4,6 @@ const path = require('path');
 const debug = require('debug');
 const aquarius = require('./client.js');
 const triggers = require('./util/triggers');
-const moment = require('moment');
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize(process.env.DATABASE_URL);
-const Seen = sequelize.import('./models/seen');
 
 const log = debug('Aquarius');
 
@@ -57,26 +53,6 @@ aquarius.on('message', message => {
       if (response) {
         aquarius.sendMessage(message.channel, response);
       }
-    });
-  }
-});
-
-// TODO: Figure out a way to move this into the 'seen' command
-aquarius.on('presence', (oldUser, newUser) => {
-  if (newUser.status === 'offline') {
-    Seen.findOrCreate({
-      where: {
-        userId: newUser.id,
-      },
-      defaults: {
-        lastSeen: moment().unix(),
-      },
-    }).spread((user, created) => {
-      if (!created) {
-        user.update({ lastSeen: moment().unix() });
-      }
-
-      log(`Updated last seen for ${newUser.username}`);
     });
   }
 });

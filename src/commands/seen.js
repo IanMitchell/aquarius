@@ -1,11 +1,32 @@
 const debug = require('debug');
 const moment = require('moment');
 const triggers = require('../util/triggers');
+const client = require('../client');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(process.env.DATABASE_URL);
 const Seen = sequelize.import('../models/seen');
 
 const log = debug('Seen');
+
+
+client.on('presence', (oldUser, newUser) => {
+  if (newUser.status === 'offline') {
+    Seen.findOrCreate({
+      where: {
+        userId: newUser.id,
+      },
+      defaults: {
+        lastSeen: moment().unix(),
+      },
+    }).spread((user, created) => {
+      if (!created) {
+        user.update({ lastSeen: moment().unix() });
+      }
+
+      log(`Updated last seen for ${newUser.username}`);
+    });
+  }
+});
 
 const message = msg => {
   const seenRegex = new RegExp(`^seen ${triggers.mentionRegex}$`, 'i');
