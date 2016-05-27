@@ -24,7 +24,7 @@ const addServer = (serverId) => {
   responses.set(serverId, new Map());
 
   genericResponses.forEach((value, key) => {
-    responses.get(serverId).set(key, value);
+    responses.get(serverId).set(key.toLowerCase(), value);
   });
 };
 
@@ -42,7 +42,7 @@ client.on('ready', () => {
         addServer(reply.serverId);
       }
 
-      responses.get(reply.serverId).set(reply.trigger, reply.response);
+      responses.get(reply.serverId).set(reply.trigger.toLowerCase(), reply.response);
     });
 
     log('Initialization done');
@@ -56,15 +56,15 @@ const message = msg => {
   }
 
   if (responses.has(msg.channel.server.id)) {
-    if (responses.get(msg.channel.server.id).has(msg.cleanContent.toLowerCase())) {
+    if (responses.get(msg.channel.server.id).has(msg.cleanContent.trim().toLowerCase())) {
       log(`Input: ${msg.cleanContent}`);
-      return responses.get(msg.channel.server.id).get(msg.cleanContent.toLowerCase());
+      return responses.get(msg.channel.server.id).get(msg.cleanContent.trim().toLowerCase());
     }
   } else {
     addServer(msg.channel.server.id);
 
-    if (genericResponses.has(msg.cleanContent.toLowerCase())) {
-      return genericResponses.get(msg.cleanContent.toLowerCase());
+    if (genericResponses.has(msg.cleanContent.trim().toLowerCase())) {
+      return genericResponses.get(msg.cleanContent.trim().toLowerCase());
     }
   }
 
@@ -92,7 +92,7 @@ const message = msg => {
       }).spread((reply, created) => {
         if (created) {
           msg.client.sendMessage(msg.channel, 'Added reply.');
-          responses.get(msg.channel.server.id).set(addInputs[2], addInputs[5]);
+          responses.get(msg.channel.server.id).set(addInputs[2].toLowerCase(), addInputs[5]);
         } else {
           msg.client.sendMessage(msg.channel, 'A reply with that trigger already exists!');
         }
