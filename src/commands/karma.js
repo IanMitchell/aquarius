@@ -42,8 +42,8 @@ const message = msg => {
   }
 
   const karmaRegex = new RegExp([
-    `^${triggers.mentionRegex}(?:(?: (?:(plus|minus) karma))|`,
-    '(?: ?(\\+\\+.*|--.*)))$',
+    `^${triggers.mentionRegex}(?:(?: (?:(plus|minus) karma).*)|`,
+    '(?: ?((\\+\\+).*|(--).*)))$',
   ].join(''), 'i');
   const karmaInput = triggers.customTrigger(msg, karmaRegex);
 
@@ -100,7 +100,7 @@ const message = msg => {
           log('Karma record created');
         }
 
-        if (karmaInput[1] === 'plus' || karmaInput[2] === '++') {
+        if (karmaInput[1] === 'plus' || karmaInput[3] === '++') {
           log('increasing karma');
           return karma.increment('count', { by: 1 });
         }
@@ -113,7 +113,7 @@ const message = msg => {
           totalGiven: karmaGiver.totalGiven + 1,
         }).then(() => {
           let str = 'Karma ';
-          if (karmaInput[1] === 'plus' || karmaInput[2] === '++') {
+          if (karmaInput[1] === 'plus' || karmaInput[3] === '++') {
             str += 'given! ';
           } else {
             str += 'removed! ';
