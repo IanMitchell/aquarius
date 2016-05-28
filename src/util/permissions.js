@@ -2,8 +2,10 @@ const client = require('../client');
 
 const isBotOwner = (user) => user.id === process.env.OWNER_ID;
 
+const isBotAdmin = (server, user) => (isBotOwner(user) || server.owner.equals(user));
+
 const isBotModerator = (server, user) => {
-  if (isBotOwner(user) || server.owner.equals(user)) {
+  if (isBotAdmin(server, user)) {
     return true;
   }
 
@@ -11,6 +13,7 @@ const isBotModerator = (server, user) => {
 };
 
 module.exports = {
-  isBotModerator,
   isBotOwner,
+  isBotAdmin,
+  isBotModerator,
 };

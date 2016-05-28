@@ -1,7 +1,7 @@
 const debug = require('debug');
 const client = require('../client');
 const triggers = require('../util/triggers');
-const { isBotModerator } = require('../util/permissions');
+const permissions = require('../util/permissions');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(process.env.DATABASE_URL);
 const Reply = sequelize.import('../models/reply');
@@ -68,7 +68,7 @@ const message = msg => {
     }
   }
 
-  if (isBotModerator(msg.channel.server, msg.author)) {
+  if (permissions.isBotModerator(msg.channel.server, msg.author)) {
     const newRegex = new RegExp([
       '^(?:(?:new reply)|(?:reply add)) ',  // Cmd Trigger
       '(["\'])((?:(?=(\\\\?))\\3.)*?)\\1 ', // Reply trigger (Quoted text block 1)
