@@ -11,7 +11,6 @@ const message = msg => {
   if (nicknameInput && permissions.isBotAdmin(msg.channel.server, msg.author)) {
     log(`Setting bot nickname to ${nicknameInput[1]} on ${msg.channel.server.id}`);
     aquarius.setNickname(msg.channel.server, nicknameInput[1], aquarius.user).then(data => {
-      log(data);
       if (data.nick) {
         msg.client.sendMessage(msg.channel, `Nickname set to ${data.nick}`);
       } else {

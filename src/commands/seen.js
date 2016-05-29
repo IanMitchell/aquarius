@@ -1,5 +1,6 @@
 const debug = require('debug');
 const moment = require('moment');
+const users = require('../util/users');
 const triggers = require('../util/triggers');
 const client = require('../client');
 const Sequelize = require('sequelize');
@@ -41,7 +42,7 @@ const message = msg => {
 
     log(`Seen request for ${user}`);
 
-    if (msg.client.users.get('id', user.id).status !== 'offline') {
+    if (user.status !== 'offline') {
       return "They're online right now!";
     }
 
@@ -62,7 +63,8 @@ const message = msg => {
 
       time = moment(seen.lastSeen * 1000);
 
-      msg.client.sendMessage(msg.channel, `${user.username} last seen ${time.fromNow()}`);
+      const nick = users.getNickname(msg.channel.server, user);
+      msg.client.sendMessage(msg.channel, `${nick} last seen ${time.fromNow()}`);
       return;
     });
   }

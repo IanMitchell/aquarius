@@ -1,6 +1,7 @@
 const debug = require('debug');
 const moment = require('moment');
 const triggers = require('../util/triggers');
+const users = require('../util/users');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(process.env.DATABASE_URL);
 const Karma = sequelize.import('../models/karma');
@@ -30,12 +31,30 @@ const message = msg => {
         let str = '**Karma Leaderboard**\n';
 
         response.forEach((record, index) => {
-          const nick = msg.client.users.get('id', record.userId).username;
+          const nick = users.getNickname(msg.channel.server, record.userId);
           str += `${index + 1}. ${nick} - ${record.count} Karma\n`;
         });
 
         msg.client.sendMessage(msg.channel, str);
       }
+    });
+
+    return false;
+  }
+
+  const karmaLookupRegex = new RegExp(`^karma ${triggers.mentionRegex}$`, 'i');
+  if (triggers.messageTriggered(msg, karmaLookupRegex)) {
+    const user = msg.mentions[msg.mentions.length - 1];
+    log(`Request for ${user.name}'s Karma'`);
+
+    Karma.findOne({
+      where: {
+        userId: user.id,
+        serverId: msg.channel.server.id,
+      },
+    }).then(karma => {
+      const nick = users.getNickname(msg.channel.server, user.id);
+      msg.client.sendMessage(msg.channel, `${nick} has ${karma.count} Karma.`);
     });
 
     return false;
