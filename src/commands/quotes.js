@@ -58,7 +58,7 @@ const message = msg => {
   }
 
   const newInput = triggers.messageTriggered(msg,
-                    /^(?:(?:(?:new|add) quote)|(?:quote (?:new|add))) (.*)$/i);
+                    /^(?:(?:(?:new|add) quote)|(?:quote (?:new|add))) ([^]*)$/i);
   if (newInput) {
     const quote = newInput[1];
 
