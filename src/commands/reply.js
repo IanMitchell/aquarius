@@ -1,5 +1,5 @@
 const debug = require('debug');
-const client = require('../client');
+const client = require('../core/client');
 const triggers = require('../util/triggers');
 const permissions = require('../util/permissions');
 const Sequelize = require('sequelize');

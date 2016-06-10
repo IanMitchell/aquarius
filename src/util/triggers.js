@@ -1,13 +1,24 @@
-const client = require('../client');
+const client = require('../core/client');
 
 const mentionRegex = '(?:(?:@[#\\w]+)|(?:<@!?\\d+>))';
-const botMention = () => client.user.mention();
 
-const mentionTrigger = (msg) => msg.content.trim().startsWith(botMention());
-const dotTrigger = (msg) => msg.content.trim().startsWith('.');
-const exclamationTrigger = (msg) => msg.content.trim().startsWith('!');
+function botMention() {
+  return client.user.mention();
+}
 
-const messageTriggered = (msg, trigger) => {
+function mentionTrigger(msg) {
+  return msg.content.trim().startsWith(botMention());
+}
+
+function dotTrigger(msg) {
+  return msg.content.trim().startsWith('.');
+}
+
+function exclamationTrigger(msg) {
+  return msg.content.trim().startsWith('!');
+}
+
+function messageTriggered(msg, trigger) {
   if (msg.author.bot) {
     return false;
   }
@@ -21,16 +32,15 @@ const messageTriggered = (msg, trigger) => {
   }
 
   return false;
-};
+}
 
-const customTrigger = (msg, trigger) => {
+function customTrigger(msg, trigger) {
   if (msg.author.bot) {
     return false;
   }
 
   return msg.content.trim().match(trigger);
-};
-
+}
 
 module.exports = {
   mentionRegex,

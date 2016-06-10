@@ -1,5 +1,6 @@
 const debug = require('debug');
 const moment = require('moment');
+const settings = require('../core/settings');
 const triggers = require('../util/triggers');
 const users = require('../util/users');
 const Sequelize = require('sequelize');
@@ -12,6 +13,9 @@ const KARMA_COOLDOWN = 5 * 60; // 1m (Unix Timestamp, so in seconds not ms)
 
 let helpMessage = '`@name [plus|minus] karma`. Modifies the users karma (+/- 1pt).\n';
 helpMessage += '`@bot karma leaderboard`. Displays the karma leaderboards.';
+
+settings.addKey('name', 'Karma', 'Alias for Karma');
+settings.set('91318657375825920', 'name', 'Tinfoil Hats');
 
 const message = msg => {
   if (triggers.messageTriggered(msg, /^karma leaderboard$/)) {
@@ -28,7 +32,7 @@ const message = msg => {
       if (response.length === 0) {
         msg.client.sendMessage(msg.channel, 'There is no leaderboard for this server!');
       } else {
-        let str = '**Karma Leaderboard**\n';
+        let str = `**${settings.get(msg.channel.server.id, 'name')} Leaderboard**\n`;
 
         response.forEach((record, index) => {
           const nick = users.getNickname(msg.channel.server, record.userId);
