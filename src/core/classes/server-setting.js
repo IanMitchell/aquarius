@@ -27,10 +27,10 @@ class ServerSetting {
     const json = {};
 
     json.commands = [];
-    this.settings.forEach((command, values) => {
+    this.settings.forEach((values, command) => {
       const commandJSON = [];
 
-      values.forEach((key, value) => {
+      values.forEach((value, key) => {
         commandJSON.push({ key, value });
       });
 
@@ -41,15 +41,13 @@ class ServerSetting {
   }
 
   deserialize(json) {
-    json.forEach(command => {
+    json.commands.forEach(command => {
       this.addCommand(command.commmand);
 
-      command.values.forEach((key, value) => {
-        this.addValue(command.command, key, value);
+      command.values.forEach(entry => {
+        this.addValue(command.command, entry.key, entry.value);
       });
     });
-
-    return;
   }
 }
 

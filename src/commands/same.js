@@ -49,6 +49,8 @@ const isSame = msg => {
 };
 
 const message = msg => {
+  // TODO: Crashes on new server addition
+
   if (msg.cleanContent === '') {
     return false;
   }

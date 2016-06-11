@@ -2,6 +2,9 @@ const debug = require('debug');
 const callerId = require('caller-id');
 const ServerSetting = require('./server-setting');
 const CommandKey = require('./command-key');
+const Sequelize = require('sequelize');
+const sequelize = new Sequelize(process.env.DATABASE_URL);
+const Setting = sequelize.import('../../models/setting');
 
 const log = debug('Config');
 
@@ -47,18 +50,36 @@ class Config {
   }
 
   load() {
-    // TODO: Load all SQL tables and deserialize
+    Setting.findAll().then(settings => {
+      settings.forEach(setting => {
+        this.addServer(setting.serverId);
+        this.servers.get(setting.serverId).deserialize(setting.config);
+      });
+    });
 
-    // HACK: TEMPORARY
-    this.addServer('91318657375825920');
-
-    return;
+    log('Configuration loaded');
   }
 
   update(serverId) {
     log(`Updating ${serverId} Config`);
-    // TODO: Serialize serverid and save to db
-    return serverId;
+
+    Setting.findOrCreate({
+      where: {
+        serverId,
+      },
+      defaults: {
+        serverId,
+        config: this.servers.get(serverId).serialize(),
+      },
+    }).spread((setting, created) => {
+      if (!created) {
+        Setting.update({
+          config: this.servers.get(serverId).serialize(),
+        }, {
+          serverId,
+        });
+      }
+    });
   }
 }
 
