@@ -11,6 +11,7 @@ const log = debug('Aquarius');
 const commands = [];
 const commandsPath = path.join(__dirname, 'commands/');
 
+// On start, load all commands
 fs.readdir(commandsPath, (err, files) => {
   if (err) {
     throw err;
@@ -24,7 +25,7 @@ fs.readdir(commandsPath, (err, files) => {
   });
 });
 
-
+// Handle admin alerts
 function handleBroadcast(msg) {
   if (permissions.isBotOwner(msg.author)) {
     if (triggers.messageTriggered(msg, /^broadcast .+$/)) {
@@ -38,10 +39,7 @@ function handleBroadcast(msg) {
   }
 }
 
-
-aquarius.on('message', message => {
-  handleBroadcast(message);
-
+function handleHelp(message) {
   if (triggers.messageTriggered(message, /^(commands|help)$/)) {
     log('Generating command list');
     let str = 'Available commands: ';
@@ -62,17 +60,31 @@ aquarius.on('message', message => {
     } else {
       aquarius.reply(message, 'Module not found :(');
     }
-  } else if (triggers.messageTriggered(message, /^info$/)) {
+  }
+}
+
+function handleInfo(message) {
+  if (triggers.messageTriggered(message, /^info$/)) {
     log('Info request');
     aquarius.reply(message, `Aquarius v${pkg.version}. \`@aquarius help\` for help. http://github.com/${pkg.repository}`);
-  } else {
-    commands.forEach(command => {
-      const response = command.message(message);
-      if (response) {
-        aquarius.sendMessage(message.channel, response);
-      }
-    });
   }
+}
+
+aquarius.on('message', message => {
+  if (permissions.isServerMuted(message.server, message.author)) {
+    return;
+  }
+
+  handleBroadcast(message);
+  handleHelp(message);
+  handleInfo(message);
+
+  commands.forEach(command => {
+    const response = command.message(message);
+    if (response) {
+      aquarius.sendMessage(message.channel, response);
+    }
+  });
 });
 
 aquarius.loginWithToken(process.env.TOKEN);

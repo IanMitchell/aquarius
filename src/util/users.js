@@ -12,7 +12,12 @@ function getNickname(server, user) {
   return server.detailsOf(user).nick || user.name;
 }
 
+function hasRole(server, user, roleName) {
+  return server.rolesOfUser(user).some(role => role.name === roleName);
+}
+
 module.exports = {
   getUser,
   getNickname,
+  hasRole,
 };

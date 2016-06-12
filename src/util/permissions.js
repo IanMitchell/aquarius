@@ -1,4 +1,5 @@
 const client = require('../core/client');
+const users = require('./users');
 
 function isBotOwner(user) {
   return user.id === process.env.OWNER_ID;
@@ -13,11 +14,22 @@ function isServerModerator(server, user) {
     return true;
   }
 
-  return server.rolesOfUser(user).some(role => role.name === `${client.user.name} Mod`);
+  const nameRole = users.hasRole(server, user, `${client.user.name} Mod`);
+  const nickRole = users.hasRole(server, user, `${users.getNickname(server, client.user)} Mod`);
+
+  return nameRole || nickRole;
+}
+
+function isServerMuted(server, user) {
+  const nameRole = users.hasRole(server, user, `${client.user.name} Muted`);
+  const nickRole = users.hasRole(server, user, `${users.getNickname(server, client.user)} Muted`);
+
+  return nameRole || nickRole;
 }
 
 module.exports = {
   isBotOwner,
   isServerAdmin,
   isServerModerator,
+  isServerMuted,
 };
