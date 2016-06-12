@@ -4,12 +4,12 @@ function isBotOwner(user) {
   return user.id === process.env.OWNER_ID;
 }
 
-function isBotAdmin(server, user) {
+function isServerAdmin(server, user) {
   return isBotOwner(user) || server.owner.equals(user);
 }
 
-function isBotModerator(server, user) {
-  if (isBotAdmin(server, user)) {
+function isServerModerator(server, user) {
+  if (isServerAdmin(server, user)) {
     return true;
   }
 
@@ -18,6 +18,6 @@ function isBotModerator(server, user) {
 
 module.exports = {
   isBotOwner,
-  isBotAdmin,
-  isBotModerator,
+  isServerAdmin,
+  isServerModerator,
 };

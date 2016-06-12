@@ -4,6 +4,7 @@ const path = require('path');
 const debug = require('debug');
 const aquarius = require('./core/client');
 const triggers = require('./util/triggers');
+const permissions = require('./util/permissions');
 
 const log = debug('Aquarius');
 
@@ -15,15 +16,32 @@ fs.readdir(commandsPath, (err, files) => {
     throw err;
   }
 
-  // TODO: Restrict to .js files
   files.forEach(file => {
-    log(`Loading ${file}`);
-    // eslint disable-line global-require
-    commands.push(require(path.join(commandsPath, file)));
+    if (file.endsWith('.js')) {
+      log(`Loading ${file}`);
+      commands.push(require(path.join(commandsPath, file)));
+    }
   });
 });
 
+
+function handleBroadcast(msg) {
+  if (permissions.isBotOwner(msg.author)) {
+    if (triggers.messageTriggered(msg, /^broadcast .+$/)) {
+      const broadcast = msg.content.split('broadcast ');
+      log(`Broadcasting '${broadcast[1]}'`);
+
+      msg.client.servers.forEach(server => {
+        server.client.sendMessage(server.defaultChannel, `[BROADCAST] ${broadcast[1]}`);
+      });
+    }
+  }
+}
+
+
 aquarius.on('message', message => {
+  handleBroadcast(message);
+
   if (triggers.messageTriggered(message, /^(commands|help)$/)) {
     log('Generating command list');
     let str = 'Available commands: ';

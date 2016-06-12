@@ -1,114 +1,114 @@
-const debug = require('debug');
 const triggers = require('../util/triggers');
-
-const log = debug('Order');
+const Command = require('../core/command');
 
 const ORDER_MAX_VALUE = 99999999999;
 const ORDER_RANGE_LIMIT = 1024;
 const ORDER_RESULTS_LIMIT = 20;
 
+class Order extends Command {
+  message(msg) {
+    const inputs = triggers.messageTriggered(msg, /^o(?:rder)? (.+)$/i);
 
-const getChoices = (input, delimiter) => {
-  const choices = [];
+    if (inputs) {
+      const rangeRegex = /(-?\d+)-(-?\d+)$/i;
+      const range = msg.cleanContent.match(rangeRegex);
 
-  input.split(delimiter).forEach(choice => {
-    const val = choice.trim();
-    if (val) {
-      choices.push(val);
+      if (range) {
+        this.log(`Range input: ${range}`);
+        return this.orderRange(range);
+      }
+
+      this.log(`Order input: ${inputs[1]}`);
+      return this.orderList(inputs[1]);
     }
-  });
 
-  return choices;
-};
-
-const shuffleArray = array => {
-  let temp = 0;
-
-  for (let i = array.length - 1; i >= 0; i--) {
-    const idx = Math.floor(Math.random() * (array.length - i)) + i;
-    temp = array[i];
-    array[i] = array[idx];
-    array[idx] = temp;
+    return false;
   }
 
-  return array;
-};
+  getChoices(input, delimiter) {
+    const choices = [];
 
-const orderList = text => {
-  let choices = getChoices(text, ',');
+    input.split(delimiter).forEach(choice => {
+      const val = choice.trim();
+      if (val) {
+        choices.push(val);
+      }
+    });
 
-  if (choices) {
-    if (choices.length <= 1) {
-      choices = getChoices(text, ' ');
+    return choices;
+  }
+
+  orderList(text) {
+    let choices = this.getChoices(text, ',');
+
+    if (choices) {
+      if (choices.length <= 1) {
+        choices = this.getChoices(text, ' ');
+      }
+
+      choices = this.shuffleArray(choices);
+      return choices.join(', ');
     }
 
-    choices = shuffleArray(choices);
+    return 'No choices to choose from';
+  }
+
+  getRange(lowerBound, upperBound) {
+    let results = [];
+    let capped = false;
+    let correctedUpperBound = upperBound;
+
+    if (upperBound - lowerBound > ORDER_RANGE_LIMIT) {
+      correctedUpperBound = lowerBound + ORDER_RANGE_LIMIT;
+    }
+
+    for (let i = lowerBound; i <= correctedUpperBound; i++) {
+      if (i - lowerBound > ORDER_RESULTS_LIMIT) {
+        capped = true;
+      }
+
+      results.push(i.toString());
+    }
+
+    results = this.shuffleArray(results);
+
+    if (capped) {
+      results = results.splice(0, ORDER_RESULTS_LIMIT);
+      results.push('and some more...');
+    }
+
+    return results;
+  }
+
+  orderRange(order) {
+    const min = Math.min(parseInt(order[1], 10), parseInt(order[2], 10));
+    const max = Math.max(parseInt(order[1], 10), parseInt(order[2], 10));
+
+    if (min >= ORDER_MAX_VALUE || max >= ORDER_MAX_VALUE) {
+      return 'Value is too high.';
+    }
+
+    const choices = this.getRange(min, max);
     return choices.join(', ');
   }
 
-  return 'No choices to choose from';
-};
+  shuffleArray(arr) {
+    const array = arr;
+    let temp = 0;
 
-const getRange = (lowerBound, upperBound) => {
-  let results = [];
-  let capped = false;
-  let correctedUpperBound = upperBound;
-
-  if (upperBound - lowerBound > ORDER_RANGE_LIMIT) {
-    correctedUpperBound = lowerBound + ORDER_RANGE_LIMIT;
-  }
-
-  for (let i = lowerBound; i <= correctedUpperBound; i++) {
-    if (i - lowerBound > ORDER_RESULTS_LIMIT) {
-      capped = true;
+    for (let i = array.length - 1; i >= 0; i--) {
+      const idx = Math.floor(Math.random() * (array.length - i)) + i;
+      temp = array[i];
+      array[i] = array[idx];
+      array[idx] = temp;
     }
 
-    results.push(i.toString());
+    return array;
   }
 
-  results = shuffleArray(results);
-
-  if (capped) {
-    results = results.splice(0, ORDER_RESULTS_LIMIT);
-    results.push('and some more...');
+  helpMessage() {
+    return 'TODO';
   }
+}
 
-  return results;
-};
-
-const orderRange = order => {
-  const min = Math.min(parseInt(order[1], 10), parseInt(order[2], 10));
-  const max = Math.max(parseInt(order[1], 10), parseInt(order[2], 10));
-
-  if (min >= ORDER_MAX_VALUE || max >= ORDER_MAX_VALUE) {
-    return 'Value is too high.';
-  }
-
-  const choices = getRange(min, max);
-  return choices.join(', ');
-};
-
-const message = msg => {
-  const inputs = triggers.messageTriggered(msg, /^o(?:rder)? (.+)$/i);
-
-  if (inputs) {
-    const rangeRegex = /(-?\d+)-(-?\d+)$/i;
-    const range = msg.cleanContent.match(rangeRegex);
-
-    if (range) {
-      log(`Range input: ${range}`);
-      return orderRange(range);
-    }
-
-    log(`Order input: ${inputs[1]}`);
-    return orderList(inputs[1]);
-  }
-
-  return false;
-};
-
-module.exports = {
-  name: 'order',
-  help: '`@bot random 1, 2, 3, 3`. Randomly reorders elements from a comma or space separated list',
-  message,
-};
+module.exports = new Order();

@@ -1,73 +1,83 @@
-const debug = require('debug');
-const log = debug('Same');
+const Command = require('../core/command');
 
 const MESSAGE_STACK_SIZE = 4;
-const messageStack = new Map();
 
-const pushMessage = msg => {
-  const server = msg.channel.server.id;
-  const channel = msg.channel.name;
-
-  if (!messageStack.get(server)) {
-    log(`Creating entry for ${server}`);
-    messageStack.set(server, new Map());
-
-    msg.channel.server.channels.forEach(chan => {
-      messageStack.get(server).set(chan.name, []);
-    });
+class Same extends Command {
+  constructor() {
+    super();
+    this.messageStack = new Map();
+    this.settings.addKey('size',
+                         MESSAGE_STACK_SIZE,
+                         'How many repeated messages before mimicked');
   }
 
-  messageStack.get(server).get(channel).push(msg.cleanContent);
+  pushMessage(msg) {
+    const server = msg.channel.server.id;
+    const channel = msg.channel.name;
 
-  // Only track last couple messages
-  if (messageStack.get(server).get(channel).length > MESSAGE_STACK_SIZE) {
-    messageStack.get(server).get(channel).shift();
+    if (!this.messageStack.get(server)) {
+      this.log(`Creating entry for ${server}`);
+      this.messageStack.set(server, new Map());
+
+      msg.channel.server.channels.forEach(chan => {
+        this.messageStack.get(server).set(chan.name, []);
+      });
+    }
+
+    this.messageStack.get(server).get(channel).push(msg.cleanContent);
+
+    // Only track last couple messages
+    if (this.messageStack.get(server).get(channel).length > MESSAGE_STACK_SIZE) {
+      this.messageStack.get(server).get(channel).shift();
+    }
   }
-};
 
-const onlyUnique = (value, index, self) => self.indexOf(value) === index;
+  onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
 
-const isSame = msg => {
-  const server = msg.channel.server.id;
-  const channel = msg.channel.name;
+  isSame(msg) {
+    const server = msg.channel.server.id;
+    const channel = msg.channel.name;
 
-  if (!messageStack.get(server).get(channel)) {
+    if (!this.messageStack.get(server).get(channel)) {
+      return false;
+    }
+
+    if (this.messageStack.get(server).get(channel).length !== MESSAGE_STACK_SIZE) {
+      return false;
+    }
+
+    const unique = this.messageStack.get(server).get(channel).filter(this.onlyUnique);
+
+    if (unique.length === 1 && unique[0] === msg.cleanContent) {
+      return true;
+    }
+
     return false;
   }
 
-  if (messageStack.get(server).get(channel).length !== MESSAGE_STACK_SIZE) {
+  message(msg) {
+    // TODO: Crashes on new server addition
+
+    if (msg.cleanContent === '') {
+      return false;
+    }
+
+    this.pushMessage(msg);
+
+    if (this.isSame(msg)) {
+      this.log(`Sending '${msg.cleanContent}' to ${msg.channel.server.id}`);
+      this.messageStack.get(msg.channel.server.id).set(msg.channel.name, []);
+      return msg.cleanContent;
+    }
+
     return false;
   }
 
-  const unique = messageStack.get(server).get(channel).filter(onlyUnique);
-
-  if (unique.length === 1 && unique[0] === msg.cleanContent) {
-    return true;
+  helpMessage() {
+    return 'Same automatically responds to certain phrases.';
   }
+}
 
-  return false;
-};
-
-const message = msg => {
-  // TODO: Crashes on new server addition
-
-  if (msg.cleanContent === '') {
-    return false;
-  }
-
-  pushMessage(msg);
-
-  if (isSame(msg)) {
-    log(`Sending '${msg.cleanContent}' to ${msg.channel.server.id}`);
-    messageStack.get(msg.channel.server.id).set(msg.channel.name, []);
-    return msg.cleanContent;
-  }
-
-  return false;
-};
-
-module.exports = {
-  name: 'same',
-  help: 'Same automatically responds to certain phrases.',
-  message,
-};
+module.exports = new Same();

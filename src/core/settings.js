@@ -9,6 +9,8 @@ const Settings = (function () {
   const config = new Config();
   config.load();
 
+  config.addServer('91318657375825920');
+
   return config;
 }());
 

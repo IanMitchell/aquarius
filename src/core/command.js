@@ -1,6 +1,13 @@
+const debug = require('debug');
+const client = require('./client');
+const settings = require('./settings');
+
 class Command {
   constructor() {
-    this.name = 'Command';
+    this.name = this.constructor.name;
+    this.log = debug(this.name);
+    this.client = client;
+    this.settings = settings;
   }
 
   isAvailable(serverId) {
