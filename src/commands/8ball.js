@@ -5,6 +5,7 @@ class Eightball extends Command {
   constructor() {
     super();
 
+    this.name = '8ball';
     this.responses = [
       'It is certain',
       'It is decidedly so',
