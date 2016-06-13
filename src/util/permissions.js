@@ -32,17 +32,13 @@ function hasPermission(server, user, command) {
   const permission = settings.getPermission(server, command);
 
   switch (permission) {
-    // ALL
-    case 0:
-      break;
-    // RESTRICTED
-    case 1:
-      break;
-    // ADMIN
-    case 2:
-      break;
+    case 2: // ADMIN
+      return isServerAdmin(user);
+    case 1: // RESTRICTED
+      return isServerModerator(user);
+    case 0: // ALL
     default:
-      break;
+      return true;
   }
 }
 
@@ -51,4 +47,5 @@ module.exports = {
   isServerAdmin,
   isServerModerator,
   isServerMuted,
+  hasPermission,
 };

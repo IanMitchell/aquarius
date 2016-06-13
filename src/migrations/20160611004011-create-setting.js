@@ -13,6 +13,9 @@ module.exports = {
       config: {
         type: Sequelize.JSON,
       },
+      commands: {
+        type: Sequelize.JSON,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -1,10 +1,31 @@
 class ServerSetting {
   constructor() {
     this.settings = new Map();
+    this.commands = new Map();
   }
 
-  addCommand(command) {
-    this.settings.set(command, new Map());
+  addCommand(command, permission = 0) {
+    if (this.commands.has(command)) {
+      return this.commands.set(command, permission);
+    }
+
+    if (!this.settings.has(command)) {
+      this.settings.set(command, new Map());
+    }
+
+    return false;
+  }
+
+  updateCommand(command, permission) {
+    return this.commands.set(command, permission);
+  }
+
+  removeCommand(command) {
+    return this.commands.delete(command);
+  }
+
+  getCommand(command) {
+    return this.commands.get(command);
   }
 
   addValue(command, key, value) {
@@ -23,7 +44,24 @@ class ServerSetting {
     return false;
   }
 
-  serialize() {
+  serializeCommands() {
+    const json = {};
+
+    json.commands = [];
+    this.commands.forEach((value, key) => {
+      json.commands.push({ key, value });
+    });
+
+    return json;
+  }
+
+  deserializeCommands(json) {
+    json.commands.forEach(command => {
+      this.addCommand(command.key, command.value);
+    });
+  }
+
+  serializeSettings() {
     const json = {};
 
     json.commands = [];
@@ -40,7 +78,7 @@ class ServerSetting {
     return json;
   }
 
-  deserialize(json) {
+  deserializeSettings(json) {
     json.commands.forEach(command => {
       this.addCommand(command.commmand);
 
