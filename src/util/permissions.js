@@ -37,8 +37,9 @@ function hasPermission(server, user, command) {
     case 1: // RESTRICTED
       return isServerModerator(user);
     case 0: // ALL
-    default:
       return true;
+    default:
+      return false;
   }
 }
 

@@ -5,9 +5,7 @@ class ServerSetting {
   }
 
   addCommand(command, permission = 0) {
-    if (this.commands.has(command)) {
-      return this.commands.set(command, permission);
-    }
+    this.commands.set(command, permission);
 
     if (!this.settings.has(command)) {
       this.settings.set(command, new Map());

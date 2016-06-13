@@ -81,9 +81,11 @@ aquarius.on('message', message => {
   handleInfo(message);
 
   commands.forEach(command => {
-    const response = command.message(message);
-    if (response) {
-      aquarius.sendMessage(message.channel, response);
+    if (permissions.hasPermission(message.server.id, message.author, command.name)) {
+      const response = command.message(message);
+      if (response) {
+        aquarius.sendMessage(message.channel, response);
+      }
     }
   });
 });
