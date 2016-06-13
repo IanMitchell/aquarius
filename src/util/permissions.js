@@ -1,4 +1,5 @@
 const client = require('../core/client');
+const settings = require('../core/settings');
 const users = require('./users');
 
 function isBotOwner(user) {
@@ -25,6 +26,24 @@ function isServerMuted(server, user) {
   const nickRole = users.hasRole(server, user, `${users.getNickname(server, client.user)} Muted`);
 
   return nameRole || nickRole;
+}
+
+function hasPermission(server, user, command) {
+  const permission = settings.getPermission(server, command);
+
+  switch (permission) {
+    // ALL
+    case 0:
+      break;
+    // RESTRICTED
+    case 1:
+      break;
+    // ADMIN
+    case 2:
+      break;
+    default:
+      break;
+  }
 }
 
 module.exports = {

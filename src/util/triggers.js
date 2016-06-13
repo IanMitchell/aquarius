@@ -23,10 +23,17 @@ function messageTriggered(msg, trigger) {
     return false;
   }
 
+  // Drop triggers for PMs
+  if (msg.server === undefined) {
+    return msg.content.trim().match(trigger);
+  }
+
+  // @aquarius trigger [msg]
   if (mentionTrigger(msg)) {
     return msg.content.trim().split(`${botMention()} `)[1].match(trigger);
   }
 
+  // .trigger [msg] OR !trigger [msg]
   if (dotTrigger(msg, trigger) || exclamationTrigger(msg, trigger)) {
     return msg.content.trim().substr(1).match(trigger);
   }

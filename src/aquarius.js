@@ -70,8 +70,9 @@ function handleInfo(message) {
   }
 }
 
+// TODO: Handle PMs and server admin requests
 aquarius.on('message', message => {
-  if (permissions.isServerMuted(message.server, message.author)) {
+  if (message.server === undefined || permissions.isServerMuted(message.server, message.author)) {
     return;
   }
 
@@ -85,6 +86,22 @@ aquarius.on('message', message => {
       aquarius.sendMessage(message.channel, response);
     }
   });
+});
+
+aquarius.on('serverCreated', server => {
+  let msg = `**Thanks for adding ${aquarius.user.name}!**\n`;
+  msg += "I'm an open source bot run by Ian (Desch#1935). If you'd like to see the code, ";
+  msg += 'file a bug, or have a feature request you can visit https://github.com/IanMitchell/aquarius. ';
+  msg += `For general information about me, you can say \`@${aquarius.user.name} info\`\n`;
+  msg += '\n\n';
+  msg += "You'll need to add commands to your server for the bot to be functional. ";
+  msg += `To get a list of commands, you can message the bot \`@${aquarius.user.name} help\`\n`;
+  msg += `Available commands: \`${commands.map(command => command.name).join(', ')}\`\n\n`;
+  msg += `To find out more about a command, run \`@${aquarius.user.name} help [command]\`\n`;
+  msg += 'To add or remove a command from your server, use ';
+  msg += `\`@${aquarius.user.name} [add|remove] [command]\`.`;
+
+  aquarius.sendMessage(server.owner, msg);
 });
 
 aquarius.loginWithToken(process.env.TOKEN);
