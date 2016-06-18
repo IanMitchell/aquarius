@@ -6,6 +6,13 @@ class Eightball extends Command {
     super();
 
     this.name = '8ball';
+    this.description = 'Outputs one of the twenty 8ball responses.';
+    this.usage = `\`@${this.client.user.name} 8ball [message]\``;
+
+    this.settings.addKey('name', 'Eightball', 'What to call 8ball on your server');
+    // this.settings.addServer('91318657375825920');
+    // this.settings.addCommand('91318657375825920', this.name);
+
     this.responses = [
       'It is certain',
       'It is decidedly so',
@@ -33,18 +40,10 @@ class Eightball extends Command {
   message(msg) {
     if (triggers.messageTriggered(msg, /^8ball .+$/i)) {
       this.log('8ball request');
-      const response = this.responses[Math.floor(Math.random() * this.responses.length)];
-      return `${msg.author}: ${response}`;
+      return this.responses[Math.floor(Math.random() * this.responses.length)];
     }
 
     return false;
-  }
-
-  helpMessage() {
-    let msg = 'Randomly outputs a reply.\n';
-    msg = '**Usage:**\n';
-    msg += `\`@${this.client.user.name} 8ball [message]\``;
-    return msg;
   }
 }
 

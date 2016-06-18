@@ -13,8 +13,8 @@ class KarmaCommand extends Command {
   constructor() {
     super();
     this.name = 'Karma';
-    settings.addKey('name', 'Karma', 'What to call Karma on your server');
-    settings.addKey('cooldown',
+    this.settings.addKey('name', 'Karma', 'What to call Karma on your server');
+    this.settings.addKey('cooldown',
                     DEFAULT_COOLDOWN,
                     'Duration in seconds before a user can give karma again');
   }
@@ -144,7 +144,7 @@ class KarmaCommand extends Command {
               str += 'removed! ';
             }
 
-            str += `${user} now has ${result.count} karma.`;
+            str += `${users.getNickname(msg.server, user)} now has ${result.count} karma.`;
             return msg.client.sendMessage(msg.channel, str);
           });
         });

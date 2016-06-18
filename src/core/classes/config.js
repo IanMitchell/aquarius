@@ -1,10 +1,11 @@
 const debug = require('debug');
-const callerId = require('caller-id');
 const ServerSetting = require('./server-setting');
 const DefaultKey = require('./default-key');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(process.env.DATABASE_URL);
 const Setting = sequelize.import('../../models/setting');
+const stackTrace = require('stack-trace');
+
 
 const log = debug('Config');
 
@@ -18,8 +19,13 @@ class Config {
     this.servers.set(serverId, new ServerSetting());
   }
 
+  addCommand(serverId, command) {
+    this.servers.get(serverId).addCommand(command);
+    this.update(serverId);
+  }
+
   addKey(key, defaultValue, description) {
-    const caller = callerId.getData().typeName;
+    const caller = stackTrace.get()[1].getTypeName();
 
     if (!this.defaults.has(caller)) {
       this.defaults.set(caller, new Map());
@@ -29,11 +35,24 @@ class Config {
   }
 
   getDescription(key) {
-    const caller = callerId.getData().typeName;
+    const caller = stackTrace.get()[1].getTypeName();
     return this.defaults.get(caller).get(key).description;
   }
 
+  getDefault(key) {
+    const caller = stackTrace.get()[1].getTypeName();
+    return this.defaults.get(caller).get(key).value;
+  }
+
+  getCommands(serverId) {
+    return this.servers.get(serverId).getCommands();
+  }
+
   getPermission(serverId, command) {
+    if (!this.servers.has(serverId)) {
+      this.addServer(serverId);
+    }
+
     return this.servers.get(serverId).getCommand(command);
   }
 
@@ -42,8 +61,18 @@ class Config {
     this.update(serverId);
   }
 
+  getKeys() {
+    const caller = stackTrace.get()[1].getTypeName();
+
+    if (this.defaults.has(caller)) {
+      return this.defaults.get(caller).keys();
+    }
+
+    return false;
+  }
+
   get(serverId, key) {
-    const caller = callerId.getData().typeName;
+    const caller = stackTrace.get()[1].getTypeName();
 
     if (!this.servers.get(serverId).getValue(caller, key)) {
       return this.defaults.get(caller).get(key).value;
@@ -53,7 +82,12 @@ class Config {
   }
 
   set(serverId, key, value) {
-    const caller = callerId.getData().typeName;
+    const caller = stackTrace.get()[1].getTypeName();
+
+    if (!this.servers.has(serverId)) {
+      this.addServer(serverId);
+    }
+
     this.servers.get(serverId).addValue(caller, key, value);
     this.update(serverId);
   }

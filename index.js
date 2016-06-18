@@ -1,6 +1,6 @@
 // This is nasty, but prevents requiring different commands
 // for windows machines
-process.env.DEBUG = '*,-ref,-ref:*,-superagent';
+process.env.DEBUG = '*,-ref,-ref:*,-superagent,-retry-as-promised';
 
 const fs = require('fs');
 const debug = require('debug');

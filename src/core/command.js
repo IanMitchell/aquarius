@@ -23,7 +23,31 @@ class Command {
   }
 
   helpMessage(serverId) {
-    return;
+    let msg = `**${this.name}**\n`;
+    msg += `${this.description}\n\n`;
+    msg += 'Usage:\n';
+    msg += `${this.usage}`;
+    return msg;
+  }
+
+  getKeys() {
+    return this.settings.getKeys();
+  }
+
+  setSetting(serverId, key, value) {
+    this.settings.set(serverId, key, value);
+  }
+
+  getSettingDescription(key) {
+    return this.settings.getDescription(key);
+  }
+
+  getSetting(server, key) {
+    return this.settings.get(server, key);
+  }
+
+  getSettingDefault(key) {
+    return this.settings.getDefault(key);
   }
 }
 

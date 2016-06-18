@@ -1,5 +1,9 @@
 const client = require('../core/client');
 
+function getOwnedServers(user) {
+  return client.servers.filter(server => server.owner.equals(user));
+}
+
 function getUser(id) {
   return client.users.get('id', id);
 }
@@ -17,6 +21,7 @@ function hasRole(server, user, roleName) {
 }
 
 module.exports = {
+  getOwnedServers,
   getUser,
   getNickname,
   hasRole,

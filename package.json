@@ -18,7 +18,6 @@
     "node": ">6.0.0"
   },
   "dependencies": {
-    "caller-id": "^0.1.0",
     "debug": "^2.2.0",
     "discord.js": "hydrabolt/discord.js#indev",
     "dotenv": "^2.0.0",
@@ -28,6 +27,7 @@
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.23.0",
     "sequelize-cli": "^2.4.0",
+    "stack-trace": "0.0.9",
     "umzug": "^1.11.0"
   },
   "devDependencies": {

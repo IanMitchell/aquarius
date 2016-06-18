@@ -26,6 +26,10 @@ class ServerSetting {
     return this.commands.get(command);
   }
 
+  getCommands() {
+    return this.commands.keys();
+  }
+
   addValue(command, key, value) {
     if (!this.settings.has(command)) {
       this.addCommand(command);
