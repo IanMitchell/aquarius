@@ -24,6 +24,15 @@ class Config {
     this.update(serverId);
   }
 
+  removeCommand(serverId, command) {
+    this.servers.get(serverId).removeCommand(command);
+    this.update(serverId);
+  }
+
+  clearCommands(serverId) {
+    this.servers.get(serverId).clearCommands();
+  }
+
   addKey(key, defaultValue, description) {
     const caller = stackTrace.get()[1].getTypeName();
 

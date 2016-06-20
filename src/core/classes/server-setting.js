@@ -19,7 +19,8 @@ class ServerSetting {
   }
 
   removeCommand(command) {
-    return this.commands.delete(command);
+    this.settings.delete(command);
+    this.commands.delete(command);
   }
 
   getCommand(command) {
@@ -28,6 +29,11 @@ class ServerSetting {
 
   getCommands() {
     return this.commands.keys();
+  }
+
+  clearCommands() {
+    this.commands = new Map();
+    this.settings = new Map();
   }
 
   addValue(command, key, value) {

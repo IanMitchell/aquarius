@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const debug = require('debug');
 const aquarius = require('./core/client');
+const settings = require('./core/settings');
 const triggers = require('./util/triggers');
 const permissions = require('./util/permissions');
 const users = require('./util/users');
@@ -30,6 +31,7 @@ function loadCommands() {
 }
 
 // Returns short list of all commands
+// TODO: Filter commands by server availability
 function generateCommandList(message, admin = false) {
   log('Generating command list');
 
@@ -133,6 +135,126 @@ function handleBroadcast(msg) {
   }
 }
 
+function addCommand(message, serverId, command) {
+  settings.addCommand(serverId, command.name);
+  aquarius.sendMessage(message.channel, `Added ${command.name}.`);
+
+  // TODO: Instead of displaying, prompt for settings
+  let str = '';
+  [...command.getKeys()].forEach(key => {
+    str += `* \`${key}\` (Default: ${command.getSettingDefault(key)}): `;
+    str += `${command.getSettingDescription(key)}\n`;
+  });
+
+  if (str) {
+    aquarius.sendMessage(message.channel,
+      `**Configuration Settings**\n\n${str}\n\n\`set [command] [key] [value]\``);
+  }
+}
+
+function handleAdminCommandChange(message, cmdMatch) {
+  if (cmdMatch[1] === 'add') {
+    if (cmdMatch[3] === 'all') {
+      [...commands.values()].forEach(command => {
+        addCommand(message, cmdMatch[2], command);
+      });
+    } else {
+      if (commands.has(cmdMatch[3].toLowerCase())) {
+        const command = commands.get(cmdMatch[3].toLowerCase());
+        addCommand(message, cmdMatch[2], command);
+      } else {
+        aquarius.sendMessage(message.channel, `Command ${cmdMatch[3]} not found.`);
+      }
+    }
+  } else {
+    if (cmdMatch[3].toLowerCase() === 'all') {
+      settings.clearCommands(cmdMatch[2]);
+      aquarius.sendMessage(message.channel, 'All commands removed.');
+    } else {
+      if (commands.has(cmdMatch[3].toLowerCase())) {
+        const name = commands.get(cmdMatch[3].toLowerCase()).name;
+        log(cmdMatch[2]);
+        settings.removeCommand(cmdMatch[2], name);
+        aquarius.sendMessage(message.channel, `${name} removed.`);
+      } else {
+        aquarius.sendMessage(message.channel, 'Command not found!');
+      }
+    }
+  }
+}
+
+function handleAdminConfigChange(message, setMatch) {
+  let logstr = `Set '${setMatch[2]}#${setMatch[3]}' to ${setMatch[4]} `;
+  logstr += `by ${message.author.name}`;
+
+  // If the user didn't specify a valid command
+  if (!commands.has(setMatch[2].toLowerCase())) {
+    log(`${logstr} [CMD FAIL]`);
+    aquarius.sendMessage(message.channel,
+      `Command ${setMatch[1]} not found! Use \`help\` for a list of commands.`);
+    return;
+  }
+
+  // If the command doesn't have that key
+  const keys = [...commands.get(setMatch[2].toLowerCase()).getKeys()];
+  if (!keys.includes(setMatch[3])) {
+    log(`${logstr} [KEY FAIL]`);
+    aquarius.sendMessage(message.channel,
+      `${setMatch[2]} key \`${setMatch[3]}\` not found! Valid keys: ${keys.join(', ')}.`);
+    return;
+  }
+
+  // Update the key
+  log(`${logstr}`);
+  commands.get(setMatch[2].toLowerCase()).setSetting(setMatch[0], setMatch[3], setMatch[4]);
+  aquarius.sendMessage(message.channel, `Successfully updated ${setMatch[2]}`);
+}
+
+function handleAdminCommands(message, servers) {
+  const cmdMatch = triggers.messageTriggered(message, /^(add|remove) ([0-9]+ )?(.+)$/i);
+  // TODO: Expand to allow unsetting
+  const setMatch = triggers.messageTriggered(message, /^set ([0-9]+ )?([\w]+) ([\w]+) (.+)$/i);
+
+  if (cmdMatch) {
+    if (servers.length > 1 && !cmdMatch[2]) {
+      aquarius.sendMessage(message.channel,
+        'You own multiple servers; please specify which one you mean.\n' +
+        '`[add|remove] [server] [all|<command>]`');
+      return;
+    } else if (servers.length > 1 && cmdMatch[2]) {
+      if (!servers.includes(cmdMatch[2])) {
+        aquarius.sendMessage(message.channel, "You don't own that server!");
+        return;
+      }
+    } else if (servers.length === 1) {
+      cmdMatch[2] = servers[0].id;
+    }
+
+    handleAdminCommandChange(message, cmdMatch);
+  } else if (setMatch) {
+    if (servers.length > 1 && !setMatch[1]) {
+      aquarius.sendMessage(message.channel,
+        'You own multiple servers; please specify which one you mean.\n' +
+        '`set [server] [command] [key] [value]`');
+      return;
+    } else if (servers.length > 1 && setMatch[1]) {
+      if (!servers.includes(setMatch[1])) {
+        aquarius.sendMessage(message.channel, "You don't own that server!");
+        return;
+      }
+    } else if (servers.length === 1) {
+      setMatch[1] = servers[0].id;
+    }
+
+    handleAdminConfigChange(message, setMatch);
+  } else {
+    // Check for help request - if it doesn't trigger, send info
+    if (!handleHelp(message, true)) {
+      aquarius.sendMessage(message.channel, `Sorry, I didn't understand!\n\n${generateInfo()}`);
+    }
+  }
+}
+
 function handleQuery(message) {
   // When bot responds to a query, the event triggers; prevent infinite loop
   if (message.author.bot) {
@@ -141,67 +263,11 @@ function handleQuery(message) {
 
   const servers = users.getOwnedServers(message.author);
 
-  // Handle regular users querying
-  if (servers.length === 0) {
+  if (servers.length > 0) {
+    handleAdminCommands(message, servers);
+  } else {
     aquarius.sendMessage(message.channel,
       `${generateInfo()}\n\nTo add the bot to your server, click here: ${generateBotLink()}`);
-    return;
-  }
-
-  // TODO: Expand to allow unsetting
-  const setMatch = triggers.messageTriggered(message, /^set ([0-9]+ )?([\w]+) ([\w]+) (.+)$/i);
-
-  // TODO: if add/remove command
-  if (triggers.messageTriggered(message, /^(add|remove)/)) {
-    // get name || all
-    // add or remove command if exists
-      // if add, add command config entry
-        // display available settings
-        // prompt for settings
-      // if remove, cleanup config
-    // output list of commands otherwise
-  } else if (setMatch) {
-    let logstr = `Set '${setMatch[2]}#${setMatch[3]}' to ${setMatch[4]} `;
-    logstr += `by ${message.author.name}`;
-
-    // If the user owns multiple servers but doesn't set one
-    // Else set the server to the only one they own
-    if (servers.length > 1 && !setMatch[0]) {
-      log(`${logstr} [SERVER FAIL]`);
-      aquarius.sendMessage(message.channel,
-        'You own multiple servers; please specify which one you mean.\n' +
-        '`set [server] [command] [key] [value]`');
-      return;
-    } else if (servers.length === 1) {
-      setMatch[0] = servers[0];
-    }
-
-    // If the user didn't specify a valid command
-    if (!commands.has(setMatch[2].toLowerCase())) {
-      log(`${logstr} [CMD FAIL]`);
-      aquarius.sendMessage(message.channel,
-        `Command ${setMatch[1]} not found! Use \`help\` for a list of commands.`);
-      return;
-    }
-
-    // If the command doesn't have that key
-    const keys = [...commands.get(setMatch[2].toLowerCase()).getKeys()];
-    if (!keys.includes(setMatch[3])) {
-      log(`${logstr} [KEY FAIL]`);
-      aquarius.sendMessage(message.channel,
-        `${setMatch[2]} key \`${setMatch[3]}\` not found! Valid keys: ${keys.join(', ')}.`);
-      return;
-    }
-
-    // Update the key
-    log(`${logstr}`);
-    commands.get(setMatch[2].toLowerCase()).setSetting(setMatch[0], setMatch[3], setMatch[4]);
-    aquarius.sendMessage(message.channel, `Successfully updated ${setMatch[2]}`);
-  } else {
-    // Check for help request - if it doesn't trigger, send info
-    if (!handleHelp(message, true)) {
-      aquarius.sendMessage(message.channel, `Sorry, I didn't understand!\n\n${generateInfo()}`);
-    }
   }
 }
 
