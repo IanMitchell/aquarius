@@ -4,7 +4,9 @@ const log = debug('Client');
 
 const Client = (function () {
   log('Creating Aquarius Client');
-  return new Discord.Client();
+  return new Discord.Client({
+    autoReconnect: true,
+  });
 }());
 
 module.exports = Client;
