@@ -12,16 +12,20 @@ class Same extends Command {
   }
 
   pushMessage(msg) {
-    const server = msg.channel.server.id;
+    const server = msg.server.id;
     const channel = msg.channel.name;
 
     if (!this.messageStack.get(server)) {
       this.log(`Creating entry for ${server}`);
       this.messageStack.set(server, new Map());
 
-      msg.channel.server.channels.forEach(chan => {
+      msg.server.channels.forEach(chan => {
         this.messageStack.get(server).set(chan.name, []);
       });
+    }
+
+    if (!this.messageStack.get(server).get(channel)) {
+      this.messageStack.get(server).set(channel, []);
     }
 
     this.messageStack.get(server).get(channel).push(msg.cleanContent);
@@ -58,8 +62,6 @@ class Same extends Command {
   }
 
   message(msg) {
-    // TODO: Crashes on new server addition
-
     if (msg.cleanContent === '') {
       return false;
     }

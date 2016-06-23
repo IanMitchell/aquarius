@@ -1,14 +1,14 @@
 const pkg = require('../../../package');
 const triggers = require('../../util/triggers');
 const Command = require('../command');
+const links = require('../../util/links');
 
 class Info extends Command {
   constructor() {
     super();
 
     let str = `Aquarius v${pkg.version}. `;
-    str += `\`@${this.client.user.name} help\` for help.`;
-    str += `http://github.com/${pkg.repository}`;
+    str += `\`@${this.client.user.name} help\` for help. ${links.repoLink()}`;
 
     this.info = str;
   }

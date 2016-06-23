@@ -2,6 +2,15 @@ const triggers = require('../util/triggers');
 const Command = require('../core/command');
 
 class Choose extends Command {
+  constructor() {
+    super();
+
+    this.description = 'Given a list of space/comma delimited values randomly chooses a value.';
+    this.description += '\nGiven a range of numbers randomly chooses a value.';
+
+    this.usage = `\`\`\`@${this.client.user.name} choose [message]\`\`\``;
+  }
+
   message(msg) {
     const inputs = triggers.messageTriggered(msg, /^c(?:hoose)? (.+)$/i);
 
@@ -60,6 +69,8 @@ class Choose extends Command {
 
     input.split(delimiter).forEach(choice => {
       const val = choice.trim();
+
+      // TODO: Allow 0 as a value
       if (val) {
         choices.push(val);
       }
@@ -74,10 +85,6 @@ class Choose extends Command {
     }
 
     return number.toString().split('.')[1].length || 0;
-  }
-
-  helpMessage() {
-    return '`@bot choose 1, 2, 3, 3`. Randomly chooses from a comma or space separated list';
   }
 }
 

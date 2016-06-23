@@ -1,5 +1,4 @@
 const moment = require('moment');
-const settings = require('../core/settings');
 const triggers = require('../util/triggers');
 const users = require('../util/users');
 const Command = require('../core/command');
@@ -20,7 +19,16 @@ class KarmaCommand extends Command {
   }
 
   message(msg) {
-    if (triggers.messageTriggered(msg, /^karma leaderboard$/)) {
+    const karmaName = this.getSetting(msg.channel.server.id, 'name');
+
+    const leaderboardRegex = new RegExp(`^(?:karma|${karmaName}) leaderboard$`, 'i');
+    const karmaLookupRegex = new RegExp(`^(?:karma|${karmaName}) ${triggers.mentionRegex}$`, 'i');
+    const karmaRegex = new RegExp([
+      `^${triggers.mentionRegex}(?:(?: (?:(plus|minus) (?:karma|${karmaName})).*)|`,
+      '(?: ?((\\+\\+).*|(--).*)))$',
+    ].join(''), 'i');
+
+    if (triggers.messageTriggered(msg, leaderboardRegex)) {
       this.log('Server leaderboard requested');
       Karma.findAll({
         where: {
@@ -34,11 +42,11 @@ class KarmaCommand extends Command {
         if (response.length === 0) {
           msg.client.sendMessage(msg.channel, 'There is no leaderboard for this server!');
         } else {
-          let str = `**${settings.get(msg.channel.server.id, 'name')} Leaderboard**\n`;
+          let str = `**${karmaName} Leaderboard**\n`;
 
           response.forEach((record, index) => {
             const nick = users.getNickname(msg.channel.server, record.userId);
-            str += `${index + 1}. ${nick} - ${record.count} Karma\n`;
+            str += `${index + 1}. ${nick} - ${record.count} ${karmaName}\n`;
           });
 
           msg.client.sendMessage(msg.channel, str);
@@ -48,28 +56,28 @@ class KarmaCommand extends Command {
       return false;
     }
 
-    const karmaLookupRegex = new RegExp(`^karma ${triggers.mentionRegex}$`, 'i');
     if (triggers.messageTriggered(msg, karmaLookupRegex)) {
       const user = msg.mentions[msg.mentions.length - 1];
       this.log(`Request for ${user.name}'s Karma'`);
 
-      Karma.findOne({
+      Karma.findOrCreate({
         where: {
           userId: user.id,
           serverId: msg.channel.server.id,
         },
-      }).then(karma => {
+        defaults: {
+          count: 0,
+          totalGiven: 0,
+          lastGiven: 0,
+        },
+      }).spread((karma) => {
         const nick = users.getNickname(msg.channel.server, user.id);
-        msg.client.sendMessage(msg.channel, `${nick} has ${karma.count} Karma.`);
+        msg.client.sendMessage(msg.channel, `${nick} has ${karma.count} ${karmaName}.`);
       });
 
       return false;
     }
 
-    const karmaRegex = new RegExp([
-      `^${triggers.mentionRegex}(?:(?: (?:(plus|minus) karma).*)|`,
-      '(?: ?((\\+\\+).*|(--).*)))$',
-    ].join(''), 'i');
     const karmaInput = triggers.customTrigger(msg, karmaRegex);
 
     if (karmaInput) {
@@ -83,7 +91,7 @@ class KarmaCommand extends Command {
       this.log(`Karma request for ${user}`);
 
       if (user === msg.author) {
-        msg.client.sendMessage(msg.channel, 'You cannot give karma to yourself!');
+        msg.client.sendMessage(msg.channel, `You cannot give ${karmaName} to yourself!`);
         return false;
       }
 
@@ -102,11 +110,13 @@ class KarmaCommand extends Command {
           this.log('Karma record created');
         }
 
-        if (KARMA_COOLDOWN > moment().unix() - karmaGiver.lastGiven) {
-          log('Karma cooldown');
-          const future = moment((karmaGiver.lastGiven + KARMA_COOLDOWN) * 1000);
+        const cooldown = parseInt(this.getSetting(msg.server.id, 'cooldown'), 10);
+
+        if (cooldown > moment().unix() - karmaGiver.lastGiven) {
+          this.log('Karma cooldown');
+          const future = moment((karmaGiver.lastGiven + cooldown) * 1000);
           const wait = future.toNow(true);
-          msg.client.sendMessage(msg.channel, `You need to wait ${wait} to use karma!`);
+          msg.client.sendMessage(msg.channel, `You need to wait ${wait} to use ${karmaName}!`);
           return false;
         }
 
@@ -137,14 +147,14 @@ class KarmaCommand extends Command {
             lastGiven: moment().unix(),
             totalGiven: karmaGiver.totalGiven + 1,
           }).then(() => {
-            let str = 'Karma ';
+            let str = `${karmaName} `;
             if (karmaInput[1] === 'plus' || karmaInput[3] === '++') {
               str += 'given! ';
             } else {
               str += 'removed! ';
             }
 
-            str += `${users.getNickname(msg.server, user)} now has ${result.count} karma.`;
+            str += `${users.getNickname(msg.server, user)} now has ${result.count} ${karmaName}.`;
             return msg.client.sendMessage(msg.channel, str);
           });
         });

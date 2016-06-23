@@ -7,7 +7,7 @@ class Eightball extends Command {
 
     this.name = '8ball';
     this.description = 'Outputs one of the twenty 8ball responses.';
-    this.usage = `\`@${this.client.user.name} 8ball [message]\``;
+    this.usage = `\`\`\`@${this.client.user.name} 8ball [message]\`\`\``;
 
     this.responses = [
       'It is certain',
