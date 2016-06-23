@@ -120,7 +120,7 @@ function handleHelp(message, admin = false) {
 }
 
 function addCommand(message, serverId, command) {
-  settings.addCommand(serverId, command.name);
+  settings.addCommand(serverId, command.constructor.name);
   aquarius.sendMessage(message.channel, `Added ${command.name}.`);
 
   // TODO: Instead of displaying, prompt for settings
@@ -156,10 +156,10 @@ function handleAdminCommandChange(message, cmdMatch) {
       aquarius.sendMessage(message.channel, 'All commands removed.');
     } else {
       if (commands.has(cmdMatch[3].toLowerCase())) {
-        const name = commands.get(cmdMatch[3].toLowerCase()).name;
+        const cmd = commands.get(cmdMatch[3].toLowerCase());
         log(cmdMatch[2]);
-        settings.removeCommand(cmdMatch[2], name);
-        aquarius.sendMessage(message.channel, `${name} removed.`);
+        settings.removeCommand(cmdMatch[2], cmd.constructor.name);
+        aquarius.sendMessage(message.channel, `${cmd.name} removed.`);
       } else {
         aquarius.sendMessage(message.channel, 'Command not found!');
       }
@@ -197,7 +197,6 @@ function handleAdminConfigChange(message, setMatch) {
     commands.get(setMatch[2].toLowerCase()).setSetting(setMatch[1], setMatch[3], setMatch[4]);
     aquarius.sendMessage(message.channel, `Successfully updated ${setMatch[2]}`);
   } else {
-    console.log(setMatch);
     if (commands.get(setMatch[2].toLowerCase()).setPermission(setMatch[1], setMatch[4])) {
       aquarius.sendMessage(message.channel, `Successfully updated ${setMatch[2]}`);
     } else {
@@ -279,7 +278,7 @@ function handleCoreCommands(message) {
 
 function handleCommands(message) {
   commands.forEach(command => {
-    if (permissions.hasPermission(message.server, message.author, command.name)) {
+    if (permissions.hasPermission(message.server, message.author, command.constructor.name)) {
       const response = command.message(message);
       if (response) {
         aquarius.sendMessage(message.channel, response);

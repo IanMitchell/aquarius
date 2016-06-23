@@ -6,7 +6,6 @@ const sequelize = new Sequelize(process.env.DATABASE_URL);
 const Setting = sequelize.import('../../models/setting');
 const stackTrace = require('stack-trace');
 
-
 const log = debug('Config');
 
 class Config {

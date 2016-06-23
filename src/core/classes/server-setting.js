@@ -88,8 +88,6 @@ class ServerSetting {
 
   deserializeSettings(json) {
     json.commands.forEach(command => {
-      this.addCommand(command.commmand);
-
       command.values.forEach(entry => {
         this.addValue(command.command, entry.key, entry.value);
       });
