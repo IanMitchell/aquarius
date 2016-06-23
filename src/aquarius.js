@@ -1,4 +1,3 @@
-const pkg = require('../package');
 const fs = require('fs');
 const path = require('path');
 const debug = require('debug');
@@ -7,9 +6,11 @@ const settings = require('./core/settings');
 const triggers = require('./util/triggers');
 const permissions = require('./util/permissions');
 const users = require('./util/users');
+const links = require('./util/links');
 
 const log = debug('Aquarius');
 
+const coreCommands = new Map();
 const commands = new Map();
 
 function loadCommands() {
@@ -24,7 +25,23 @@ function loadCommands() {
       if (file.endsWith('.js')) {
         log(`Loading ${file}`);
         const cmd = require(path.join(commandsPath, file));
-        commands.set(cmd.name, cmd);
+        commands.set(cmd.name.toLowerCase(), cmd);
+      }
+    });
+  });
+
+  const corePath = path.join(__dirname, 'core/commands/');
+
+  fs.readdir(corePath, (err, files) => {
+    if (err) {
+      throw err;
+    }
+
+    files.forEach(file => {
+      if (file.endsWith('.js')) {
+        log(`Loading ${file}`);
+        const cmd = require(path.join(corePath, file));
+        coreCommands.set(cmd.name.toLowerCase(), cmd);
       }
     });
   });
@@ -55,19 +72,6 @@ function generateCommandList(message, admin = false) {
   }
 
   return str;
-}
-
-function generateInfo() {
-  log('Info request');
-  let str = `Aquarius v${pkg.version}. `;
-  str += '`@aquarius help` for help.';
-  str += `http://github.com/${pkg.repository}`;
-  return str;
-}
-
-function generateBotLink() {
-  const url = `https://discordapp.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}`;
-  return `${url}&scope=bot&permissions=0`;
 }
 
 function generateCommandHelp(message, admin) {
@@ -113,26 +117,6 @@ function handleHelp(message, admin = false) {
   }
 
   return false;
-}
-
-function handleInfo(message) {
-  if (triggers.messageTriggered(message, /^info$/)) {
-    aquarius.sendMessage(message.channel, generateInfo());
-  }
-}
-
-// Handle admin alerts
-function handleBroadcast(msg) {
-  if (permissions.isBotOwner(msg.author)) {
-    if (triggers.messageTriggered(msg, /^broadcast .+$/)) {
-      const broadcast = msg.content.split('broadcast ');
-      log(`Broadcasting '${broadcast[1]}'`);
-
-      aquarius.servers.forEach(server => {
-        aquarius.sendMessage(server.defaultChannel, `[BROADCAST] ${broadcast[1]}`);
-      });
-    }
-  }
 }
 
 function addCommand(message, serverId, command) {
@@ -197,6 +181,8 @@ function handleAdminConfigChange(message, setMatch) {
 
   // If the command doesn't have that key
   const keys = [...commands.get(setMatch[2].toLowerCase()).getKeys()];
+  keys.push('permission');
+
   if (!keys.includes(setMatch[3])) {
     log(`${logstr} [KEY FAIL]`);
     aquarius.sendMessage(message.channel,
@@ -206,8 +192,18 @@ function handleAdminConfigChange(message, setMatch) {
 
   // Update the key
   log(`${logstr}`);
-  commands.get(setMatch[2].toLowerCase()).setSetting(setMatch[0], setMatch[3], setMatch[4]);
-  aquarius.sendMessage(message.channel, `Successfully updated ${setMatch[2]}`);
+
+  if (setMatch[3] !== 'permission') {
+    commands.get(setMatch[2].toLowerCase()).setSetting(setMatch[1], setMatch[3], setMatch[4]);
+    aquarius.sendMessage(message.channel, `Successfully updated ${setMatch[2]}`);
+  } else {
+    console.log(setMatch);
+    if (commands.get(setMatch[2].toLowerCase()).setPermission(setMatch[1], setMatch[4])) {
+      aquarius.sendMessage(message.channel, `Successfully updated ${setMatch[2]}`);
+    } else {
+      aquarius.sendMessage(message.channel, 'ERROR: Please use [ADMIN, RESTRICTED, ALL].');
+    }
+  }
 }
 
 function handleAdminCommands(message, servers) {
@@ -250,7 +246,7 @@ function handleAdminCommands(message, servers) {
   } else {
     // Check for help request - if it doesn't trigger, send info
     if (!handleHelp(message, true)) {
-      aquarius.sendMessage(message.channel, `Sorry, I didn't understand!\n\n${generateInfo()}`);
+      aquarius.sendMessage(message.channel, "Sorry, I didn't understand!");
     }
   }
 }
@@ -267,8 +263,18 @@ function handleQuery(message) {
     handleAdminCommands(message, servers);
   } else {
     aquarius.sendMessage(message.channel,
-      `${generateInfo()}\n\nTo add the bot to your server, click here: ${generateBotLink()}`);
+      'Sorry, queries are restricted to server admins.\n\n' +
+      `To add the bot to your server, click here: ${links.botLink()}`);
   }
+}
+
+function handleCoreCommands(message) {
+  coreCommands.forEach(command => {
+    const response = command.message(message);
+    if (response) {
+      aquarius.sendMessage(message.channel, response);
+    }
+  });
 }
 
 function handleCommands(message) {
@@ -287,9 +293,8 @@ aquarius.on('message', message => {
     handleQuery(message);
   } else {
     if (!permissions.isServerMuted(message.server, message.author)) {
-      handleBroadcast(message);
       handleHelp(message);
-      handleInfo(message);
+      handleCoreCommands(message);
       handleCommands(message);
     }
   }
@@ -309,6 +314,7 @@ aquarius.on('serverCreated', server => {
   msg += `\`@${aquarius.user.name} [add|remove] [command]\`.`;
 
   aquarius.sendMessage(server.owner, msg);
+  settings.addServer(server.id);
 });
 
 // Start the bot!

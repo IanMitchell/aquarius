@@ -1,7 +1,7 @@
-const client = require('../core/client');
-const permissions = require('../util/permissions');
-const triggers = require('../util/triggers');
-const Command = require('../core/command');
+const client = require('../client');
+const permissions = require('../../util/permissions');
+const triggers = require('../../util/triggers');
+const Command = require('../command');
 
 class Nickname extends Command {
   message(msg) {
@@ -22,10 +22,6 @@ class Nickname extends Command {
     }
 
     return false;
-  }
-
-  helpMessage() {
-    return "`@bot nickname [name]`. Sets the bot's nickname for the server.";
   }
 }
 

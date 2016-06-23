@@ -8,7 +8,7 @@ class Same extends Command {
     this.messageStack = new Map();
     this.settings.addKey('size',
                          MESSAGE_STACK_SIZE,
-                         'How many repeated messages before mimicked');
+                         'How many repeated messages before the bot mimics.');
   }
 
   pushMessage(msg) {

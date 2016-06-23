@@ -9,10 +9,6 @@ class Eightball extends Command {
     this.description = 'Outputs one of the twenty 8ball responses.';
     this.usage = `\`@${this.client.user.name} 8ball [message]\``;
 
-    this.settings.addKey('name', 'Eightball', 'What to call 8ball on your server');
-    // this.settings.addServer('91318657375825920');
-    // this.settings.addCommand('91318657375825920', this.name);
-
     this.responses = [
       'It is certain',
       'It is decidedly so',

@@ -65,9 +65,29 @@ class Config {
     return this.servers.get(serverId).getCommand(command);
   }
 
-  setPermission(serverId, command, permission) {
-    this.servers.get(serverId).updateCommand(command, permission);
+  setPermission(serverId, permission) {
+    const caller = stackTrace.get()[1].getTypeName();
+
+    let level = permission;
+
+    switch (permission.toLowerCase()) {
+      case 'admin':
+        level = 2;
+        break;
+      case 'restricted':
+        level = 1;
+        break;
+      case 'all':
+        level = 0;
+        break;
+      default:
+        return false;
+    }
+
+
+    this.servers.get(serverId).updateCommand(caller, level);
     this.update(serverId);
+    return true;
   }
 
   getKeys() {
@@ -77,7 +97,7 @@ class Config {
       return this.defaults.get(caller).keys();
     }
 
-    return false;
+    return new Map().keys();
   }
 
   get(serverId, key) {

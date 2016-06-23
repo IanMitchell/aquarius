@@ -38,6 +38,10 @@ class Command {
     this.settings.set(serverId, key, value);
   }
 
+  setPermission(serverId, permission) {
+    return this.settings.setPermission(serverId, permission);
+  }
+
   getSettingDescription(key) {
     return this.settings.getDescription(key);
   }

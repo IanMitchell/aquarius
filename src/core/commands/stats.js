@@ -1,7 +1,7 @@
 const moment = require('moment');
-const triggers = require('../util/triggers');
-const permissions = require('../util/permissions');
-const Command = require('../core/command');
+const triggers = require('../../util/triggers');
+const permissions = require('../../util/permissions');
+const Command = require('../command');
 
 class Stats extends Command {
   message(msg) {
@@ -25,10 +25,6 @@ class Stats extends Command {
     }
 
     return false;
-  }
-
-  helpMessage() {
-    return 'Stats displays certain stats about the bot.';
   }
 }
 
