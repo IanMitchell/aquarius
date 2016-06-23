@@ -33,9 +33,9 @@ function hasPermission(server, user, command) {
 
   switch (permission) {
     case 2: // ADMIN
-      return isServerAdmin(user);
+      return isServerAdmin(server, user);
     case 1: // RESTRICTED
-      return isServerModerator(user);
+      return isServerModerator(server, user);
     case 0: // ALL
       return true;
     default:
