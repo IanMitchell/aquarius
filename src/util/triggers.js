@@ -10,6 +10,14 @@ function mentionTrigger(msg) {
   return msg.content.trim().startsWith(botMention());
 }
 
+function nicknameMentionTrigger(msg) {
+  if (msg.mentions.length > 0 && msg.mentions[0].equals(client.user)) {
+    return msg.content.trim().match(new RegExp(`^${mentionRegex}`));
+  }
+
+  return false;
+}
+
 function dotTrigger(msg) {
   return msg.content.trim().startsWith('.');
 }
@@ -33,6 +41,13 @@ function messageTriggered(msg, trigger) {
     return msg.content.trim().split(`${botMention()} `)[1].match(trigger);
   }
 
+  // NOTE: Different because of how the message is broadcasted from Discord.
+  // Uses <@![0-9]> instead of <@[0-9]>
+  // @aquarius trigger [msg]
+  if (nicknameMentionTrigger(msg)) {
+    return msg.content.trim().replace(new RegExp(`^${mentionRegex} `), '').match(trigger);
+  }
+
   // .trigger [msg] OR !trigger [msg]
   if (dotTrigger(msg, trigger) || exclamationTrigger(msg, trigger)) {
     return msg.content.trim().substr(1).match(trigger);
@@ -53,6 +68,7 @@ module.exports = {
   mentionRegex,
   botMention,
   mentionTrigger,
+  nicknameMentionTrigger,
   dotTrigger,
   exclamationTrigger,
   messageTriggered,
