@@ -46,11 +46,11 @@ class ReplyCommand extends Command {
     msg += '```';
     msg += `bot be nice\n`;
     msg += '=> sorry :(\n';
-    msg += `@${nickname} add "trigger" "response"\n`;
+    msg += `@${nickname} add reply "trigger" "response"\n`;
     msg += '=> Response added\n';
     msg += `trigger\n`;
     msg += '=> response\n';
-    msg += `@${nickname} remove trigger\n`;
+    msg += `@${nickname} remove reply trigger\n`;
     msg += '=> Response removed\n';
     msg += '```';
 
