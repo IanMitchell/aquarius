@@ -34,8 +34,8 @@ class Choose extends Command {
       // Range of Floats
       if (range[2] || range[4]) {
         const decimals = Math.min(Math.max(
-                        this.countDecimals(range[1]),
-                        this.countDecimals(range[3])
+                        this.countDecimals(parseFloat(range[1])),
+                        this.countDecimals(parseFloat(range[3]))
                       ), 19);
 
         return (min + Math.random() * (max - min)).toFixed(decimals);
