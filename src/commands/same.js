@@ -31,7 +31,7 @@ class Same extends Command {
       this.messageStack.get(server).set(channel, []);
     }
 
-    this.messageStack.get(server).get(channel).push(msg.cleanContent);
+    this.messageStack.get(server).get(channel).push(msg.content);
 
     // Only track last couple messages
     const size = this.getSetting(server.id, 'size');
@@ -61,7 +61,7 @@ class Same extends Command {
 
     const unique = this.messageStack.get(server).get(channel).filter(this.onlyUnique);
 
-    if (unique.length === 1 && unique[0] === msg.cleanContent) {
+    if (unique.length === 1 && unique[0] === msg.content) {
       return true;
     }
 
@@ -69,7 +69,7 @@ class Same extends Command {
   }
 
   message(msg) {
-    if (msg.cleanContent === '') {
+    if (msg.content === '') {
       return false;
     }
 
@@ -78,7 +78,7 @@ class Same extends Command {
     if (this.isSame(msg)) {
       this.log(`Sending '${msg.cleanContent}' to ${msg.channel.server.id}`);
       this.messageStack.get(msg.channel.server.id).set(msg.channel.name, []);
-      return msg.cleanContent;
+      return msg.content;
     }
 
     return false;

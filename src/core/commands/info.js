@@ -1,22 +1,20 @@
 const pkg = require('../../../package');
 const triggers = require('../../util/triggers');
+const users = require('../../util/users');
 const Command = require('../command');
 const links = require('../../util/links');
 
 class Info extends Command {
-  constructor() {
-    super();
-
-    let str = `Aquarius v${pkg.version}. `;
-    str += `\`@${this.client.user.name} help\` for help. ${links.repoLink()}`;
-
-    this.info = str;
-  }
-
   message(msg) {
     if (triggers.messageTriggered(msg, /^info$/)) {
       this.log('Info Request');
-      this.client.sendMessage(msg.channel, this.info);
+
+      const nickname = users.getNickname(msg.server, this.client.user);
+      let str = `Aquarius v${pkg.version}. `;
+      str += `\`@${nickname} help\` for help. ${links.repoLink()}`;
+      str += `\n\nAdd ${this.client.user} here ${links.botLink()}`;
+
+      this.client.sendMessage(msg.channel, str);
     }
   }
 }
