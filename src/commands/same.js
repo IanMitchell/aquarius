@@ -5,6 +5,9 @@ const MESSAGE_STACK_SIZE = 4;
 class Same extends Command {
   constructor() {
     super();
+
+    this.description = 'After X posts with the same message the bot will mimic it';
+
     this.messageStack = new Map();
     this.settings.addKey('size',
                          MESSAGE_STACK_SIZE,
@@ -31,7 +34,9 @@ class Same extends Command {
     this.messageStack.get(server).get(channel).push(msg.cleanContent);
 
     // Only track last couple messages
-    if (this.messageStack.get(server).get(channel).length > MESSAGE_STACK_SIZE) {
+    const size = this.getSetting(server.id, 'size');
+
+    if (this.messageStack.get(server).get(channel).length > size) {
       this.messageStack.get(server).get(channel).shift();
     }
   }
@@ -48,7 +53,9 @@ class Same extends Command {
       return false;
     }
 
-    if (this.messageStack.get(server).get(channel).length !== MESSAGE_STACK_SIZE) {
+    const size = this.getSetting(server.id, 'size');
+
+    if (this.messageStack.get(server).get(channel).length !== size) {
       return false;
     }
 
@@ -75,10 +82,6 @@ class Same extends Command {
     }
 
     return false;
-  }
-
-  helpMessage() {
-    return 'Same automatically responds to certain phrases.';
   }
 }
 

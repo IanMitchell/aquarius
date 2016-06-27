@@ -1,4 +1,5 @@
 const triggers = require('../util/triggers');
+const users = require('../util/users');
 const Command = require('../core/command');
 
 class Eightball extends Command {
@@ -7,7 +8,6 @@ class Eightball extends Command {
 
     this.name = '8ball';
     this.description = 'Outputs one of the twenty 8ball responses.';
-    this.usage = `\`\`\`@${this.client.user.name} 8ball [message]\`\`\``;
 
     this.responses = [
       'It is certain',
@@ -31,6 +31,15 @@ class Eightball extends Command {
       'Outlook not so good',
       'Very doubtful',
     ];
+  }
+
+  helpMessage(server) {
+    let msg = super.helpMessage();
+    const nickname = users.getNickname(server, this.client.user);
+
+    msg += 'Usage:\n';
+    msg += `\`\`\`@${nickname} 8ball [message]\`\`\``;
+    return msg;
   }
 
   message(msg) {

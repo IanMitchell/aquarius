@@ -62,7 +62,7 @@ function generateCommandList(message, admin = false) {
     str += '\n for more information, use `help [command]`';
   } else {
     str += [...commands.keys()].map(command => {
-      if (permissions.hasPermission(message.server, aquarius.user, command)) {
+      if (permissions.hasPermission(message.server, aquarius.user, commands.get(command))) {
         return command;
       }
 
@@ -81,14 +81,14 @@ function generateCommandHelp(message, admin) {
                         message.server === undefined);
 
   [...commands.values()].forEach(command => {
-    if (isAdminQuery || permissions.hasPermission(message.server, aquarius.user, command.name)) {
+    if (isAdminQuery || permissions.hasPermission(message.server, aquarius.user, command)) {
       if (message.cleanContent.toLowerCase().includes(command.name.toLowerCase())) {
         log(`Help request for ${command.name}`);
 
         if (admin) {
           const keys = [...command.getKeys()];
 
-          str += `${command.helpMessage()}`;
+          str += `${command.helpMessage(message.server)}`;
 
           if (keys.length > 0) {
             str += `\n\n*Configuration Options:*\n`;
@@ -99,7 +99,7 @@ function generateCommandHelp(message, admin) {
             });
           }
         } else {
-          str += `${command.helpMessage()}`;
+          str += `${command.helpMessage(message.server)}`;
         }
       }
     }
@@ -283,7 +283,7 @@ function handleCoreCommands(message) {
 
 function handleCommands(message) {
   commands.forEach(command => {
-    if (permissions.hasPermission(message.server, message.author, command.constructor.name)) {
+    if (permissions.hasPermission(message.server, message.author, command)) {
       const response = command.message(message);
       if (response) {
         aquarius.sendMessage(message.channel, response);

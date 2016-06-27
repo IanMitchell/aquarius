@@ -12,10 +12,25 @@ class KarmaCommand extends Command {
   constructor() {
     super();
     this.name = 'Karma';
+    this.description = 'Keeps track of Karma for users in your server';
+
     this.settings.addKey('name', 'Karma', 'What to call Karma on your server');
     this.settings.addKey('cooldown',
                     DEFAULT_COOLDOWN,
                     'Duration in seconds before a user can give karma again');
+  }
+
+  helpMessage(server) {
+    let msg = super.helpMessage();
+    const nickname = users.getNickname(server, this.client.user);
+
+    msg += 'Usage:\n';
+    msg += `\`\`\`@username++ [optional message]\n`;
+    msg += `@${nickname} karma leaderboard\n`;
+    msg += `@${nickname} karma @user\`\`\``;
+    msg += 'Example:\n';
+    msg += `\`\`\`@${nickname}++ thanks for being awesome!\n`;
+    return msg;
   }
 
   message(msg) {
@@ -58,6 +73,11 @@ class KarmaCommand extends Command {
 
     if (triggers.messageTriggered(msg, karmaLookupRegex)) {
       const user = msg.mentions[msg.mentions.length - 1];
+
+      if (user === undefined) {
+        return false;
+      }
+
       this.log(`Request for ${user.name}'s Karma'`);
 
       Karma.findOrCreate({
@@ -164,13 +184,6 @@ class KarmaCommand extends Command {
     }
 
     return false;
-  }
-
-  helpMessage() {
-    let helpMessage = '`@name [plus|minus] karma`. Modifies the users karma (+/- 1pt).\n';
-    helpMessage += '`@bot karma leaderboard`. Displays the karma leaderboards.';
-
-    return helpMessage;
   }
 }
 

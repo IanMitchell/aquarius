@@ -1,14 +1,27 @@
 const fetch = require('node-fetch');
 const Command = require('../core/command');
 const triggers = require('../util/triggers');
+const users = require('../util/users');
 const string = require('../util/string');
 
 class Pokédex extends Command {
   constructor() {
     super();
 
+    this.name = 'Pokedex';
+    this.description = 'Returns basic information about Pokémon';
+
     // This helps circumvent API rate limiting
     this.pokémonMap = new Map();
+  }
+
+  helpMessage(server) {
+    let msg = super.helpMessage();
+    const nickname = users.getNickname(server, this.client.user);
+
+    msg += 'Usage:\n';
+    msg += `\`\`\`@${nickname} pokedex [name|id]\`\`\``;
+    return msg;
   }
 
   addPokémon(pokémon, msg) {
@@ -33,7 +46,8 @@ class Pokédex extends Command {
           this.pokémonMap.set(json.id.toString(), pkm);
           this.pokémonMap.set(json.name, pkm);
         }
-      }).catch(err => this.log(err));
+      })
+      .catch(err => this.log(err));
   }
 
   getPokémon(msg, pokémon) {
@@ -67,10 +81,6 @@ class Pokédex extends Command {
     }
 
     return false;
-  }
-
-  helpMessage() {
-    return '`@bot pokedex [name or id]`. Displays information about the Pokémon';
   }
 }
 

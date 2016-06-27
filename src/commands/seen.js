@@ -12,6 +12,8 @@ class SeenCommand extends Command {
     super();
     this.name = 'Seen';
 
+    this.description = 'Tracks when a user was last seen online';
+
     client.on('presence', (oldUser, newUser) => {
       if (newUser.status === 'offline') {
         Seen.findOrCreate({
@@ -30,6 +32,16 @@ class SeenCommand extends Command {
         });
       }
     });
+  }
+
+  helpMessage(server) {
+    let msg = super.helpMessage();
+    const nickname = users.getNickname(server, this.client.user);
+
+    msg += 'Usage:\n';
+    msg += `\`\`\`@${nickname} seen @user\`\`\``;
+
+    return msg;
   }
 
   message(msg) {
@@ -73,10 +85,6 @@ class SeenCommand extends Command {
     }
 
     return false;
-  }
-
-  helpMessage() {
-    return '`@bot seen @user`. Displays the time since last user was online.';
   }
 }
 

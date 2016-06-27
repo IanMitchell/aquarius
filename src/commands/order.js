@@ -1,4 +1,5 @@
 const triggers = require('../util/triggers');
+const users = require('../util/users');
 const Command = require('../core/command');
 
 const ORDER_MAX_VALUE = 99999999999;
@@ -6,6 +7,31 @@ const ORDER_RANGE_LIMIT = 1024;
 const ORDER_RESULTS_LIMIT = 20;
 
 class Order extends Command {
+  constructor() {
+    super();
+
+    this.description = 'Given a list of values randomizes them';
+  }
+
+  helpMessage(server) {
+    let msg = super.helpMessage();
+    const nickname = users.getNickname(server, this.client.user);
+
+    msg += 'Usage:\n';
+    msg += `\`\`\`@${nickname} order [message]\`\`\``;
+    msg += '\nExample:\n';
+    msg += '```';
+    msg += `@${nickname} order 1-6\n`;
+    msg += '=> 1, 4, 5, 2, 3\n';
+    msg += `@${nickname} order a b c d e\n`;
+    msg += '=> a, e, c, b, d\n';
+    msg += `@${nickname} order To be, not to be, ¯\\_(ツ)_/¯\n`;
+    msg += '=> ¯\\_(ツ)_/¯, not to be, To be\n';
+    msg += '```';
+
+    return msg;
+  }
+
   message(msg) {
     const inputs = triggers.messageTriggered(msg, /^o(?:rder)? (.+)$/i);
 
@@ -104,10 +130,6 @@ class Order extends Command {
     }
 
     return array;
-  }
-
-  helpMessage() {
-    return 'TODO';
   }
 }
 

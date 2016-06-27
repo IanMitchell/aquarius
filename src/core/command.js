@@ -22,11 +22,9 @@ class Command {
     return;
   }
 
-  helpMessage(serverId) {
+  helpMessage(server) {
     let msg = `**${this.name}**\n`;
     msg += `${this.description}\n\n`;
-    msg += 'Usage:\n';
-    msg += `${this.usage}`;
     return msg;
   }
 

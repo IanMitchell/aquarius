@@ -1,4 +1,5 @@
 const triggers = require('../util/triggers');
+const users = require('../util/users');
 const permissions = require('../util/permissions');
 const Command = require('../core/command');
 const Sequelize = require('sequelize');
@@ -9,6 +10,8 @@ class ReplyCommand extends Command {
   constructor() {
     super();
     this.name = 'Reply';
+
+    this.description = 'Configure the bot to automatically respond to phrases';
 
     // All responses stored in memory
     this.responses = new Map();
@@ -33,6 +36,25 @@ class ReplyCommand extends Command {
         this.log('Initialization done');
       });
     });
+  }
+
+  helpMessage(server) {
+    let msg = super.helpMessage();
+    const nickname = users.getNickname(server, this.client.user);
+
+    msg += '\nExample:\n';
+    msg += '```';
+    msg += `bot be nice\n`;
+    msg += '=> sorry :(\n';
+    msg += `@${nickname} add "trigger" "response"\n`;
+    msg += '=> Response added\n';
+    msg += `trigger\n`;
+    msg += '=> response\n';
+    msg += `@${nickname} remove trigger\n`;
+    msg += '=> Response removed\n';
+    msg += '```';
+
+    return msg;
   }
 
   genericResponses() {
@@ -127,14 +149,6 @@ class ReplyCommand extends Command {
     }
 
     return false;
-  }
-
-  helpMessage() {
-    let helpMessage = 'Reply automatically responds to certain phrases. \n';
-    helpMessage += 'To add a response, use `@bot reply add "trigger" "response"`.\n';
-    helpMessage += 'To remove a response, use `@bot reply remove "trigger"`.';
-
-    return helpMessage;
   }
 }
 

@@ -19,16 +19,28 @@ class Config {
   }
 
   addCommand(serverId, command) {
+    if (!this.servers.has(serverId)) {
+      this.addServer(serverId);
+    }
+
     this.servers.get(serverId).addCommand(command);
     this.update(serverId);
   }
 
   removeCommand(serverId, command) {
+    if (!this.servers.has(serverId)) {
+      this.addServer(serverId);
+    }
+
     this.servers.get(serverId).removeCommand(command);
     this.update(serverId);
   }
 
   clearCommands(serverId) {
+    if (!this.servers.has(serverId)) {
+      this.addServer(serverId);
+    }
+
     this.servers.get(serverId).clearCommands();
   }
 
@@ -53,6 +65,10 @@ class Config {
   }
 
   getCommands(serverId) {
+    if (!this.servers.has(serverId)) {
+      this.addServer(serverId);
+    }
+
     return this.servers.get(serverId).getCommands();
   }
 
@@ -101,6 +117,11 @@ class Config {
 
   get(serverId, key) {
     const caller = stackTrace.get()[1].getTypeName();
+
+    if (!this.servers.has(serverId)) {
+      this.addServer(serverId);
+    }
+
 
     if (!this.servers.get(serverId).getValue(caller, key)) {
       return this.defaults.get(caller).get(key).value;

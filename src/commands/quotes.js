@@ -1,11 +1,32 @@
 const moment = require('moment');
 const triggers = require('../util/triggers');
+const users = require('../util/users');
 const Command = require('../core/command');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(process.env.DATABASE_URL);
 const Quote = sequelize.import('../models/quote');
 
 class Quotes extends Command {
+  constructor() {
+    super();
+
+    this.description = 'Store memorable quotes from your server';
+  }
+
+  helpMessage(server) {
+    let msg = super.helpMessage();
+    const nickname = users.getNickname(server, this.client.user);
+
+    msg += 'Usage:\n';
+    msg += '```';
+    msg += `@${nickname} add quote [message]\n`;
+    msg += `@${nickname} read quote [id]\n`;
+    msg += `@${nickname} random quote\n`;
+    msg += '```';
+
+    return msg;
+  }
+
   getQuote(quoteId, serverId) {
     const query = Quote.findOne({
       where: {
@@ -80,14 +101,6 @@ class Quotes extends Command {
     }
 
     return false;
-  }
-
-  helpMessage() {
-    let helpMessage = '`@bot (new|add) quote [quote text here]`. Adds a new quote to the server.\n';
-    helpMessage += '`@bot read quote [quote id]`. Reads a quote back from the server.\n';
-    helpMessage += '`@bot random quote`. Picks a random quote from the server and reads it.';
-
-    return helpMessage;
   }
 }
 

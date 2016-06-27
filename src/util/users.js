@@ -9,6 +9,10 @@ function getUser(id) {
 }
 
 function getNickname(server, user) {
+  if (server === null || server === undefined) {
+    return user.name;
+  }
+
   if (typeof user === 'string') {
     return server.detailsOf(getUser(user)).nick || getUser(user).name;
   }

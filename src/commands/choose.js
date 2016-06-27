@@ -1,14 +1,31 @@
 const triggers = require('../util/triggers');
+const users = require('../util/users');
 const Command = require('../core/command');
 
 class Choose extends Command {
   constructor() {
     super();
 
-    this.description = 'Given a list of space/comma delimited values randomly chooses a value.';
-    this.description += '\nGiven a range of numbers randomly chooses a value.';
+    this.description = 'Given a list of values randomly chooses one';
+  }
 
-    this.usage = `\`\`\`@${this.client.user.name} choose [message]\`\`\``;
+  helpMessage(server) {
+    let msg = super.helpMessage();
+    const nickname = users.getNickname(server, this.client.user);
+
+    msg += 'Usage:\n';
+    msg += `\`\`\`@${nickname} choose [message]\`\`\``;
+    msg += '\nExample:\n';
+    msg += '```';
+    msg += `@${nickname} choose JavaScript Java Python\n`;
+    msg += '=> JavaScript\n';
+    msg += `@${nickname} choose To be, not to be, ¯\\_(ツ)_/¯\n`;
+    msg += '=> not to be\n';
+    msg += `@${nickname} choose 1-6\n`;
+    msg += '=> 3\n';
+    msg += '```';
+
+    return msg;
   }
 
   message(msg) {

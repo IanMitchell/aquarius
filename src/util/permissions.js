@@ -29,7 +29,7 @@ function isServerMuted(server, user) {
 }
 
 function hasPermission(server, user, command) {
-  const permission = settings.getPermission(server.id, command);
+  const permission = settings.getPermission(server.id, command.constructor.name);
 
   switch (permission) {
     case 2: // ADMIN
