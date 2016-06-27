@@ -137,7 +137,7 @@ function addCommand(message, serverId, command) {
 
   if (str) {
     aquarius.sendMessage(message.channel,
-      `**Configuration Settings**\n\n${str}\n\n\`set [command] [key] [value]\``);
+      `**${command.name} Configuration Settings**\n\n${str}\n\n\`set [command] [key] [value]\``);
   }
 }
 

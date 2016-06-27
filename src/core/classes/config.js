@@ -16,6 +16,7 @@ class Config {
 
   addServer(serverId) {
     this.servers.set(serverId, new ServerSetting());
+    this.update(serverId);
   }
 
   addCommand(serverId, command) {
