@@ -25,7 +25,7 @@ class KarmaCommand extends Command {
     const nickname = users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
-    msg += `\`\`\`@username++ [optional message]\n`;
+    msg += '```@username++ [optional message]\n';
     msg += `@${nickname} karma leaderboard\n`;
     msg += `@${nickname} karma @user\`\`\``;
     msg += 'Example:\n';
