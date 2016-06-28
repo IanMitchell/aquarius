@@ -1,21 +1,34 @@
-const debug = require('debug');
 const triggers = require('../util/triggers');
+const users = require('../util/users');
+const Command = require('../core/command');
 
-const log = debug('Overwatch');
 const URL = 'https://playoverwatch.com/en-us/career/pc/us/';
 
-const message = msg => {
-  const profile = triggers.messageTriggered(msg, /^overwatch ([\w]+#[\d]{4,5})$/i);
-  if (profile) {
-    log(`Overwatch called for ${profile[1]}`);
-    return URL + profile[1].replace('#', '-');
+class Overwatch extends Command {
+  constructor() {
+    super();
+
+    this.description = "Links to the Overwatch profile's career overview page";
   }
 
-  return false;
-};
+  helpMessage(server) {
+    let msg = super.helpMessage();
+    const nickname = users.getNickname(server, this.client.user);
 
-module.exports = {
-  name: 'overwatch',
-  help: '`@bot overwatch [b.net tag]`. Links to Overwatch career overview for the profile.',
-  message,
-};
+    msg += 'Usage:\n';
+    msg += `\`\`\`@${nickname} overwatch [b.net tag]\`\`\``;
+    return msg;
+  }
+
+  message(msg) {
+    const profile = triggers.messageTriggered(msg, /^overwatch ([\w]+#[\d]{4,5})$/i);
+    if (profile) {
+      this.log(`Overwatch called for ${profile[1]}`);
+      return URL + profile[1].replace('#', '-');
+    }
+
+    return false;
+  }
+}
+
+module.exports = new Overwatch();

@@ -1,19 +1,52 @@
-const client = require('../client');
+const client = require('../core/client');
+const settings = require('../core/settings');
+const users = require('./users');
 
-const isBotOwner = (user) => user.id === process.env.OWNER_ID;
+function isBotOwner(user) {
+  return user.id === process.env.OWNER_ID;
+}
 
-const isBotAdmin = (server, user) => (isBotOwner(user) || server.owner.equals(user));
+function isServerAdmin(server, user) {
+  return isBotOwner(user) || server.owner.equals(user);
+}
 
-const isBotModerator = (server, user) => {
-  if (isBotAdmin(server, user)) {
+function isServerModerator(server, user) {
+  if (isServerAdmin(server, user)) {
     return true;
   }
 
-  return server.rolesOfUser(user).some(role => role.name === `${client.user.name} Mod`);
-};
+  const nameRole = users.hasRole(server, user, `${client.user.name} Mod`);
+  const nickRole = users.hasRole(server, user, `${users.getNickname(server, client.user)} Mod`);
+
+  return nameRole || nickRole;
+}
+
+function isServerMuted(server, user) {
+  const nameRole = users.hasRole(server, user, `${client.user.name} Muted`);
+  const nickRole = users.hasRole(server, user, `${users.getNickname(server, client.user)} Muted`);
+
+  return nameRole || nickRole;
+}
+
+function hasPermission(server, user, command) {
+  const permission = settings.getPermission(server.id, command.constructor.name);
+
+  switch (permission) {
+    case 2: // ADMIN
+      return isServerAdmin(server, user);
+    case 1: // RESTRICTED
+      return isServerModerator(server, user);
+    case 0: // ALL
+      return true;
+    default:
+      return false;
+  }
+}
 
 module.exports = {
   isBotOwner,
-  isBotAdmin,
-  isBotModerator,
+  isServerAdmin,
+  isServerModerator,
+  isServerMuted,
+  hasPermission,
 };

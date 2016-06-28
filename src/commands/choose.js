@@ -1,86 +1,108 @@
-const debug = require('debug');
 const triggers = require('../util/triggers');
+const users = require('../util/users');
+const Command = require('../core/command');
 
-const log = debug('Choose');
+class Choose extends Command {
+  constructor() {
+    super();
 
-
-const getChoices = (input, delimiter) => {
-  const choices = [];
-
-  input.split(delimiter).forEach(choice => {
-    const val = choice.trim();
-    if (val) {
-      choices.push(val);
-    }
-  });
-
-  return choices;
-};
-
-const countDecimals = number => {
-  if (Math.floor(number) === number && !number.toString().includes('.')) {
-    return 0;
+    this.description = 'Given a list of values randomly chooses one';
   }
 
-  return number.toString().split('.')[1].length || 0;
-};
+  helpMessage(server) {
+    let msg = super.helpMessage();
+    const nickname = users.getNickname(server, this.client.user);
 
-const choose = input => {
-  const rangeRegex = /^(-?\d+(\.\d+)?)-(-?\d+(\.\d+)?)$/i;
-  const range = input.match(rangeRegex);
+    msg += 'Usage:\n';
+    msg += `\`\`\`@${nickname} choose [message]\`\`\``;
+    msg += '\nExample:\n';
+    msg += '```';
+    msg += `@${nickname} choose JavaScript Java Python\n`;
+    msg += '=> JavaScript\n';
+    msg += `@${nickname} choose To be, not to be, ¯\\_(ツ)_/¯\n`;
+    msg += '=> not to be\n';
+    msg += `@${nickname} choose 1-6\n`;
+    msg += '=> 3\n';
+    msg += '```';
 
-  // Choose from a range (.c 1-100)
-  if (range) {
-    const min = Math.min(parseFloat(range[1]), parseFloat(range[3]));
-    const max = Math.max(parseFloat(range[1]), parseFloat(range[3]));
-
-    // Range of Floats
-    if (range[2] || range[4]) {
-      const decimals = Math.min(Math.max(
-                      countDecimals(range[1]),
-                      countDecimals(range[3])
-                    ), 19);
-
-      return (min + Math.random() * (max - min)).toFixed(decimals);
-    }
-
-    // Range of Integers - Add +1 so that the upperbound is included
-    return Math.floor(min + Math.random() * (max - min + 1));
+    return msg;
   }
 
-  // Choose from list delimited by ',' or ' '
-  let choices = getChoices(input, ',');
+  message(msg) {
+    const inputs = triggers.messageTriggered(msg, /^c(?:hoose)? (.+)$/i);
 
-  if (choices) {
-    // Check for space delimiter
-    if (choices.length <= 1) {
-      choices = getChoices(input, ' ');
+    if (inputs) {
+      this.log(`input: ${inputs[1]}`);
+      return this.choose(inputs[1]);
+    }
 
-      if (choices.length === 0) {
-        return 'No choices to choose from';
+    return false;
+  }
+
+  choose(input) {
+    const rangeRegex = /^(-?\d+(\.\d+)?)-(-?\d+(\.\d+)?)$/i;
+    const range = input.match(rangeRegex);
+
+    // Choose from a range (.c 1-100)
+    if (range) {
+      const min = Math.min(parseFloat(range[1]), parseFloat(range[3]));
+      const max = Math.max(parseFloat(range[1]), parseFloat(range[3]));
+
+      // Range of Floats
+      if (range[2] || range[4]) {
+        const decimals = Math.min(Math.max(
+                        this.countDecimals(parseFloat(range[1])),
+                        this.countDecimals(parseFloat(range[3]))
+                      ), 19);
+
+        return (min + Math.random() * (max - min)).toFixed(decimals);
       }
+
+      // Range of Integers - Add +1 so that the upperbound is included
+      return Math.floor(min + Math.random() * (max - min + 1));
     }
 
-    return choices[Math.floor(Math.random() * choices.length)];
+    // Choose from list delimited by ',' or ' '
+    let choices = this.getChoices(input, ',');
+
+    if (choices) {
+      // Check for space delimiter
+      if (choices.length <= 1) {
+        choices = this.getChoices(input, ' ');
+
+        if (choices.length === 0) {
+          return 'No choices to choose from';
+        }
+      }
+
+      return choices[Math.floor(Math.random() * choices.length)];
+    }
+
+    return 'No choices to choose from';
   }
 
-  return 'No choices to choose from';
-};
+  getChoices(input, delimiter) {
+    const choices = [];
 
+    input.split(delimiter).forEach(choice => {
+      const val = choice.trim();
 
-const message = msg => {
-  const inputs = triggers.messageTriggered(msg, /^c(?:hoose)? (.+)$/i);
+      // TODO: Allow 0 as a value
+      if (val) {
+        choices.push(val);
+      }
+    });
 
-  if (inputs) {
-    log(`input: ${inputs[1]}`);
-    return choose(inputs[1]);
+    return choices;
   }
 
-  return false;
-};
+  countDecimals(number) {
+    if (Math.floor(number) === number && !number.toString().includes('.')) {
+      return 0;
+    }
 
-module.exports = {
-  name: 'choose',
-  help: '`@bot choose 1, 2, 3, 3`. Randomly chooses from a comma or space separated list',
-  message,
-};
+    return number.toString().split('.')[1].length || 0;
+  }
+}
+
+module.exports = new Choose();

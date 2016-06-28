@@ -1,133 +1,153 @@
-const debug = require('debug');
-const client = require('../client');
 const triggers = require('../util/triggers');
+const users = require('../util/users');
 const permissions = require('../util/permissions');
+const Command = require('../core/command');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(process.env.DATABASE_URL);
 const Reply = sequelize.import('../models/reply');
 
-const log = debug('Reply');
+class ReplyCommand extends Command {
+  constructor() {
+    super();
+    this.name = 'Reply';
 
-// All responses stored in memory
-const responses = new Map();
+    this.description = 'Configure the bot to automatically respond to phrases';
 
-// Cross server replies
-const genericResponses = new Map();
-genericResponses.set('ping', 'pong');
-genericResponses.set('bot respond', "I'm a pretty stupid bot.");
-genericResponses.set('bot be nice', 'sorry :(');
-genericResponses.set('gj bot', 'thx');
-genericResponses.set('thx bot', 'np');
-genericResponses.set('bot pls', '( ¬‿¬)');
+    // All responses stored in memory
+    this.responses = new Map();
 
-const addServer = (serverId) => {
-  responses.set(serverId, new Map());
+    // Create response map
+    this.log('Creating generic response map');
+    this.client.servers.forEach(server => this.addServer(server.id));
 
-  genericResponses.forEach((value, key) => {
-    responses.get(serverId).set(key.toLowerCase(), value);
-  });
-};
+    // Load custom server replies
+    this.log('Loading custom replies');
 
-// Create response map
-client.on('ready', () => {
-  log('Creating generic response map');
-  client.servers.forEach(server => addServer(server.id));
+    Reply.findAll().then(replies => {
+      replies.forEach(reply => {
+        if (!this.responses.has(reply.serverId)) {
+          this.addServer(reply.serverId);
+        }
 
-  // Load custom server replies
-  log('Loading custom replies');
+        this.responses.get(reply.serverId).set(reply.trigger.toLowerCase(), reply.response);
+      });
 
-  Reply.findAll().then(replies => {
-    replies.forEach(reply => {
-      if (!responses.has(reply.serverId)) {
-        addServer(reply.serverId);
+      this.log('Initialization done');
+    });
+  }
+
+  helpMessage(server) {
+    let msg = super.helpMessage();
+    const nickname = users.getNickname(server, this.client.user);
+
+    msg += '\nExample:\n';
+    msg += '```';
+    msg += `bot be nice\n`;
+    msg += '=> sorry :(\n';
+    msg += `@${nickname} reply add "trigger" "response"\n`;
+    msg += '=> Response added\n';
+    msg += `trigger\n`;
+    msg += '=> response\n';
+    msg += `@${nickname} reply remove trigger\n`;
+    msg += '=> Response removed\n';
+    msg += '```';
+
+    return msg;
+  }
+
+  genericResponses() {
+    // Cross server replies
+    const genericResponses = new Map();
+    genericResponses.set('ping', 'pong');
+    genericResponses.set('bot respond', "I'm a pretty stupid bot.");
+    genericResponses.set('bot be nice', 'sorry :(');
+    genericResponses.set('gj bot', 'thx');
+    genericResponses.set('thx bot', 'np');
+    genericResponses.set('bot pls', '( ¬‿¬)');
+
+    return genericResponses;
+  }
+
+  addServer(serverId) {
+    this.responses.set(serverId, new Map());
+
+    this.genericResponses().forEach((value, key) => {
+      this.responses.get(serverId).set(key.toLowerCase(), value);
+    });
+  }
+
+  message(msg) {
+    // Thanks Shaun <.<
+    if (msg.author.bot) {
+      return false;
+    }
+
+    if (this.responses.has(msg.channel.server.id)) {
+      if (this.responses.get(msg.channel.server.id).has(msg.cleanContent.trim().toLowerCase())) {
+        this.log(`Input: ${msg.cleanContent}`);
+        return this.responses.get(msg.channel.server.id).get(msg.cleanContent.trim().toLowerCase());
+      }
+    } else {
+      this.addServer(msg.channel.server.id);
+
+      if (this.genericResponses().has(msg.cleanContent.trim().toLowerCase())) {
+        return this.genericResponses().get(msg.cleanContent.trim().toLowerCase());
+      }
+    }
+
+    if (permissions.isServerModerator(msg.channel.server, msg.author)) {
+      const newRegex = new RegExp([
+        '^(?:(?:new reply)|(?:reply add)) ',  // Cmd Trigger
+        '(["\'])((?:(?=(\\\\?))\\3.)*?)\\1 ', // Reply trigger (Quoted text block 1)
+        '(["\'])((?:(?=(\\\\?))\\3.)*?)\\1$', // Response (Quoted text block 2)
+      ].join(''), 'i');
+
+      const addInputs = triggers.messageTriggered(msg, newRegex);
+      const removeInputs = triggers.messageTriggered(msg, /^reply remove (.+)$/i);
+
+      if (addInputs) {
+        this.log(`Adding reply: "${addInputs[2]}" -> "${addInputs[5]}"`);
+
+        Reply.findOrCreate({
+          where: {
+            serverId: msg.channel.server.id,
+            trigger: addInputs[2],
+          },
+          defaults: {
+            response: addInputs[5],
+          },
+        }).spread((reply, created) => {
+          if (created) {
+            msg.client.sendMessage(msg.channel, 'Added reply.');
+            this.responses.get(msg.channel.server.id).set(addInputs[2].toLowerCase(), addInputs[5]);
+          } else {
+            msg.client.sendMessage(msg.channel, 'A reply with that trigger already exists!');
+          }
+        });
       }
 
-      responses.get(reply.serverId).set(reply.trigger.toLowerCase(), reply.response);
-    });
+      if (removeInputs) {
+        this.log(`Removing ${removeInputs[1]} reply`);
 
-    log('Initialization done');
-  });
-});
+        // Remove from database
+        Reply.destroy({
+          where: {
+            serverId: msg.channel.server.id,
+            trigger: removeInputs[1],
+          },
+        }).then(removedRows => {
+          if (removedRows > 0) {
+            msg.client.sendMessage(msg.channel, `Removed '${removeInputs[1]}' reply`);
+            this.responses.get(msg.channel.server.id).delete(removeInputs[1]);
+          } else {
+            msg.client.sendMessage(msg.channel, `Could not find a reply with '${removeInputs[1]}'`);
+          }
+        });
+      }
+    }
 
-const message = msg => {
-  // Thanks Shaun <.<
-  if (msg.author.bot) {
     return false;
   }
+}
 
-  if (responses.has(msg.channel.server.id)) {
-    if (responses.get(msg.channel.server.id).has(msg.cleanContent.trim().toLowerCase())) {
-      log(`Input: ${msg.cleanContent}`);
-      return responses.get(msg.channel.server.id).get(msg.cleanContent.trim().toLowerCase());
-    }
-  } else {
-    addServer(msg.channel.server.id);
-
-    if (genericResponses.has(msg.cleanContent.trim().toLowerCase())) {
-      return genericResponses.get(msg.cleanContent.trim().toLowerCase());
-    }
-  }
-
-  if (permissions.isBotModerator(msg.channel.server, msg.author)) {
-    const newRegex = new RegExp([
-      '^(?:(?:new reply)|(?:reply add)) ',  // Cmd Trigger
-      '(["\'])((?:(?=(\\\\?))\\3.)*?)\\1 ', // Reply trigger (Quoted text block 1)
-      '(["\'])((?:(?=(\\\\?))\\3.)*?)\\1$', // Response (Quoted text block 2)
-    ].join(''), 'i');
-
-    const addInputs = triggers.messageTriggered(msg, newRegex);
-    const removeInputs = triggers.messageTriggered(msg, /^reply remove (.+)$/i);
-
-    if (addInputs) {
-      log(`Adding reply: "${addInputs[2]}" -> "${addInputs[5]}"`);
-
-      Reply.findOrCreate({
-        where: {
-          serverId: msg.channel.server.id,
-          trigger: addInputs[2],
-        },
-        defaults: {
-          response: addInputs[5],
-        },
-      }).spread((reply, created) => {
-        if (created) {
-          msg.client.sendMessage(msg.channel, 'Added reply.');
-          responses.get(msg.channel.server.id).set(addInputs[2].toLowerCase(), addInputs[5]);
-        } else {
-          msg.client.sendMessage(msg.channel, 'A reply with that trigger already exists!');
-        }
-      });
-    }
-
-    if (removeInputs) {
-      log('Removing reply');
-
-      // Remove from database
-      Reply.destroy({
-        where: {
-          serverId: msg.channel.server.id,
-          trigger: removeInputs[1],
-        },
-      }).then(removedRows => {
-        if (removedRows > 0) {
-          msg.client.sendMessage(msg.channel, `Removed '${removeInputs[1]}' reply`);
-          responses.get(msg.channel.server.id).delete(removeInputs[1]);
-        } else {
-          msg.client.sendMessage(msg.channel, `Could not find a reply with '${removeInputs[1]}'`);
-        }
-      });
-    }
-  }
-
-  return false;
-};
-
-let helpMessage = 'Reply automatically responds to certain phrases. \n';
-helpMessage += 'To add a response, use `@bot reply add "trigger" "response"`.\n';
-helpMessage += 'To remove a response, use `@bot reply remove "trigger"`.';
-
-module.exports = {
-  name: 'reply',
-  help: helpMessage,
-  message,
-};
+module.exports = new ReplyCommand();
