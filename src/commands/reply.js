@@ -127,7 +127,7 @@ class ReplyCommand extends Command {
       }
 
       if (removeInputs) {
-        this.log('Removing reply');
+        this.log(`Removing ${removeInputs[1]} reply`);
 
         // Remove from database
         Reply.destroy({

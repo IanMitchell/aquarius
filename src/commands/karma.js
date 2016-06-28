@@ -17,7 +17,7 @@ class KarmaCommand extends Command {
     this.settings.addKey('name', 'Karma', 'What to call Karma on your server');
     this.settings.addKey('cooldown',
                     DEFAULT_COOLDOWN,
-                    'Duration in seconds before a user can give karma again');
+                    'Duration in seconds before a user can give karma again (Min: 10s)');
   }
 
   helpMessage(server) {
@@ -29,8 +29,20 @@ class KarmaCommand extends Command {
     msg += `@${nickname} karma leaderboard\n`;
     msg += `@${nickname} karma @user\`\`\``;
     msg += 'Example:\n';
-    msg += `\`\`\`@${nickname}++ thanks for being awesome!\n`;
+    msg += `\`\`\`@${nickname}++ thanks for being awesome!\n\`\`\``;
     return msg;
+  }
+
+  getCooldown(server) {
+    let val = parseInt(this.getSetting(server, 'cooldown'), 10);
+
+    if (isNaN(val)) {
+      val = DEFAULT_COOLDOWN;
+    }
+
+    val = Math.max(10, val);
+
+    return val;
   }
 
   message(msg) {
@@ -130,7 +142,7 @@ class KarmaCommand extends Command {
           this.log('Karma record created');
         }
 
-        const cooldown = parseInt(this.getSetting(msg.server.id, 'cooldown'), 10);
+        const cooldown = this.getCooldown(msg.server.id);
 
         if (cooldown > moment().unix() - karmaGiver.lastGiven) {
           this.log('Karma cooldown');

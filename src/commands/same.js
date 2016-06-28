@@ -11,7 +11,7 @@ class Same extends Command {
     this.messageStack = new Map();
     this.settings.addKey('size',
                          MESSAGE_STACK_SIZE,
-                         'How many repeated messages before the bot mimics.');
+                         'How many repeated messages before the bot mimics (Min: 2)');
   }
 
   getSize(server) {
