@@ -17,24 +17,22 @@ class ReplyCommand extends Command {
     this.responses = new Map();
 
     // Create response map
-    this.client.on('ready', () => {
-      this.log('Creating generic response map');
-      this.client.servers.forEach(server => this.addServer(server.id));
+    this.log('Creating generic response map');
+    this.client.servers.forEach(server => this.addServer(server.id));
 
-      // Load custom server replies
-      this.log('Loading custom replies');
+    // Load custom server replies
+    this.log('Loading custom replies');
 
-      Reply.findAll().then(replies => {
-        replies.forEach(reply => {
-          if (!this.responses.has(reply.serverId)) {
-            this.addServer(reply.serverId);
-          }
+    Reply.findAll().then(replies => {
+      replies.forEach(reply => {
+        if (!this.responses.has(reply.serverId)) {
+          this.addServer(reply.serverId);
+        }
 
-          this.responses.get(reply.serverId).set(reply.trigger.toLowerCase(), reply.response);
-        });
-
-        this.log('Initialization done');
+        this.responses.get(reply.serverId).set(reply.trigger.toLowerCase(), reply.response);
       });
+
+      this.log('Initialization done');
     });
   }
 

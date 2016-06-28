@@ -14,6 +14,18 @@ class Same extends Command {
                          'How many repeated messages before the bot mimics.');
   }
 
+  getSize(server) {
+    let val = parseInt(this.getSetting(server, 'size'), 10);
+
+    if (isNaN(val)) {
+      val = MESSAGE_STACK_SIZE;
+    }
+
+    val = Math.max(2, val);
+
+    return val;
+  }
+
   pushMessage(msg) {
     const server = msg.server.id;
     const channel = msg.channel.name;
@@ -34,9 +46,7 @@ class Same extends Command {
     this.messageStack.get(server).get(channel).push(msg.content);
 
     // Only track last couple messages
-    const size = this.getSetting(server, 'size');
-
-    if (this.messageStack.get(server).get(channel).length > size) {
+    if (this.messageStack.get(server).get(channel).length > this.getSize(server)) {
       this.messageStack.get(server).get(channel).shift();
     }
   }
@@ -53,9 +63,7 @@ class Same extends Command {
       return false;
     }
 
-    const size = this.getSetting(server, 'size');
-
-    if (this.messageStack.get(server).get(channel).length !== size) {
+    if (this.messageStack.get(server).get(channel).length !== this.getSize(server)) {
       return false;
     }
 

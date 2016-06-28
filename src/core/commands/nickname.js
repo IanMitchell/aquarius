@@ -5,7 +5,7 @@ const Command = require('../command');
 
 class Nickname extends Command {
   message(msg) {
-    const nicknameInput = triggers.messageTriggered(msg, /^nickname (.*)$/i);
+    const nicknameInput = triggers.messageTriggered(msg, /^nick(?:name)? (.*)$/i);
 
     if (nicknameInput && permissions.isServerAdmin(msg.channel.server, msg.author)) {
       this.log(`Setting bot nickname to ${nicknameInput[1]} on ${msg.channel.server.id}`);
