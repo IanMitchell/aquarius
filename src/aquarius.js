@@ -141,6 +141,30 @@ function addCommand(message, serverId, command) {
   });
 }
 
+function createRoles(message, serverId) {
+  const server = aquarius.servers.get('id', serverId);
+  const nickname = users.getNickname(server, aquarius.user);
+
+  const roles = ['Mod', 'Muted'];
+  let str = '';
+
+  roles.forEach(role => {
+    if (server.roles.has('name', `${nickname} ${role}`)) {
+      str += `${role} role exists!\n`;
+    } else {
+      aquarius.createRole(serverId, {
+        hoist: false,
+        name: `${nickname} ${role}`,
+        mentionable: true,
+      });
+
+      str += `${role} role created.\n`;
+    }
+  });
+
+  aquarius.sendMessage(message.author, str);
+}
+
 function handleAdminCommandChange(message, cmdMatch) {
   if (cmdMatch[1] === 'add') {
     if (cmdMatch[3] === 'all') {
@@ -212,6 +236,7 @@ function handleAdminConfigChange(message, setMatch) {
 
 function handleAdminCommands(message, servers) {
   const cmdMatch = triggers.messageTriggered(message, /^(add|remove) ([0-9]+ )?(.+)$/i);
+  const roleMatch = triggers.messageTriggered(message, /^create roles( [0-9]+)?$/i);
   // TODO: Expand to allow unsetting
   const setMatch = triggers.messageTriggered(message, /^set ([0-9]+ )?([\w]+) ([\w]+) (.+)$/i);
 
@@ -247,6 +272,22 @@ function handleAdminCommands(message, servers) {
     }
 
     handleAdminConfigChange(message, setMatch);
+  } else if (roleMatch) {
+    if (servers.length > 1 && !roleMatch[1]) {
+      aquarius.sendMessage(message.channel,
+        'You own multiple servers; please specify which one you mean.\n' +
+        '`create roles [server]`');
+      return;
+    } else if (servers.length > 1 && roleMatch[1]) {
+      if (!servers.includes(roleMatch[1])) {
+        aquarius.sendMessage(message.channel, "You don't own that server!");
+        return;
+      }
+    } else if (servers.length === 1) {
+      roleMatch[1] = servers[0].id;
+    }
+
+    createRoles(message, roleMatch[1]);
   } else {
     // Check for help request - if it doesn't trigger, send info
     if (!handleHelp(message, true)) {
