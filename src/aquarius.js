@@ -126,19 +126,19 @@ function handleHelp(message, admin = false) {
 
 function addCommand(message, serverId, command) {
   settings.addCommand(serverId, command.constructor.name);
-  aquarius.sendMessage(message.channel, `Added ${command.name}.`);
+  aquarius.sendMessage(message.channel, `Added ${command.name}.`).then(msg => {
+    // TODO: Instead of displaying, prompt for settings
+    let str = '';
+    [...command.getKeys()].forEach(key => {
+      str += `* \`${key}\` (Default: ${command.getSettingDefault(key)}): `;
+      str += `${command.getSettingDescription(key)}\n`;
+    });
 
-  // TODO: Instead of displaying, prompt for settings
-  let str = '';
-  [...command.getKeys()].forEach(key => {
-    str += `* \`${key}\` (Default: ${command.getSettingDefault(key)}): `;
-    str += `${command.getSettingDescription(key)}\n`;
+    if (str) {
+      aquarius.sendMessage(message.channel,
+        `**${command.name} Configuration Settings**\n\n${str}\n\n\`set [command] [key] [value]\``);
+    }
   });
-
-  if (str) {
-    aquarius.sendMessage(message.channel,
-      `**${command.name} Configuration Settings**\n\n${str}\n\n\`set [command] [key] [value]\``);
-  }
 }
 
 function handleAdminCommandChange(message, cmdMatch) {
@@ -304,6 +304,7 @@ aquarius.on('message', message => {
   }
 });
 
+// TODO: Find a better way to maintain order than chaining
 aquarius.on('serverCreated', server => {
   const name = aquarius.user.name;
   let msg = '';
@@ -312,37 +313,38 @@ aquarius.on('serverCreated', server => {
   msg += `I'm a discord bot with different commands you can add to your server. I'm also open source - if you'd like to file a bug or have a feature request, you can visit ${links.repoLink()}. You can also contact Ian (Desch#1935).\n\n`;
   msg += `For general information about the bot you can say \`@${name} info\` in any server I'm in.`;
 
-  aquarius.sendMessage(server.owner, msg);
+  aquarius.sendMessage(server.owner, msg).then(message => {
+    msg = '**Configuring The Bot**\n';
+    msg += 'The server admin can set the bot nickname by typing `.nick [nickname]` in a server the bot is in.\n\n';
+    msg += `You can add specific roles to your server to control ${name} actions as well. If a user has \`${name} Mod\` (or if you've changed the bot's nickname, \`[Nickname] Mod\`) the user will have elevated permissions (discussed later). If a user as \`${name} Muted\` (or \`[Nickname] Muted\`) the bot will ignore all commands from the user (with the exception of the server admin).\n\n`;
+    msg += `If you'd like ${name} to automatically create these roles for you, type \`create roles\`. If you're running the bot on multiple servers you'll need to specify the server with \`create roles [server]\`.`;
 
-  msg = '**Configuring The Bot**\n';
-  msg += 'The server admin can set the bot nickname by typing `.nick [nickname]` in a server the bot is in.\n\n';
-  msg += `You can add specific roles to your server to control ${name} actions as well. If a user has \`${name} Mod\` (or if you've changed the bot's nickname, \`[Nickname] Mod\`) the user will have elevated permissions (discussed later). If a user as \`${name} Muted\` (or \`[Nickname] Muted\`) the bot will ignore all commands from the user (with the exception of the server admin).\n\n`;
-  msg += `If you'd like ${name} to automatically create these roles for you, type \`create roles\`. If you're running the bot on multiple servers you'll need to specify the server with \`create roles [server]\`.`;
+    aquarius.sendMessage(server.owner, msg).then(message => {
+      msg = '**Adding Commands**\n';
+      msg += "Out of the box I don't do very much - you'll need to enable different commands on your server. Just type `help` in this query at any time to get a list of the commands you can add to your server.\n\n";
+      msg += "If you're interested in a command you can get additional information by sending `help [command]`.\n\n";
+      msg += `To add a command, just say \`add [command|all]\`. If you are running ${name} on multiple servers, you'll need to specify by saying \`add [server] [command|all]\`.\n\n`;
+      msg += `To remove a command say \`remove [command|all]\`. Like adding a command, if you're running ${name} on multiple servers you'll need to specify with \`remove [server] [command|all]\`.`;
 
-  aquarius.sendMessage(server.owner, msg);
+      aquarius.sendMessage(server.owner, msg).then(message => {
+        msg = '**Configuring Commands**\n';
+        msg += 'Some commands (for example, Karma) have configurable settings. When you add these commands the list of settings will be displayed - to pull them up later you can type `help [command]` in this query.\n\n';
+        msg += "To set a variable, type `set [command] [name] [value]`. If you have the bot running on multiple servers you'll need to specify which one you're targeting with `set [server] [command] [name] [value]`.";
 
-  msg = '**Adding Commands**\n';
-  msg += "Out of the box I don't do very much - you'll need to enable different commands on your server. Just type `help` in this query at any time to get a list of the commands you can add to your server.\n\n";
-  msg += "If you're interested in a command you can get additional information by sending `help [command]`.\n\n";
-  msg += `To add a command, just say \`add [command|all]\`. If you are running ${name} on multiple servers, you'll need to specify by saying \`add [server] [command|all]\`.\n\n`;
-  msg += `To remove a command say \`remove [command|all]\`. Like adding a command, if you're running ${name} on multiple servers you'll need to specify with \`remove [server] [command|all]\`.`;
+        aquarius.sendMessage(server.owner, msg).then(message => {
+          msg = '**Command Permissions**\n';
+          msg += `${name} Commands have three permission levels - ADMIN, RESTRICTED, and ALL. Note that if a user has the \`${name} Muted\` role they cannot interact with the bot at all.\n\n`;
+          msg += 'ADMIN: Only the server admin may use the command.\n';
+          msg += `RESTRICTED: Only the server admin and \`${name} Mod\` role members may use the command.\n`;
+          msg += `ALL: All server members may use the command.\n\n`;
+          msg += "To set the permission level for a command use `set [command] permission [ADMIN|RESTRICTED|ALL]`. If you have multiple servers running the bot you'll need to use `set [server] [command] permission [ADMIN|RESTRICTED|ALL]`.";
 
-  aquarius.sendMessage(server.owner, msg);
+          aquarius.sendMessage(server.owner, msg);
+        });
+      });
+    });
+  });
 
-  msg = '**Configuring Commands**\n';
-  msg += 'Some commands (for example, Karma) have configurable settings. When you add these commands the list of settings will be displayed - to pull them up later you can type `help [command]` in this query.\n\n';
-  msg += "To set a variable, type `set [command] [name] [value]`. If you have the bot running on multiple servers you'll need to specify which one you're targeting with `set [server] [command] [name] [value]`.";
-
-  aquarius.sendMessage(server.owner, msg);
-
-  msg = '**Command Permissions**\n';
-  msg += `${name} Commands have three permission levels - ADMIN, RESTRICTED, and ALL. Note that if a user has the \`${name} Muted\` role they cannot interact with the bot at all.\n\n`;
-  msg += 'ADMIN: Only the server admin may use the command.\n';
-  msg += `RESTRICTED: Only the server admin and \`${name} Mod\` role members may use the command.\n`;
-  msg += `ALL: All server members may use the command.\n\n`;
-  msg += "To set the permission level for a command use `set [command] permission [ADMIN|RESTRICTED|ALL]`. If you have multiple servers running the bot you'll need to use `set [server] [command] permission [ADMIN|RESTRICTED|ALL]`.";
-
-  aquarius.sendMessage(server.owner, msg);
   settings.addServer(server.id);
   log(`Added to server ${server.id}`);
 });

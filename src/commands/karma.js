@@ -34,7 +34,7 @@ class KarmaCommand extends Command {
   }
 
   message(msg) {
-    const karmaName = this.getSetting(msg.channel.server.id, 'name');
+    const karmaName = this.getSetting(msg.server.id, 'name');
 
     const leaderboardRegex = new RegExp(`^(?:karma|${karmaName}) leaderboard$`, 'i');
     const karmaLookupRegex = new RegExp(`^(?:karma|${karmaName}) ${triggers.mentionRegex}$`, 'i');
@@ -47,7 +47,7 @@ class KarmaCommand extends Command {
       this.log('Server leaderboard requested');
       Karma.findAll({
         where: {
-          serverId: msg.channel.server.id,
+          serverId: msg.server.id,
         },
         order: [
           [sequelize.col('count'), 'DESC'],
@@ -60,7 +60,7 @@ class KarmaCommand extends Command {
           let str = `**${karmaName} Leaderboard**\n`;
 
           response.forEach((record, index) => {
-            const nick = users.getNickname(msg.channel.server, record.userId);
+            const nick = users.getNickname(msg.server, record.userId);
             str += `${index + 1}. ${nick} - ${record.count} ${karmaName}\n`;
           });
 
@@ -83,7 +83,7 @@ class KarmaCommand extends Command {
       Karma.findOrCreate({
         where: {
           userId: user.id,
-          serverId: msg.channel.server.id,
+          serverId: msg.server.id,
         },
         defaults: {
           count: 0,
@@ -91,7 +91,7 @@ class KarmaCommand extends Command {
           lastGiven: 0,
         },
       }).spread((karma) => {
-        const nick = users.getNickname(msg.channel.server, user.id);
+        const nick = users.getNickname(msg.server, user.id);
         msg.client.sendMessage(msg.channel, `${nick} has ${karma.count} ${karmaName}.`);
       });
 
@@ -118,7 +118,7 @@ class KarmaCommand extends Command {
       Karma.findOrCreate({
         where: {
           userId: msg.author.id,
-          serverId: msg.channel.server.id,
+          serverId: msg.server.id,
         },
         defaults: {
           count: 0,
@@ -143,7 +143,7 @@ class KarmaCommand extends Command {
         return Karma.findOrCreate({
           where: {
             userId: user.id,
-            serverId: msg.channel.server.id,
+            serverId: msg.server.id,
           },
           defaults: {
             count: 0,
