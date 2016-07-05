@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "ava test"
+    "test": "ava test -r ./index-test.js"
   },
   "author": {
     "name": "Ian Mitchell",
