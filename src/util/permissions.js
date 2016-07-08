@@ -22,6 +22,10 @@ function isServerModerator(server, user) {
 }
 
 function isServerMuted(server, user) {
+  if (isServerAdmin(server, user)) {
+    return false;
+  }
+
   const nameRole = users.hasRole(server, user, `${client.user.name} Muted`);
   const nickRole = users.hasRole(server, user, `${users.getNickname(server, client.user)} Muted`);
 
