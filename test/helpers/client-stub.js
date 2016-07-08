@@ -1,11 +1,9 @@
-const mentions = require('./mentions');
+const UserStub = require('./user-stub');
 
-const client = {
-  user: {
-    mention: () => mentions.botMention(),
-  },
-};
+class ClientStub {
+  constructor() {
+    this.user = new UserStub('123456789', 'Aquarius');
+  }
+}
 
-module.exports = {
-  client,
-};
+module.exports = new ClientStub();
