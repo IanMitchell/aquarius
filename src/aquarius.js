@@ -351,7 +351,7 @@ aquarius.on('serverCreated', server => {
   let msg = '';
 
   msg += `**Thanks for adding ${name}!**\n`;
-  msg += `I'm a discord bot with different commands you can add to your server. I'm also open source - if you'd like to file a bug or have a feature request, you can visit ${links.repoLink()}. You can also contact Ian (Desch#1935).\n\n`;
+  msg += `I'm a discord bot with different commands you can add to your server. I'm also open source - if you'd like to file a bug or have a feature request, you can visit ${links.repoLink()}. You can also contact Ian (Desch#3091).\n\n`;
   msg += `For general information about the bot you can say \`@${name} info\` in any server I'm in.`;
 
   aquarius.sendMessage(server.owner, msg).then(message => {

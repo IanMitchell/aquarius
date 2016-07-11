@@ -1,8 +1,14 @@
-const UserStub = require('./user-stub');
+class CacheStub {
+  add(param) {
+    return param;
+  }
+}
 
 class ClientStub {
   constructor() {
-    this.user = new UserStub('123456789', 'Aquarius');
+    this.channels = new CacheStub();
+    this.users = new CacheStub();
+    this.internal = this;
   }
 }
 
