@@ -27,39 +27,39 @@ class Pokédex extends Command {
 
   addPokémon(pokémon, msg) {
     this.log(`Adding ${pokémon} entry`);
-    return loading.startLoading(msg.channel).then(() => {
-      return fetch(`http://pokeapi.co/api/v2/pokemon/${pokémon}`)
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          }
+    return loading.startLoading(msg.channel)
+      .then(() => fetch(`http://pokeapi.co/api/v2/pokemon/${pokémon}`))
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
 
-          this.client.sendMessage(msg.channel, 'Cannot find pokemon.');
-          return false;
-        }).then(json => {
-          if (json) {
-            const pkm = {
-              id: json.id,
-              name: json.name,
-              types: json.types,
-              image: json.sprites.front_default,
-            };
+        this.client.sendMessage(msg.channel, 'Cannot find pokemon.');
+        return false;
+      })
+      .then(json => {
+        if (json) {
+          const pkm = {
+            id: json.id,
+            name: json.name,
+            types: json.types,
+            image: json.sprites.front_default,
+          };
 
-            this.pokémonMap.set(json.id.toString(), pkm);
-            this.pokémonMap.set(json.name, pkm);
-          }
-        })
-        .catch(err => this.log(err));
-    });
+          this.pokémonMap.set(json.id.toString(), pkm);
+          this.pokémonMap.set(json.name, pkm);
+        }
+      })
+      .catch(err => this.log(err));
   }
 
   getPokémon(msg, pokémon) {
     if (this.pokémonMap.has(pokémon.toLowerCase())) {
       this.outputPokémon(msg, pokémon.toLowerCase());
     } else {
-      this.addPokémon(pokémon.toLowerCase(), msg).then(() => {
-        this.outputPokémon(msg, pokémon.toLowerCase());
-      }).then(() => loading.stopLoading(msg.channel));
+      this.addPokémon(pokémon.toLowerCase(), msg)
+        .then(() => this.outputPokémon(msg, pokémon.toLowerCase()))
+        .then(() => loading.stopLoading(msg.channel));
     }
   }
 
