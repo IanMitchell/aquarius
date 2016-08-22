@@ -3,7 +3,9 @@ const triggers = require('../util/triggers');
 const users = require('../util/users');
 const Command = require('../core/command');
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize(process.env.DATABASE_URL);
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  logging: require('../dashboard/database')
+});
 const Quote = sequelize.import('../models/quote');
 
 class Quotes extends Command {

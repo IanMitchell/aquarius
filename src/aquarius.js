@@ -9,6 +9,7 @@ const users = require('./util/users');
 const links = require('./util/links');
 
 const log = debug('Aquarius');
+log.log = require('./dashboard/log');
 
 const coreCommands = new Map();
 const commands = new Map();
@@ -391,5 +392,6 @@ aquarius.on('serverCreated', server => {
 });
 
 // Start the bot!
+require('./dashboard/dashboard');
 aquarius.loginWithToken(process.env.TOKEN);
 aquarius.on('ready', loadCommands);

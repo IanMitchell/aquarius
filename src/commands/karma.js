@@ -3,7 +3,9 @@ const triggers = require('../util/triggers');
 const users = require('../util/users');
 const Command = require('../core/command');
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize(process.env.DATABASE_URL);
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  logging: require('../dashboard/database')
+});
 const Karma = sequelize.import('../models/karma');
 
 const DEFAULT_COOLDOWN = 5 * 60; // 5m (Unix Timestamp, so in seconds not ms)

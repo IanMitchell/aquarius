@@ -2,11 +2,14 @@ const debug = require('debug');
 const ServerSetting = require('./server-setting');
 const DefaultKey = require('./default-key');
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize(process.env.DATABASE_URL);
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  logging: require('../../dashboard/database')
+});
 const Setting = sequelize.import('../../models/setting');
 const stackTrace = require('stack-trace');
 
 const log = debug('Config');
+log.log = require('../../dashboard/log');
 
 class Config {
   constructor() {

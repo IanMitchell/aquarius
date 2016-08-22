@@ -1,10 +1,11 @@
 const moment = require('moment');
 const users = require('../util/users');
 const triggers = require('../util/triggers');
-const client = require('../core/client');
 const Command = require('../core/command');
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize(process.env.DATABASE_URL);
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  logging: require('../dashboard/database')
+});
 const Seen = sequelize.import('../models/seen');
 
 class SeenCommand extends Command {
@@ -14,7 +15,7 @@ class SeenCommand extends Command {
 
     this.description = 'Tracks when a user was last seen online';
 
-    client.on('presence', (oldUser, newUser) => {
+    this.client.on('presence', (oldUser, newUser) => {
       if (newUser.status === 'offline') {
         Seen.findOrCreate({
           where: {

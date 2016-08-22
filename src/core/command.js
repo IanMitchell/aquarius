@@ -6,6 +6,7 @@ class Command {
   constructor() {
     this.name = this.constructor.name;
     this.log = debug(this.name);
+    this.log.log = require('../dashboard/log');
     this.client = client;
     this.settings = settings;
   }

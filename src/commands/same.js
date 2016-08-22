@@ -1,4 +1,5 @@
 const Command = require('../core/command');
+const array = require('../util/array');
 
 const MESSAGE_STACK_SIZE = 4;
 
@@ -51,10 +52,6 @@ class Same extends Command {
     }
   }
 
-  onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
-  }
-
   isSame(msg) {
     const server = msg.channel.server.id;
     const channel = msg.channel.name;
@@ -67,7 +64,7 @@ class Same extends Command {
       return false;
     }
 
-    const unique = this.messageStack.get(server).get(channel).filter(this.onlyUnique);
+    const unique = array.unique(this.messageStack.get(server).get(channel));
 
     if (unique.length === 1 && unique[0] === msg.content) {
       return true;

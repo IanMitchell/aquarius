@@ -3,7 +3,9 @@ const users = require('../util/users');
 const permissions = require('../util/permissions');
 const Command = require('../core/command');
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize(process.env.DATABASE_URL);
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  logging: require('../dashboard/database')
+});
 const Reply = sequelize.import('../models/reply');
 
 class ReplyCommand extends Command {

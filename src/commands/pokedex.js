@@ -34,7 +34,7 @@ class Pokédex extends Command {
           return response.json();
         }
 
-        this.client.sendMessage(msg.channel, 'Cannot find pokemon.');
+        this.client.sendMessage(msg.channel, 'Cannot find Pokémon.');
         return false;
       })
       .then(json => {
@@ -66,8 +66,8 @@ class Pokédex extends Command {
   outputPokémon(msg, id) {
     if (this.pokémonMap.has(id)) {
       const pokémon = this.pokémonMap.get(id);
-      const types = pokémon.types.map(type => string.capitalize(type.type.name)).join(', ');
-      const content = `#${pokémon.id} ${string.capitalize(pokémon.name)} (${types})`;
+      const types = pokémon.types.map(type => type.type.name.capitalize()).join(', ');
+      const content = `#${pokémon.id} ${pokémon.name.capitalize()} (${types})`;
       this.client.sendFile(msg.channel, pokémon.image, `${pokémon.name}.png`, content);
     }
   }
