@@ -26,7 +26,7 @@ class Games extends Command {
       msg.server.members.forEach(member => {
         if (member.game) {
           if (games.has(member.game.name)) {
-            games.set(member.game.name, games.get(member.game) + 1);
+            games.set(member.game.name, games.get(member.game.name) + 1);
           } else {
             games.set(member.game.name, 1);
           }
