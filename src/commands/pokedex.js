@@ -1,11 +1,7 @@
+const Aquarius = require('../aquarius');
 const fetch = require('node-fetch');
-const Command = require('../core/command');
-const loading = require('../util/loading');
-const triggers = require('../util/triggers');
-const users = require('../util/users');
-const string = require('../util/string');
 
-class Pokédex extends Command {
+class Pokédex extends Aquarius.Command {
   constructor() {
     super();
 
@@ -18,7 +14,7 @@ class Pokédex extends Command {
 
   helpMessage(server) {
     let msg = super.helpMessage();
-    const nickname = users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} pokedex [name|id]\`\`\``;
@@ -27,7 +23,7 @@ class Pokédex extends Command {
 
   addPokémon(pokémon, msg) {
     this.log(`Adding ${pokémon} entry`);
-    return loading.startLoading(msg.channel)
+    return Aquarius.Loading.startLoading(msg.channel)
       .then(() => fetch(`http://pokeapi.co/api/v2/pokemon/${pokémon}`))
       .then(response => {
         if (response.ok) {
@@ -59,7 +55,7 @@ class Pokédex extends Command {
     } else {
       this.addPokémon(pokémon.toLowerCase(), msg)
         .then(() => this.outputPokémon(msg, pokémon.toLowerCase()))
-        .then(() => loading.stopLoading(msg.channel));
+        .then(() => Aquarius.Loading.stopLoading(msg.channel));
     }
   }
 
@@ -73,7 +69,7 @@ class Pokédex extends Command {
   }
 
   message(msg) {
-    const pokémonInput = triggers.messageTriggered(msg, new RegExp([
+    const pokémonInput = Aquarius.Triggers.messageTriggered(msg, new RegExp([
       '^(?:pok(?:e|é)mon|pok(?:e|é)dex) ',
       '([\\d]{1,4}|[\\w]+)$',
     ].join(''), 'i'));

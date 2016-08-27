@@ -1,8 +1,6 @@
-const triggers = require('../util/triggers');
-const users = require('../util/users');
-const Command = require('../core/command');
+const Aquarius = require('../aquarius');
 
-class Choose extends Command {
+class Choose extends Aquarius.Command {
   constructor() {
     super();
 
@@ -11,7 +9,7 @@ class Choose extends Command {
 
   helpMessage(server) {
     let msg = super.helpMessage();
-    const nickname = users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} choose [message]\`\`\``;
@@ -29,7 +27,7 @@ class Choose extends Command {
   }
 
   message(msg) {
-    const inputs = triggers.messageTriggered(msg, /^c(?:hoose)? (.+)$/i);
+    const inputs = Aquarius.Triggers.messageTriggered(msg, /^c(?:hoose)? (.+)$/i);
 
     if (inputs) {
       this.log(`input: ${inputs[1]}`);

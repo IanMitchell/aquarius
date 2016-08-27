@@ -1,7 +1,7 @@
 const debug = require('debug');
-const Config = require('./classes/config');
+const Config = require('./config');
 const log = debug('Settings');
-log.log = require('../dashboard/log');
+// log.log = require('../dashboard/log');
 
 const Settings = (function () {
   log('Creating Settings');

@@ -1,11 +1,9 @@
-const triggers = require('../../util/triggers');
-const permissions = require('../../util/permissions');
-const Command = require('../command');
+const Aquarius = require('../aquarius');
 
-class Broadcast extends Command {
+class Broadcast extends Aquarius.Command {
   message(msg) {
-    if (permissions.isBotOwner(msg.author)) {
-      if (triggers.messageTriggered(msg, /^broadcast .+$/)) {
+    if (Aquarius.Permissions.isBotOwner(msg.author)) {
+      if (Aquarius.Triggers.messageTriggered(msg, /^broadcast .+$/)) {
         const broadcast = msg.content.split('broadcast ');
         this.log(`Broadcasting '${broadcast[1]}'`);
 

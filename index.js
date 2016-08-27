@@ -16,5 +16,5 @@ fs.stat('.env', (err, stat) => {
   }
 
   // Start the bot
-  require('./src/aquarius');
+  require('./src');
 });

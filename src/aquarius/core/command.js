@@ -1,12 +1,12 @@
 const debug = require('debug');
 const client = require('./client');
-const settings = require('./settings');
+const settings = require('../settings/settings');
 
 class Command {
   constructor() {
     this.name = this.constructor.name;
     this.log = debug(this.name);
-    this.log.log = require('../dashboard/log');
+    // this.log.log = require('../dashboard/log');
     this.client = client;
     this.settings = settings;
   }

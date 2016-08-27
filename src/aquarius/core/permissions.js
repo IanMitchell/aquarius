@@ -1,6 +1,12 @@
-const client = require('../core/client');
-const settings = require('../core/settings');
+const client = require('./client');
 const users = require('./users');
+const settings = require('../settings/settings');
+
+const LEVELS = {
+  ADMIN: 2,
+  RESTRICTED: 1,
+  ALL: 0,
+};
 
 function isBotOwner(user) {
   return user.id === process.env.OWNER_ID;
@@ -36,11 +42,11 @@ function hasPermission(server, user, command) {
   const permission = settings.getPermission(server.id, command.constructor.name);
 
   switch (permission) {
-    case 2: // ADMIN
+    case LEVELS.ADMIN:
       return isServerAdmin(server, user);
-    case 1: // RESTRICTED
+    case LEVELS.RESTRICTED:
       return isServerModerator(server, user);
-    case 0: // ALL
+    case LEVELS.ALL:
       return true;
     default:
       return false;
@@ -48,6 +54,7 @@ function hasPermission(server, user, command) {
 }
 
 module.exports = {
+  LEVELS,
   isBotOwner,
   isServerAdmin,
   isServerModerator,

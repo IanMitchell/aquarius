@@ -1,4 +1,4 @@
-const pkg = require('../../package');
+const pkg = require('../../../package');
 
 function botLink() {
   const url = `https://discordapp.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}`;

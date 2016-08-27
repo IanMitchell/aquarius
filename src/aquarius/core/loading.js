@@ -1,4 +1,4 @@
-const client = require('../core/client');
+const client = require('./client');
 
 function startLoading(channel) {
   return client.startTyping(channel);

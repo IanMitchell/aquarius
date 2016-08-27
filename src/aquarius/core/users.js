@@ -1,4 +1,4 @@
-const client = require('../core/client');
+const client = require('./client');
 
 function getOwnedServers(user) {
   return client.servers.filter(server => server.owner.equals(user));

@@ -1,9 +1,8 @@
-const Command = require('../core/command');
-const array = require('../util/array');
+const Aquarius = require('../aquarius');
 
 const MESSAGE_STACK_SIZE = 4;
 
-class Same extends Command {
+class Same extends Aquarius.Command {
   constructor() {
     super();
 
@@ -64,7 +63,7 @@ class Same extends Command {
       return false;
     }
 
-    const unique = array.unique(this.messageStack.get(server).get(channel));
+    const unique = this.messageStack.get(server).get(channel).uniq();
 
     if (unique.length === 1 && unique[0] === msg.content) {
       return true;

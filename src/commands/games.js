@@ -1,8 +1,6 @@
-const triggers = require('../util/triggers');
-const users = require('../util/users');
-const Command = require('../core/command');
+const Aquarius = require('../aquarius');
 
-class Games extends Command {
+class Games extends Aquarius.Command {
   constructor() {
     super();
     this.description = 'Lists what games server members are playing';
@@ -10,7 +8,7 @@ class Games extends Command {
 
   helpMessage(server) {
     let msg = super.helpMessage();
-    const nickname = users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} games\`\`\``;
@@ -18,7 +16,7 @@ class Games extends Command {
   }
 
   message(msg) {
-    if (triggers.messageTriggered(msg, /^games$/i)) {
+    if (Aquarius.Triggers.messageTriggered(msg, /^games$/i)) {
       this.log('Games request');
 
       const games = new Map();
@@ -26,7 +24,7 @@ class Games extends Command {
       msg.server.members.forEach(member => {
         if (member.game) {
           if (games.has(member.game.name)) {
-            games.set(member.game.name, games.get(member.game) + 1);
+            games.set(member.game.name, games.get(member.game.name) + 1);
           } else {
             games.set(member.game.name, 1);
           }

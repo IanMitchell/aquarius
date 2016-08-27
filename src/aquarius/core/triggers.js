@@ -1,4 +1,4 @@
-const client = require('../core/client');
+const client = require('./client');
 
 const mentionRegex = '(?:(?:@[#\\w]+)|(?:<@!?\\d+>))';
 
