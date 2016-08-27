@@ -1,26 +1,3 @@
-/*
-- Aquarius
-  * .Command
-  * .Triggers.*
-  * .Loading.*
-  * .Permissions.*
-  * .Users.*
-  * .Dashboard.*
-  * .Log.*
-  * .Sequelize.*
-
-  includes:
-    - Prototypes
-
-
-Goals:
-  - Rearrange things to be a little cleaner, clearer distinction between framework and commands
-  - Allow most things to just `const Aquarius = require('../core');`
-    - Allow for `class Overwatch extends Aquarius.Command` and things like that
-  - Create a more robust logging system
-    - Logs to dashboard in dev mode, one log stream in production mode
-*/
-
 // Aquarius Core Framework
 const Client = require('./core/client');
 const Command = require('./core/command');
