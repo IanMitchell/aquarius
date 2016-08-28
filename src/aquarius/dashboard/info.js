@@ -2,7 +2,7 @@ const blessed = require('blessed');
 const chalk = require('chalk');
 const Dashboard = require('./dashboard');
 const client = require('../core/client');
-const formatters = require('../util/formatters');
+const formatters = require('../helpers/formatters');
 
 const REFRESH_TIMER = 1000 * 5;
 

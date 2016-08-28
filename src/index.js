@@ -386,6 +386,5 @@ Aquarius.Client.on('serverCreated', server => {
 });
 
 // Start the bot!
-// require('./dashboard/dashboard');
 Aquarius.Client.loginWithToken(process.env.TOKEN);
 Aquarius.Client.on('ready', loadCommands);

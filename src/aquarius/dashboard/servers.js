@@ -1,4 +1,3 @@
-const blessed = require('blessed');
 const chalk = require('chalk');
 const contrib = require('blessed-contrib');
 const Dashboard = require('./dashboard');
