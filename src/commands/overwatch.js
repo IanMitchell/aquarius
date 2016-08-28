@@ -1,6 +1,12 @@
 const Aquarius = require('../aquarius');
 
-const URL = 'https://playoverwatch.com/en-us/career/pc/us/';
+const REGIONS = {
+  US: 'us',
+  EU: 'eu',
+  KR: 'kr',
+};
+
+const URL = 'https://playoverwatch.com/en-us/career/pc';
 
 class Overwatch extends Aquarius.Command {
   constructor() {
@@ -18,11 +24,20 @@ class Overwatch extends Aquarius.Command {
     return msg;
   }
 
+  // TODO: Allow `.overwatch set Desch#1935 -> .overwatch` (db)
   message(msg) {
-    const profile = Aquarius.Triggers.messageTriggered(msg, /^overwatch ([\w]+#[\d]{4,5})$/i);
+    const profile = Aquarius.Triggers.messageTriggered(msg, /^overwatch (?:([A-Za-z]{2}) )?([\w]+#[\d]{4,5})$/i);
+
     if (profile) {
       this.log(`Overwatch called for ${profile[1]}`);
-      return URL + profile[1].replace('#', '-');
+
+      let region = REGIONS.US;
+
+      if (profile[1] && REGIONS.hasOwnProperty(profile[1].toUpperCase())) {
+        region = REGIONS[profile[1].toUpperCase()];
+      }
+
+      return `${URL}/${region}/${profile[2].replace('#', '-')}`;
     }
 
     return false;
