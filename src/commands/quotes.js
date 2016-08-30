@@ -1,12 +1,8 @@
+const Aquarius = require('../aquarius');
 const moment = require('moment');
-const triggers = require('../util/triggers');
-const users = require('../util/users');
-const Command = require('../core/command');
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize(process.env.DATABASE_URL);
-const Quote = sequelize.import('../models/quote');
+const Quote = Aquarius.Sequelize.import('../models/quote');
 
-class Quotes extends Command {
+class Quotes extends Aquarius.Command {
   constructor() {
     super();
 
@@ -15,7 +11,7 @@ class Quotes extends Command {
 
   helpMessage(server) {
     let msg = super.helpMessage();
-    const nickname = users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
     msg += '```';
@@ -46,7 +42,7 @@ class Quotes extends Command {
   }
 
   message(msg) {
-    if (triggers.messageTriggered(msg, /^(?:random quote|quote random)$/)) {
+    if (Aquarius.Triggers.messageTriggered(msg, /^(?:random quote|quote random)$/)) {
       this.log('Reading random quote');
       Quote.count({
         where: {
@@ -62,7 +58,7 @@ class Quotes extends Command {
       return false;
     }
 
-    const readInput = triggers.messageTriggered(msg, /^(?:read )?quote #?([0-9]+)$/i);
+    const readInput = Aquarius.Triggers.messageTriggered(msg, /^(?:read )?quote #?([0-9]+)$/i);
     if (readInput) {
       this.log(`Reading quote ${readInput[1]}`);
       this.getQuote(readInput[1], msg.channel.server.id).then(response => {
@@ -72,7 +68,7 @@ class Quotes extends Command {
       return false;
     }
 
-    const newInput = triggers.messageTriggered(msg,
+    const newInput = Aquarius.Triggers.messageTriggered(msg,
                       /^(?:(?:(?:new|add) quote)|(?:quote (?:new|add))) ([^]*)$/i);
     if (newInput) {
       const quote = newInput[1];

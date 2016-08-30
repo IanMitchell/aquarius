@@ -1,20 +1,15 @@
+const Aquarius = require('../aquarius');
 const moment = require('moment');
-const users = require('../util/users');
-const triggers = require('../util/triggers');
-const client = require('../core/client');
-const Command = require('../core/command');
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize(process.env.DATABASE_URL);
-const Seen = sequelize.import('../models/seen');
+const Seen = Aquarius.Sequelize.import('../models/seen');
 
-class SeenCommand extends Command {
+class SeenCommand extends Aquarius.Command {
   constructor() {
     super();
     this.name = 'Seen';
 
     this.description = 'Tracks when a user was last seen online';
 
-    client.on('presence', (oldUser, newUser) => {
+    this.client.on('presence', (oldUser, newUser) => {
       if (newUser.status === 'offline') {
         Seen.findOrCreate({
           where: {
@@ -36,7 +31,7 @@ class SeenCommand extends Command {
 
   helpMessage(server) {
     let msg = super.helpMessage();
-    const nickname = users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} seen @user\`\`\``;
@@ -45,9 +40,9 @@ class SeenCommand extends Command {
   }
 
   message(msg) {
-    const seenRegex = new RegExp(`^seen ${triggers.mentionRegex}$`, 'i');
+    const seenRegex = new RegExp(`^seen ${Aquarius.Triggers.mentionRegex}$`, 'i');
 
-    if (triggers.messageTriggered(msg, seenRegex)) {
+    if (Aquarius.Triggers.messageTriggered(msg, seenRegex)) {
       const user = msg.mentions[msg.mentions.length - 1];
 
       // untagged @mention, which Regex returns as a false positive
@@ -78,7 +73,7 @@ class SeenCommand extends Command {
 
         time = moment(seen.lastSeen * 1000);
 
-        const nick = users.getNickname(msg.channel.server, user);
+        const nick = Aquarius.Users.getNickname(msg.channel.server, user);
         msg.client.sendMessage(msg.channel, `${nick} last seen ${time.fromNow()}`);
         return;
       });

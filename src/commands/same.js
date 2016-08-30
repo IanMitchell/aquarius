@@ -1,8 +1,8 @@
-const Command = require('../core/command');
+const Aquarius = require('../aquarius');
 
 const MESSAGE_STACK_SIZE = 4;
 
-class Same extends Command {
+class Same extends Aquarius.Command {
   constructor() {
     super();
 
@@ -51,10 +51,6 @@ class Same extends Command {
     }
   }
 
-  onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
-  }
-
   isSame(msg) {
     const server = msg.channel.server.id;
     const channel = msg.channel.name;
@@ -67,7 +63,7 @@ class Same extends Command {
       return false;
     }
 
-    const unique = this.messageStack.get(server).get(channel).filter(this.onlyUnique);
+    const unique = this.messageStack.get(server).get(channel).uniq();
 
     if (unique.length === 1 && unique[0] === msg.content) {
       return true;

@@ -1,14 +1,10 @@
+const Aquarius = require('../aquarius');
 const moment = require('moment');
-const triggers = require('../util/triggers');
-const users = require('../util/users');
-const Command = require('../core/command');
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize(process.env.DATABASE_URL);
-const Karma = sequelize.import('../models/karma');
+const Karma = Aquarius.Sequelize.import('../models/karma');
 
 const DEFAULT_COOLDOWN = 5 * 60; // 5m (Unix Timestamp, so in seconds not ms)
 
-class KarmaCommand extends Command {
+class KarmaCommand extends Aquarius.Command {
   constructor() {
     super();
     this.name = 'Karma';
@@ -22,7 +18,7 @@ class KarmaCommand extends Command {
 
   helpMessage(server) {
     let msg = super.helpMessage();
-    const nickname = users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
     msg += '```@username++ [optional message]\n';
@@ -49,20 +45,20 @@ class KarmaCommand extends Command {
     const karmaName = this.getSetting(msg.server.id, 'name');
 
     const leaderboardRegex = new RegExp(`^(?:karma|${karmaName}) leaderboard$`, 'i');
-    const karmaLookupRegex = new RegExp(`^(?:karma|${karmaName}) ${triggers.mentionRegex}$`, 'i');
+    const karmaLookupRegex = new RegExp(`^(?:karma|${karmaName}) ${Aquarius.Triggers.mentionRegex}$`, 'i');
     const karmaRegex = new RegExp([
-      `^${triggers.mentionRegex}(?:(?: (?:(plus|minus) (?:karma|${karmaName})).*)|`,
+      `^${Aquarius.Triggers.mentionRegex}(?:(?: (?:(plus|minus) (?:karma|${karmaName})).*)|`,
       '(?: ?((\\+\\+).*|(--).*)))$',
     ].join(''), 'i');
 
-    if (triggers.messageTriggered(msg, leaderboardRegex)) {
+    if (Aquarius.Triggers.messageTriggered(msg, leaderboardRegex)) {
       this.log('Server leaderboard requested');
       Karma.findAll({
         where: {
           serverId: msg.server.id,
         },
         order: [
-          [sequelize.col('count'), 'DESC'],
+          [Aquarius.Sequelize.col('count'), 'DESC'],
         ],
         limit: 5,
       }).then(response => {
@@ -72,7 +68,7 @@ class KarmaCommand extends Command {
           let str = `**${karmaName} Leaderboard**\n`;
 
           response.forEach((record, index) => {
-            const nick = users.getNickname(msg.server, record.userId);
+            const nick = Aquarius.Users.getNickname(msg.server, record.userId);
             str += `${index + 1}. ${nick} - ${record.count} ${karmaName}\n`;
           });
 
@@ -83,7 +79,7 @@ class KarmaCommand extends Command {
       return false;
     }
 
-    if (triggers.messageTriggered(msg, karmaLookupRegex)) {
+    if (Aquarius.Triggers.messageTriggered(msg, karmaLookupRegex)) {
       const user = msg.mentions[msg.mentions.length - 1];
 
       if (user === undefined) {
@@ -103,14 +99,14 @@ class KarmaCommand extends Command {
           lastGiven: 0,
         },
       }).spread((karma) => {
-        const nick = users.getNickname(msg.server, user.id);
+        const nick = Aquarius.Users.getNickname(msg.server, user.id);
         msg.client.sendMessage(msg.channel, `${nick} has ${karma.count} ${karmaName}.`);
       });
 
       return false;
     }
 
-    const karmaInput = triggers.customTrigger(msg, karmaRegex);
+    const karmaInput = Aquarius.Triggers.customTrigger(msg, karmaRegex);
 
     if (karmaInput) {
       const user = msg.mentions[0];
@@ -186,7 +182,7 @@ class KarmaCommand extends Command {
               str += 'removed! ';
             }
 
-            str += `${users.getNickname(msg.server, user)} now has ${result.count} ${karmaName}.`;
+            str += `${Aquarius.Users.getNickname(msg.server, user)} now has ${result.count} ${karmaName}.`;
             return msg.client.sendMessage(msg.channel, str);
           });
         });

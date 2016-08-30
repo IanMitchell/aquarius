@@ -1,12 +1,10 @@
-const triggers = require('../util/triggers');
-const users = require('../util/users');
-const Command = require('../core/command');
+const Aquarius = require('../aquarius');
 
 const ORDER_MAX_VALUE = 99999999999;
 const ORDER_RANGE_LIMIT = 1024;
 const ORDER_RESULTS_LIMIT = 20;
 
-class Order extends Command {
+class Order extends Aquarius.Command {
   constructor() {
     super();
 
@@ -15,7 +13,7 @@ class Order extends Command {
 
   helpMessage(server) {
     let msg = super.helpMessage();
-    const nickname = users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} order [message]\`\`\``;
@@ -33,7 +31,7 @@ class Order extends Command {
   }
 
   message(msg) {
-    const inputs = triggers.messageTriggered(msg, /^o(?:rder)? (.+)$/i);
+    const inputs = Aquarius.Triggers.messageTriggered(msg, /^o(?:rder)? (.+)$/i);
 
     if (inputs) {
       const rangeRegex = /(-?\d+)-(-?\d+)$/i;

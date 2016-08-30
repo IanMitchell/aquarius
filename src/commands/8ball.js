@@ -1,8 +1,6 @@
-const triggers = require('../util/triggers');
-const users = require('../util/users');
-const Command = require('../core/command');
+const Aquarius = require('../aquarius');
 
-class Eightball extends Command {
+class Eightball extends Aquarius.Command {
   constructor() {
     super();
 
@@ -35,7 +33,7 @@ class Eightball extends Command {
 
   helpMessage(server) {
     let msg = super.helpMessage();
-    const nickname = users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} 8ball [message]\`\`\``;
@@ -43,7 +41,7 @@ class Eightball extends Command {
   }
 
   message(msg) {
-    if (triggers.messageTriggered(msg, /^8ball .+$/i)) {
+    if (Aquarius.Triggers.messageTriggered(msg, /^8ball .+$/i)) {
       this.log('8ball request');
       return this.responses[Math.floor(Math.random() * this.responses.length)];
     }

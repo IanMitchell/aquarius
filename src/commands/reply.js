@@ -1,12 +1,7 @@
-const triggers = require('../util/triggers');
-const users = require('../util/users');
-const permissions = require('../util/permissions');
-const Command = require('../core/command');
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize(process.env.DATABASE_URL);
-const Reply = sequelize.import('../models/reply');
+const Aquarius = require('../aquarius');
+const Reply = Aquarius.Sequelize.import('../models/reply');
 
-class ReplyCommand extends Command {
+class ReplyCommand extends Aquarius.Command {
   constructor() {
     super();
     this.name = 'Reply';
@@ -38,7 +33,7 @@ class ReplyCommand extends Command {
 
   helpMessage(server) {
     let msg = super.helpMessage();
-    const nickname = users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += '\nExample:\n';
     msg += '```';
@@ -95,15 +90,15 @@ class ReplyCommand extends Command {
       }
     }
 
-    if (permissions.isServerModerator(msg.channel.server, msg.author)) {
+    if (Aquarius.Permissions.isServerModerator(msg.channel.server, msg.author)) {
       const newRegex = new RegExp([
         '^(?:(?:new reply)|(?:reply add)) ',  // Cmd Trigger
         '(["\'])((?:(?=(\\\\?))\\3.)*?)\\1 ', // Reply trigger (Quoted text block 1)
         '(["\'])((?:(?=(\\\\?))\\3.)*?)\\1$', // Response (Quoted text block 2)
       ].join(''), 'i');
 
-      const addInputs = triggers.messageTriggered(msg, newRegex);
-      const removeInputs = triggers.messageTriggered(msg, /^reply remove (.+)$/i);
+      const addInputs = Aquarius.Triggers.messageTriggered(msg, newRegex);
+      const removeInputs = Aquarius.Triggers.messageTriggered(msg, /^reply remove (.+)$/i);
 
       if (addInputs) {
         this.log(`Adding reply: "${addInputs[2]}" -> "${addInputs[5]}"`);

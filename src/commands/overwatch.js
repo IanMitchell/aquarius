@@ -1,10 +1,14 @@
-const triggers = require('../util/triggers');
-const users = require('../util/users');
-const Command = require('../core/command');
+const Aquarius = require('../aquarius');
 
-const URL = 'https://playoverwatch.com/en-us/career/pc/us/';
+const REGIONS = {
+  US: 'us',
+  EU: 'eu',
+  KR: 'kr',
+};
 
-class Overwatch extends Command {
+const URL = 'https://playoverwatch.com/en-us/career/pc';
+
+class Overwatch extends Aquarius.Command {
   constructor() {
     super();
 
@@ -13,18 +17,27 @@ class Overwatch extends Command {
 
   helpMessage(server) {
     let msg = super.helpMessage();
-    const nickname = users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} overwatch [b.net tag]\`\`\``;
     return msg;
   }
 
+  // TODO: Allow `.overwatch set Desch#1935 -> .overwatch` (db)
   message(msg) {
-    const profile = triggers.messageTriggered(msg, /^overwatch ([\w]+#[\d]{4,5})$/i);
+    const profile = Aquarius.Triggers.messageTriggered(msg, /^overwatch (?:([A-Za-z]{2}) )?([\w]+#[\d]{4,5})$/i);
+
     if (profile) {
       this.log(`Overwatch called for ${profile[1]}`);
-      return URL + profile[1].replace('#', '-');
+
+      let region = REGIONS.US;
+
+      if (profile[1] && REGIONS.hasOwnProperty(profile[1].toUpperCase())) {
+        region = REGIONS[profile[1].toUpperCase()];
+      }
+
+      return `${URL}/${region}/${profile[2].replace('#', '-')}`;
     }
 
     return false;
