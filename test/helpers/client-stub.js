@@ -1,11 +1,15 @@
-const mentions = require('./mentions');
+class CacheStub {
+  add(param) {
+    return param;
+  }
+}
 
-const client = {
-  user: {
-    mention: () => mentions.botMention(),
-  },
-};
+class ClientStub {
+  constructor() {
+    this.channels = new CacheStub();
+    this.users = new CacheStub();
+    this.internal = this;
+  }
+}
 
-module.exports = {
-  client,
-};
+module.exports = new ClientStub();
