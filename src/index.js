@@ -352,7 +352,7 @@ Aquarius.Client.on('serverCreated', server => {
   Aquarius.Client.sendMessage(server.owner, msg).then(message => {
     msg = '**Configuring The Bot**\n';
     msg += 'The server admin can set the bot nickname by typing `.nick [nickname]` in a server the bot is in.\n\n';
-    msg += `You can add specific roles to your server to control ${name} actions as well. If a user has \`${name} Mod\` (or if you've changed the bot's nickname, \`[Nickname] Mod\`) the user will have elevated permissions (discussed later). If a user as \`${name} Muted\` (or \`[Nickname] Muted\`) the bot will ignore all commands from the user (with the exception of the server admin).\n\n`;
+    msg += `You can add specific roles to your server to control ${name} actions as well. If a user has \`${name} Mod\` (or if you've changed the bot's nickname, \`[Nickname] Mod\`) the user will have elevated permissions (discussed later). If a user has \`${name} Muted\` (or \`[Nickname] Muted\`) the bot will ignore all commands from the user (with the exception of the server admin).\n\n`;
     msg += `If you'd like ${name} to automatically create these roles for you, type \`create roles\`. If you're running the bot on multiple servers you'll need to specify the server with \`create roles [server]\`.`;
 
     Aquarius.Client.sendMessage(server.owner, msg).then(message => {
