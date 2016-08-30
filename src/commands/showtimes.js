@@ -15,11 +15,12 @@ class Showtimes extends Aquarius.Command {
     this.description = 'Read and Update Showtimes database from Discord';
   }
 
-  blameRequest(show) {
+  blameRequest(server, show) {
     this.log(`Blame request for ${show}`);
 
     let uri = `${SHOWTIMES.SERVER}/blame.json?`;
-    uri += `irc=${encodeURIComponent('#goodjob')}`;
+    uri += `channel=${server}`;
+    uri += '&platform=discord';
     uri += `&show=${encodeURIComponent(show.trim())}`;
 
     return fetch(uri).then(response => {
@@ -29,28 +30,32 @@ class Showtimes extends Aquarius.Command {
 
       // TODO: Test / Look At
       return response.json().then(data => {
-        this.log(`Blame Request Error: ${data}`);
+        this.log('Blame Request Error:');
+        this.log(data);
         Error(data.message);
       });
     }).catch(error => Error(error));
   }
 
-  staffRequest(show, user, position, status) {
+  staffRequest(server, show, user, position, status) {
     const form = new FormData();
     form.append('username', user);
     form.append('status', this.convertStatus(status));
-    form.append('irc', '#goodjobclub');
+    form.append('channel', server);
+    form.append('platform', 'discord');
     form.append('name', show.trim());
+    form.append('position', position);
     form.append('auth', SHOWTIMES.KEY);
 
     return fetch(`${SHOWTIMES.SERVER}/staff`, { method: 'PUT', body: form }).then(response => {
       if (response.ok) {
-        return response.json().then(data => this.staffMessage(show, data));
+        return response.json().then(data => this.staffMessage(server, show, data));
       }
 
       // TODO: Test / Look At
       return response.json().then(data => {
-        this.log(`Staff Request Error: ${data}`);
+        this.log('Staff Request Error:');
+        this.log(data);
         Error(data.message);
       });
     }).catch(error => Error(error));
@@ -98,9 +103,9 @@ class Showtimes extends Aquarius.Command {
     return message;
   }
 
-  staffMessage(show, json) {
+  staffMessage(server, show, json) {
     const msg = json.message;
-    return this.blameRequest(show).then(res => `${msg}. ${res}`);
+    return this.blameRequest(server, show).then(res => `${msg}. ${res}`);
   }
 
   helpMessage(server) {
@@ -119,7 +124,7 @@ class Showtimes extends Aquarius.Command {
 
     if (blameInput) {
       Aquarius.Loading.startLoading(msg.channel)
-        .then(() => this.blameRequest(blameInput[1]))
+        .then(() => this.blameRequest(msg.server.id, blameInput[1]))
         .then(message => {
           Aquarius.Client.sendMessage(msg.channel, message);
           Aquarius.Loading.stopLoading(msg.channel);
@@ -128,7 +133,11 @@ class Showtimes extends Aquarius.Command {
 
     if (staffInput) {
       Aquarius.Loading.startLoading(msg.channel)
-        .then(() => this.staffRequest(staffInput[3], msg.author.id, staffInput[2], staffInput[1]))
+        .then(() => this.staffRequest(msg.server.id,
+                                      staffInput[3],
+                                      msg.author.id,
+                                      staffInput[2],
+                                      staffInput[1]))
         .then(message => {
           Aquarius.Client.sendMessage(msg.channel, message);
           Aquarius.Loading.stopLoading(msg.channel);
