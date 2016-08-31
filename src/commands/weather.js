@@ -48,13 +48,15 @@ class Weather extends Aquarius.Command {
   forecast(response) {
     let msg = `Weather for **${response.location.city}, ${response.location.region}**:\n\n`;
 
+    msg += '```';
     response.item.forecast.forEach(day => {
       const emoji = this.weatherToEmoji(day.code);
-      msg += `${emoji} \t **${day.day}** \t\t`;
+      msg += `${emoji} ${day.day}    `;
 
-      msg += `${day.high}°F / ${day.low}°F \t\t`;
-      msg += `_${this.fahrenheitToCelsius(day.high)}°C / ${this.fahrenheitToCelsius(day.low)}°C_\n`;
+      msg += `(${day.high}/${day.low})°F    `;
+      msg += `(${this.fahrenheitToCelsius(day.high)}/${this.fahrenheitToCelsius(day.low)})°C\n`;
     });
+    msg += '```';
 
     return msg;
   }
