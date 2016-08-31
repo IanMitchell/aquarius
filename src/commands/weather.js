@@ -2,7 +2,7 @@ const Aquarius = require('../aquarius');
 const fetch = require('node-fetch');
 
 const EMOJI_LIST = {
-  SUNNY: '☀',
+  SUNNY: '☀️',
   PARTLY_CLOUDY: '🌤',
   MOSTLY_CLOUDY: '🌥',
   RAINY: '🌧',
