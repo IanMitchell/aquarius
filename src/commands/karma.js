@@ -118,7 +118,7 @@ class KarmaCommand extends Aquarius.Command {
 
       this.log(`Karma request for ${user}`);
 
-      if (user === msg.author) {
+      if (user === msg.author && !Aquarius.Permissions.isBotOwner(user)) {
         msg.client.sendMessage(msg.channel, `You cannot give ${karmaName} to yourself!`);
         return false;
       }
