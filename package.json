@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": ""
+    "test": "jest --setupTestFrameworkScriptFile ./index-test.js"
   },
   "author": {
     "name": "Ian Mitchell",
@@ -37,6 +37,7 @@
   "devDependencies": {
     "eslint": "^2.9.0",
     "eslint-config-airbnb": "^9.0.0",
-    "eslint-plugin-import": "^1.6.1"
+    "eslint-plugin-import": "^1.6.1",
+    "jest": "^15.1.1"
   }
 }
