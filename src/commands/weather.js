@@ -37,7 +37,13 @@ class Weather extends Aquarius.Command {
 
     return fetch(query).then(response => {
       if (response.ok) {
-        return response.json().then(data => this.forecast(data.query.results.channel));
+        return response.json().then(data => {
+          if (data.query.count > 0) {
+            return this.forecast(data.query.results.channel);
+          }
+
+          return 'No results found';
+        });
       }
 
       this.log(`Weather Request Error ${response}`);
