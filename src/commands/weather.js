@@ -142,8 +142,16 @@ class Weather extends Aquarius.Command {
     const weatherInput = Aquarius.Triggers.messageTriggered(msg, /^(?:w|weather) (.*)/i);
 
     if (weatherInput) {
+      this.log(`Weather request for ${weatherInput[1]}`);
+
       Aquarius.Loading.startLoading(msg.channel)
-        .then(() => this.getWeather(weatherInput[1]))
+        .then(() => {
+          try {
+            return this.getWeather(weatherInput[1]);
+          } catch (e) {
+            return e.message;
+          }
+        })
         .then(message => {
           Aquarius.Client.sendMessage(msg.channel, message);
           Aquarius.Loading.stopLoading(msg.channel);
