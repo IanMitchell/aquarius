@@ -15,11 +15,11 @@ class Showtimes extends Aquarius.Command {
     this.description = 'Read and Update Showtimes database from Discord';
   }
 
-  blameRequest(server, show) {
+  blameRequest(guild, show) {
     this.log(`Blame request for ${show}`);
 
     let uri = `${SHOWTIMES.SERVER}/blame.json?`;
-    uri += `channel=${server}`;
+    uri += `channel=${guild}`;
     uri += '&platform=discord';
     uri += `&show=${encodeURIComponent(show.trim())}`;
 
@@ -37,11 +37,11 @@ class Showtimes extends Aquarius.Command {
     }).catch(error => Error(error));
   }
 
-  staffRequest(server, show, user, position, status) {
+  staffRequest(guild, show, user, position, status) {
     const form = new FormData();
     form.append('username', user);
     form.append('status', this.convertStatus(status));
-    form.append('channel', server);
+    form.append('channel', guild);
     form.append('platform', 'discord');
     form.append('name', show.trim());
     form.append('position', position);
@@ -49,7 +49,7 @@ class Showtimes extends Aquarius.Command {
 
     return fetch(`${SHOWTIMES.SERVER}/staff`, { method: 'PUT', body: form }).then(response => {
       if (response.ok) {
-        return response.json().then(data => this.staffMessage(server, show, data));
+        return response.json().then(data => this.staffMessage(guild, show, data));
       }
 
       // TODO: Test / Look At
@@ -103,14 +103,14 @@ class Showtimes extends Aquarius.Command {
     return message;
   }
 
-  staffMessage(server, show, json) {
+  staffMessage(guild, show, json) {
     const msg = json.message;
-    return this.blameRequest(server, show).then(res => `${msg}. ${res}`);
+    return this.blameRequest(guild, show).then(res => `${msg}. ${res}`);
   }
 
-  helpMessage(server) {
+  helpMessage(guild) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} blame [show]\`\`\``;
@@ -124,22 +124,22 @@ class Showtimes extends Aquarius.Command {
 
     if (blameInput) {
       Aquarius.Loading.startLoading(msg.channel)
-        .then(() => this.blameRequest(msg.server.id, blameInput[1]))
+        .then(() => this.blameRequest(msg.guild.id, blameInput[1]))
         .then(message => {
-          Aquarius.Client.sendMessage(msg.channel, message);
+          msg.channel.sendMessage(message);
           Aquarius.Loading.stopLoading(msg.channel);
         });
     }
 
     if (staffInput) {
       Aquarius.Loading.startLoading(msg.channel)
-        .then(() => this.staffRequest(msg.server.id,
+        .then(() => this.staffRequest(msg.guild.id,
                                       staffInput[3],
                                       msg.author.id,
                                       staffInput[2],
                                       staffInput[1]))
         .then(message => {
-          Aquarius.Client.sendMessage(msg.channel, message);
+          msg.channel.sendMessage(message);
           Aquarius.Loading.stopLoading(msg.channel);
         });
     }

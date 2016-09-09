@@ -16,9 +16,9 @@ class KarmaCommand extends Aquarius.Command {
                     'Duration in seconds before a user can give karma again (Min: 10s)');
   }
 
-  helpMessage(server) {
+  helpMessage(guild) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += '```@username++ [optional message]\n';
@@ -29,8 +29,8 @@ class KarmaCommand extends Aquarius.Command {
     return msg;
   }
 
-  getCooldown(server) {
-    let val = parseInt(this.getSetting(server, 'cooldown'), 10);
+  getCooldown(guild) {
+    let val = parseInt(this.getSetting(guild, 'cooldown'), 10);
 
     if (isNaN(val)) {
       val = DEFAULT_COOLDOWN;
@@ -42,7 +42,7 @@ class KarmaCommand extends Aquarius.Command {
   }
 
   message(msg) {
-    const karmaName = this.getSetting(msg.server.id, 'name');
+    const karmaName = this.getSetting(msg.guild.id, 'name');
 
     const leaderboardRegex = new RegExp(`^(?:karma|${karmaName}) leaderboard$`, 'i');
     const karmaLookupRegex = new RegExp(`^(?:karma|${karmaName}) ${Aquarius.Triggers.mentionRegex}$`, 'i');
@@ -55,7 +55,7 @@ class KarmaCommand extends Aquarius.Command {
       this.log('Server leaderboard requested');
       Karma.findAll({
         where: {
-          serverId: msg.server.id,
+          guildId: msg.guild.id,
         },
         order: [
           [Aquarius.Sequelize.col('count'), 'DESC'],
@@ -63,16 +63,16 @@ class KarmaCommand extends Aquarius.Command {
         limit: 5,
       }).then(response => {
         if (response.length === 0) {
-          msg.client.sendMessage(msg.channel, 'There is no leaderboard for this server!');
+          msg.channel.sendMessage('There is no leaderboard for this server!');
         } else {
           let str = `**${karmaName} Leaderboard**\n`;
 
           response.forEach((record, index) => {
-            const nick = Aquarius.Users.getNickname(msg.server, record.userId);
+            const nick = Aquarius.Users.getNickname(msg.guild, record.userId);
             str += `${index + 1}. ${nick} - ${record.count} ${karmaName}\n`;
           });
 
-          msg.client.sendMessage(msg.channel, str);
+          msg.channel.sendMessage(str);
         }
       });
 
@@ -91,7 +91,7 @@ class KarmaCommand extends Aquarius.Command {
       Karma.findOrCreate({
         where: {
           userId: user.id,
-          serverId: msg.server.id,
+          guildId: msg.guild.id,
         },
         defaults: {
           count: 0,
@@ -99,8 +99,8 @@ class KarmaCommand extends Aquarius.Command {
           lastGiven: 0,
         },
       }).spread((karma) => {
-        const nick = Aquarius.Users.getNickname(msg.server, user.id);
-        msg.client.sendMessage(msg.channel, `${nick} has ${karma.count} ${karmaName}.`);
+        const nick = Aquarius.Users.getNickname(msg.guild, user.id);
+        msg.channel.sendMessage(`${nick} has ${karma.count} ${karmaName}.`);
       });
 
       return false;
@@ -119,14 +119,14 @@ class KarmaCommand extends Aquarius.Command {
       this.log(`Karma request for ${user}`);
 
       if (user === msg.author && !Aquarius.Permissions.isBotOwner(user)) {
-        msg.client.sendMessage(msg.channel, `You cannot give ${karmaName} to yourself!`);
+        msg.channel.sendMessage(`You cannot give ${karmaName} to yourself!`);
         return false;
       }
 
       Karma.findOrCreate({
         where: {
           userId: msg.author.id,
-          serverId: msg.server.id,
+          guildId: msg.guild.id,
         },
         defaults: {
           count: 0,
@@ -138,20 +138,20 @@ class KarmaCommand extends Aquarius.Command {
           this.log('Karma record created');
         }
 
-        const cooldown = this.getCooldown(msg.server.id);
+        const cooldown = this.getCooldown(msg.guild.id);
 
         if (cooldown > moment().unix() - karmaGiver.lastGiven) {
           this.log('Karma cooldown');
           const future = moment((karmaGiver.lastGiven + cooldown) * 1000);
           const wait = future.toNow(true);
-          msg.client.sendMessage(msg.channel, `You need to wait ${wait} to use ${karmaName}!`);
+          msg.channel.sendMessage(`You need to wait ${wait} to use ${karmaName}!`);
           return false;
         }
 
         return Karma.findOrCreate({
           where: {
             userId: user.id,
-            serverId: msg.server.id,
+            guildId: msg.guild.id,
           },
           defaults: {
             count: 0,
@@ -182,8 +182,8 @@ class KarmaCommand extends Aquarius.Command {
               str += 'removed! ';
             }
 
-            str += `${Aquarius.Users.getNickname(msg.server, user)} now has ${result.count} ${karmaName}.`;
-            return msg.client.sendMessage(msg.channel, str);
+            str += `${Aquarius.Users.getNickname(msg.guild, user)} now has ${result.count} ${karmaName}.`;
+            return msg.channel.sendMessage(str);
           });
         });
       });

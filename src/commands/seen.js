@@ -9,7 +9,7 @@ class SeenCommand extends Aquarius.Command {
 
     this.description = 'Tracks when a user was last seen online';
 
-    this.client.on('presence', (oldUser, newUser) => {
+    Aquarius.Client.on('presence', (oldUser, newUser) => {
       if (newUser.status === 'offline') {
         Seen.findOrCreate({
           where: {
@@ -29,9 +29,9 @@ class SeenCommand extends Aquarius.Command {
     });
   }
 
-  helpMessage(server) {
+  helpMessage(guild) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} seen @user\`\`\``;
@@ -67,14 +67,14 @@ class SeenCommand extends Aquarius.Command {
         let time = seen.lastSeen;
 
         if (created || seen.lastSeen === 0) {
-          msg.client.sendMessage(msg.channel, `I don't have a record for ${user.username}`);
+          msg.channel.sendMessage(`I don't have a record for ${user.username}`);
           return;
         }
 
         time = moment(seen.lastSeen * 1000);
 
-        const nick = Aquarius.Users.getNickname(msg.channel.server, user);
-        msg.client.sendMessage(msg.channel, `${nick} last seen ${time.fromNow()}`);
+        const nick = Aquarius.Users.getNickname(msg.channel.guild, user);
+        msg.channel.sendMessage(`${nick} last seen ${time.fromNow()}`);
         return;
       });
     }

@@ -13,27 +13,27 @@ class ReplyCommand extends Aquarius.Command {
 
     // Create response map
     this.log('Creating generic response map');
-    this.client.servers.forEach(server => this.addServer(server.id));
+    Aquarius.Client.guilds.forEach(guild => this.addGuild(guild.id));
 
     // Load custom server replies
     this.log('Loading custom replies');
 
     Reply.findAll().then(replies => {
       replies.forEach(reply => {
-        if (!this.responses.has(reply.serverId)) {
-          this.addServer(reply.serverId);
+        if (!this.responses.has(reply.guildId)) {
+          this.addGuild(reply.guildId);
         }
 
-        this.responses.get(reply.serverId).set(reply.trigger.toLowerCase(), reply.response);
+        this.responses.get(reply.guildId).set(reply.trigger.toLowerCase(), reply.response);
       });
 
       this.log('Initialization done');
     });
   }
 
-  helpMessage(server) {
+  helpMessage(guild) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += '\nExample:\n';
     msg += '```';
@@ -63,11 +63,11 @@ class ReplyCommand extends Aquarius.Command {
     return genericResponses;
   }
 
-  addServer(serverId) {
-    this.responses.set(serverId, new Map());
+  addGuild(guildId) {
+    this.responses.set(guildId, new Map());
 
     this.genericResponses().forEach((value, key) => {
-      this.responses.get(serverId).set(key.toLowerCase(), value);
+      this.responses.get(guildId).set(key.toLowerCase(), value);
     });
   }
 
@@ -77,20 +77,20 @@ class ReplyCommand extends Aquarius.Command {
       return false;
     }
 
-    if (this.responses.has(msg.channel.server.id)) {
-      if (this.responses.get(msg.channel.server.id).has(msg.cleanContent.trim().toLowerCase())) {
+    if (this.responses.has(msg.channel.guild.id)) {
+      if (this.responses.get(msg.channel.guild.id).has(msg.cleanContent.trim().toLowerCase())) {
         this.log(`Input: ${msg.cleanContent}`);
-        return this.responses.get(msg.channel.server.id).get(msg.cleanContent.trim().toLowerCase());
+        return this.responses.get(msg.channel.guild.id).get(msg.cleanContent.trim().toLowerCase());
       }
     } else {
-      this.addServer(msg.channel.server.id);
+      this.addGuild(msg.channel.guild.id);
 
       if (this.genericResponses().has(msg.cleanContent.trim().toLowerCase())) {
         return this.genericResponses().get(msg.cleanContent.trim().toLowerCase());
       }
     }
 
-    if (Aquarius.Permissions.isServerModerator(msg.channel.server, msg.author)) {
+    if (Aquarius.Permissions.isGuildModerator(msg.channel.guild, msg.author)) {
       const newRegex = new RegExp([
         '^(?:(?:new reply)|(?:reply add)) ',  // Cmd Trigger
         '(["\'])((?:(?=(\\\\?))\\3.)*?)\\1 ', // Reply trigger (Quoted text block 1)
@@ -105,7 +105,7 @@ class ReplyCommand extends Aquarius.Command {
 
         Reply.findOrCreate({
           where: {
-            serverId: msg.channel.server.id,
+            guildId: msg.channel.guild.id,
             trigger: addInputs[2],
           },
           defaults: {
@@ -113,10 +113,10 @@ class ReplyCommand extends Aquarius.Command {
           },
         }).spread((reply, created) => {
           if (created) {
-            msg.client.sendMessage(msg.channel, 'Added reply.');
-            this.responses.get(msg.channel.server.id).set(addInputs[2].toLowerCase(), addInputs[5]);
+            msg.channel.sendMessage('Added reply.');
+            this.responses.get(msg.channel.guild.id).set(addInputs[2].toLowerCase(), addInputs[5]);
           } else {
-            msg.client.sendMessage(msg.channel, 'A reply with that trigger already exists!');
+            msg.channel.sendMessage('A reply with that trigger already exists!');
           }
         });
       }
@@ -127,15 +127,15 @@ class ReplyCommand extends Aquarius.Command {
         // Remove from database
         Reply.destroy({
           where: {
-            serverId: msg.channel.server.id,
+            guildId: msg.channel.guild.id,
             trigger: removeInputs[1],
           },
         }).then(removedRows => {
           if (removedRows > 0) {
-            msg.client.sendMessage(msg.channel, `Removed '${removeInputs[1]}' reply`);
-            this.responses.get(msg.channel.server.id).delete(removeInputs[1]);
+            msg.channel.sendMessage(`Removed '${removeInputs[1]}' reply`);
+            this.responses.get(msg.channel.guild.id).delete(removeInputs[1]);
           } else {
-            msg.client.sendMessage(msg.channel, `Could not find a reply with '${removeInputs[1]}'`);
+            msg.channel.sendMessage(`Could not find a reply with '${removeInputs[1]}'`);
           }
         });
       }

@@ -7,9 +7,9 @@ class Choose extends Aquarius.Command {
     this.description = 'Given a list of values randomly chooses one';
   }
 
-  helpMessage(server) {
+  helpMessage(guild) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} choose [message]\`\`\``;
