@@ -1,7 +1,7 @@
 const client = require('./client');
 
 function getOwnedGuilds(user) {
-  return client.guilds.filter(guild => guild.owner === user);
+  return client.guilds.array().filter(guild => guild.owner === user);
 }
 
 function getUser(id) {
