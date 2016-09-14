@@ -87,8 +87,8 @@ class Weather extends Aquarius.Command {
       case '38':   // Scattered Thunderstorms
       case '39':   // Scattered Thunderstorms
       case '45':   // Thundershowers
-        return EMOJI_LIST.THUNDER;
       case '47':   // Isolated Thundershowers
+        return EMOJI_LIST.THUNDER;
       case '5':    // Mixed Rain and Snow
       case '7':    // Mixed Snow and Sleet
       case '13':   // Snow Flurries
