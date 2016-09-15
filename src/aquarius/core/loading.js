@@ -1,11 +1,9 @@
-const client = require('./client');
-
 function startLoading(channel) {
-  return client.startTyping(channel);
+  return channel.startTyping();
 }
 
 function stopLoading(channel) {
-  return client.stopTyping(channel);
+  return channel.stopTyping();
 }
 
 module.exports = {

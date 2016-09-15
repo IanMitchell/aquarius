@@ -123,21 +123,22 @@ class Showtimes extends Aquarius.Command {
 
 
     if (blameInput) {
-      Aquarius.Loading.startLoading(msg.channel)
-        .then(() => this.blameRequest(msg.guild.id, blameInput[1]))
-        .then(message => {
-          msg.channel.sendMessage(message);
-          Aquarius.Loading.stopLoading(msg.channel);
-        });
+      Aquarius.Loading.startLoading(msg.channel);
+
+      this.blameRequest(msg.guild.id, blameInput[1]).then(message => {
+        msg.channel.sendMessage(message);
+        Aquarius.Loading.stopLoading(msg.channel);
+      });
     }
 
     if (staffInput) {
-      Aquarius.Loading.startLoading(msg.channel)
-        .then(() => this.staffRequest(msg.guild.id,
-                                      staffInput[3],
-                                      msg.author.id,
-                                      staffInput[2],
-                                      staffInput[1]))
+      Aquarius.Loading.startLoading(msg.channel);
+
+      this.staffRequest(msg.guild.id,
+                        staffInput[3],
+                        msg.author.id,
+                        staffInput[2],
+                        staffInput[1])
         .then(message => {
           msg.channel.sendMessage(message);
           Aquarius.Loading.stopLoading(msg.channel);

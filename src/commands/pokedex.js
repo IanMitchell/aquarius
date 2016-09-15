@@ -23,8 +23,10 @@ class Pokédex extends Aquarius.Command {
 
   addPokémon(pokémon, msg) {
     this.log(`Adding ${pokémon} entry`);
-    return Aquarius.Loading.startLoading(msg.channel)
-      .then(() => fetch(`http://pokeapi.co/api/v2/pokemon/${pokémon}`))
+
+    Aquarius.Loading.startLoading(msg.channel);
+
+    return fetch(`http://pokeapi.co/api/v2/pokemon/${pokémon}`)
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -64,7 +66,7 @@ class Pokédex extends Aquarius.Command {
       const pokémon = this.pokémonMap.get(id);
       const types = pokémon.types.map(type => type.type.name.capitalize()).join(', ');
       const content = `#${pokémon.id} ${pokémon.name.capitalize()} (${types})`;
-      Aquarius.Client.sendFile(msg.channel, pokémon.image, `${pokémon.name}.png`, content);
+      msg.channel.sendFile(pokémon.image, `${pokémon.name}.png`, content);
     }
   }
 

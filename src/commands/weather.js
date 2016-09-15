@@ -144,19 +144,18 @@ class Weather extends Aquarius.Command {
     if (weatherInput) {
       this.log(`Weather request for ${weatherInput[1]}`);
 
-      Aquarius.Loading.startLoading(msg.channel)
-        .then(() => {
-          try {
-            return this.getWeather(weatherInput[1]);
-          } catch (e) {
-            this.log(e.message);
-            return 'Error connecting to Yahoo Weather.';
-          }
-        })
-        .then(message => {
+      Aquarius.Loading.startLoading(msg.channel);
+
+      try {
+        this.getWeather(weatherInput[1]).then(message => {
           msg.channel.sendMessage(message);
           Aquarius.Loading.stopLoading(msg.channel);
         });
+      } catch (e) {
+        this.log(e.message);
+        Aquarius.Loading.stopLoading(msg.channel);
+        return 'Error connecting to Yahoo Weather.';
+      }
     }
 
     return false;
