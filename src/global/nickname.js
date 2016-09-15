@@ -6,16 +6,20 @@ class Nickname extends Aquarius.Command {
 
     if (nicknameInput && Aquarius.Permissions.isGuildAdmin(msg.guild, msg.author)) {
       this.log(`Setting bot nickname to ${nicknameInput[1]} on ${msg.guild.id}`);
-      Aquarius.Client.setNickname(msg.guild, nicknameInput[1], Aquarius.Client.user).then(data => {
-        if (data.nick) {
-          msg.channel.sendMessage(`Nickname set to ${data.nick}`);
-        } else {
-          msg.channel.sendMessage('Nickname removed');
-        }
-      }).catch(err => {
-        this.log(err);
-        msg.channel.sendMessage('Error setting nickname. Please verify it is valid!');
-      });
+
+      msg.guild.fetchMember(Aquarius.Client.user)
+        .then(user => user.setNickname(nicknameInput[1]))
+        .then(user => {
+          if (user.nickname === nicknameInput[1]) {
+            msg.channel.sendMessage(`Nickname set to ${user.nickname}`);
+          } else {
+            msg.channel.sendMessage('Nickname removed');
+          }
+        })
+        .catch(err => {
+          this.log(err);
+          msg.channel.sendMessage('Error setting nickname. Please verify it is valid!');
+        });
     }
 
     return false;
