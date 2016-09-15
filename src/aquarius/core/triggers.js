@@ -32,7 +32,7 @@ function messageTriggered(msg, trigger) {
   }
 
   // Drop triggers for PMs
-  if (msg.guild === undefined) {
+  if (msg.guild === undefined || msg.guild === null) {
     return msg.content.trim().match(trigger);
   }
 

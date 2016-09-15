@@ -337,7 +337,7 @@ function handleCommands(message) {
 }
 
 Aquarius.Client.on('message', message => {
-  if (message.guild === undefined) {
+  if (message.guild === undefined || message.guild === null) {
     handleQuery(message);
   } else {
     if (!Aquarius.Permissions.isGuildMuted(message.guild, message.author)) {
