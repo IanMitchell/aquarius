@@ -14,8 +14,8 @@ class Same extends Aquarius.Command {
                          'How many repeated messages before the bot mimics (Min: 2)');
   }
 
-  getSize(server) {
-    let val = parseInt(this.getSetting(server, 'size'), 10);
+  getSize(guild) {
+    let val = parseInt(this.getSetting(guild, 'size'), 10);
 
     if (isNaN(val)) {
       val = MESSAGE_STACK_SIZE;
@@ -27,43 +27,43 @@ class Same extends Aquarius.Command {
   }
 
   pushMessage(msg) {
-    const server = msg.server.id;
+    const guild = msg.guild.id;
     const channel = msg.channel.name;
 
-    if (!this.messageStack.get(server)) {
-      this.log(`Creating entry for ${server}`);
-      this.messageStack.set(server, new Map());
+    if (!this.messageStack.get(guild)) {
+      this.log(`Creating entry for ${guild}`);
+      this.messageStack.set(guild, new Map());
 
-      msg.server.channels.forEach(chan => {
-        this.messageStack.get(server).set(chan.name, []);
+      msg.guild.channels.forEach(chan => {
+        this.messageStack.get(guild).set(chan.name, []);
       });
     }
 
-    if (!this.messageStack.get(server).get(channel)) {
-      this.messageStack.get(server).set(channel, []);
+    if (!this.messageStack.get(guild).get(channel)) {
+      this.messageStack.get(guild).set(channel, []);
     }
 
-    this.messageStack.get(server).get(channel).push(msg.content);
+    this.messageStack.get(guild).get(channel).push(msg.content);
 
     // Only track last couple messages
-    if (this.messageStack.get(server).get(channel).length > this.getSize(server)) {
-      this.messageStack.get(server).get(channel).shift();
+    if (this.messageStack.get(guild).get(channel).length > this.getSize(guild)) {
+      this.messageStack.get(guild).get(channel).shift();
     }
   }
 
   isSame(msg) {
-    const server = msg.channel.server.id;
+    const guild = msg.channel.guild.id;
     const channel = msg.channel.name;
 
-    if (!this.messageStack.get(server).get(channel)) {
+    if (!this.messageStack.get(guild).get(channel)) {
       return false;
     }
 
-    if (this.messageStack.get(server).get(channel).length !== this.getSize(server)) {
+    if (this.messageStack.get(guild).get(channel).length !== this.getSize(guild)) {
       return false;
     }
 
-    const unique = this.messageStack.get(server).get(channel).uniq();
+    const unique = this.messageStack.get(guild).get(channel).uniq();
 
     if (unique.length === 1 && unique[0] === msg.content) {
       return true;
@@ -73,15 +73,15 @@ class Same extends Aquarius.Command {
   }
 
   message(msg) {
-    if (msg.content === '' || msg.server === undefined || msg.server === null) {
+    if (msg.content === '' || msg.guild === undefined || msg.guild === null) {
       return false;
     }
 
     this.pushMessage(msg);
 
     if (this.isSame(msg)) {
-      this.log(`Sending '${msg.cleanContent}' to ${msg.server.id}`);
-      this.messageStack.get(msg.server.id).set(msg.channel.name, []);
+      this.log(`Sending '${msg.cleanContent}' to ${msg.guild.id}`);
+      this.messageStack.get(msg.guild.id).set(msg.channel.name, []);
       return msg.content;
     }
 

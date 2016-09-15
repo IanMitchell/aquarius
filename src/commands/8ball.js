@@ -31,9 +31,9 @@ class Eightball extends Aquarius.Command {
     ];
   }
 
-  helpMessage(server) {
+  helpMessage(guild) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} 8ball [message]\`\`\``;

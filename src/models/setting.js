@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const setting = sequelize.define('setting', {
-    serverId: DataTypes.STRING,
+    guildId: DataTypes.STRING,
     config: DataTypes.JSON,
     commands: DataTypes.JSON,
   });

@@ -9,9 +9,9 @@ class Quotes extends Aquarius.Command {
     this.description = 'Store memorable quotes from your server';
   }
 
-  helpMessage(server) {
+  helpMessage(guild) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += '```';
@@ -23,11 +23,11 @@ class Quotes extends Aquarius.Command {
     return msg;
   }
 
-  getQuote(quoteId, serverId) {
+  getQuote(quoteId, guildId) {
     const query = Quote.findOne({
       where: {
         quoteId,
-        serverId,
+        guildId,
       },
     }).then(quote => {
       if (quote) {
@@ -46,12 +46,12 @@ class Quotes extends Aquarius.Command {
       this.log('Reading random quote');
       Quote.count({
         where: {
-          serverId: msg.channel.server.id,
+          guildId: msg.channel.guild.id,
         },
       }).then(count => {
         const id = Math.ceil(Math.random() * count);
-        this.getQuote(id, msg.channel.server.id).then(response => {
-          msg.client.sendMessage(msg.channel, response);
+        this.getQuote(id, msg.channel.guild.id).then(response => {
+          msg.channel.sendMessage(response);
         });
       });
 
@@ -61,8 +61,8 @@ class Quotes extends Aquarius.Command {
     const readInput = Aquarius.Triggers.messageTriggered(msg, /^(?:read )?quote #?([0-9]+)$/i);
     if (readInput) {
       this.log(`Reading quote ${readInput[1]}`);
-      this.getQuote(readInput[1], msg.channel.server.id).then(response => {
-        msg.client.sendMessage(msg.channel, response);
+      this.getQuote(readInput[1], msg.channel.guild.id).then(response => {
+        msg.channel.sendMessage(response);
       });
 
       return false;
@@ -79,16 +79,16 @@ class Quotes extends Aquarius.Command {
         // TODO: Consider max(quote_id).where(server) to prevent quote_id collisions
         Quote.count({
           where: {
-            serverId: msg.channel.server.id,
+            guildId: msg.channel.guild.id,
           },
         }).then(count => {
           Quote.create({
-            serverId: msg.channel.server.id,
+            guildId: msg.channel.guild.id,
             channel: msg.channel.name,
             addedBy: msg.author.username,
             quoteId: count + 1,
             quote,
-          }).then(() => msg.client.sendMessage(msg.channel, `Quote added as #${count + 1}.`));
+          }).then(() => msg.channel.sendMessage(`Quote added as #${count + 1}.`));
         });
         return false;
       }

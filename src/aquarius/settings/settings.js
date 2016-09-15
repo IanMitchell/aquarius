@@ -3,6 +3,7 @@ const Config = require('./config');
 const log = debug('Settings');
 // log.log = require('../dashboard/log');
 
+// eslint-disable-next-line func-names
 const Settings = (function () {
   log('Creating Settings');
 

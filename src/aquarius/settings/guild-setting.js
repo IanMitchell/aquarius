@@ -1,4 +1,4 @@
-class ServerSetting {
+class GuildSetting {
   constructor() {
     this.settings = new Map();
     this.commands = new Map();
@@ -95,4 +95,4 @@ class ServerSetting {
   }
 }
 
-module.exports = ServerSetting;
+module.exports = GuildSetting;

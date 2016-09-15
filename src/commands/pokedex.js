@@ -12,9 +12,9 @@ class Pokédex extends Aquarius.Command {
     this.pokémonMap = new Map();
   }
 
-  helpMessage(server) {
+  helpMessage(guild) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} pokedex [name|id]\`\`\``;
@@ -30,7 +30,7 @@ class Pokédex extends Aquarius.Command {
           return response.json();
         }
 
-        this.client.sendMessage(msg.channel, 'Cannot find Pokémon.');
+        msg.channel.sendMessage('Cannot find Pokémon.');
         return false;
       })
       .then(json => {
@@ -64,7 +64,7 @@ class Pokédex extends Aquarius.Command {
       const pokémon = this.pokémonMap.get(id);
       const types = pokémon.types.map(type => type.type.name.capitalize()).join(', ');
       const content = `#${pokémon.id} ${pokémon.name.capitalize()} (${types})`;
-      this.client.sendFile(msg.channel, pokémon.image, `${pokémon.name}.png`, content);
+      Aquarius.Client.sendFile(msg.channel, pokémon.image, `${pokémon.name}.png`, content);
     }
   }
 

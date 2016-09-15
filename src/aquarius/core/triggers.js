@@ -3,7 +3,7 @@ const client = require('./client');
 const mentionRegex = '(?:(?:@[#\\w]+)|(?:<@!?\\d+>))';
 
 function botMention() {
-  return client.user.mention();
+  return client.user.toString();
 }
 
 function mentionTrigger(msg) {
@@ -11,7 +11,7 @@ function mentionTrigger(msg) {
 }
 
 function nicknameMentionTrigger(msg) {
-  if (msg.mentions.length > 0 && msg.mentions[0].equals(client.user)) {
+  if (msg.mentions.length > 0 && msg.mentions[0] === client.user) {
     return msg.content.trim().match(new RegExp(`^${mentionRegex}`));
   }
 
@@ -32,7 +32,7 @@ function messageTriggered(msg, trigger) {
   }
 
   // Drop triggers for PMs
-  if (msg.server === undefined) {
+  if (msg.guild === undefined) {
     return msg.content.trim().match(trigger);
   }
 

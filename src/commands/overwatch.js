@@ -15,9 +15,9 @@ class Overwatch extends Aquarius.Command {
     this.description = "Links to the Overwatch profile's career overview page";
   }
 
-  helpMessage(server) {
+  helpMessage(guild) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} overwatch [b.net tag]\`\`\``;

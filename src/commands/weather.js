@@ -23,9 +23,9 @@ class Weather extends Aquarius.Command {
     this.description = 'Ten day weather forecasts';
   }
 
-  helpMessage(server) {
+  helpMessage(guild) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
+    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} weather [search term]\`\`\``;
@@ -149,11 +149,12 @@ class Weather extends Aquarius.Command {
           try {
             return this.getWeather(weatherInput[1]);
           } catch (e) {
-            return e.message;
+            this.log(e.message);
+            return 'Error connecting to Yahoo Weather.';
           }
         })
         .then(message => {
-          Aquarius.Client.sendMessage(msg.channel, message);
+          msg.channel.sendMessage(message);
           Aquarius.Loading.stopLoading(msg.channel);
         });
     }
