@@ -13,7 +13,7 @@ function isBotOwner(user) {
 }
 
 function isGuildAdmin(guild, user) {
-  return isBotOwner(user) || guild.owner === user;
+  return isBotOwner(user) || guild.owner.user.equals(user);
 }
 
 function isGuildModerator(guild, user) {
