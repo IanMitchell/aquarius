@@ -68,7 +68,7 @@ function generateCommandList(message, admin = false) {
 
       return '';
     }).filter(Boolean).join(', ');
-    str += `.\n\nFor more information, use \`@${Aquarius.Client.user.name} help [command]\`.`;
+    str += `.\n\nFor more information, use \`@${Aquarius.Client.user.username} help [command]\`.`;
   }
 
   return str;
