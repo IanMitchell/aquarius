@@ -43,7 +43,7 @@ class SeenCommand extends Aquarius.Command {
     const seenRegex = new RegExp(`^seen ${Aquarius.Triggers.mentionRegex}$`, 'i');
 
     if (Aquarius.Triggers.messageTriggered(msg, seenRegex)) {
-      const user = msg.mentions[msg.mentions.length - 1];
+      const user = msg.mentions.users.array()[msg.mentions.users.array().length - 1];
 
       // untagged @mention, which Regex returns as a false positive
       if (user === undefined) {
