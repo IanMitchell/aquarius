@@ -117,8 +117,8 @@ class Weather extends Aquarius.Command {
       case '19':   // Dust
       case '20':   // Foggy
       case '21':   // Haze
-        return EMOJI_LIST.FOGGY;
       case '22':   // Smoky
+        return EMOJI_LIST.FOGGY;
       case '23':   // Blustery
       case '24':   // Windy
         return EMOJI_LIST.WINDY;
