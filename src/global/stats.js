@@ -10,13 +10,13 @@ class Stats extends Aquarius.Command {
     }
 
     if (Aquarius.Permissions.isBotOwner(msg.author) && Aquarius.Triggers.messageTriggered(msg, /^servers$/i)) {
-      const count = Aquarius.Client.guilds.length;
+      const count = Aquarius.Client.guilds.array().length;
       this.log(`Server count: ${count}`);
 
-      let str = `**${Aquarius.Client.user.name} is in ${count} Servers**\n`;
+      let str = `**${Aquarius.Client.user.username} is in ${count} Servers**\n`;
 
-      Aquarius.Client.guilds.forEach((guild, i) => {
-        str += `${i + 1}. ${guild.name} -- *(${guild.members.length} members)*\n`;
+      Aquarius.Client.guilds.array().forEach((guild, i) => {
+        str += `${i + 1}. ${guild.name} -- *(${guild.members.array().length} members)*\n`;
       });
 
       return str;
