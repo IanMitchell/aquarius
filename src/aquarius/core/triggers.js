@@ -64,6 +64,26 @@ function customTrigger(msg, trigger) {
   return msg.content.trim().match(trigger);
 }
 
+function cardTrigger(msg) {
+  if (msg.author.bot) {
+    return false;
+  }
+
+  const cardRegex = /\[\[(.+)\]\]/ig;
+  const matches = [];
+  let match = null;
+
+  do {
+    match = cardRegex.exec(msg.content.trim());
+
+    if (match) {
+      matches.push(match);
+    }
+  } while (match !== null);
+
+  return matches;
+}
+
 module.exports = {
   mentionRegex,
   botMention,
@@ -73,4 +93,5 @@ module.exports = {
   exclamationTrigger,
   messageTriggered,
   customTrigger,
+  cardTrigger,
 };
