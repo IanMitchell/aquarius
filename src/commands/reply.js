@@ -31,9 +31,8 @@ class ReplyCommand extends Aquarius.Command {
     });
   }
 
-  helpMessage(guild) {
+  helpMessage(nickname) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += '\nExample:\n';
     msg += '```';

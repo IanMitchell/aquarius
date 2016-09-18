@@ -16,9 +16,8 @@ class KarmaCommand extends Aquarius.Command {
                     'Duration in seconds before a user can give karma again (Min: 10s)');
   }
 
-  helpMessage(guild) {
+  helpMessage(nickname) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += '```@username++ [optional message]\n';

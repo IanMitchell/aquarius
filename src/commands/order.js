@@ -11,9 +11,8 @@ class Order extends Aquarius.Command {
     this.description = 'Given a list of values randomizes them';
   }
 
-  helpMessage(guild) {
+  helpMessage(nickname) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} order [message]\`\`\``;

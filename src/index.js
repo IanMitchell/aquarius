@@ -101,7 +101,9 @@ function generateCommandHelp(message, admin) {
             });
           }
         } else {
-          str += `${command.helpMessage(message.guild)}`;
+          str += `${command.helpMessage('Aquarius')}`;
+          // TODO: Fix
+          // str += `${command.helpMessage(message.guild)}`;
         }
       }
     }

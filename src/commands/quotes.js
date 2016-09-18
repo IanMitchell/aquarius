@@ -9,9 +9,8 @@ class Quotes extends Aquarius.Command {
     this.description = 'Store memorable quotes from your server';
   }
 
-  helpMessage(guild) {
+  helpMessage(nickname) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += '```';

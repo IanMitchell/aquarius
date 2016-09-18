@@ -23,9 +23,8 @@ class Weather extends Aquarius.Command {
     this.description = 'Ten day weather forecasts';
   }
 
-  helpMessage(guild) {
+  helpMessage(nickname) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} weather [search term]\`\`\``;

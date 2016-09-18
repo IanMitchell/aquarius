@@ -12,9 +12,8 @@ class Pokédex extends Aquarius.Command {
     this.pokémonMap = new Map();
   }
 
-  helpMessage(guild) {
+  helpMessage(nickname) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} pokedex [name|id]\`\`\``;

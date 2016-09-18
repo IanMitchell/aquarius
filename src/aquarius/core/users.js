@@ -13,11 +13,7 @@ function getNickname(guild, user) {
     return user.name;
   }
 
-  if (typeof user === 'string') {
-    return guild.members.get(getUser(user)).nick || getUser(user).name;
-  }
-
-  return guild.members.find('id', user.id).nick || user.name;
+  return guild.fetchMember(user).then(member => member.nickname);
 }
 
 function hasRole(guild, user, roleName) {

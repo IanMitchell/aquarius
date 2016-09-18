@@ -108,9 +108,8 @@ class Showtimes extends Aquarius.Command {
     return this.blameRequest(guild, show).then(res => `${msg}. ${res}`);
   }
 
-  helpMessage(guild) {
+  helpMessage(nickname) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(guild, Aquarius.Client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} blame [show]\`\`\``;
