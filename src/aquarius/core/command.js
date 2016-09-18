@@ -21,7 +21,7 @@ class Command {
     return;
   }
 
-  helpMessage(guild) {
+  helpMessage(nickname) {
     let msg = `**${this.name}**\n`;
     msg += `${this.description}\n\n`;
     return msg;
