@@ -23,13 +23,13 @@ const box = Dashboard.Grid.set(0, 0, 2, 2, blessed.box, {
 });
 
 function countUsers() {
-  client.users.forEach(user => {
+  client.users.array().forEach(user => {
     if (user.status !== 'offline') {
       userCount++;
     }
   });
 
-  client.on('presence', (oldUser, newUser) => {
+  client.on('presenceUpdate', (oldUser, newUser) => {
     if (oldUser.status === 'offline') {
       userCount++;
     }
@@ -41,7 +41,7 @@ function countUsers() {
 
 function refreshContent() {
   let content = '';
-  content = `${chalk.bold.white('Name')}:{|}${client.user.name}#${client.user.discriminator}\n`;
+  content = `${chalk.bold.white('Name')}:{|}${client.user.username}#${client.user.discriminator}\n`;
   // content += `Uptime: ${uptime}\n\n`;
   content += `${chalk.bold.white('Memory')}:{|}${formatters.formatBytes(process.memoryUsage().heapUsed)}\n`;
   // content += `CPU Usage: ${cpu}\n\n`;

@@ -10,7 +10,7 @@ const table = Dashboard.Grid.set(0, 2, 2, 2, contrib.table, {
   // selectedBg: 'green',
   interactive: true,
   tags: true,
-  label: 'Server List',
+  label: 'Guild List',
   columnSpacing: 3,
   columnWidth: [3, 20, 6],
 });
@@ -19,11 +19,12 @@ table.focus();
 
 function renderTable() {
   const tableData = [];
-  client.servers.forEach(server => {
+
+  client.guilds.array().forEach(guild => {
     let status = chalk.bgGreen.bold.white(' ✔ ');
 
-    const admin = server.roles.some(role => {
-      return client.user.hasRole(role) && role.hasPermission('administrator');
+    const admin = guild.roles.array().some(role => {
+      return guild.member(client.user).hasPermission('ADMINISTRATOR');
     });
 
     if (admin) {
@@ -32,16 +33,16 @@ function renderTable() {
       status = chalk.bgRed.bold.white(' x ');
     }
 
-    const userCount = server.members.filter(user => user.status !== 'offline').length;
+    const userCount = guild.members.array().filter(member => member.user.status !== 'offline').length;
 
     tableData.push([
       status,
-      server.name,
-      `${userCount}(${server.members.length})`,
+      guild.name,
+      `${userCount}(${guild.memberCount})`,
     ]);
   });
 
-  table.setData({ headers: ['', 'Server', 'Users'], data: tableData });
+  table.setData({ headers: ['', 'Guild', 'Users'], data: tableData });
   // table.setData(tableData);
   Dashboard.Screen.render();
 }
