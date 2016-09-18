@@ -22,11 +22,11 @@ class Games extends Aquarius.Command {
       const games = new Map();
 
       msg.guild.members.forEach(member => {
-        if (member.game) {
-          if (games.has(member.game.name)) {
-            games.set(member.game.name, games.get(member.game.name) + 1);
+        if (member.user.game) {
+          if (games.has(member.user.game.name)) {
+            games.set(member.user.game.name, games.get(member.user.game.name) + 1);
           } else {
-            games.set(member.game.name, 1);
+            games.set(member.user.game.name, 1);
           }
         }
       });
