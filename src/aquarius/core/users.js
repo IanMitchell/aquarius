@@ -13,7 +13,13 @@ function getNickname(guild, user) {
     return user.name;
   }
 
-  return guild.fetchMember(user).then(member => member.nickname);
+  return guild.fetchMember(user).then(member => {
+    if (member.nickname) {
+      return member.nickname;
+    }
+
+    return member.user.username;
+  });
 }
 
 function hasRole(guild, user, roleName) {
