@@ -79,7 +79,7 @@ class KarmaCommand extends Aquarius.Command {
     }
 
     if (Aquarius.Triggers.messageTriggered(msg, karmaLookupRegex)) {
-      const user = msg.mentions[msg.mentions.length - 1];
+      const user = msg.mentions.users.array()[msg.mentions.users.array().length - 1];
 
       if (user === undefined) {
         return false;
@@ -108,7 +108,7 @@ class KarmaCommand extends Aquarius.Command {
     const karmaInput = Aquarius.Triggers.customTrigger(msg, karmaRegex);
 
     if (karmaInput) {
-      const user = msg.mentions[0];
+      const user = msg.mentions.users.array()[0];
 
       // untagged @mention, which Regex returns as a false positive
       if (user === undefined) {
@@ -181,8 +181,11 @@ class KarmaCommand extends Aquarius.Command {
               str += 'removed! ';
             }
 
-            str += `${Aquarius.Users.getNickname(msg.guild, user)} now has ${result.count} ${karmaName}.`;
-            return msg.channel.sendMessage(str);
+            const nick = Aquarius.Users.getNickname(msg.guild, user).then(nickname => {
+              str += `${nickname} now has ${result.count} ${karmaName}.`;
+            });
+
+            return Promise.all([nick]).then(() => msg.channel.sendMessage(str));
           });
         });
       });
