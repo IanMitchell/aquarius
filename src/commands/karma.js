@@ -75,14 +75,14 @@ class KarmaCommand extends Aquarius.Command {
         }
       });
 
-      return false;
+      return;
     }
 
     if (Aquarius.Triggers.messageTriggered(msg, karmaLookupRegex)) {
       const user = msg.mentions.users.array()[msg.mentions.users.array().length - 1];
 
       if (user === undefined) {
-        return false;
+        return;
       }
 
       this.log(`Request for ${user.name}'s Karma'`);
@@ -102,7 +102,7 @@ class KarmaCommand extends Aquarius.Command {
         msg.channel.sendMessage(`${nick} has ${karma.count} ${karmaName}.`);
       });
 
-      return false;
+      return;
     }
 
     const karmaInput = Aquarius.Triggers.customTrigger(msg, karmaRegex);
@@ -112,14 +112,14 @@ class KarmaCommand extends Aquarius.Command {
 
       // untagged @mention, which Regex returns as a false positive
       if (user === undefined) {
-        return false;
+        return;
       }
 
       this.log(`Karma request for ${user}`);
 
       if (user === msg.author && !Aquarius.Permissions.isBotOwner(user)) {
         msg.channel.sendMessage(`You cannot give ${karmaName} to yourself!`);
-        return false;
+        return;
       }
 
       Karma.findOrCreate({
@@ -190,10 +190,10 @@ class KarmaCommand extends Aquarius.Command {
         });
       });
 
-      return false;
+      return;
     }
 
-    return false;
+    return;
   }
 }
 

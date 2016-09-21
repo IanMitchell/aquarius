@@ -30,10 +30,8 @@ class Choose extends Aquarius.Command {
 
     if (inputs) {
       this.log(`input: ${inputs[1]}`);
-      return this.choose(inputs[1]);
+      msg.channel.sendMessage(this.choose(inputs[1]));
     }
-
-    return false;
   }
 
   choose(input) {

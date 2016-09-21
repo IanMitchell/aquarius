@@ -34,8 +34,6 @@ class Magic extends Aquarius.Command {
         }).then(() => Aquarius.Loading.stopLoading(msg.channel));
       });
     }
-
-    return false;
   }
 }
 

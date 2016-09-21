@@ -35,10 +35,8 @@ class Games extends Aquarius.Command {
         response += `${i + 1}. ${game[0]} _(${game[1]} playing)_\n`;
       });
 
-      return response;
+      msg.channel.sendMessage(response);
     }
-
-    return false;
   }
 }
 

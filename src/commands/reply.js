@@ -79,13 +79,13 @@ class ReplyCommand extends Aquarius.Command {
     if (this.responses.has(msg.channel.guild.id)) {
       if (this.responses.get(msg.channel.guild.id).has(msg.cleanContent.trim().toLowerCase())) {
         this.log(`Input: ${msg.cleanContent}`);
-        return this.responses.get(msg.channel.guild.id).get(msg.cleanContent.trim().toLowerCase());
+        msg.channel.sendMessage(this.responses.get(msg.channel.guild.id).get(msg.cleanContent.trim().toLowerCase()));
       }
     } else {
       this.addGuild(msg.channel.guild.id);
 
       if (this.genericResponses().has(msg.cleanContent.trim().toLowerCase())) {
-        return this.genericResponses().get(msg.cleanContent.trim().toLowerCase());
+        msg.channel.sendMessage(this.genericResponses().get(msg.cleanContent.trim().toLowerCase()));
       }
     }
 
@@ -139,8 +139,6 @@ class ReplyCommand extends Aquarius.Command {
         });
       }
     }
-
-    return false;
   }
 }
 

@@ -79,8 +79,6 @@ class Pokédex extends Aquarius.Command {
       this.log(`Request for ${pokémonInput[1]}`);
       this.getPokémon(msg, pokémonInput[1]);
     }
-
-    return false;
   }
 }
 

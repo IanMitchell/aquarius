@@ -330,10 +330,7 @@ function handleCoreCommands(message) {
 function handleCommands(message) {
   commands.forEach(command => {
     if (Aquarius.Permissions.hasPermission(message.guild, message.author, command)) {
-      const response = command.message(message);
-      if (response) {
-        message.channel.sendMessage(response);
-      }
+      command.message(message);
     }
   });
 }

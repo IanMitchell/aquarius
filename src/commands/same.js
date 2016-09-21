@@ -82,10 +82,8 @@ class Same extends Aquarius.Command {
     if (this.isSame(msg)) {
       this.log(`Sending '${msg.cleanContent}' to ${msg.guild.id}`);
       this.messageStack.get(msg.guild.id).set(msg.channel.name, []);
-      return msg.content;
+      msg.channel.sendMessage(msg.content);
     }
-
-    return false;
   }
 }
 

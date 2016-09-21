@@ -42,10 +42,8 @@ class Eightball extends Aquarius.Command {
   message(msg) {
     if (Aquarius.Triggers.messageTriggered(msg, /^8ball .+$/i)) {
       this.log('8ball request');
-      return this.responses[Math.floor(Math.random() * this.responses.length)];
+      msg.channel.sendMessage(this.responses[Math.floor(Math.random() * this.responses.length)]);
     }
-
-    return false;
   }
 }
 

@@ -143,8 +143,6 @@ class Showtimes extends Aquarius.Command {
           Aquarius.Loading.stopLoading(msg.channel);
         });
     }
-
-    return false;
   }
 }
 

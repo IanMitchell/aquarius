@@ -46,13 +46,13 @@ class SeenCommand extends Aquarius.Command {
 
       // untagged @mention, which Regex returns as a false positive
       if (user === undefined) {
-        return false;
+        return;
       }
 
       this.log(`Seen request for ${user}`);
 
       if (user.status !== 'offline') {
-        return "They're online right now!";
+        msg.channel.sendMessage("They're online right now!");
       }
 
       Seen.findOrCreate({
@@ -77,8 +77,6 @@ class SeenCommand extends Aquarius.Command {
         return;
       });
     }
-
-    return false;
   }
 }
 

@@ -42,10 +42,8 @@ class Order extends Aquarius.Command {
       }
 
       this.log(`Order input: ${inputs[1]}`);
-      return this.orderList(inputs[1]);
+      msg.channel.sendMessage(this.orderList(inputs[1]));
     }
-
-    return false;
   }
 
   getChoices(input, delimiter) {

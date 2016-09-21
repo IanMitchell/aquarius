@@ -153,11 +153,9 @@ class Weather extends Aquarius.Command {
       } catch (e) {
         this.log(e.message);
         Aquarius.Loading.stopLoading(msg.channel);
-        return 'Error connecting to Yahoo Weather.';
+        msg.channel.sendMessage('Error connecting to Yahoo Weather.');
       }
     }
-
-    return false;
   }
 }
 

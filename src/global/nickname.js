@@ -21,8 +21,6 @@ class Nickname extends Aquarius.Command {
           msg.channel.sendMessage('Error setting nickname. Please verify it is valid!');
         });
     }
-
-    return false;
   }
 }
 

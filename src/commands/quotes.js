@@ -54,7 +54,7 @@ class Quotes extends Aquarius.Command {
         });
       });
 
-      return false;
+      return;
     }
 
     const readInput = Aquarius.Triggers.messageTriggered(msg, /^(?:read )?quote #?([0-9]+)$/i);
@@ -64,7 +64,7 @@ class Quotes extends Aquarius.Command {
         msg.channel.sendMessage(response);
       });
 
-      return false;
+      return;
     }
 
     const newInput = Aquarius.Triggers.messageTriggered(msg,
@@ -89,13 +89,11 @@ class Quotes extends Aquarius.Command {
             quote,
           }).then(() => msg.channel.sendMessage(`Quote added as #${count + 1}.`));
         });
-        return false;
+        return;
       }
 
-      return 'Your new quote needs content!';
+      msg.channel.sendMessage('Your new quote needs content!');
     }
-
-    return false;
   }
 }
 
