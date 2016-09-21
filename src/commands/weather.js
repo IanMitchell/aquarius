@@ -9,15 +9,18 @@ const EMOJI_LIST = {
   MIXED: '🌦',
   OVERCAST: '☁',
   THUNDER: '⛈',
+  SNOW: '❄️',
   SNOWY: '🌨',
   TORNADO: '🌪',
-  FOGGY: '🌁',
+  HURRICANE: '🌀',
+  FOGGY: '🌫',
   WINDY: '💨',
   UNKNOWN: '❓',
 };
 
 class Weather extends Aquarius.Command {
   constructor() {
+
     super();
 
     this.description = 'Ten day weather forecasts';
@@ -73,9 +76,10 @@ class Weather extends Aquarius.Command {
   weatherToEmoji(code) {
     switch (code) {
       case '0':    // Tornado
+        return EMOJI_LIST.TORNADO;
       case '1':    // Tropical Storm
       case '2':    // Hurricane
-        return EMOJI_LIST.TORNADO;
+        return EMOJI_LIST.HURRICANE;
       case '3':    // Severe Thunderstorms
       case '4':    // Thunderstorms
       case '37':   // Isolated Thunderstorms
@@ -90,6 +94,7 @@ class Weather extends Aquarius.Command {
       case '14':   // Light Snow Showers
       case '15':   // Blowing Snow
       case '16':   // Snow
+        return EMOJI_LIST.SNOW;
       case '42':   // Scattered Snow Showers
       case '41':   // Heavy Snow
       case '43':   // Heavy Snow
