@@ -43,7 +43,8 @@ class ReplyCommand extends Aquarius.Command {
     msg += `trigger\n`;
     msg += '=> response\n';
     msg += `@${nickname} reply remove trigger\n`;
-    msg += '=> Response removed\n';
+    msg += '=> Response removed\n\n';
+    msg += `@${nickname} replies\n`;
     msg += '```';
 
     return msg;
@@ -73,7 +74,21 @@ class ReplyCommand extends Aquarius.Command {
   message(msg) {
     // Thanks Shaun <.<
     if (msg.author.bot) {
-      return false;
+      return;
+    }
+
+    if (Aquarius.Triggers.messageTriggered(msg, /^replies$/i)) {
+      if (this.responses.has(msg.channel.guild.id)) {
+        let str = `**Replies Set:**\n\n`;
+
+        this.responses.get(msg.channel.guild.id).forEach((value, key) => {
+          str += `* '${key}'\n`;
+        });
+
+        msg.channel.sendMessage(str);
+      } else {
+        msg.channel.sendMessage('No replies have been set.');
+      }
     }
 
     if (this.responses.has(msg.channel.guild.id)) {
