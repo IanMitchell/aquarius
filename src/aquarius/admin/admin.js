@@ -3,6 +3,7 @@ const client = require('../core/client');
 const users = require('../core/users');
 const settings = require('../settings/settings');
 const links = require('../helpers/links');
+require('./blacklist');
 
 const log = debug('Aquarius Admin');
 
