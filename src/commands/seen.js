@@ -72,9 +72,9 @@ class SeenCommand extends Aquarius.Command {
 
         time = moment(seen.lastSeen * 1000);
 
-        const nick = Aquarius.Users.getNickname(msg.channel.guild, user);
-        msg.channel.sendMessage(`${nick} last seen ${time.fromNow()}`);
-        return;
+        Aquarius.Users.getNickname(msg.channel.guild, user).then(nick => {
+          msg.channel.sendMessage(`${nick} last seen ${time.fromNow()}`);
+        });
       });
     }
   }
