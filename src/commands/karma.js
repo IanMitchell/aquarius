@@ -66,12 +66,25 @@ class KarmaCommand extends Aquarius.Command {
         } else {
           let str = `**${karmaName} Leaderboard**\n`;
 
+          const nicks = [];
+
           response.forEach((record, index) => {
-            const nick = Aquarius.Users.getNickname(msg.guild, record.userId);
-            str += `${index + 1}. ${nick} - ${record.count} ${karmaName}\n`;
+            nicks.push(Aquarius.Users.getNickname(msg.guild, record.userId).then(nick => {
+              const entry = {
+                index,
+                nick,
+                karma: record.count,
+              };
+
+              return entry;
+            }));
           });
 
-          msg.channel.sendMessage(str);
+          Promise.all(nicks).then(entries => {
+            entries.forEach(entry => {
+              str += `${entry.index + 1}. ${entry.nick} - ${entry.karma} ${karmaName}\n`;
+            });
+          }).then(() => msg.channel.sendMessage(str));
         }
       });
 
