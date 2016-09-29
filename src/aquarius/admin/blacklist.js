@@ -7,16 +7,16 @@ const BLACKLIST = [
   '83056679066796032',
 ];
 
+
 function blacklist() {
+  log('Checking blacklist');
   client.guilds.array().forEach(guild => {
     if (BLACKLIST.includes(guild.id)) {
-      log(`Leaving ${guild.name}`);
-
-      guild.leave();
+      guild.leave().then(() => log(`Leaving ${guild.name}`));
     }
   });
 }
 
 
-client.on('guildCreated', blacklist);
+client.on('guildCreate', blacklist);
 client.on('ready', blacklist);

@@ -9,7 +9,7 @@ class SeenCommand extends Aquarius.Command {
 
     this.description = 'Tracks when a user was last seen online';
 
-    Aquarius.Client.on('presence', (oldUser, newUser) => {
+    Aquarius.Client.on('presenceUpdate', (oldUser, newUser) => {
       if (newUser.status === 'offline') {
         Seen.findOrCreate({
           where: {
