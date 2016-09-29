@@ -53,6 +53,7 @@ class SeenCommand extends Aquarius.Command {
 
       if (user.status !== 'offline') {
         msg.channel.sendMessage("They're online right now!");
+        return;
       }
 
       Seen.findOrCreate({
