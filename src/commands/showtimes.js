@@ -28,13 +28,8 @@ class Showtimes extends Aquarius.Command {
         return response.json().then(data => this.blameMessage(data));
       }
 
-      // TODO: Test / Look At
-      return response.json().then(data => {
-        this.log('Blame Request Error:');
-        this.log(data);
-        Error(data.message);
-      });
-    }).catch(error => Error(error));
+      return response.json().then(data => Promise.reject(new Error(data.message)));
+    }).catch(error => Promise.reject(error));
   }
 
   staffRequest(guild, show, user, position, status) {
@@ -52,13 +47,8 @@ class Showtimes extends Aquarius.Command {
         return response.json().then(data => this.staffMessage(guild, show, data));
       }
 
-      // TODO: Test / Look At
-      return response.json().then(data => {
-        this.log('Staff Request Error:');
-        this.log(data);
-        Error(data.message);
-      });
-    }).catch(error => Error(error));
+      return response.json().then(data => Promise.reject(new Error(data.message)));
+    }).catch(error => Promise.reject(error));
   }
 
   convertStatus(status) {
@@ -124,10 +114,15 @@ class Showtimes extends Aquarius.Command {
     if (blameInput) {
       Aquarius.Loading.startLoading(msg.channel);
 
-      this.blameRequest(msg.guild.id, blameInput[1]).then(message => {
-        msg.channel.sendMessage(message);
-        Aquarius.Loading.stopLoading(msg.channel);
-      });
+      this.blameRequest(msg.guild.id, blameInput[1])
+        .then(message => {
+          msg.channel.sendMessage(message);
+          Aquarius.Loading.stopLoading(msg.channel);
+        }, error => {
+          this.log(`Error: ${error.message}`);
+          msg.channel.sendMessage(error.message);
+          Aquarius.Loading.stopLoading(msg.channel);
+        });
     }
 
     if (staffInput) {
@@ -140,6 +135,10 @@ class Showtimes extends Aquarius.Command {
                         staffInput[1])
         .then(message => {
           msg.channel.sendMessage(message);
+          Aquarius.Loading.stopLoading(msg.channel);
+        }, error => {
+          this.log(`Error: ${error.message}`);
+          msg.channel.sendMessage(error.message);
           Aquarius.Loading.stopLoading(msg.channel);
         });
     }
