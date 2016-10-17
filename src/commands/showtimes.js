@@ -4,9 +4,18 @@ const FormData = require('form-data');
 const moment = require('moment');
 
 const SHOWTIMES = {
-  SERVER: 'http://showtimes.herokuapp.com',
+  SERVER: process.env.SHOWTIMES_SERVER,
   KEY: process.env.SHOWTIMES_KEY,
 };
+
+class ShowtimesError extends Error {
+  constructor(message) {
+    super();
+    Error.captureStackTrace(this, this.constructor);
+    this.name = this.constructor.name;
+    this.message = message;
+  }
+}
 
 class Showtimes extends Aquarius.Command {
   constructor() {
@@ -16,8 +25,6 @@ class Showtimes extends Aquarius.Command {
   }
 
   blameRequest(guild, show) {
-    this.log(`Blame request for ${show}`);
-
     let uri = `${SHOWTIMES.SERVER}/blame.json?`;
     uri += `channel=${guild}`;
     uri += '&platform=discord';
@@ -28,7 +35,7 @@ class Showtimes extends Aquarius.Command {
         return response.json().then(data => this.blameMessage(data));
       }
 
-      return response.json().then(data => Promise.reject(new Error(data.message)));
+      return response.json().then(data => Promise.reject(new ShowtimesError(data.message)));
     }).catch(error => Promise.reject(error));
   }
 
@@ -47,7 +54,7 @@ class Showtimes extends Aquarius.Command {
         return response.json().then(data => this.staffMessage(guild, show, data));
       }
 
-      return response.json().then(data => Promise.reject(new Error(data.message)));
+      return response.json().then(data => Promise.reject(new ShowtimesError(data.message)));
     }).catch(error => Promise.reject(error));
   }
 
@@ -63,7 +70,7 @@ class Showtimes extends Aquarius.Command {
         return response.json().then(data => data.message);
       }
 
-      return response.json().then(data => Promise.reject(new Error(data.message)));
+      return response.json().then(data => Promise.reject(new ShowtimesError(data.message)));
     }).catch(error => Promise.reject(error));
   }
 
@@ -74,7 +81,7 @@ class Showtimes extends Aquarius.Command {
         return response.json().then(data => this.airingMessage(data));
       }
 
-      return response.json().then(data => Promise.reject(new Error(data.message)));
+      return response.json().then(data => Promise.reject(new ShowtimesError(data.message)));
     }).catch(error => Promise.reject(error));
   }
 
@@ -154,72 +161,53 @@ class Showtimes extends Aquarius.Command {
   }
 
   message(msg) {
+    let request = null;
     const blameInput = Aquarius.Triggers.messageTriggered(msg, /^blame (.+)$/i);
     const staffInput = Aquarius.Triggers.messageTriggered(msg, /^(?:(?:(done|undone) (tl|tlc|enc|ed|tm|ts|qc) (.+)))$/i);
     const releaseInput = Aquarius.Triggers.messageTriggered(msg, /^release\s(.+)$/i);
     const airingInput = Aquarius.Triggers.messageTriggered(msg, /^airing$/i);
 
     if (blameInput) {
+      this.log(`Blame request for ${blameInput[1]} in ${msg.guild.name}`);
       Aquarius.Loading.startLoading(msg.channel);
-
-      this.blameRequest(msg.guild.id, blameInput[1])
-        .then(message => {
-          msg.channel.sendMessage(message);
-          Aquarius.Loading.stopLoading(msg.channel);
-        }, error => {
-          this.log(`Error: ${error.message}`);
-          msg.channel.sendMessage(error.message);
-          Aquarius.Loading.stopLoading(msg.channel);
-        });
+      request = this.blameRequest(msg.guild.id, blameInput[1]);
     }
 
     if (staffInput) {
       this.log(`${staffInput[1]} request for ${staffInput[3]} by ${msg.author.username}`);
       Aquarius.Loading.startLoading(msg.channel);
-
-      this.staffRequest(msg.guild.id,
-                        staffInput[3],
-                        msg.author.id,
-                        staffInput[2],
-                        staffInput[1])
-        .then(message => {
-          msg.channel.sendMessage(message);
-          Aquarius.Loading.stopLoading(msg.channel);
-        }, error => {
-          this.log(`Error: ${error.message}`);
-          msg.channel.sendMessage(error.message);
-          Aquarius.Loading.stopLoading(msg.channel);
-        });
+      request = this.staffRequest(msg.guild.id,
+                                  staffInput[3],
+                                  msg.author.id,
+                                  staffInput[2],
+                                  staffInput[1]);
     }
 
     if (releaseInput) {
       this.log(`Release request for ${releaseInput[1]} by ${msg.author.username}`);
       Aquarius.Loading.startLoading(msg.channel);
-
-      this.releaseRequest(msg.guild.id,
-                          msg.author.id,
-                          releaseInput[1])
-        .then(message => {
-          msg.channel.sendMessage(message);
-          Aquarius.Loading.stopLoading(msg.channel);
-        }, error => {
-          msg.channel.sendMessage(error.message);
-          this.log(`Error: ${error.message}`);
-          Aquarius.Loading.stopLoading(msg.channel);
-        });
+      request = this.releaseRequest(msg.guild.id, msg.author.id, releaseInput[1]);
     }
 
     if (airingInput) {
       this.log(`Airing input by ${msg.author.username}`);
       Aquarius.Loading.startLoading(msg.channel);
+      request = this.airingRequest(msg.guild.id);
+    }
 
-      this.airingRequest(msg.guild.id).then(message => {
+    if (request) {
+      request.then(message => {
         msg.channel.sendMessage(message);
         Aquarius.Loading.stopLoading(msg.channel);
       }, error => {
-        msg.channel.sendMessage(error.message);
         this.log(`Error: ${error.message}`);
         Aquarius.Loading.stopLoading(msg.channel);
+
+        if (error instanceof ShowtimesError) {
+          msg.channel.sendMessage(error.message);
+        } else {
+          msg.channel.sendMessage('Sorry, there was an error. Poke Desch');
+        }
       });
     }
   }
