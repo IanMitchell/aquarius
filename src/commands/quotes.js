@@ -41,7 +41,7 @@ class Quotes extends Aquarius.Command {
   }
 
   message(msg) {
-    if (Aquarius.Triggers.messageTriggered(msg, /^(?:random quote|quote random)$/)) {
+    if (Aquarius.Triggers.messageTriggered(msg, /^(?:random quote|quotes random)$/)) {
       this.log('Reading random quote');
       Quote.count({
         where: {
@@ -57,7 +57,7 @@ class Quotes extends Aquarius.Command {
       return;
     }
 
-    const readInput = Aquarius.Triggers.messageTriggered(msg, /^(?:read )?quote #?([0-9]+)$/i);
+    const readInput = Aquarius.Triggers.messageTriggered(msg, /^(?:read )?quotes? #?([0-9]+)$/i);
     if (readInput) {
       this.log(`Reading quote ${readInput[1]}`);
       this.getQuote(readInput[1], msg.channel.guild.id).then(response => {
@@ -68,7 +68,7 @@ class Quotes extends Aquarius.Command {
     }
 
     const newInput = Aquarius.Triggers.messageTriggered(msg,
-                      /^(?:(?:(?:new|add) quote)|(?:quote (?:new|add))) ([^]*)$/i);
+                      /^(?:(?:(?:new|add) quote)|(?:quotes (?:new|add))) ([^]*)$/i);
     if (newInput) {
       const quote = newInput[1];
 
