@@ -39,7 +39,7 @@ function isGuildMuted(guild, user) {
 }
 
 function isCommandEnabled(guild, command) {
-  return settings.getCommands(guild.id).includes(command.constructor.name);
+  return [...settings.getCommands(guild.id)].includes(command.constructor.name);
 }
 
 function hasPermission(guild, user, command) {
