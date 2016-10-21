@@ -38,6 +38,10 @@ function isGuildMuted(guild, user) {
   return nameRole || nickRole;
 }
 
+function isCommandEnabled(guild, command) {
+  return settings.getPermission(guild.id, command.constructor.name) !== false;
+}
+
 function hasPermission(guild, user, command) {
   const permission = settings.getPermission(guild.id, command.constructor.name);
 
@@ -59,5 +63,6 @@ module.exports = {
   isGuildAdmin,
   isGuildModerator,
   isGuildMuted,
+  isCommandEnabled,
   hasPermission,
 };

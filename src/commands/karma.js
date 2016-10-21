@@ -12,8 +12,8 @@ class KarmaCommand extends Aquarius.Command {
 
     this.settings.addKey('name', 'Karma', 'What to call Karma on your server');
     this.settings.addKey('cooldown',
-                    DEFAULT_COOLDOWN,
-                    'Duration in seconds before a user can give karma again (Min: 10s)');
+                         DEFAULT_COOLDOWN,
+                         'Duration in seconds before a user can give karma again (Min: 10s)');
   }
 
   helpMessage(nickname) {

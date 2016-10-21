@@ -123,7 +123,6 @@ class Config {
       this.addGuild(guildId);
     }
 
-
     if (!this.guilds.get(guildId).getValue(caller, key)) {
       return this.defaults.get(caller).get(key).value;
     }
@@ -145,7 +144,7 @@ class Config {
   load() {
     Setting.findAll().then(settings => {
       settings.forEach(setting => {
-        this.addGuild(setting.guildId);
+        this.guilds.set(setting.guildId, new GuildSetting());
         this.guilds.get(setting.guildId).deserializeCommands(setting.commands);
         this.guilds.get(setting.guildId).deserializeSettings(setting.config);
       });
