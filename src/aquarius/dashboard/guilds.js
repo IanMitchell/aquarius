@@ -23,7 +23,7 @@ function renderTable() {
   client.guilds.array().forEach(guild => {
     let status = chalk.bgGreen.bold.white(' ✔ ');
 
-    const admin = guild.roles.array().some(role => {
+    const admin = guild.roles.array().some(() => {
       return guild.member(client.user).hasPermission('ADMINISTRATOR');
     });
 
