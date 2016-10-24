@@ -240,12 +240,12 @@ function handleAdminCommands(message, guilds) {
   if (cmdMatch) {
     if (guilds.length > 1 && !cmdMatch[2]) {
       message.channel.sendMessage(
-        'You own multiple servers; please specify which one you mean.\n' +
+        'You are an admin on multiple servers; please specify which one you mean.\n' +
         '`[add|remove] [server] [all|<command>]`');
       return;
     } else if (guilds.length > 1 && cmdMatch[2]) {
       if (!guilds.includes(cmdMatch[2])) {
-        message.channel.sendMessage("You don't own that server!");
+        message.channel.sendMessage("You aren't an admin on that server!");
         return;
       }
     } else if (guilds.length === 1) {
@@ -256,12 +256,12 @@ function handleAdminCommands(message, guilds) {
   } else if (setMatch) {
     if (guilds.length > 1 && !setMatch[1]) {
       message.channel.sendMessage(
-        'You own multiple servers; please specify which one you mean.\n' +
+        'You are an admin on multiple servers; please specify which one you mean.\n' +
         '`set [server] [command] [key] [value]`');
       return;
     } else if (guilds.length > 1 && setMatch[1]) {
       if (!guilds.includes(setMatch[1])) {
-        message.channel.sendMessage("You don't own that server!");
+        message.channel.sendMessage("You aren't an admin on that server!");
         return;
       }
     } else if (guilds.length === 1) {
@@ -272,12 +272,12 @@ function handleAdminCommands(message, guilds) {
   } else if (roleMatch) {
     if (guilds.length > 1 && !roleMatch[1]) {
       message.channel.sendMessage(
-        'You own multiple servers; please specify which one you mean.\n' +
+        'You are an admin on multiple servers; please specify which one you mean.\n' +
         '`create roles [server]`');
       return;
     } else if (guilds.length > 1 && roleMatch[1]) {
       if (!guilds.includes(roleMatch[1])) {
-        message.channel.sendMessage("You don't own that server!");
+        message.channel.sendMessage("You aren't an admin on that server!");
         return;
       }
     } else if (guilds.length === 1) {
@@ -296,7 +296,7 @@ function handleQuery(message) {
     return;
   }
 
-  const guilds = Aquarius.Users.getOwnedGuilds(message.author);
+  const guilds = Aquarius.Users.getGuildsWithAdmin(message.author);
 
   if (guilds.length > 0) {
     handleAdminCommands(message, guilds);

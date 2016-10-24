@@ -35,7 +35,7 @@ class Wilhelm extends Aquarius.Command {
       this.log('Waiting for activity');
 
       // Disconnect after 10m of inactivity
-      setTimeout(connection.disconnect, 1000 * 60 * 10);
+      const inactivityCheck = setTimeout(connection.disconnect, 1000 * 60 * 10);
 
       connection.on('speaking', (user, speaking) => {
         if (user.id === this.target && speaking && dispatcher === null) {
@@ -45,6 +45,7 @@ class Wilhelm extends Aquarius.Command {
           dispatcher.on('end', () => {
             this.log(`Leaving channel`);
             connection.disconnect();
+            clearTimeout(inactivityCheck);
           });
         }
       });

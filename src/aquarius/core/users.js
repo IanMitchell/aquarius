@@ -4,6 +4,12 @@ function getOwnedGuilds(user) {
   return client.guilds.array().filter(guild => guild.owner.user.equals(user));
 }
 
+function getGuildsWithAdmin(user) {
+  return client.guilds.array().filter(guild => {
+    return guild.member(user).hasPermission('ADMINISTRATOR');
+  });
+}
+
 function getUser(id) {
   return client.users.find('id', id);
 }
@@ -28,6 +34,7 @@ function hasRole(guild, user, roleName) {
 
 module.exports = {
   getOwnedGuilds,
+  getGuildsWithAdmin,
   getUser,
   getNickname,
   hasRole,
