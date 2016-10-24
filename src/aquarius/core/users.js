@@ -6,7 +6,12 @@ function getOwnedGuilds(user) {
 
 function getGuildsWithAdmin(user) {
   return client.guilds.array().filter(guild => {
-    return guild.member(user).hasPermission('ADMINISTRATOR');
+    const user = guild.member(user);
+    if (user) {
+      return user.hasPermission('ADMINISTRATOR');
+    }
+
+    return false;
   });
 }
 
