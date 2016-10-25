@@ -42,7 +42,7 @@ class ReplyCommand extends Aquarius.Command {
     msg += '=> Response added\n';
     msg += `trigger\n`;
     msg += '=> response\n';
-    msg += `@${nickname} reply remove trigger\n`;
+    msg += `@${nickname} reply remove "trigger"\n`;
     msg += '=> Response removed\n\n';
     msg += `@${nickname} replies\n`;
     msg += '```';
@@ -112,7 +112,7 @@ class ReplyCommand extends Aquarius.Command {
       ].join(''), 'i');
 
       const addInputs = Aquarius.Triggers.messageTriggered(msg, newRegex);
-      const removeInputs = Aquarius.Triggers.messageTriggered(msg, /^reply remove (.+)$/i);
+      const removeInputs = Aquarius.Triggers.messageTriggered(msg, /^reply remove "(.+)"$/i);
 
       if (addInputs) {
         this.log(`Adding reply: "${addInputs[2]}" -> "${addInputs[5]}"`);
