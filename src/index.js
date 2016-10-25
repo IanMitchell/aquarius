@@ -194,7 +194,7 @@ function handleAdminConfigChange(message, setMatch) {
 
 
 function handleHelp(message) {
-  const guilds = Aquarius.Users.getOwnedGuilds(message.author);
+  const guilds = Aquarius.Users.getGuildsWithAdmin(message.author);
   const admin = ((message.guild === undefined || message.guild === null) && guilds.length > 0);
 
   if (Aquarius.Triggers.messageTriggered(message, /^(list|commands|help)$/)) {
