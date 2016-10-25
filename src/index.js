@@ -231,7 +231,7 @@ function handleCommands(message) {
 
 // TODO: Refactor
 function handleAdminCommands(message, guilds) {
-  const cmdMatch = Aquarius.Triggers.messageTriggered(message, /^(add|remove) ([0-9]+ )?(.+)$/i);
+  const cmdMatch = Aquarius.Triggers.messageTriggered(message, /^(add|remove) (?:([0-9]+) )?(.+)$/i);
   const roleMatch = Aquarius.Triggers.messageTriggered(message, /^create roles( [0-9]+)?$/i);
   // TODO: Expand to allow unsetting
   const setMatch = Aquarius.Triggers.messageTriggered(message,
@@ -244,7 +244,7 @@ function handleAdminCommands(message, guilds) {
         '`[add|remove] [server] [all|<command>]`');
       return;
     } else if (guilds.length > 1 && cmdMatch[2]) {
-      if (!guilds.includes(cmdMatch[2])) {
+      if (!guilds.some(g => g.id === cmdMatch[2])) {
         message.channel.sendMessage("You aren't an admin on that server!");
         return;
       }
@@ -260,7 +260,7 @@ function handleAdminCommands(message, guilds) {
         '`set [server] [command] [key] [value]`');
       return;
     } else if (guilds.length > 1 && setMatch[1]) {
-      if (!guilds.includes(setMatch[1])) {
+      if (!guilds.some(g => g.id === setMatch[1])) {
         message.channel.sendMessage("You aren't an admin on that server!");
         return;
       }
@@ -276,7 +276,7 @@ function handleAdminCommands(message, guilds) {
         '`create roles [server]`');
       return;
     } else if (guilds.length > 1 && roleMatch[1]) {
-      if (!guilds.includes(roleMatch[1])) {
+      if (!guilds.some(g => g.id === roleMatch[1])) {
         message.channel.sendMessage("You aren't an admin on that server!");
         return;
       }
