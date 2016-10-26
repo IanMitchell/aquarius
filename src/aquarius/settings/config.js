@@ -1,6 +1,6 @@
 const debug = require('debug');
 const stackTrace = require('stack-trace');
-const ServerSetting = require('./server-setting');
+const GuildSetting = require('./guild-setting');
 const DefaultKey = require('./default-key');
 const Sequelize = require('../database/sequelize');
 const Setting = Sequelize.import('../../models/setting');
@@ -11,38 +11,38 @@ const log = debug('Config');
 class Config {
   constructor() {
     this.defaults = new Map();
-    this.servers = new Map();
+    this.guilds = new Map();
   }
 
-  addServer(serverId) {
-    this.servers.set(serverId, new ServerSetting());
-    this.update(serverId);
+  addGuild(guildId) {
+    this.guilds.set(guildId, new GuildSetting());
+    this.update(guildId);
   }
 
-  addCommand(serverId, command) {
-    if (!this.servers.has(serverId)) {
-      this.addServer(serverId);
+  addCommand(guildId, command) {
+    if (!this.guilds.has(guildId)) {
+      this.addGuild(guildId);
     }
 
-    this.servers.get(serverId).addCommand(command);
-    this.update(serverId);
+    this.guilds.get(guildId).addCommand(command);
+    this.update(guildId);
   }
 
-  removeCommand(serverId, command) {
-    if (!this.servers.has(serverId)) {
-      this.addServer(serverId);
+  removeCommand(guildId, command) {
+    if (!this.guilds.has(guildId)) {
+      this.addGuild(guildId);
     }
 
-    this.servers.get(serverId).removeCommand(command);
-    this.update(serverId);
+    this.guilds.get(guildId).removeCommand(command);
+    this.update(guildId);
   }
 
-  clearCommands(serverId) {
-    if (!this.servers.has(serverId)) {
-      this.addServer(serverId);
+  clearCommands(guildId) {
+    if (!this.guilds.has(guildId)) {
+      this.addGuild(guildId);
     }
 
-    this.servers.get(serverId).clearCommands();
+    this.guilds.get(guildId).clearCommands();
   }
 
   addKey(key, defaultValue, description) {
@@ -65,23 +65,23 @@ class Config {
     return this.defaults.get(caller).get(key).value;
   }
 
-  getCommands(serverId) {
-    if (!this.servers.has(serverId)) {
-      this.addServer(serverId);
+  getCommands(guildId) {
+    if (!this.guilds.has(guildId)) {
+      this.addGuild(guildId);
     }
 
-    return this.servers.get(serverId).getCommands();
+    return this.guilds.get(guildId).getCommands();
   }
 
-  getPermission(serverId, command) {
-    if (!this.servers.has(serverId)) {
-      this.addServer(serverId);
+  getPermission(guildId, command) {
+    if (!this.guilds.has(guildId)) {
+      this.addGuild(guildId);
     }
 
-    return this.servers.get(serverId).getCommand(command);
+    return this.guilds.get(guildId).getCommand(command);
   }
 
-  setPermission(serverId, permission) {
+  setPermission(guildId, permission) {
     const caller = stackTrace.get()[1].getTypeName();
 
     let level = permission;
@@ -101,8 +101,8 @@ class Config {
     }
 
 
-    this.servers.get(serverId).updateCommand(caller, level);
-    this.update(serverId);
+    this.guilds.get(guildId).updateCommand(caller, level);
+    this.update(guildId);
     return true;
   }
 
@@ -116,64 +116,63 @@ class Config {
     return new Map().keys();
   }
 
-  get(serverId, key) {
+  get(guildId, key) {
     const caller = stackTrace.get()[1].getTypeName();
 
-    if (!this.servers.has(serverId)) {
-      this.addServer(serverId);
+    if (!this.guilds.has(guildId)) {
+      this.addGuild(guildId);
     }
 
-
-    if (!this.servers.get(serverId).getValue(caller, key)) {
+    if (!this.guilds.get(guildId).getValue(caller, key)) {
       return this.defaults.get(caller).get(key).value;
     }
 
-    return this.servers.get(serverId).getValue(caller, key);
+    return this.guilds.get(guildId).getValue(caller, key);
   }
 
-  set(serverId, key, value) {
+  set(guildId, key, value) {
     const caller = stackTrace.get()[1].getTypeName();
 
-    if (!this.servers.has(serverId)) {
-      this.addServer(serverId);
+    if (!this.guilds.has(guildId)) {
+      this.addguild(guildId);
     }
 
-    this.servers.get(serverId).addValue(caller, key, value);
-    this.update(serverId);
+    this.guilds.get(guildId).addValue(caller, key, value);
+    this.update(guildId);
   }
 
   load() {
     Setting.findAll().then(settings => {
       settings.forEach(setting => {
-        this.addServer(setting.serverId);
-        this.servers.get(setting.serverId).deserializeCommands(setting.commands);
-        this.servers.get(setting.serverId).deserializeSettings(setting.config);
+        this.guilds.set(setting.guildId, new GuildSetting());
+        this.guilds.get(setting.guildId).deserializeCommands(setting.commands);
+        this.guilds.get(setting.guildId).deserializeSettings(setting.config);
       });
     });
 
     log('Configuration loaded');
   }
 
-  update(serverId) {
-    log(`Updating ${serverId} Config`);
+  update(guildId) {
+    log(`Updating ${guildId} Config`);
 
     Setting.findOrCreate({
       where: {
-        serverId,
+        guildId,
       },
       defaults: {
-        serverId,
-        commands: this.servers.get(serverId).serializeCommands(),
-        config: this.servers.get(serverId).serializeSettings(),
+        guildId,
+        commands: this.guilds.get(guildId).serializeCommands(),
+        config: this.guilds.get(guildId).serializeSettings(),
       },
     }).spread((setting, created) => {
       if (!created) {
         Setting.update({
-          commands: this.servers.get(serverId).serializeCommands(),
-          config: this.servers.get(serverId).serializeSettings(),
+          commands: this.guilds.get(guildId).serializeCommands(),
+          config: this.guilds.get(guildId).serializeSettings(),
         }, {
           where: {
-            serverId,
+            guildId,
           },
         });
       }

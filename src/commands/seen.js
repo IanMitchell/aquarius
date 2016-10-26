@@ -9,7 +9,7 @@ class SeenCommand extends Aquarius.Command {
 
     this.description = 'Tracks when a user was last seen online';
 
-    this.client.on('presence', (oldUser, newUser) => {
+    Aquarius.Client.on('presenceUpdate', (oldUser, newUser) => {
       if (newUser.status === 'offline') {
         Seen.findOrCreate({
           where: {
@@ -29,9 +29,8 @@ class SeenCommand extends Aquarius.Command {
     });
   }
 
-  helpMessage(server) {
+  helpMessage(nickname) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} seen @user\`\`\``;
@@ -43,17 +42,18 @@ class SeenCommand extends Aquarius.Command {
     const seenRegex = new RegExp(`^seen ${Aquarius.Triggers.mentionRegex}$`, 'i');
 
     if (Aquarius.Triggers.messageTriggered(msg, seenRegex)) {
-      const user = msg.mentions[msg.mentions.length - 1];
+      const user = msg.mentions.users.array()[msg.mentions.users.array().length - 1];
 
       // untagged @mention, which Regex returns as a false positive
       if (user === undefined) {
-        return false;
+        return;
       }
 
       this.log(`Seen request for ${user}`);
 
       if (user.status !== 'offline') {
-        return "They're online right now!";
+        msg.channel.sendMessage("They're online right now!");
+        return;
       }
 
       Seen.findOrCreate({
@@ -67,19 +67,17 @@ class SeenCommand extends Aquarius.Command {
         let time = seen.lastSeen;
 
         if (created || seen.lastSeen === 0) {
-          msg.client.sendMessage(msg.channel, `I don't have a record for ${user.username}`);
+          msg.channel.sendMessage(`I don't have a record for ${user.username}`);
           return;
         }
 
         time = moment(seen.lastSeen * 1000);
 
-        const nick = Aquarius.Users.getNickname(msg.channel.server, user);
-        msg.client.sendMessage(msg.channel, `${nick} last seen ${time.fromNow()}`);
-        return;
+        Aquarius.Users.getNickname(msg.channel.guild, user).then(nick => {
+          msg.channel.sendMessage(`${nick} last seen ${time.fromNow()}`);
+        });
       });
     }
-
-    return false;
   }
 }
 

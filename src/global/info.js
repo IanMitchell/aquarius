@@ -6,12 +6,22 @@ class Info extends Aquarius.Command {
     if (Aquarius.Triggers.messageTriggered(msg, /^info$/)) {
       this.log('Info Request');
 
-      const nickname = Aquarius.Users.getNickname(msg.server, this.client.user);
-      let str = `Aquarius v${pkg.version}. `;
-      str += `\`@${nickname} help\` for help. ${Aquarius.Links.repoLink()}`;
-      str += `\n\nAdd ${this.client.user} here ${Aquarius.Links.botLink()}`;
+      Aquarius.Users.getNickname(msg.guild, Aquarius.Client.user).then(nickname => {
+        let str = `Aquarius v${pkg.version}. `;
+        str += `\`@${nickname} help\` for help. ${Aquarius.Links.repoLink()}`;
+        str += `\n\nAdd ${Aquarius.Client.user} here ${Aquarius.Links.botLink()}`;
 
-      this.client.sendMessage(msg.channel, str);
+        msg.channel.sendMessage(str);
+      });
+    }
+
+    if (Aquarius.Triggers.messageTriggered(msg, /^issue$/)) {
+      this.log('Issue Request');
+
+      let str = `🎉 OPEN 🎉 A 🎉 GITHUB 🎉 ISSUE 🎉\n`;
+      str += `${Aquarius.Links.repoLink()}/issues`;
+
+      msg.channel.sendMessage(str);
     }
   }
 }

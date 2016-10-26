@@ -11,9 +11,8 @@ class Order extends Aquarius.Command {
     this.description = 'Given a list of values randomizes them';
   }
 
-  helpMessage(server) {
+  helpMessage(nickname) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} order [message]\`\`\``;
@@ -43,10 +42,8 @@ class Order extends Aquarius.Command {
       }
 
       this.log(`Order input: ${inputs[1]}`);
-      return this.orderList(inputs[1]);
+      msg.channel.sendMessage(this.orderList(inputs[1]));
     }
-
-    return false;
   }
 
   getChoices(input, delimiter) {

@@ -12,9 +12,8 @@ class Pokédex extends Aquarius.Command {
     this.pokémonMap = new Map();
   }
 
-  helpMessage(server) {
+  helpMessage(nickname) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} pokedex [name|id]\`\`\``;
@@ -23,14 +22,16 @@ class Pokédex extends Aquarius.Command {
 
   addPokémon(pokémon, msg) {
     this.log(`Adding ${pokémon} entry`);
-    return Aquarius.Loading.startLoading(msg.channel)
-      .then(() => fetch(`http://pokeapi.co/api/v2/pokemon/${pokémon}`))
+
+    Aquarius.Loading.startLoading(msg.channel);
+
+    return fetch(`http://pokeapi.co/api/v2/pokemon/${pokémon}`)
       .then(response => {
         if (response.ok) {
           return response.json();
         }
 
-        this.client.sendMessage(msg.channel, 'Cannot find Pokémon.');
+        msg.channel.sendMessage('Cannot find Pokémon.');
         return false;
       })
       .then(json => {
@@ -64,7 +65,7 @@ class Pokédex extends Aquarius.Command {
       const pokémon = this.pokémonMap.get(id);
       const types = pokémon.types.map(type => type.type.name.capitalize()).join(', ');
       const content = `#${pokémon.id} ${pokémon.name.capitalize()} (${types})`;
-      this.client.sendFile(msg.channel, pokémon.image, `${pokémon.name}.png`, content);
+      msg.channel.sendFile(pokémon.image, `${pokémon.name}.png`, content);
     }
   }
 
@@ -78,8 +79,6 @@ class Pokédex extends Aquarius.Command {
       this.log(`Request for ${pokémonInput[1]}`);
       this.getPokémon(msg, pokémonInput[1]);
     }
-
-    return false;
   }
 }
 

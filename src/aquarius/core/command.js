@@ -1,21 +1,21 @@
 const debug = require('debug');
-const client = require('./client');
 const settings = require('../settings/settings');
+const logger = require('../dashboard/log');
 
 class Command {
   constructor() {
     this.name = this.constructor.name;
     this.log = debug(this.name);
+    this.log.log = logger;
     // this.log.log = require('../dashboard/log');
-    this.client = client;
     this.settings = settings;
   }
 
-  isAvailable(serverId) {
+  isAvailable(guildId) {
     return true;
   }
 
-  addServer(serverId) {
+  addGuild(guildId) {
     return;
   }
 
@@ -23,7 +23,7 @@ class Command {
     return;
   }
 
-  helpMessage(server) {
+  helpMessage(nickname) {
     let msg = `**${this.name}**\n`;
     msg += `${this.description}\n\n`;
     return msg;
@@ -33,20 +33,20 @@ class Command {
     return this.settings.getKeys();
   }
 
-  setSetting(serverId, key, value) {
-    this.settings.set(serverId, key, value);
+  setSetting(guildId, key, value) {
+    this.settings.set(guildId, key, value);
   }
 
-  setPermission(serverId, permission) {
-    return this.settings.setPermission(serverId, permission);
+  setPermission(guildId, permission) {
+    return this.settings.setPermission(guildId, permission);
   }
 
   getSettingDescription(key) {
     return this.settings.getDescription(key);
   }
 
-  getSetting(server, key) {
-    return this.settings.get(server, key);
+  getSetting(guild, key) {
+    return this.settings.get(guild, key);
   }
 
   getSettingDefault(key) {

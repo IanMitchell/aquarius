@@ -33,7 +33,7 @@ module.exports = {
   Grid,
 };
 
-require('./servers');
+require('./guilds');
 require('./info');
 require('./messages');
 require('./database');

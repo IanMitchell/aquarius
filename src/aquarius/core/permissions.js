@@ -12,40 +12,44 @@ function isBotOwner(user) {
   return user.id === process.env.OWNER_ID;
 }
 
-function isServerAdmin(server, user) {
-  return isBotOwner(user) || server.owner.equals(user);
+function isGuildAdmin(guild, user) {
+  return isBotOwner(user) || guild.member(user).hasPermission('ADMINISTRATOR');
 }
 
-function isServerModerator(server, user) {
-  if (isServerAdmin(server, user)) {
+function isGuildModerator(guild, user) {
+  if (isGuildAdmin(guild, user)) {
     return true;
   }
 
-  const nameRole = users.hasRole(server, user, `${client.user.name} Mod`);
-  const nickRole = users.hasRole(server, user, `${users.getNickname(server, client.user)} Mod`);
+  const nameRole = users.hasRole(guild, user, `${client.user.name} Mod`);
+  const nickRole = users.hasRole(guild, user, `${users.getNickname(guild, client.user)} Mod`);
 
   return nameRole || nickRole;
 }
 
-function isServerMuted(server, user) {
-  if (isServerAdmin(server, user)) {
+function isGuildMuted(guild, user) {
+  if (isGuildAdmin(guild, user)) {
     return false;
   }
 
-  const nameRole = users.hasRole(server, user, `${client.user.name} Muted`);
-  const nickRole = users.hasRole(server, user, `${users.getNickname(server, client.user)} Muted`);
+  const nameRole = users.hasRole(guild, user, `${client.user.name} Muted`);
+  const nickRole = users.hasRole(guild, user, `${users.getNickname(guild, client.user)} Muted`);
 
   return nameRole || nickRole;
 }
 
-function hasPermission(server, user, command) {
-  const permission = settings.getPermission(server.id, command.constructor.name);
+function isCommandEnabled(guild, command) {
+  return [...settings.getCommands(guild.id)].includes(command.constructor.name);
+}
+
+function hasPermission(guild, user, command) {
+  const permission = settings.getPermission(guild.id, command.constructor.name);
 
   switch (permission) {
     case LEVELS.ADMIN:
-      return isServerAdmin(server, user);
+      return isGuildAdmin(guild, user);
     case LEVELS.RESTRICTED:
-      return isServerModerator(server, user);
+      return isGuildModerator(guild, user);
     case LEVELS.ALL:
       return true;
     default:
@@ -56,8 +60,9 @@ function hasPermission(server, user, command) {
 module.exports = {
   LEVELS,
   isBotOwner,
-  isServerAdmin,
-  isServerModerator,
-  isServerMuted,
+  isGuildAdmin,
+  isGuildModerator,
+  isGuildMuted,
+  isCommandEnabled,
   hasPermission,
 };
