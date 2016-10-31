@@ -111,8 +111,9 @@ class KarmaCommand extends Aquarius.Command {
           lastGiven: 0,
         },
       }).spread((karma) => {
-        const nick = Aquarius.Users.getNickname(msg.guild, user.id);
-        msg.channel.sendMessage(`${nick} has ${karma.count} ${karmaName}.`);
+        Aquarius.Users.getNickname(msg.guild, user.id).then(nick => {
+          msg.channel.sendMessage(`${nick} has ${karma.count} ${karmaName}.`);
+        });
       });
 
       return;
