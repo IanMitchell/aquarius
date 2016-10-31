@@ -232,10 +232,10 @@ function handleCommands(message) {
 // TODO: Refactor
 function handleAdminCommands(message, guilds) {
   const cmdMatch = Aquarius.Triggers.messageTriggered(message, /^(add|remove) (?:([0-9]+) )?(.+)$/i);
-  const roleMatch = Aquarius.Triggers.messageTriggered(message, /^create roles( [0-9]+)?$/i);
+  const roleMatch = Aquarius.Triggers.messageTriggered(message, /^create roles(?: ([0-9]+))?$/i);
   // TODO: Expand to allow unsetting
   const setMatch = Aquarius.Triggers.messageTriggered(message,
-                                                      /^set ([0-9]+ )?([\w]+) ([\w]+) (.+)$/i);
+                                                      /^set (?:([0-9]+) )?([\w]+) ([\w]+) (.+)$/i);
 
   if (cmdMatch) {
     if (guilds.length > 1 && !cmdMatch[2]) {
