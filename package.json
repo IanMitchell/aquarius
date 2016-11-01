@@ -28,6 +28,7 @@
     "moment": "^2.15.1",
     "mtgsdk": "^0.1.1",
     "node-fetch": "^1.6.3",
+    "parse-rss": "^1.0.3",
     "pg": "^6.0.0",
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.24.5",
