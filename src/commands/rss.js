@@ -8,7 +8,7 @@ class RSS extends Aquarius.Command {
   constructor() {
     super();
     this.description = 'Posts to a channel with new RSS entries. If the URL has not been posted in the past 50 channel messages, it is considered new.';
-    this.settings.addKey('channel', null, 'Where to post RSS alerts');
+    this.settings.addKey('channel', null, 'Where to post RSS alerts (no #)');
     this.settings.addKey('url', null, 'Link to RSS Feed');
 
     setInterval(this.loop.bind(this), FREQUENCY);
@@ -35,11 +35,8 @@ class RSS extends Aquarius.Command {
 
   checkForUpdates(guild) {
     const url = this.getSetting(guild.id, 'url');
-    let channel = this.getSetting(guild.id, 'channel') || guild.defaultChannel;
-
-    if (channel !== guild.defaultChannel) {
-      channel = guild.channels.array().find(c => c.name === channel);
-    }
+    const target = this.getSetting(guild.id, 'channel');
+    const channel = guild.channels.array().find(c => c.name === target) || guild.defaultChannel;
 
     if (!url) {
       const admin = guild.owner.user;
