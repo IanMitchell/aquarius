@@ -56,7 +56,7 @@ class RSS extends Aquarius.Command {
         this.checkLink(channel, entry.link).then(posted => {
           if (!posted) {
             this.log(`Posting ${entry.title} to ${guild.name}`);
-            let str = `:newspaper: **${entry.title}**\n`;
+            let str = `📰 **${entry.title}**\n`;
             str += '\n';
             str += `${entry.link}`;
             channel.sendMessage(str);
