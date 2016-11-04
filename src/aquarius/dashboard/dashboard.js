@@ -13,8 +13,6 @@ function isEnabled() {
 }
 
 if (isEnabled()) {
-  console.log(process.env.DASHBOARD);
-  console.log(typeof process.env.DASHBOARD);
   const Screen = (function () {
     // Create a screen object.
     const screen = blessed.screen({
