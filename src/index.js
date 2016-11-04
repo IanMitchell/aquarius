@@ -4,7 +4,10 @@ const debug = require('debug');
 const Aquarius = require('./aquarius');
 
 const log = debug('Aquarius');
-// log.log = require('./dashboard/log');
+
+if (Aquarius.Dashboard.isEnabled()) {
+  log.log = require('./aquarius/dashboard/log');
+}
 
 // Stores a map of all the configurable commands
 // and the core / global commands

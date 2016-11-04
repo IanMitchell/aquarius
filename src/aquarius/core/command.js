@@ -1,14 +1,16 @@
 const debug = require('debug');
 const settings = require('../settings/settings');
-const logger = require('../dashboard/log');
+const dashboard = require('../dashboard/dashboard');
 
 class Command {
   constructor() {
     this.name = this.constructor.name;
     this.log = debug(this.name);
-    this.log.log = logger;
-    // this.log.log = require('../dashboard/log');
     this.settings = settings;
+
+    if (dashboard.isEnabled()) {
+      this.log.log = require('../dashboard/log');
+    }
   }
 
   isAvailable(guildId) {
