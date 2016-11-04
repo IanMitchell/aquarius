@@ -38,7 +38,7 @@ class Order extends Aquarius.Command {
 
       if (range) {
         this.log(`Range input: ${range}`);
-        return this.orderRange(range);
+        msg.channel.sendMessage(this.orderRange(range));
       }
 
       this.log(`Order input: ${inputs[1]}`);

@@ -4,39 +4,55 @@ const contrib = require('blessed-contrib');
 
 const log = debug('Dashboard');
 
-const Screen = (function () {
-  // Create a screen object.
-  const screen = blessed.screen({
-    smartCSR: true,
-  });
+function isEnabled() {
+  if (process.env.DASHBOARD) {
+    return process.env.DASHBOARD.toLowerCase() !== 'disabled';
+  }
 
-  screen.title = 'Aquarius';
+  return true;
+}
 
-  // Quit on Escape, q, or Control-C.
-  screen.key(['escape', 'q', 'C-c'], () => process.exit(0));
+if (isEnabled()) {
+  const Screen = (function () {
+    // Create a screen object.
+    const screen = blessed.screen({
+      smartCSR: true,
+    });
 
-  return screen;
-}());
+    screen.title = 'Aquarius';
 
-const Grid = (function () {
-  const grid = new contrib.grid({
-    rows: 5,
-    cols: 8,
-    screen: Screen,
-  });
+    // Quit on Escape, q, or Control-C.
+    screen.key(['escape', 'q', 'C-c'], () => process.exit(0));
 
-  return grid;
-}());
+    return screen;
+  }());
 
-module.exports = {
-  Screen,
-  Grid,
-};
+  const Grid = (function () {
+    const grid = new contrib.grid({
+      rows: 5,
+      cols: 8,
+      screen: Screen,
+    });
 
-require('./guilds');
-require('./info');
-require('./messages');
-require('./database');
-log.log = require('./log');
+    return grid;
+  }());
 
-log('Rendering Dashboard');
+  module.exports = {
+    isEnabled,
+    Screen,
+    Grid,
+  };
+
+  require('./guilds');
+  require('./info');
+  require('./messages');
+  require('./database');
+  log.log = require('./log');
+
+  log('Rendering Dashboard');
+} else {
+  log('Dashboard disabled.');
+  module.exports = {
+    isEnabled,
+  };
+}

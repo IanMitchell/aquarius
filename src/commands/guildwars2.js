@@ -7,7 +7,7 @@ const INTERVAL_MS = 1000 * 60 * INTERVAL;
 
 
 // PAD POLYFILL BULLSHIT
-function padStart (text, max, mask) {
+function padStart(text, max, mask) {
   const cur = text.length;
   if (max <= cur) {
     return text;
