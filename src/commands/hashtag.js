@@ -7,16 +7,16 @@ class Hashtag extends Aquarius.Command {
   }
 
   message(msg) {
-    if (msg.cleanContent.includes('hashtag')) {
+    if (msg.cleanContent.toLowerCase().includes('hashtag')) {
       this.log('Adding Hashtag Reaction');
 
       msg.addReaction('✋')
         // .then(() => msg.addReaction('#'))
-        .then(() => msg.toLowerCase().addReaction(encodeURI('🇭')))
-        .then(() => msg.toLowerCase().addReaction(encodeURI('🇹')))
-        .then(() => msg.toLowerCase().addReaction(encodeURI('🇦')))
-        .then(() => msg.toLowerCase().addReaction(encodeURI('🇬')))
-        .then(() => msg.toLowerCase().addReaction(encodeURI('🇸')))
+        .then(() => msg.addReaction(encodeURI('🇭')))
+        .then(() => msg.addReaction(encodeURI('🇹')))
+        .then(() => msg.addReaction(encodeURI('🇦')))
+        .then(() => msg.addReaction(encodeURI('🇬')))
+        .then(() => msg.addReaction(encodeURI('🇸')))
         .catch(this.log);
     }
   }
