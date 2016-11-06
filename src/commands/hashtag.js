@@ -12,11 +12,11 @@ class Hashtag extends Aquarius.Command {
 
       msg.addReaction('✋')
         // .then(() => msg.addReaction('#'))
-        .then(() => msg.addReaction(encodeURI('🇭')))
-        .then(() => msg.addReaction(encodeURI('🇹')))
-        .then(() => msg.addReaction(encodeURI('🇦')))
-        .then(() => msg.addReaction(encodeURI('🇬')))
-        .then(() => msg.addReaction(encodeURI('🇸')))
+        .then(() => msg.toLowerCase().addReaction(encodeURI('🇭')))
+        .then(() => msg.toLowerCase().addReaction(encodeURI('🇹')))
+        .then(() => msg.toLowerCase().addReaction(encodeURI('🇦')))
+        .then(() => msg.toLowerCase().addReaction(encodeURI('🇬')))
+        .then(() => msg.toLowerCase().addReaction(encodeURI('🇸')))
         .catch(this.log);
     }
   }
