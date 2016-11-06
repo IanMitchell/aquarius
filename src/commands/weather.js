@@ -26,9 +26,8 @@ class Weather extends Aquarius.Command {
     this.description = 'Ten day weather forecasts';
   }
 
-  helpMessage(server) {
+  helpMessage(nickname) {
     let msg = super.helpMessage();
-    const nickname = Aquarius.Users.getNickname(server, this.client.user);
 
     msg += 'Usage:\n';
     msg += `\`\`\`@${nickname} weather [search term]\`\`\``;
@@ -87,8 +86,8 @@ class Weather extends Aquarius.Command {
       case '38':   // Scattered Thunderstorms
       case '39':   // Scattered Thunderstorms
       case '45':   // Thundershowers
-        return EMOJI_LIST.THUNDER;
       case '47':   // Isolated Thundershowers
+        return EMOJI_LIST.THUNDER;
       case '5':    // Mixed Rain and Snow
       case '7':    // Mixed Snow and Sleet
       case '13':   // Snow Flurries
@@ -117,8 +116,8 @@ class Weather extends Aquarius.Command {
       case '19':   // Dust
       case '20':   // Foggy
       case '21':   // Haze
-        return EMOJI_LIST.FOGGY;
       case '22':   // Smoky
+        return EMOJI_LIST.FOGGY;
       case '23':   // Blustery
       case '24':   // Windy
         return EMOJI_LIST.WINDY;
@@ -149,21 +148,19 @@ class Weather extends Aquarius.Command {
     if (weatherInput) {
       this.log(`Weather request for ${weatherInput[1]}`);
 
-      Aquarius.Loading.startLoading(msg.channel)
-        .then(() => {
-          try {
-            return this.getWeather(weatherInput[1]);
-          } catch (e) {
-            return e.message;
-          }
-        })
-        .then(message => {
-          Aquarius.Client.sendMessage(msg.channel, message);
+      Aquarius.Loading.startLoading(msg.channel);
+
+      try {
+        this.getWeather(weatherInput[1]).then(message => {
+          msg.channel.sendMessage(message);
           Aquarius.Loading.stopLoading(msg.channel);
         });
+      } catch (e) {
+        this.log(e.message);
+        Aquarius.Loading.stopLoading(msg.channel);
+        msg.channel.sendMessage('Error connecting to Yahoo Weather.');
+      }
     }
-
-    return false;
   }
 }
 
