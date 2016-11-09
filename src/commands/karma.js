@@ -98,7 +98,7 @@ class KarmaCommand extends Aquarius.Command {
         return;
       }
 
-      this.log(`Request for ${user.name}'s Karma'`);
+      this.log(`Request for ${user.username}'s Karma'`);
 
       Karma.findOrCreate({
         where: {

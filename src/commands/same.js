@@ -31,7 +31,7 @@ class Same extends Aquarius.Command {
     const channel = msg.channel.name;
 
     if (!this.messageStack.get(guild)) {
-      this.log(`Creating entry for ${guild}`);
+      this.log(`Creating entry for ${msg.guild.name}`);
       this.messageStack.set(guild, new Map());
 
       msg.guild.channels.forEach(chan => {
