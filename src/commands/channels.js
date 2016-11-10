@@ -172,7 +172,7 @@ class ChannelCommand extends Aquarius.Command {
   }
 
   message(msg) {
-    const channelRegex = new RegExp(`channel (add|remove) (${Aquarius.Triggers.channelRegex})(?: (${Aquarius.Triggers.mentionRegex}))?`, 'i');
+    const channelRegex = new RegExp(`channel (add|remove) (#[\w-]+|${Aquarius.Triggers.channelRegex})(?: (${Aquarius.Triggers.mentionRegex}))?`, 'i');
     const channelInput = Aquarius.Triggers.messageTriggered(msg, channelRegex);
     const registerRegex = new RegExp(`channel (register|unregister) (${Aquarius.Triggers.channelRegex})`, 'i');
     const registerInput = Aquarius.Triggers.messageTriggered(msg, registerRegex);
