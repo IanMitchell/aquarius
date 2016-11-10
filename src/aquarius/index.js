@@ -8,7 +8,6 @@ const Permissions = require('./core/permissions');
 const Users = require('./core/users');
 const Settings = require('./settings/settings');
 const Links = require('./helpers/links');
-const Dashboard = require('./dashboard/dashboard');
 const Dates = require('./helpers/dates');
 const Sequelize = require('./database/sequelize');
 
@@ -26,7 +25,6 @@ module.exports = {
   Users,
   Settings,
   Links,
-  Dashboard,
   Dates,
   Sequelize,
 };

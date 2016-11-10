@@ -6,7 +6,6 @@ const Sequelize = require('../database/sequelize');
 const Setting = Sequelize.import('../../models/setting');
 
 const log = debug('Config');
-// log.log = require('../../dashboard/log');
 
 class Config {
   constructor() {
