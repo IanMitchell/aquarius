@@ -1,6 +1,9 @@
+const debug = require('debug');
 const client = require('./client');
 const users = require('./users');
 const settings = require('../settings/settings');
+
+const log = debug('Permissions');
 
 const LEVELS = {
   ADMIN: 2,
@@ -13,7 +16,14 @@ function isBotOwner(user) {
 }
 
 function isGuildAdmin(guild, user) {
-  return isBotOwner(user) || guild.members.find('id', user.id).hasPermission('ADMINISTRATOR');
+  const guildMember = guild.members.find('id', user.id);
+
+  if (guildMember === null || guildMember === undefined) {
+    log(`ERROR: No Member found for ${user.username} in ${guild.name}.`);
+    return isBotOwner(user);
+  }
+
+  return isBotOwner(user) || guildMember.hasPermission('ADMINISTRATOR');
 }
 
 function isGuildModerator(guild, user) {
