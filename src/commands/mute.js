@@ -90,7 +90,7 @@ class Mute extends Aquarius.Command {
       const unmuteRegex = new RegExp(`^unmute ${Aquarius.Triggers.mentionRegex}$`, 'i');
 
       if (Aquarius.Triggers.messageTriggered(msg, unmuteRegex)) {
-        const user = msg.mentions.users.array()[msg.mentions.users.array().length - 1];
+        const user = msg.mentions.users.first();
 
         if (user === undefined) {
           return;
@@ -103,7 +103,7 @@ class Mute extends Aquarius.Command {
       }
 
       if (Aquarius.Triggers.messageTriggered(msg, muteRegex)) {
-        const user = msg.mentions.users.array()[msg.mentions.users.array().length - 1];
+        const user = msg.mentions.users.first();
 
         if (user === undefined) {
           return;

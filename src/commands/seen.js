@@ -33,7 +33,7 @@ class SeenCommand extends Aquarius.Command {
     let msg = super.helpMessage();
 
     msg += 'Usage:\n';
-    msg += `\`\`\`@${nickname} seen @user\`\`\``;
+    msg += `\`\`\`@${nickname} seen [@user]\`\`\``;
 
     return msg;
   }
@@ -42,7 +42,7 @@ class SeenCommand extends Aquarius.Command {
     const seenRegex = new RegExp(`^seen ${Aquarius.Triggers.mentionRegex}$`, 'i');
 
     if (Aquarius.Triggers.messageTriggered(msg, seenRegex)) {
-      const user = msg.mentions.users.array()[msg.mentions.users.array().length - 1];
+      const user = msg.mentions.users.first();
 
       // untagged @mention, which Regex returns as a false positive
       if (user === undefined) {

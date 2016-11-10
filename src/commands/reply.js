@@ -78,10 +78,10 @@ class ReplyCommand extends Aquarius.Command {
     }
 
     if (Aquarius.Triggers.messageTriggered(msg, /^replies$/i)) {
-      if (this.responses.has(msg.channel.guild.id)) {
+      if (this.responses.has(msg.guild.id)) {
         let str = `**Replies Set:**\n\n`;
 
-        this.responses.get(msg.channel.guild.id).forEach((value, key) => {
+        this.responses.get(msg.guild.id).forEach((value, key) => {
           str += `* '${key}'\n`;
         });
 
@@ -91,20 +91,20 @@ class ReplyCommand extends Aquarius.Command {
       }
     }
 
-    if (this.responses.has(msg.channel.guild.id)) {
-      if (this.responses.get(msg.channel.guild.id).has(msg.cleanContent.trim().toLowerCase())) {
+    if (this.responses.has(msg.guild.id)) {
+      if (this.responses.get(msg.guild.id).has(msg.cleanContent.trim().toLowerCase())) {
         this.log(`Input: ${msg.cleanContent}`);
-        msg.channel.sendMessage(this.responses.get(msg.channel.guild.id).get(msg.cleanContent.trim().toLowerCase()));
+        msg.channel.sendMessage(this.responses.get(msg.guild.id).get(msg.cleanContent.trim().toLowerCase()));
       }
     } else {
-      this.addGuild(msg.channel.guild.id);
+      this.addGuild(msg.guild.id);
 
       if (this.genericResponses().has(msg.cleanContent.trim().toLowerCase())) {
         msg.channel.sendMessage(this.genericResponses().get(msg.cleanContent.trim().toLowerCase()));
       }
     }
 
-    if (Aquarius.Permissions.isGuildModerator(msg.channel.guild, msg.author)) {
+    if (Aquarius.Permissions.isGuildModerator(msg.guild, msg.author)) {
       const newRegex = new RegExp([
         '^(?:(?:new reply)|(?:reply add)) ',  // Cmd Trigger
         '(["\'])((?:(?=(\\\\?))\\3.)*?)\\1 ', // Reply trigger (Quoted text block 1)
@@ -119,7 +119,7 @@ class ReplyCommand extends Aquarius.Command {
 
         Reply.findOrCreate({
           where: {
-            guildId: msg.channel.guild.id,
+            guildId: msg.guild.id,
             trigger: addInputs[2],
           },
           defaults: {
@@ -128,7 +128,7 @@ class ReplyCommand extends Aquarius.Command {
         }).spread((reply, created) => {
           if (created) {
             msg.channel.sendMessage('Added reply.');
-            this.responses.get(msg.channel.guild.id).set(addInputs[2].toLowerCase(), addInputs[5]);
+            this.responses.get(msg.guild.id).set(addInputs[2].toLowerCase(), addInputs[5]);
           } else {
             msg.channel.sendMessage('A reply with that trigger already exists!');
           }
@@ -141,13 +141,13 @@ class ReplyCommand extends Aquarius.Command {
         // Remove from database
         Reply.destroy({
           where: {
-            guildId: msg.channel.guild.id,
+            guildId: msg.guild.id,
             trigger: removeInputs[1],
           },
         }).then(removedRows => {
           if (removedRows > 0) {
             msg.channel.sendMessage(`Removed '${removeInputs[1]}' reply`);
-            this.responses.get(msg.channel.guild.id).delete(removeInputs[1]);
+            this.responses.get(msg.guild.id).delete(removeInputs[1]);
           } else {
             msg.channel.sendMessage(`Could not find a reply with '${removeInputs[1]}'`);
           }

@@ -1,6 +1,7 @@
 const client = require('./client');
 
 const mentionRegex = '(?:(?:@[#\\w]+)|(?:<@!?\\d+>))';
+const channelRegex = '<#\\d+>';
 
 function botMention() {
   return client.user.toString();
@@ -86,6 +87,7 @@ function cardTrigger(msg) {
 
 module.exports = {
   mentionRegex,
+  channelRegex,
   botMention,
   mentionTrigger,
   nicknameMentionTrigger,

@@ -20,9 +20,9 @@ class KarmaCommand extends Aquarius.Command {
     let msg = super.helpMessage();
 
     msg += 'Usage:\n';
-    msg += '```@username++ [optional message]\n';
+    msg += '```[@user]++ [optional message]\n';
     msg += `@${nickname} karma leaderboard\n`;
-    msg += `@${nickname} karma @user\`\`\``;
+    msg += `@${nickname} karma [@user]\`\`\``;
     msg += 'Example:\n';
     msg += `\`\`\`@${nickname}++ thanks for being awesome!\n\`\`\``;
     return msg;
@@ -92,7 +92,7 @@ class KarmaCommand extends Aquarius.Command {
     }
 
     if (Aquarius.Triggers.messageTriggered(msg, karmaLookupRegex)) {
-      const user = msg.mentions.users.array()[msg.mentions.users.array().length - 1];
+      const user = msg.mentions.users.first();
 
       if (user === undefined) {
         return;
@@ -122,7 +122,7 @@ class KarmaCommand extends Aquarius.Command {
     const karmaInput = Aquarius.Triggers.customTrigger(msg, karmaRegex);
 
     if (karmaInput) {
-      const user = msg.mentions.users.array()[0];
+      const user = msg.mentions.users.first();
 
       // untagged @mention, which Regex returns as a false positive
       if (user === undefined) {
