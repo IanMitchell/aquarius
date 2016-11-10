@@ -21,6 +21,7 @@ class ChannelCommand extends Aquarius.Command {
     msg += '```';
     msg += `@${nickname} channel [register|unregister] [#channel]\n`;
     msg += `@${nickname} channel [add|remove] [#channel] [@user]\n`;
+    msg += '```';
     return msg;
   }
 
