@@ -19,8 +19,7 @@ function isGuildAdmin(guild, user) {
   const guildMember = guild.members.find('id', user.id);
 
   if (guildMember === null || guildMember === undefined) {
-    log(`ERROR: No Member found for ${user.username} in ${guild.name}.`);
-    return isBotOwner(user);
+    return false;
   }
 
   return isBotOwner(user) || guildMember.hasPermission('ADMINISTRATOR');
