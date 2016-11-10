@@ -13,7 +13,7 @@ function isBotOwner(user) {
 }
 
 function isGuildAdmin(guild, user) {
-  return isBotOwner(user) || guild.member(user).hasPermission('ADMINISTRATOR');
+  return isBotOwner(user) || guild.members.find('id', user.id).hasPermission('ADMINISTRATOR');
 }
 
 function isGuildModerator(guild, user) {
