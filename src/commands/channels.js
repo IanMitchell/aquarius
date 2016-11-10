@@ -25,6 +25,10 @@ class ChannelCommand extends Aquarius.Command {
     return msg;
   }
 
+  stripHash(str) {
+    return str.substr(1, str.length);
+  }
+
   removeChannel(channel) {
     if (channel.type === 'text') {
       this.log('Checking text channel deletion event');
@@ -63,9 +67,9 @@ class ChannelCommand extends Aquarius.Command {
 
     // Get Channel - we can't rely on mentions since user might not be able to see it.
     const targetChannel = msg.mentions.channels.first() ||
-                          msg.guild.channels.find('name', channelInput[2]);
+                          msg.guild.channels.find('name', this.stripHash(channelInput[2]));
 
-    if (targetChannel === undefined) {
+    if (targetChannel === undefined || targetChannel == null) {
       msg.channel.sendMessage('Channel not found. To get a list, type `.channels list`.');
       return;
     }
@@ -172,7 +176,7 @@ class ChannelCommand extends Aquarius.Command {
   }
 
   message(msg) {
-    const channelRegex = new RegExp(`channel (add|remove) (#[\w-]+|${Aquarius.Triggers.channelRegex})(?: (${Aquarius.Triggers.mentionRegex}))?`, 'i');
+    const channelRegex = new RegExp(`channel (add|remove) (#[\\w-]+|${Aquarius.Triggers.channelRegex})(?: (${Aquarius.Triggers.mentionRegex}))?`, 'i');
     const channelInput = Aquarius.Triggers.messageTriggered(msg, channelRegex);
     const registerRegex = new RegExp(`channel (register|unregister) (${Aquarius.Triggers.channelRegex})`, 'i');
     const registerInput = Aquarius.Triggers.messageTriggered(msg, registerRegex);
