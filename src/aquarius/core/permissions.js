@@ -1,9 +1,6 @@
-const debug = require('debug');
 const client = require('./client');
 const users = require('./users');
 const settings = require('../settings/settings');
-
-const log = debug('Permissions');
 
 const LEVELS = {
   ADMIN: 2,
@@ -16,7 +13,7 @@ function isBotOwner(user) {
 }
 
 function isGuildAdmin(guild, user) {
-  const guildMember = guild.members.find('id', user.id);
+  const guildMember = guild.member(user);
 
   if (guildMember === null || guildMember === undefined) {
     return false;

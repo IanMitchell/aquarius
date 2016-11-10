@@ -34,7 +34,13 @@ function getNickname(guild, user) {
 }
 
 function hasRole(guild, user, roleName) {
-  return guild.members.find('id', user.id).roles.array().some(role => role.name === roleName);
+  const member = guild.member(user);
+
+  if (member === undefined || member === null) {
+    return false;
+  }
+
+  return member.roles.array().some(role => role.name === roleName);
 }
 
 module.exports = {
