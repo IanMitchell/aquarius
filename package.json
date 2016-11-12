@@ -25,6 +25,7 @@
     "discord.js": "github:hydrabolt/discord.js#indev",
     "dotenv": "^2.0.0",
     "form-data": "^2.1.1",
+    "hearthstone-db": "^1.0.4",
     "moment": "^2.15.1",
     "mtgsdk": "^0.1.1",
     "node-fetch": "^1.6.3",
