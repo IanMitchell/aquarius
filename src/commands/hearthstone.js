@@ -20,12 +20,12 @@ class Hearthstone extends Aquarius.Command {
 
     if (hearthInput) {
       hearthInput.forEach(cardInput => {
-        let cardName = `${cardInput[1]}`;
-        this.log(`Request for ${cardName}`);
+        this.log(`Request for ${cardInput[1]}`);
+        const cardName = cardInput[1].toLowerCase();
 
         Aquarius.Loading.startLoading(msg.channel);
         hdb.allCards.forEach(card => {
-          if (card.name.toLowerCase() === cardName.toLowerCase()) {
+          if (card.name.toLowerCase() === cardName) {
             return msg.channel.sendFile(card.image_url, `${card.name}.png`);
           }
         });
