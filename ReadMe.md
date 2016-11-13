@@ -55,7 +55,7 @@ $ node_modules/.bin/sequelize db:migrate --config ./.sequelizerc
 
 #### Enabling Commands
 
-By default all commands are disabled. To enable a command, run
+By default all commands are disabled. To enable a command, DM the bot and tell it
 
 ```
 add <command_name>
