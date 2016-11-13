@@ -21,11 +21,13 @@ class Hearthstone extends Aquarius.Command {
     if (hearthInput) {
       hearthInput.forEach(cardInput => {
         this.log(`Request for ${cardInput[1]}`);
-        const cardName = cardInput[1].toLowerCase();
+        const cardName = cardInput[1].toLowerCase()
+                                     .replace(/[^\w\s]/g, "") // strip punctuation
+                                     .replace(/\s+/g, " ");   // no duplicate spaces
 
         Aquarius.Loading.startLoading(msg.channel);
         hdb.allCards.some(card => {
-          if (card.name.toLowerCase() === cardName) {
+          if (card.name.toLowerCase().replace(/[^\w\s]/g, "") === cardName) {
             msg.channel.sendFile(card.image_url, `${card.name}.png`);
             return true;
           }
