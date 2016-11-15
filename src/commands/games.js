@@ -81,7 +81,7 @@ class Games extends Aquarius.Command {
       msg.guild.roles.array()
         .filter(role => role.name.endsWith('AG'))
         .forEach(role => {
-          str += `* ${role.name.split(':AG')[0]}`;
+          str += `* ${role.name.split(':AG')[0]}\n`;
         });
 
       msg.channel.sendMessage(str);
