@@ -46,7 +46,9 @@ class Games extends Aquarius.Command {
         }
       } else {
         this.log(`Removing ${registerInput[1]}`);
-        msg.guild.roles.find('name', this.roleName(registerInput[1])).delete();
+        msg.guild.roles.find(val => {
+          return val.name.toLowerCase() === this.roleName(registerInput[1]).toLowerCase();
+        }).delete();
         msg.channel.sendMessage(`Removed ${registerInput[1]} from games list.`);
       }
     }
@@ -54,7 +56,9 @@ class Games extends Aquarius.Command {
     if (gameInput) {
       const action = gameInput[1];
       const role = gameInput[2];
-      const targetRole = msg.guild.roles.find('name', this.roleName(role));
+      const targetRole = msg.guild.roles.find(val => {
+        return val.name.toLowerCase() === this.roleName(role).toLowerCase();
+      });
       const targetUser = msg.guild.member(msg.author);
 
       if (targetRole) {
