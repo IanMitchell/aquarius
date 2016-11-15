@@ -70,7 +70,7 @@ function cardTrigger(msg) {
     return false;
   }
 
-  const cardRegex = /\[\[(.+)\]\]/ig;
+  const cardRegex = /\[\[(.+?)\]\]/ig;
   const matches = [];
   let match = null;
 

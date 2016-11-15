@@ -52,3 +52,19 @@ To migrate the changes, you can run
 ```
 $ node_modules/.bin/sequelize db:migrate --config ./.sequelizerc
 ```
+
+#### Enabling Commands
+
+By default all commands are disabled. To enable a command, DM the bot and tell it
+
+```
+add <command_name>
+```
+
+To enable all commands, run
+
+```
+add all
+```
+
+Disable commands by using remove instead of add
