@@ -72,6 +72,17 @@ class Games extends Aquarius.Command {
       }
     }
 
+    if (Aquarius.Triggers.messageTriggered(msg, /^games list$/i)) {
+      let str = '**Registered Games:**\n\n';
+      msg.guild.roles.array()
+        .filter(role => role.name.endsWith('AG'))
+        .forEach(role => {
+          str += `* ${role.name.split(':AG')[0]}`;
+        });
+
+      msg.channel.sendMessage(str);
+    }
+
     if (Aquarius.Triggers.messageTriggered(msg, /^games$/i)) {
       this.log('Games request');
 
