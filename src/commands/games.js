@@ -12,9 +12,9 @@ class Games extends Aquarius.Command {
     msg += 'Usage:\n';
     msg += '```';
     msg += `@${nickname} games\n`;
-    msg += `@${nickname} games list`;
-    msg += `@${nickname} games [register|unregister] [game name] [#hexcolor]`;
-    msg += `@${nickname} games [add|remove] [game name]`;
+    msg += `@${nickname} games list\n`;
+    msg += `@${nickname} games [register|unregister] [game name] [#hexcolor]\n`;
+    msg += `@${nickname} games [add|remove] [game name]\n`;
     msg += '```';
 
     return msg;
