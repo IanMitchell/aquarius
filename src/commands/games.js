@@ -104,7 +104,7 @@ class Games extends Aquarius.Command {
         }
       });
       
-      var gamesArray = Array.from(games);
+      let gamesArray = Array.from(games);
       gamesArray = gamesArray.sort((a, b) => b[1] - a[1]);
 
       let response = `**Games in ${msg.guild.name}**\n\n`;
