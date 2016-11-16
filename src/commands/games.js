@@ -25,7 +25,7 @@ class Games extends Aquarius.Command {
   }
 
   message(msg) {
-    const registerRegex = /^games (register|unregister) (.+)(?: (#[A-Fa-f0-9]{6}))?$/i;
+    const registerRegex = /^games (register|unregister) (.+?) ?(#[A-Fa-f0-9]{6})?$/i;
     const gameRegex = /^games (add|remove) (.+)$/i;
 
     const registerInput = Aquarius.Triggers.messageTriggered(msg, registerRegex);
