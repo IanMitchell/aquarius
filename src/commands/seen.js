@@ -10,7 +10,7 @@ class SeenCommand extends Aquarius.Command {
     this.description = 'Tracks when a user was last seen online';
 
     Aquarius.Client.on('presenceUpdate', (oldUser, newUser) => {
-      if (newUser.status === 'offline') {
+      if (newUser.presence.status === 'offline') {
         Seen.findOrCreate({
           where: {
             userId: newUser.id,
@@ -51,7 +51,7 @@ class SeenCommand extends Aquarius.Command {
 
       this.log(`Seen request for ${user}`);
 
-      if (user.status !== 'offline') {
+      if (user.presence.status !== 'offline') {
         msg.channel.sendMessage("They're online right now!");
         return;
       }
