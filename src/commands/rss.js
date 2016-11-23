@@ -22,10 +22,9 @@ class RSS extends Aquarius.Command {
     });
   }
 
-  // TODO: Move to Database?
-  checkLink(channel, url) {
-    return channel.fetchMessages({ limit: CHANNEL_MESSAGE_HISTORY_LIMIT }).then(messages => {
-      const result = messages.array().some(message => message.content.includes(url));
+  checkForPastContent(channel, content, limit = CHANNEL_MESSAGE_HISTORY_LIMIT) {
+    return channel.fetchMessages({ limit }).then(messages => {
+      const result = messages.array().some(message => message.content.includes(content));
       return result;
     }).catch(err => {
       this.log(err);
@@ -47,13 +46,16 @@ class RSS extends Aquarius.Command {
 
     parser(url, (err, rss) => {
       if (err) {
+        if (!this.checkForPastContent(channel, 'Error parsing RSS feed', 1)) {
+          channel.sendMessage(`Error parsing RSS feed: ${url}`);
+        }
+
         this.log(err);
-        channel.sendMessage(`Error parsing RSS feed: ${url}`);
         return;
       }
 
       rss.reverse().forEach(entry => {
-        this.checkLink(channel, entry.link).then(posted => {
+        this.checkForPastContent(channel, entry.link).then(posted => {
           if (!posted) {
             this.log(`Posting ${entry.title} to ${guild.name}`);
             let str = `📰 **${entry.title}**\n`;
