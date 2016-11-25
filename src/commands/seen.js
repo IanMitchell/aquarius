@@ -23,7 +23,7 @@ class SeenCommand extends Aquarius.Command {
             user.update({ lastSeen: moment().unix() });
           }
 
-          this.log(`Updated last seen for ${newUser.username}`);
+          this.log(`Updated last seen for ${newUser.user.username}`);
         });
       }
     });
