@@ -115,6 +115,8 @@ class ReplyCommand extends Aquarius.Command {
       const removeInputs = Aquarius.Triggers.messageTriggered(msg, /^reply remove "(.+)"$/i);
 
       if (addInputs) {
+        addInputs[2] = addInputs[2].toLowerCase();  // Trigger case insensitivity
+
         this.log(`Adding reply: "${addInputs[2]}" -> "${addInputs[5]}"`);
 
         Reply.findOrCreate({
@@ -136,6 +138,8 @@ class ReplyCommand extends Aquarius.Command {
       }
 
       if (removeInputs) {
+        removeInputs[1] = removeInputs[1].toLowerCase();  // Trigger case insensitivity
+
         this.log(`Removing ${removeInputs[1]} reply`);
 
         // Remove from database
