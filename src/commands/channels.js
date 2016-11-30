@@ -166,7 +166,7 @@ class ChannelCommand extends Aquarius.Command {
         let str = '**Channel List**\n\n';
 
         response.forEach(record => {
-          const name = msg.guild.channels.find('id', record.channelId);
+          const name = msg.guild.channels.get(record.channelId);
           str += `* ${name}\n`;
         });
 
