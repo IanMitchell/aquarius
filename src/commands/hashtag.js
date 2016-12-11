@@ -7,7 +7,7 @@ class Hashtag extends Aquarius.Command {
   }
 
   message(msg) {
-    if (msg.cleanContent.toLowerCase().includes('hashtag')) {
+    /*if (msg.cleanContent.toLowerCase().includes('hashtag')) {
       this.log('Adding Hashtag Reaction');
 
       msg.addReaction('✋')
@@ -18,7 +18,7 @@ class Hashtag extends Aquarius.Command {
         .then(() => msg.addReaction(encodeURI('🇬')))
         .then(() => msg.addReaction(encodeURI('🇸')))
         .catch(this.log);
-    }
+    }*/
   }
 }
 
