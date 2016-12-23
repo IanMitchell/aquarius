@@ -46,7 +46,7 @@ class KarmaCommand extends Aquarius.Command {
     const leaderboardRegex = new RegExp(`^(?:karma|${karmaName}) leaderboard$`, 'i');
     const karmaLookupRegex = new RegExp(`^(?:karma|${karmaName}) ${Aquarius.Triggers.mentionRegex}$`, 'i');
     const karmaRegex = new RegExp([
-      `^${Aquarius.Triggers.mentionRegex}\s*(?:(?: (?:(plus|minus) (?:karma|${karmaName})).*)|`,
+      `^${Aquarius.Triggers.mentionRegex}\\s*(?:(?: (?:(plus|minus) (?:karma|${karmaName})).*)|`,
       '(?: ?((\\+\\+).*|(--).*)))$',
     ].join(''), 'i');
 
