@@ -162,8 +162,8 @@ class Showtimes extends Aquarius.Command {
 
   checkForAreki(msg) {
     if (msg.author.id === '132203481565102080' &&
-        msg.cleanContent.toLowerCase().contains('.done') &&
-        msg.cleanContent.toLowerCase().contains('akagami')) {
+        msg.cleanContent.toLowerCase().includes('.done') &&
+        msg.cleanContent.toLowerCase().includes('akagami')) {
       const responses = [
         'Uh huh.',
         'Ok, sure.',
