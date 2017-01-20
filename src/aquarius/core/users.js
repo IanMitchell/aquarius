@@ -1,5 +1,5 @@
 const client = require('./client');
-const permissions = require('./permissions');
+const isBotOwner = require('../admin/owner');
 
 function getOwnedGuilds(user) {
   return client.guilds.array().filter(guild => guild.owner.user.equals(user));
@@ -9,7 +9,7 @@ function getGuildsWithAdmin(user) {
   return client.guilds.array().filter(guild => {
     const member = guild.member(user);
     if (member) {
-      return member.hasPermission('ADMINISTRATOR') || permissions.isBotOwner(user);
+      return member.hasPermission('ADMINISTRATOR') || isBotOwner(user);
     }
 
     return false;
