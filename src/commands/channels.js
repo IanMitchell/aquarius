@@ -94,6 +94,7 @@ class ChannelCommand extends Aquarius.Command {
           READ_MESSAGE_HISTORY: true,
           MENTION_EVERYONE: true,
           EXTERNAL_EMOJIS: true,
+          ADD_REACTIONS: true,
         });
 
         targetChannel.sendMessage(`${targetUser} added to channel.`);
@@ -106,6 +107,7 @@ class ChannelCommand extends Aquarius.Command {
           READ_MESSAGE_HISTORY: false,
           MENTION_EVERYONE: false,
           EXTERNAL_EMOJIS: false,
+          ADD_REACTIONS: false,
         });
 
         targetChannel.sendMessage(`${targetUser} removed from channel.`);
