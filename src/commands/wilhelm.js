@@ -5,9 +5,10 @@ class Wilhelm extends Aquarius.Command {
     super();
     this.description = 'This one goes out to Shaun.';
 
+    this.settings.addKey('target', '104067232371310592', 'User ID to target');
+
     // Currently a bug in discord.js for <1s audio clips, so use irony for now
-    this.voiceClip = `${__dirname}/../../data/wilhelm/irony.mp3`;
-    this.target = '104067232371310592';
+    this.voiceClip = `${__dirname}/../../data/wilhelm/WilhelmScream.mp3`;
 
     setInterval(this.voiceCheck.bind(this), 1000 * 60 * 60 * 3);
     this.voiceCheck();
@@ -16,10 +17,12 @@ class Wilhelm extends Aquarius.Command {
   voiceCheck() {
     Aquarius.Client.guilds.forEach(guild => {
       if (Aquarius.Permissions.isCommandEnabled(guild, this)) {
-        this.log('Checking for user');
+        const target = this.getSetting(guild.id, 'target');
+        this.log(`Checking for user ${target}`);
+
         guild.channels.array().forEach(channel => {
           if (channel.type === 'voice') {
-            if (channel.members.some(member => member.user.id === this.target)) {
+            if (channel.members.some(member => member.user.id === target)) {
               this.playClip(channel);
             }
           }
@@ -43,7 +46,7 @@ class Wilhelm extends Aquarius.Command {
           dispatcher = connection.playFile(this.voiceClip);
 
           dispatcher.on('end', () => {
-            this.log(`Leaving channel`);
+            this.log('Leaving channel');
             connection.disconnect();
             clearTimeout(inactivityCheck);
           });
