@@ -23,7 +23,7 @@ class Wilhelm extends Aquarius.Command {
         guild.channels.array().forEach(channel => {
           if (channel.type === 'voice') {
             if (channel.members.some(member => member.user.id === target)) {
-              this.playClip(channel);
+              this.playClip(channel, target);
             }
           }
         });
@@ -31,7 +31,7 @@ class Wilhelm extends Aquarius.Command {
     });
   }
 
-  playClip(channel) {
+  playClip(channel, target) {
     let dispatcher = null;
 
     channel.join().then(connection => {
@@ -41,7 +41,7 @@ class Wilhelm extends Aquarius.Command {
       const inactivityCheck = setTimeout(connection.disconnect, 1000 * 60 * 10);
 
       connection.on('speaking', (user, speaking) => {
-        if (user.id === this.target && speaking && dispatcher === null) {
+        if (user.id === target && speaking && dispatcher === null) {
           this.log('Playing Clip');
           dispatcher = connection.playFile(this.voiceClip);
 

@@ -29,6 +29,7 @@
     "moment": "^2.16.0",
     "mtgsdk": "^0.1.1",
     "node-fetch": "^1.6.3",
+    "node-opus": "^0.2.4",
     "parse-rss": "^1.0.3",
     "pg": "^6.0.0",
     "pg-hstore": "^2.3.2",
@@ -38,8 +39,7 @@
     "umzug": "^1.11.0"
   },
   "peerDependencies": {
-    "bufferutil": "^2.0.0",
-    "node-opus": "^0.2.2"
+    "bufferutil": "^2.0.0"
   },
   "devDependencies": {
     "eslint": "^3.10.2",
