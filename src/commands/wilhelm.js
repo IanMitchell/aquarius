@@ -10,8 +10,17 @@ class Wilhelm extends Aquarius.Command {
     // Currently a bug in discord.js for <1s audio clips, so use irony for now
     this.voiceClip = `${__dirname}/../../data/wilhelm/WilhelmScream.mp3`;
 
-    setInterval(this.voiceCheck.bind(this), 1000 * 60 * 60 * 3);
+    setInterval(this.voiceCheck.bind(this), this.getRandomInterval());
     this.voiceCheck();
+  }
+
+  getRandomInterval() {
+    // In minutes
+    const min = 30;
+    const max = 180;
+
+    const target = Math.round(Math.random() * (max - min)) + min;
+    return 1000 * 60 * target;
   }
 
   voiceCheck() {
@@ -29,6 +38,8 @@ class Wilhelm extends Aquarius.Command {
         });
       }
     });
+
+    setTimeout(this.voiceCheck.bind(this), this.getRandomInterval());
   }
 
   playClip(channel, target) {
