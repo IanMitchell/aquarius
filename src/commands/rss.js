@@ -28,7 +28,7 @@ class RSS extends Aquarius.Command {
       return result;
     }).catch(err => {
       this.log(err);
-      return false;
+      return true; // Assume content has been posted
     });
   }
 

@@ -5,30 +5,44 @@ class Wilhelm extends Aquarius.Command {
     super();
     this.description = 'This one goes out to Shaun.';
 
-    // Currently a bug in discord.js for <1s audio clips, so use irony for now
-    this.voiceClip = `${__dirname}/../../data/wilhelm/irony.mp3`;
-    this.target = '104067232371310592';
+    this.settings.addKey('target', '104067232371310592', 'User ID to target');
 
-    setInterval(this.voiceCheck.bind(this), 1000 * 60 * 60 * 3);
+    // Currently a bug in discord.js for <1s audio clips, so use irony for now
+    this.voiceClip = `${__dirname}/../../data/wilhelm/WilhelmScream.mp3`;
+
+    setInterval(this.voiceCheck.bind(this), this.getRandomInterval());
     this.voiceCheck();
+  }
+
+  getRandomInterval() {
+    // In minutes
+    const min = 30;
+    const max = 180;
+
+    const target = Math.round(Math.random() * (max - min)) + min;
+    return 1000 * 60 * target;
   }
 
   voiceCheck() {
     Aquarius.Client.guilds.forEach(guild => {
       if (Aquarius.Permissions.isCommandEnabled(guild, this)) {
-        this.log('Checking for user');
+        const target = this.getSetting(guild.id, 'target');
+        this.log(`Checking for user ${target}`);
+
         guild.channels.array().forEach(channel => {
           if (channel.type === 'voice') {
-            if (channel.members.some(member => member.user.id === this.target)) {
-              this.playClip(channel);
+            if (channel.members.some(member => member.user.id === target)) {
+              this.playClip(channel, target);
             }
           }
         });
       }
     });
+
+    setTimeout(this.voiceCheck.bind(this), this.getRandomInterval());
   }
 
-  playClip(channel) {
+  playClip(channel, target) {
     let dispatcher = null;
 
     channel.join().then(connection => {
@@ -38,12 +52,12 @@ class Wilhelm extends Aquarius.Command {
       const inactivityCheck = setTimeout(connection.disconnect, 1000 * 60 * 10);
 
       connection.on('speaking', (user, speaking) => {
-        if (user.id === this.target && speaking && dispatcher === null) {
+        if (user.id === target && speaking && dispatcher === null) {
           this.log('Playing Clip');
           dispatcher = connection.playFile(this.voiceClip);
 
           dispatcher.on('end', () => {
-            this.log(`Leaving channel`);
+            this.log('Leaving channel');
             connection.disconnect();
             clearTimeout(inactivityCheck);
           });

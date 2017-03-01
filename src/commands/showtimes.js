@@ -160,7 +160,32 @@ class Showtimes extends Aquarius.Command {
     return msg;
   }
 
+  checkForAreki(msg) {
+    if (msg.author.id === '132203481565102080' &&
+        msg.cleanContent.toLowerCase().includes('.done') &&
+        msg.cleanContent.toLowerCase().includes('akagami')) {
+      const responses = [
+        'Uh huh.',
+        'Ok, sure.',
+        'Yeah right.',
+        'lol.',
+        'bullshit.',
+        'Funny joke.',
+      ];
+
+      msg.channel.sendMessage(responses[Math.floor(Math.random() * responses.length)]);
+
+      return true;
+    }
+
+    return false;
+  }
+
   message(msg) {
+    if (this.checkForAreki(msg)) {
+      return;
+    }
+
     let request = null;
     const blameInput = Aquarius.Triggers.messageTriggered(msg, /^blame (.+)$/i);
     const staffInput = Aquarius.Triggers.messageTriggered(msg, /^(?:(?:(done|undone) (tl|tlc|enc|ed|tm|ts|qc) (.+)))$/i);

@@ -1,16 +1,13 @@
 const client = require('./client');
 const users = require('./users');
 const settings = require('../settings/settings');
+const isBotOwner = require('../admin/owner');
 
 const LEVELS = {
   ADMIN: 2,
   RESTRICTED: 1,
   ALL: 0,
 };
-
-function isBotOwner(user) {
-  return user.id === process.env.OWNER_ID;
-}
 
 function isGuildAdmin(guild, user) {
   const guildMember = guild.member(user);
@@ -34,7 +31,7 @@ function isGuildModerator(guild, user) {
 }
 
 function isGuildMuted(guild, user) {
-  if (isGuildAdmin(guild, user)) {
+  if (isGuildModerator(guild, user)) {
     return false;
   }
 
