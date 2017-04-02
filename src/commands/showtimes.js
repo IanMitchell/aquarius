@@ -233,6 +233,16 @@ class Showtimes extends Aquarius.Command {
         } else {
           msg.channel.sendMessage('Sorry, there was an error. Poke Desch');
         }
+      })
+      .catch(error => {
+        this.log(`Error: ${error.message}`);
+        Aquarius.Loading.stopLoading(msg.channel);
+
+        if (error instanceof ShowtimesError) {
+          msg.channel.sendMessage(error.message);
+        } else {
+          msg.channel.sendMessage("Sorry, I'm having some problems connecting to Deschtimes.");
+        }
       });
     }
   }
