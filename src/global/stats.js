@@ -16,7 +16,7 @@ class Stats extends Aquarius.Command {
       let str = `**${Aquarius.Client.user.username} is in ${count} Servers**\n`;
 
       Aquarius.Client.guilds.array().forEach((guild, i) => {
-        str += `${i + 1}. ${guild.name} -- *(${guild.members.array().length} members)*\n`;
+        str += `${i + 1}. ${guild.name} -- *(${guild.memberCount} members)*\n`;
       });
 
       msg.channel.sendMessage(str);
