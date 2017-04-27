@@ -36,7 +36,8 @@
     "sequelize": "^3.27.0",
     "sequelize-cli": "^2.4.0",
     "stack-trace": "0.0.9",
-    "umzug": "^1.11.0"
+    "umzug": "^1.11.0",
+    "xmldom": "^0.1.27"
   },
   "peerDependencies": {
     "bufferutil": "^2.0.0"
