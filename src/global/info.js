@@ -1,3 +1,4 @@
+const Discord = require('discord.js');
 const Aquarius = require('../aquarius');
 const pkg = require('../../package');
 
@@ -7,18 +8,41 @@ class Info extends Aquarius.Command {
       this.log('Info Request');
 
       Aquarius.Users.getNickname(msg.guild, Aquarius.Client.user).then(nickname => {
-        let str = `Aquarius v${pkg.version}. `;
-        str += `\`@${nickname} help\` for help. ${Aquarius.Links.repoLink()}`;
-        str += `\n\nAdd ${Aquarius.Client.user} here ${Aquarius.Links.botLink()}`;
+        const message = new Discord.RichEmbed({
+          title: 'Aquarius',
+          color: 0x008000,
+          description: "I'm a bot!",
+          url: Aquarius.Links.botLink(),
+          footer: {
+            text: `Version ${pkg.version}`,
+          },
+          thumbnail: {
+            url: Aquarius.Client.user.displayAvatarURL,
+          },
+          fields: [
+            {
+              name: 'Developer',
+              value: 'Desch#3091',
+            },
+            {
+              name: 'Repository',
+              value: Aquarius.Links.repoLink(),
+            },
+            {
+              name: 'Need Help?',
+              value: `Type \`@${nickname} help\``,
+            },
+          ],
+        });
 
-        msg.channel.sendMessage(str);
+        msg.channel.sendEmbed(message);
       });
     }
 
     if (Aquarius.Triggers.messageTriggered(msg, /^issue$/)) {
       this.log('Issue Request');
 
-      let str = `🎉 OPEN 🎉 A 🎉 GITHUB 🎉 ISSUE 🎉\n`;
+      let str = '🎉 OPEN 🎉 A 🎉 GITHUB 🎉 ISSUE 🎉\n';
       str += `${Aquarius.Links.repoLink()}/issues`;
 
       msg.channel.sendMessage(str);
