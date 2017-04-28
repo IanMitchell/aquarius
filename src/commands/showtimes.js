@@ -247,7 +247,7 @@ class Showtimes extends Aquarius.Command {
     body.append('platform', 'discord');
     body.append('channel', msg.guild.id);
     body.append('name', show.trim());
-    body.append('username', msg.user.id);
+    body.append('username', msg.author.id);
     body.append('auth', SHOWTIMES.KEY);
 
     Aquarius.Loading.startLoading(msg.channel);
