@@ -14,7 +14,7 @@ class Info extends Aquarius.Command {
           description: "I'm a bot!",
           url: Aquarius.Links.botLink(),
           footer: {
-            text: `Version ${pkg.version}`,
+            text: `Version: ${pkg.version}`,
           },
           thumbnail: {
             url: Aquarius.Client.user.displayAvatarURL,
