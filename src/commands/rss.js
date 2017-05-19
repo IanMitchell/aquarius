@@ -40,14 +40,14 @@ class RSS extends Aquarius.Command {
     if (!url) {
       const admin = guild.owner.user;
       this.log(`Alerting ${admin.name} to configure RSS command.`);
-      channel.sendMessage(`${admin}: Please set a url for the RSS command. Query me with \`help rss\`.`);
+      channel.send(`${admin}: Please set a url for the RSS command. Query me with \`help rss\`.`);
       return;
     }
 
     parser(url, (err, rss) => {
       if (err) {
         if (!this.checkForPastContent(channel, 'Error parsing RSS feed', 1)) {
-          channel.sendMessage(`Error parsing RSS feed: ${url}`);
+          channel.send(`Error parsing RSS feed: ${url}`);
         }
 
         this.log(err);
@@ -61,7 +61,7 @@ class RSS extends Aquarius.Command {
             let str = `📰 **${entry.title}**\n`;
             str += '\n';
             str += `${entry.link}`;
-            channel.sendMessage(str);
+            channel.send(str);
           }
         });
       });

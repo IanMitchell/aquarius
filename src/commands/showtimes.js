@@ -50,7 +50,7 @@ class Showtimes extends Aquarius.Command {
         'Funny joke.',
       ];
 
-      msg.channel.sendMessage(responses[Math.floor(Math.random() * responses.length)]);
+      msg.channel.send(responses[Math.floor(Math.random() * responses.length)]);
 
       return true;
     }
@@ -169,9 +169,9 @@ class Showtimes extends Aquarius.Command {
         Aquarius.Loading.stopLoading(msg.channel);
 
         if (error instanceof ShowtimesError) {
-          msg.channel.sendMessage(error.message);
+          msg.channel.send(error.message);
         } else {
-          msg.channel.sendMessage('Sorry, there was an error. Poke Desch');
+          msg.channel.send('Sorry, there was an error. Poke Desch');
         }
       });
   }
@@ -196,7 +196,7 @@ class Showtimes extends Aquarius.Command {
         return response.json().then(data => Promise.reject(new ShowtimesError(data.message)));
       })
       .then(data => {
-        msg.channel.sendMessage(data);
+        msg.channel.send(data);
         Aquarius.Loading.stopLoading(msg.channel);
         return this.blameMessage(msg, show);
       })
@@ -205,9 +205,9 @@ class Showtimes extends Aquarius.Command {
         Aquarius.Loading.stopLoading(msg.channel);
 
         if (error instanceof ShowtimesError) {
-          msg.channel.sendMessage(error.message);
+          msg.channel.send(error.message);
         } else {
-          msg.channel.sendMessage('Sorry, there was an error. Poke Desch');
+          msg.channel.send('Sorry, there was an error. Poke Desch');
         }
       });
   }
@@ -235,9 +235,9 @@ class Showtimes extends Aquarius.Command {
         Aquarius.Loading.stopLoading(msg.channel);
 
         if (error instanceof ShowtimesError) {
-          msg.channel.sendMessage(error.message);
+          msg.channel.send(error.message);
         } else {
-          msg.channel.sendMessage('Sorry, there was an error. Poke Desch');
+          msg.channel.send('Sorry, there was an error. Poke Desch');
         }
       });
   }
@@ -255,12 +255,12 @@ class Showtimes extends Aquarius.Command {
       .then(response => response.json())
       .then(data => {
         Aquarius.Loading.stopLoading(msg.channel);
-        msg.channel.sendMessage(data.message);
+        msg.channel.send(data.message);
       })
       .catch(error => {
         this.log(`Error: ${error.message}`);
         Aquarius.Loading.stopLoading(msg.channel);
-        msg.channel.sendMessage('Sorry, there was an error. Poke Desch');
+        msg.channel.send('Sorry, there was an error. Poke Desch');
       });
   }
 

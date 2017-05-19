@@ -92,7 +92,7 @@ class GuildWars extends Aquarius.Command {
               channel = guild.channels.array().find(c => c.name === target);
             }
 
-            channel.sendMessage(`🚨 Starting in ${INTERVAL}m: ${event.name}`);
+            channel.send(`🚨 Starting in ${INTERVAL}m: ${event.name}`);
           }
         });
       }

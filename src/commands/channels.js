@@ -41,7 +41,7 @@ class ChannelCommand extends Aquarius.Command {
       }).then(removedRows => {
         if (removedRows > 0) {
           this.log(`Removing ${channel.name} in ${channel.guild.name}`);
-          channel.guild.defaultChannel.sendMessage(`Automatically removed #${channel.name} from registered channels.`);
+          channel.guild.defaultChannel.send(`Automatically removed #${channel.name} from registered channels.`);
         } else {
           this.log('Ignoring unregistered channel');
         }
@@ -61,7 +61,7 @@ class ChannelCommand extends Aquarius.Command {
           return;
         }
       } else {
-        msg.channel.sendMessage('Only moderators can add people to channels. To use on yourself, use `.channel [add|remove] [#channel]`');
+        msg.channel.send('Only moderators can add people to channels. To use on yourself, use `.channel [add|remove] [#channel]`');
       }
     }
 
@@ -70,7 +70,7 @@ class ChannelCommand extends Aquarius.Command {
                           msg.guild.channels.find('name', this.stripHash(channelInput[2]));
 
     if (targetChannel === undefined || targetChannel == null) {
-      msg.channel.sendMessage('Channel not found. To get a list, type `.channels list`.');
+      msg.channel.send('Channel not found. To get a list, type `.channels list`.');
       return;
     }
 
@@ -81,7 +81,7 @@ class ChannelCommand extends Aquarius.Command {
       },
     }).then(rows => {
       if (rows === 0) {
-        msg.channel.sendMessage("That isn't a registered channel!");
+        msg.channel.send("That isn't a registered channel!");
         return;
       }
 
@@ -97,7 +97,7 @@ class ChannelCommand extends Aquarius.Command {
           ADD_REACTIONS: true,
         });
 
-        targetChannel.sendMessage(`${targetUser} added to channel.`);
+        targetChannel.send(`${targetUser} added to channel.`);
       } else {
         targetChannel.overwritePermissions(targetUser, {
           READ_MESSAGES: false,
@@ -110,7 +110,7 @@ class ChannelCommand extends Aquarius.Command {
           ADD_REACTIONS: false,
         });
 
-        targetChannel.sendMessage(`${targetUser} removed from channel.`);
+        targetChannel.send(`${targetUser} removed from channel.`);
       }
     });
   }
@@ -132,9 +132,9 @@ class ChannelCommand extends Aquarius.Command {
       }).spread((channel, created) => {
         if (created) {
           this.log(`Registered ${targetChannel.name} on ${msg.guild.name}`);
-          msg.channel.sendMessage(`Registered ${targetChannel}.`);
+          msg.channel.send(`Registered ${targetChannel}.`);
         } else {
-          msg.channel.sendMessage('Channel already registered!');
+          msg.channel.send('Channel already registered!');
         }
       });
     } else {
@@ -147,9 +147,9 @@ class ChannelCommand extends Aquarius.Command {
       }).then(removedRows => {
         if (removedRows > 0) {
           this.log(`Unregistered ${targetChannel.name} from ${msg.guild.name}`);
-          msg.channel.sendMessage(`Unregistered ${targetChannel}.`);
+          msg.channel.send(`Unregistered ${targetChannel}.`);
         } else {
-          msg.channel.sendMessage(`Could not find a registered channel named '${targetChannel}'`);
+          msg.channel.send(`Could not find a registered channel named '${targetChannel}'`);
         }
       });
     }
@@ -163,7 +163,7 @@ class ChannelCommand extends Aquarius.Command {
       },
     }).then(response => {
       if (response.length === 0) {
-        msg.channel.sendMessage('There are no channels for this server.');
+        msg.channel.send('There are no channels for this server.');
       } else {
         let str = '**Channel List**\n\n';
 
@@ -172,7 +172,7 @@ class ChannelCommand extends Aquarius.Command {
           str += `* ${name}\n`;
         });
 
-        msg.channel.sendMessage(str);
+        msg.channel.send(str);
       }
     });
   }

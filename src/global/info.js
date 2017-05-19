@@ -45,7 +45,7 @@ class Info extends Aquarius.Command {
       let str = '🎉 OPEN 🎉 A 🎉 GITHUB 🎉 ISSUE 🎉\n';
       str += `${Aquarius.Links.repoLink()}/issues`;
 
-      msg.channel.sendMessage(str);
+      msg.channel.send(str);
     }
   }
 }

@@ -15,7 +15,7 @@ function addGuild(guild) {
     `I'm also open source - if you'd like to file a bug or have a feature request, ` +
     `you can visit ${links.repoLink()}. You can contact my creator, Ian (Desch#3091).\n\n`;
 
-  guild.owner.sendMessage(msg);
+  guild.owner.send(msg);
 
   settings.addGuild(guild.id);
   log(`Added to Guild ${guild.id}`);
@@ -25,7 +25,7 @@ function addCommand(message, guildId, command) {
   settings.addCommand(guildId, command.constructor.name);
 
   // Output alert, then configuration options
-  message.channel.sendMessage(`Added ${command.name}.`).then(() => {
+  message.channel.send(`Added ${command.name}.`).then(() => {
     let str = '';
     [...command.getKeys()].forEach(key => {
       str += `* \`${key}\` (Default: ${command.getSettingDefault(key)}): `;
@@ -33,7 +33,7 @@ function addCommand(message, guildId, command) {
     });
 
     if (str) {
-      message.channel.sendMessage(
+      message.channel.send(
         `**${command.name} Configuration Settings**\n\n${str}\n\n\`set [command] [key] [value]\``);
     }
   });
@@ -60,7 +60,7 @@ function createAquariusRoles(message, guildId) {
     }
   });
 
-  message.author.sendMessage(str);
+  message.author.send(str);
 }
 
 module.exports = {

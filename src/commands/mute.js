@@ -99,7 +99,7 @@ class Mute extends Aquarius.Command {
         this.log(`Unmute request on ${user.username} by ${msg.author.username}`);
         const member = msg.guild.members.find('id', user.id);
         this.unmuteMember(msg.guild, member);
-        msg.channel.sendMessage(`Unmuted ${member.nickname}`);
+        msg.channel.send(`Unmuted ${member.nickname}`);
       }
 
       if (Aquarius.Triggers.messageTriggered(msg, muteRegex)) {
@@ -123,7 +123,7 @@ class Mute extends Aquarius.Command {
           }
 
           Aquarius.Users.getNickname(msg.guild, member.user).then(nick => {
-            msg.channel.sendMessage(`Muted ${nick} for ${muteTimeout / (1000 * 60)} minutes.`);
+            msg.channel.send(`Muted ${nick} for ${muteTimeout / (1000 * 60)} minutes.`);
           });
         });
       }

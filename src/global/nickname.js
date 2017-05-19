@@ -11,14 +11,14 @@ class Nickname extends Aquarius.Command {
         .then(user => user.setNickname(nicknameInput[1]))
         .then(user => {
           if (user.nickname === nicknameInput[1]) {
-            msg.channel.sendMessage(`Nickname set to ${user.nickname}`);
+            msg.channel.send(`Nickname set to ${user.nickname}`);
           } else {
-            msg.channel.sendMessage('Nickname removed');
+            msg.channel.send('Nickname removed');
           }
         })
         .catch(err => {
           this.log(err);
-          msg.channel.sendMessage('Error setting nickname. Please verify it is valid!');
+          msg.channel.send('Error setting nickname. Please verify it is valid!');
         });
     }
   }

@@ -8,10 +8,10 @@ class Broadcast extends Aquarius.Command {
         this.log(`Broadcasting '${broadcast[1]}'`);
 
         Aquarius.Client.guilds.forEach(guild => {
-          guild.defaultChannel.sendMessage(`[BROADCAST] ${broadcast[1]}`);
+          guild.defaultChannel.send(`[BROADCAST] ${broadcast[1]}`);
         });
 
-        msg.channel.sendMessage('Message broadcasted.');
+        msg.channel.send('Message broadcasted.');
       }
     }
   }

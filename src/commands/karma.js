@@ -62,7 +62,7 @@ class KarmaCommand extends Aquarius.Command {
         limit: 5,
       }).then(response => {
         if (response.length === 0) {
-          msg.channel.sendMessage('There is no leaderboard for this server!');
+          msg.channel.send('There is no leaderboard for this server!');
         } else {
           let str = `**${karmaName} Leaderboard**\n`;
 
@@ -84,7 +84,7 @@ class KarmaCommand extends Aquarius.Command {
             entries.forEach(entry => {
               str += `${entry.index + 1}. ${entry.nick} - ${entry.karma} ${karmaName}\n`;
             });
-          }).then(() => msg.channel.sendMessage(str));
+          }).then(() => msg.channel.send(str));
         }
       });
 
@@ -112,7 +112,7 @@ class KarmaCommand extends Aquarius.Command {
         },
       }).spread((karma) => {
         Aquarius.Users.getNickname(msg.guild, user.id).then(nick => {
-          msg.channel.sendMessage(`${nick} has ${karma.count} ${karmaName}.`);
+          msg.channel.send(`${nick} has ${karma.count} ${karmaName}.`);
         });
       });
 
@@ -132,7 +132,7 @@ class KarmaCommand extends Aquarius.Command {
       this.log(`Karma request for ${user}`);
 
       if (user === msg.author && !Aquarius.Permissions.isBotOwner(user)) {
-        msg.channel.sendMessage(`You cannot give ${karmaName} to yourself!`);
+        msg.channel.send(`You cannot give ${karmaName} to yourself!`);
         return;
       }
 
@@ -157,7 +157,7 @@ class KarmaCommand extends Aquarius.Command {
           this.log('Karma cooldown');
           const future = moment((karmaGiver.lastGiven + cooldown) * 1000);
           const wait = future.toNow(true);
-          msg.channel.sendMessage(`You need to wait ${wait} to use ${karmaName}!`);
+          msg.channel.send(`You need to wait ${wait} to use ${karmaName}!`);
           return false;
         }
 
@@ -199,7 +199,7 @@ class KarmaCommand extends Aquarius.Command {
               str += `${nickname} now has ${result.count} ${karmaName}.`;
             });
 
-            return Promise.all([nick]).then(() => msg.channel.sendMessage(str));
+            return Promise.all([nick]).then(() => msg.channel.send(str));
           });
         });
       });

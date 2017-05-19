@@ -85,22 +85,22 @@ class ReplyCommand extends Aquarius.Command {
           str += `* '${key}'\n`;
         });
 
-        msg.channel.sendMessage(str);
+        msg.channel.send(str);
       } else {
-        msg.channel.sendMessage('No replies have been set.');
+        msg.channel.send('No replies have been set.');
       }
     }
 
     if (this.responses.has(msg.guild.id)) {
       if (this.responses.get(msg.guild.id).has(msg.cleanContent.trim().toLowerCase())) {
         this.log(`Input: ${msg.cleanContent}`);
-        msg.channel.sendMessage(this.responses.get(msg.guild.id).get(msg.cleanContent.trim().toLowerCase()));
+        msg.channel.send(this.responses.get(msg.guild.id).get(msg.cleanContent.trim().toLowerCase()));
       }
     } else {
       this.addGuild(msg.guild.id);
 
       if (this.genericResponses().has(msg.cleanContent.trim().toLowerCase())) {
-        msg.channel.sendMessage(this.genericResponses().get(msg.cleanContent.trim().toLowerCase()));
+        msg.channel.send(this.genericResponses().get(msg.cleanContent.trim().toLowerCase()));
       }
     }
 
@@ -127,10 +127,10 @@ class ReplyCommand extends Aquarius.Command {
           },
         }).spread((reply, created) => {
           if (created) {
-            msg.channel.sendMessage('Added reply.');
+            msg.channel.send('Added reply.');
             this.responses.get(msg.guild.id).set(addInputs[2].toLowerCase(), addInputs[5]);
           } else {
-            msg.channel.sendMessage('A reply with that trigger already exists!');
+            msg.channel.send('A reply with that trigger already exists!');
           }
         });
       }
@@ -146,10 +146,10 @@ class ReplyCommand extends Aquarius.Command {
           },
         }).then(removedRows => {
           if (removedRows > 0) {
-            msg.channel.sendMessage(`Removed '${removeInputs[1]}' reply`);
+            msg.channel.send(`Removed '${removeInputs[1]}' reply`);
             this.responses.get(msg.guild.id).delete(removeInputs[1]);
           } else {
-            msg.channel.sendMessage(`Could not find a reply with '${removeInputs[1]}'`);
+            msg.channel.send(`Could not find a reply with '${removeInputs[1]}'`);
           }
         });
       }

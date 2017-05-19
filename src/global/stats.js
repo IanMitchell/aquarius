@@ -6,7 +6,7 @@ class Stats extends Aquarius.Command {
     if (Aquarius.Triggers.messageTriggered(msg, /^uptime$/i)) {
       this.log(`Uptime called: ${Aquarius.Client.uptime}ms`);
       const uptime = moment(Date.now() - Aquarius.Client.uptime).fromNow(true);
-      msg.channel.sendMessage(`Aquarius has been up for ${uptime}`);
+      msg.channel.send(`Aquarius has been up for ${uptime}`);
     }
 
     if (Aquarius.Permissions.isBotOwner(msg.author) && Aquarius.Triggers.messageTriggered(msg, /^servers$/i)) {
@@ -19,7 +19,7 @@ class Stats extends Aquarius.Command {
         str += `${i + 1}. ${guild.name} -- *(${guild.memberCount} members)*\n`;
       });
 
-      msg.channel.sendMessage(str);
+      msg.channel.send(str);
     }
   }
 }

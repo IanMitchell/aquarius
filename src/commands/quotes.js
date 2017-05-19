@@ -50,7 +50,7 @@ class Quotes extends Aquarius.Command {
       }).then(count => {
         const id = Math.ceil(Math.random() * count);
         this.getQuote(id, msg.channel.guild.id).then(response => {
-          msg.channel.sendMessage(response);
+          msg.channel.send(response);
         });
       });
 
@@ -61,7 +61,7 @@ class Quotes extends Aquarius.Command {
     if (readInput) {
       this.log(`Reading quote ${readInput[1]}`);
       this.getQuote(readInput[1], msg.channel.guild.id).then(response => {
-        msg.channel.sendMessage(response);
+        msg.channel.send(response);
       });
 
       return;
@@ -87,12 +87,12 @@ class Quotes extends Aquarius.Command {
             addedBy: msg.author.username,
             quoteId: count + 1,
             quote,
-          }).then(() => msg.channel.sendMessage(`Quote added as #${count + 1}.`));
+          }).then(() => msg.channel.send(`Quote added as #${count + 1}.`));
         });
         return;
       }
 
-      msg.channel.sendMessage('Your new quote needs content!');
+      msg.channel.send('Your new quote needs content!');
     }
   }
 }

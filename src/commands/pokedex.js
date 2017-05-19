@@ -31,7 +31,7 @@ class Pokédex extends Aquarius.Command {
           return response.json();
         }
 
-        msg.channel.sendMessage('Cannot find Pokémon.');
+        msg.channel.send('Cannot find Pokémon.');
         return false;
       })
       .then(json => {

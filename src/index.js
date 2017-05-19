@@ -80,7 +80,7 @@ function generateAdminCommandHelp(message) {
     str = 'Module not found :(';
   }
 
-  message.channel.sendMessage(str);
+  message.channel.send(str);
 }
 
 function generateCommandHelp(message) {
@@ -100,7 +100,7 @@ function generateCommandHelp(message) {
       str = 'Module not found :(';
     }
 
-    message.channel.sendMessage(str);
+    message.channel.send(str);
   });
 }
 
@@ -131,20 +131,20 @@ function adminAddCommandHandler(message, cmdMatch) {
     const command = commands.plugins.get(cmdMatch[3].toLowerCase());
     Aquarius.Admin.addCommand(message, cmdMatch[2], command);
   } else {
-    message.channel.sendMessage(`Command ${cmdMatch[3]} not found.`);
+    message.channel.send(`Command ${cmdMatch[3]} not found.`);
   }
 }
 
 function adminRemoveCommandHandler(message, cmdMatch) {
   if (cmdMatch[3].toLowerCase() === 'all') {
     Aquarius.Settings.clearCommands(cmdMatch[2]);
-    message.channel.sendMessage('All commands removed.');
+    message.channel.send('All commands removed.');
   } else if (commands.plugins.has(cmdMatch[3].toLowerCase())) {
     const cmd = commands.plugins.get(cmdMatch[3].toLowerCase());
     Aquarius.Settings.removeCommand(cmdMatch[2], cmd.constructor.name);
-    message.channel.sendMessage(`${cmd.name} removed.`);
+    message.channel.send(`${cmd.name} removed.`);
   } else {
-    message.channel.sendMessage('Command not found!');
+    message.channel.send('Command not found!');
   }
 }
 
@@ -164,7 +164,7 @@ function handleAdminConfigChange(message, setMatch) {
   // If the user didn't specify a valid command
   if (!commands.plugins.has(setMatch[2].toLowerCase())) {
     log(`${logstr} [CMD FAIL]`);
-    message.channel.sendMessage(`Command ${setMatch[1]} not found! Use \`help\` for a list of commands.`);
+    message.channel.send(`Command ${setMatch[1]} not found! Use \`help\` for a list of commands.`);
     return;
   }
 
@@ -174,7 +174,7 @@ function handleAdminConfigChange(message, setMatch) {
 
   if (!keys.includes(setMatch[3])) {
     log(`${logstr} [KEY FAIL]`);
-    message.channel.sendMessage(`${setMatch[2]} key \`${setMatch[3]}\` not found! Valid keys: ${keys.join(', ')}.`);
+    message.channel.send(`${setMatch[2]} key \`${setMatch[3]}\` not found! Valid keys: ${keys.join(', ')}.`);
     return;
   }
 
@@ -183,11 +183,11 @@ function handleAdminConfigChange(message, setMatch) {
 
   if (setMatch[3] !== 'permission') {
     commands.plugins.get(setMatch[2].toLowerCase()).setSetting(setMatch[1], setMatch[3], setMatch[4]);
-    message.channel.sendMessage(`Successfully updated ${setMatch[2]}`);
+    message.channel.send(`Successfully updated ${setMatch[2]}`);
   } else if (commands.plugins.get(setMatch[2].toLowerCase()).setPermission(setMatch[1], setMatch[4])) {
-    message.channel.sendMessage(`Successfully updated ${setMatch[2]}`);
+    message.channel.send(`Successfully updated ${setMatch[2]}`);
   } else {
-    message.channel.sendMessage('ERROR: Please use [ADMIN, RESTRICTED, ALL].');
+    message.channel.send('ERROR: Please use [ADMIN, RESTRICTED, ALL].');
   }
 }
 
@@ -198,17 +198,17 @@ function handleHelp(message) {
 
   if (Aquarius.Triggers.messageTriggered(message, /^(list|commands|help)$/)) {
     if (admin) {
-      message.channel.sendMessage(generateAdminCommandList(message));
+      message.channel.send(generateAdminCommandList(message));
     } else {
-      message.channel.sendMessage(generateCommandNameList(message));
+      message.channel.send(generateCommandNameList(message));
     }
 
     return true;
   } else if (Aquarius.Triggers.messageTriggered(message, /^help .+$/)) {
     if (admin) {
-      message.channel.sendMessage(generateAdminCommandHelp(message));
+      message.channel.send(generateAdminCommandHelp(message));
     } else {
-      message.channel.sendMessage(generateCommandHelp(message));
+      message.channel.send(generateCommandHelp(message));
     }
 
     return true;
@@ -238,13 +238,13 @@ function handleAdminCommands(message, guilds) {
 
   if (cmdMatch) {
     if (guilds.length > 1 && !cmdMatch[2]) {
-      message.channel.sendMessage(
+      message.channel.send(
         'You are an admin on multiple servers; please specify which one you mean.\n' +
         '`[add|remove] [server] [all|<command>]`');
       return;
     } else if (guilds.length > 1 && cmdMatch[2]) {
       if (!guilds.some(g => g.id === cmdMatch[2])) {
-        message.channel.sendMessage("You aren't an admin on that server!");
+        message.channel.send("You aren't an admin on that server!");
         return;
       }
     } else if (guilds.length === 1) {
@@ -254,13 +254,13 @@ function handleAdminCommands(message, guilds) {
     handleAdminCommandChange(message, cmdMatch);
   } else if (setMatch) {
     if (guilds.length > 1 && !setMatch[1]) {
-      message.channel.sendMessage(
+      message.channel.send(
         'You are an admin on multiple servers; please specify which one you mean.\n' +
         '`set [server] [command] [key] [value]`');
       return;
     } else if (guilds.length > 1 && setMatch[1]) {
       if (!guilds.some(g => g.id === setMatch[1])) {
-        message.channel.sendMessage("You aren't an admin on that server!");
+        message.channel.send("You aren't an admin on that server!");
         return;
       }
     } else if (guilds.length === 1) {
@@ -270,13 +270,13 @@ function handleAdminCommands(message, guilds) {
     handleAdminConfigChange(message, setMatch);
   } else if (roleMatch) {
     if (guilds.length > 1 && !roleMatch[1]) {
-      message.channel.sendMessage(
+      message.channel.send(
         'You are an admin on multiple servers; please specify which one you mean.\n' +
         '`create roles [server]`');
       return;
     } else if (guilds.length > 1 && roleMatch[1]) {
       if (!guilds.some(g => g.id === roleMatch[1])) {
-        message.channel.sendMessage("You aren't an admin on that server!");
+        message.channel.send("You aren't an admin on that server!");
         return;
       }
     } else if (guilds.length === 1) {
@@ -285,7 +285,7 @@ function handleAdminCommands(message, guilds) {
 
     Aquarius.Admin.createRoles(message, roleMatch[1]);
   } else if (!handleHelp(message)) {
-    message.channel.sendMessage("Sorry, I didn't understand!");
+    message.channel.send("Sorry, I didn't understand!");
   }
 }
 
@@ -300,7 +300,7 @@ function handleQuery(message) {
   if (guilds.length > 0) {
     handleAdminCommands(message, guilds);
   } else {
-    message.channel.sendMessage(`Sorry, queries are restricted to server admins.\n\n` +
+    message.channel.send(`Sorry, queries are restricted to server admins.\n\n` +
       `To add the bot to your server, click here: ${Aquarius.Links.botLink()}`);
   }
 }
