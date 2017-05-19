@@ -26,7 +26,7 @@ class Magic extends Aquarius.Command {
         mtg.card.where({ name: `"${cardInput[1]}"` }).then(cards => {
           cards.some(card => {
             if (card.imageUrl) {
-              return msg.channel.sendFile(card.imageUrl, `${card.name}.png`);
+              return msg.channel.send(card.imageUrl);
             }
 
             return false;
