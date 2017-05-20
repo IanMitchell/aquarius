@@ -133,7 +133,7 @@ class Showtimes extends Aquarius.Command {
           message.addField((airDate > Date.now() ? 'Airs' : 'Aired'), airDate.fromNow());
         }
 
-        msg.channel.sendEmbed(message);
+        msg.channel.send("", { embed: message });
       });
   }
 
