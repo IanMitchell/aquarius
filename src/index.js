@@ -50,7 +50,11 @@ function generateAdminCommandList() {
     str += `* *${command.name}* - ${command.description}\n`;
   });
 
-  str += '\n for more information, use `help [command]`';
+  str += '\nFor more information, use `help [command]`\n\n';
+  str += 'To add a command to your server, use `add [command]`.\n';
+  str += 'If you are an admin on multiple servers, designate which one by using `add [server id] [command]`.\n\n';
+  str += 'To remove a command from your server, use `remove [command]`.\n';
+  str += 'If you are an admin on multiple servers, designate which one by using `remove [server id] [command]`.';
 
   return str;
 }
