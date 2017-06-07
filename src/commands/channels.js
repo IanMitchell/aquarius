@@ -92,7 +92,6 @@ class ChannelCommand extends Aquarius.Command {
           EMBED_LINKS: true,
           ATTACH_FILES: true,
           READ_MESSAGE_HISTORY: true,
-          MENTION_EVERYONE: true,
           EXTERNAL_EMOJIS: true,
           ADD_REACTIONS: true,
         });
@@ -105,7 +104,6 @@ class ChannelCommand extends Aquarius.Command {
           EMBED_LINKS: false,
           ATTACH_FILES: false,
           READ_MESSAGE_HISTORY: false,
-          MENTION_EVERYONE: false,
           EXTERNAL_EMOJIS: false,
           ADD_REACTIONS: false,
         });
