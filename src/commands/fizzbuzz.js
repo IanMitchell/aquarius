@@ -39,7 +39,7 @@ class FizzBuzz extends Aquarius.Command {
   }
 
   message(msg) {
-    const input = Aquarius.Triggers.messageTriggered(msg, new RegExp('^fizzbuzz ([\\d]+)$', 'i'));
+    const input = Aquarius.Triggers.messageTriggered(msg, /^fizzbuzz ([\\d]+)$/i);
 
     if (input) {
       Aquarius.Loading.startLoading(msg.channel);
