@@ -25,26 +25,20 @@ class FizzBuzz extends Aquarius.Command {
 
         throw response.statusText;
       }).then(fizzBuzzJSON => {
-        if (fizzBuzzJSON.is_fizz && fizzBuzzJSON.is_buzz) {
-          return 'FizzBuzz';
+        if (!fizzBuzzJSON.is_fizz && !fizzBuzzJSON.is_buzz) {
+          return number;
         }
-        if (fizzBuzzJSON.is_fizz) {
-          return 'Fizz';
-        }
-        if (fizzBuzzJSON.is_buzz) {
-          return 'Buzz';
-        }
-        return number;
+        return `${fizzBuzzJSON.is_fizz ? 'Fizz' : ''}${fizzBuzzJSON.is_buzz ? 'Buzz' : ''}`;
       });
   }
 
   message(msg) {
-    const input = Aquarius.Triggers.messageTriggered(msg, /^fizzbuzz ([\\d]+)$/i);
+    const input = Aquarius.Triggers.messageTriggered(msg, /^fizzbuzz ([\d]+)$/i);
 
     if (input) {
       Aquarius.Loading.startLoading(msg.channel);
 
-      this.makeFizzBuzzCall(input[1])
+      FizzBuzz.makeFizzBuzzCall(input[1])
         .then(finalString => {
           msg.channel.send(finalString);
           Aquarius.Loading.stopLoading(msg.channel);
