@@ -42,12 +42,12 @@ class FizzBuzz extends Aquarius.Command {
       Aquarius.Loading.startLoading(msg.channel);
 
       if ((parsed_int !== 0) && (!parsed_int)) {
-        msg.channel.send(`unable to convert ${input} to integer. Ping @IanMitchel1 on twitter with your complaints`);
+        msg.channel.send(`unable to convert ${input[1]} to integer. Ping @IanMitchel1 on twitter with your complaints`);
         Aquarius.Loading.stopLoading(msg.channel);
       } else if (parsed_int != parsed_float) {
         msg.channel.send(`fizzbuzziness of a non-integer number is not defined. Ping @IanMitchel1 on twitter with your complaints`);
         Aquarius.Loading.stopLoading(msg.channel);
-      } else if (parseInt < 0) {
+      } else if (parsed_int < 0) {
         msg.channel.send(`fizzbuzziness of a negative number is not defined. Ping @IanMitchel1 on twitter with your complaints`);
         Aquarius.Loading.stopLoading(msg.channel);
       } else {
