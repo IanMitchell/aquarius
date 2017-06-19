@@ -7,16 +7,16 @@ function botMention() {
   return client.user.toString();
 }
 
+function botNicknameMention() {
+  return new RegExp(`(?:(?:<@!?${client.user.id}+>))`);
+}
+
 function mentionTrigger(msg) {
   return msg.content.trim().startsWith(botMention());
 }
 
 function nicknameMentionTrigger(msg) {
-  if (msg.mentions.length > 0 && msg.mentions[0] === client.user) {
-    return msg.content.trim().match(new RegExp(`^${mentionRegex}`));
-  }
-
-  return false;
+  return msg.content.trim().match(new RegExp(`^${botNicknameMention().source}`));
 }
 
 function dotTrigger(msg) {
@@ -44,7 +44,7 @@ function messageTriggered(msg, trigger) {
 
   // NOTE: Different because of how the message is broadcasted from Discord.
   // Uses <@![0-9]> instead of <@[0-9]>
-  // @aquarius trigger [msg]
+  // @aquariusnick trigger [msg]
   if (nicknameMentionTrigger(msg)) {
     return msg.content.trim().replace(new RegExp(`^${mentionRegex} `), '').match(trigger);
   }

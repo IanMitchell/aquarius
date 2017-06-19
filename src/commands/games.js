@@ -34,7 +34,7 @@ class Games extends Aquarius.Command {
     if (registerInput && Aquarius.Permissions.isGuildModerator(msg.guild, msg.author)) {
       if (registerInput[1] === 'register') {
         if (msg.guild.roles.exists('name', this.roleName(registerInput[2]))) {
-          msg.channel.sendMessage('Game already registered');
+          msg.channel.send('Game already registered');
         } else {
           this.log(`Registering ${registerInput[2]}`);
 
@@ -42,7 +42,7 @@ class Games extends Aquarius.Command {
             .then(role => role.setMentionable(true))
             .then(role => role.setColor(registerInput[3]))
             .then(role => role.setPermissions([]))
-            .then(role => msg.channel.sendMessage(`Created ${role}`));
+            .then(role => msg.channel.send(`Created ${role}`));
         }
       } else {
         this.log(`Removing ${registerInput[2]}`);
@@ -51,9 +51,9 @@ class Games extends Aquarius.Command {
         });
         if (role) {
           role.delete();
-          msg.channel.sendMessage(`Removed ${registerInput[2]} from games list.`);
+          msg.channel.send(`Removed ${registerInput[2]} from games list.`);
         } else {
-          msg.channel.sendMessage(`Can't find ${registerInput[2]} in games list.`);
+          msg.channel.send(`Can't find ${registerInput[2]} in games list.`);
         }
       }
     }
@@ -70,14 +70,14 @@ class Games extends Aquarius.Command {
         if (action.toLowerCase() === 'add') {
           this.log(`Adding ${targetUser.user.username} to ${targetRole.name}`);
           targetUser.addRole(targetRole);
-          msg.channel.sendMessage('Added to game list');
+          msg.channel.send('Added to game list');
         } else {
           this.log(`Removing ${targetUser.user.username} from ${targetRole.name}`);
           targetUser.removeRole(targetRole);
-          msg.channel.sendMessage('Removed from game list');
+          msg.channel.send('Removed from game list');
         }
       } else {
-        msg.channel.sendMessage(`No associated role for ${role} found.`);
+        msg.channel.send(`No associated role for ${role} found.`);
       }
     }
 
@@ -89,7 +89,7 @@ class Games extends Aquarius.Command {
           str += `* ${role.name.split(':AG')[0]}\n`;
         });
 
-      msg.channel.sendMessage(str);
+      msg.channel.send(str);
     }
 
     if (Aquarius.Triggers.messageTriggered(msg, /^games$/i)) {
@@ -117,7 +117,7 @@ class Games extends Aquarius.Command {
         response += `${i + 1}. ${game[0]} _(${game[1]} playing)_\n`;
       });
 
-      msg.channel.sendMessage(response);
+      msg.channel.send(response);
     }
   }
 }

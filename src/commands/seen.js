@@ -52,7 +52,7 @@ class SeenCommand extends Aquarius.Command {
       this.log(`Seen request for ${user}`);
 
       if (user.presence.status !== 'offline') {
-        msg.channel.sendMessage("They're online right now!");
+        msg.channel.send("They're online right now!");
         return;
       }
 
@@ -67,14 +67,14 @@ class SeenCommand extends Aquarius.Command {
         let time = seen.lastSeen;
 
         if (created || seen.lastSeen === 0) {
-          msg.channel.sendMessage(`I don't have a record for ${user.username}`);
+          msg.channel.send(`I don't have a record for ${user.username}`);
           return;
         }
 
         time = moment(seen.lastSeen * 1000);
 
         Aquarius.Users.getNickname(msg.channel.guild, user).then(nick => {
-          msg.channel.sendMessage(`${nick} last seen ${time.fromNow()}`);
+          msg.channel.send(`${nick} last seen ${time.fromNow()}`);
         });
       });
     }

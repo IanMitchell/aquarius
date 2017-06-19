@@ -1,12 +1,16 @@
-const Aquarius = require('../aquarius');
+const Discord = require('discord.js');
 const fetch = require('node-fetch');
-const FormData = require('form-data');
+const querystring = require('querystring');
 const moment = require('moment');
+const FormData = require('form-data');
+const Aquarius = require('../aquarius');
 
 const SHOWTIMES = {
   SERVER: process.env.SHOWTIMES_SERVER,
   KEY: process.env.SHOWTIMES_KEY,
 };
+
+const TVDB_URL = 'https://api.thetvdb.com';
 
 class ShowtimesError extends Error {
   constructor(message) {
@@ -22,134 +26,7 @@ class Showtimes extends Aquarius.Command {
     super();
 
     this.description = 'Read and Update Showtimes database from Discord';
-  }
-
-  blameRequest(guild, show) {
-    let uri = `${SHOWTIMES.SERVER}/blame.json?`;
-    uri += `channel=${guild}`;
-    uri += '&platform=discord';
-    uri += `&show=${encodeURIComponent(show.trim())}`;
-
-    return fetch(uri).then(response => {
-      if (response.ok) {
-        return response.json().then(data => this.blameMessage(data));
-      }
-
-      return response.json().then(data => Promise.reject(new ShowtimesError(data.message)));
-    }).catch(error => Promise.reject(error));
-  }
-
-  staffRequest(guild, show, user, position, status) {
-    const form = new FormData();
-    form.append('username', user);
-    form.append('status', this.convertStatus(status));
-    form.append('channel', guild);
-    form.append('platform', 'discord');
-    form.append('name', show.trim());
-    form.append('position', position);
-    form.append('auth', SHOWTIMES.KEY);
-
-    return fetch(`${SHOWTIMES.SERVER}/staff`, { method: 'PUT', body: form }).then(response => {
-      if (response.ok) {
-        return response.json().then(data => this.staffMessage(guild, show, data));
-      }
-
-      return response.json().then(data => Promise.reject(new ShowtimesError(data.message)));
-    }).catch(error => Promise.reject(error));
-  }
-
-  releaseRequest(guild, user, show) {
-    const form = new FormData();
-    form.append('platform', 'discord');
-    form.append('channel', guild);
-    form.append('name', show.trim());
-    form.append('auth', SHOWTIMES.KEY);
-
-    return fetch(`${SHOWTIMES.SERVER}/release`, { method: 'PUT', body: form }).then(response => {
-      if (response.ok) {
-        return response.json().then(data => data.message);
-      }
-
-      return response.json().then(data => Promise.reject(new ShowtimesError(data.message)));
-    }).catch(error => Promise.reject(error));
-  }
-
-  airingRequest(guild) {
-    const uri = `${SHOWTIMES.SERVER}/shows.json?platform=discord&channel=${guild}`;
-    return fetch(uri).then(response => {
-      if (response.ok) {
-        return response.json().then(data => this.airingMessage(data));
-      }
-
-      return response.json().then(data => Promise.reject(new ShowtimesError(data.message)));
-    }).catch(error => Promise.reject(error));
-  }
-
-  airingMessage(json) {
-    if (json.message) {
-      return json.message;
-    }
-
-    let message = '';
-
-    if (json.shows.length > 0) {
-      json.shows.forEach(show => {
-        const date = Aquarius.Dates.exactDate(moment(new Date(show.air_date)));
-        message += `**${show.name}** #${show.episode_number}\n`;
-        message += `Airs in ${date}.\n\n`;
-      });
-
-      return message;
-    }
-
-    return 'No more airing shows this season!';
-  }
-
-  convertStatus(status) {
-    return (status === 'done' ? 'true' : 'false');
-  }
-
-  blameMessage(json) {
-    if (json.message) {
-      return json.message;
-    }
-
-    const updatedDate = moment(new Date(json.updated_at));
-    const airDate = moment(new Date(json.air_date));
-    const status = new Map();
-    let job = 'release';
-
-    let message = `Ep #${json.episode} of **${json.name}**`;
-
-    json.status.forEach(staff => {
-      // Pending takes precedence
-      if (staff.finished && !status.has(staff.acronym)) {
-        status.set(staff.acronym, `~~${staff.acronym}~~`);
-      } else if (!staff.finished) {
-        status.set(staff.acronym, `**${staff.acronym}**`);
-
-        // TODO: Fix
-        if (job === 'release') {
-          job = staff.position;
-        }
-      }
-    });
-
-    if (updatedDate > airDate) {
-      message += ` is at ${job} (last update ${updatedDate.fromNow()}). `;
-    } else {
-      message += airDate > Date.now() ? ' airs' : ' aired';
-      message += ` ${airDate.fromNow()}. `;
-    }
-
-    message += `\n${[...status.values()].join(' ')}`;
-
-    return message;
-  }
-
-  staffMessage(guild, show, json) {
-    const msg = json.message;
-    return this.blameRequest(guild, show).then(res => `${msg}. ${res}`);
+    this.posterCache = new Map();
   }
 
   helpMessage(nickname) {
@@ -173,7 +50,7 @@ class Showtimes extends Aquarius.Command {
         'Funny joke.',
       ];
 
-      msg.channel.sendMessage(responses[Math.floor(Math.random() * responses.length)]);
+      msg.channel.send(responses[Math.floor(Math.random() * responses.length)]);
 
       return true;
     }
@@ -181,12 +58,217 @@ class Showtimes extends Aquarius.Command {
     return false;
   }
 
+  convertStatus(status) {
+    return (status === 'done' ? 'true' : 'false');
+  }
+
+  getShowPoster(name) {
+    if (this.posterCache.has(name)) {
+      return new Promise(resolve => resolve(this.posterCache.get(name)));
+    }
+
+    const headers = { 'Content-Type': 'application/json' };
+    const body = JSON.stringify({ apikey: process.env.TVDB_API_KEY });
+
+    return fetch(`${TVDB_URL}/login`, { method: 'POST', headers, body })
+      .then(res => res.json())
+      .then(res => {
+        if (!res.token) {
+          throw new Error('Could not connect to TVDB API');
+        }
+
+        headers.Authorization = `Bearer ${res.token}`;
+        return fetch(`${TVDB_URL}/search/series?name=${name}`, { headers });
+      })
+      .then(res => res.json())
+      .then(res => {
+        const id = res.data[0].id;
+        return fetch(`${TVDB_URL}/series/${id}/images/query?keyType=poster`, { headers });
+      })
+      .then(res => res.json())
+      .then(res => {
+        const results = res.data.sort((a, b) => a.ratingsInfo.average < b.ratingsInfo.average);
+        const url = `https://thetvdb.com/banners/${results[0].fileName}`;
+
+        this.posterCache.set(name, url);
+        return url;
+      })
+      .catch(this.log);
+  }
+
+  showEmbedMessage(msg, json) {
+    this.getShowPoster(json.name)
+      .then(thumbnail => {
+        const message = new Discord.RichEmbed({
+          title: `${json.name} #${json.episode}`,
+          color: 0x008000,
+          footer: {
+            text: 'Brought to you by Deschtimes™',
+          },
+          thumbnail: {
+            url: thumbnail,
+            width: 200,
+            height: 295,
+          },
+        });
+
+        const updatedDate = moment(new Date(json.updated_at));
+        const airDate = moment(new Date(json.air_date));
+        const status = new Map();
+
+        json.status.forEach(staff => {
+          // Pending takes precedence
+          if (staff.finished && !status.has(staff.acronym)) {
+            status.set(staff.acronym, `~~${staff.acronym}~~`);
+          } else if (!staff.finished) {
+            status.set(staff.acronym, `**${staff.acronym}**`);
+          }
+        });
+
+        message.addField('Status', [...status.values()].join(' '));
+
+        if (updatedDate > airDate) {
+          message.addField('Last Update', updatedDate.fromNow());
+        } else {
+          message.addField((airDate > Date.now() ? 'Airs' : 'Aired'), airDate.fromNow());
+        }
+
+        msg.channel.send("", { embed: message });
+      });
+  }
+
+  airingMessage(msg) {
+    const uri = `${SHOWTIMES.SERVER}/shows.json?platform=discord&channel=${msg.guild.id}`;
+
+    Aquarius.Loading.startLoading(msg.channel);
+    fetch(uri)
+      .then(response => response.json())
+      .then(data => {
+        if (data.message) {
+          return Promise.reject(new ShowtimesError(data.message));
+        }
+
+        let message = '';
+
+        if (data.shows.length > 0) {
+          data.shows.forEach(show => {
+            const date = Aquarius.Dates.exactDate(moment(new Date(show.air_date)));
+            message += `**${show.name}** #${show.episode_number}\n`;
+            message += `Airs in ${date}.\n\n`;
+          });
+
+          msg.channel.send(message);
+        } else {
+          msg.channel.send('No more airing shows this season!');
+        }
+
+        return Aquarius.Loading.stopLoading(msg.channel);
+      })
+      .catch(error => {
+        this.log(`Error: ${error.message}`);
+        Aquarius.Loading.stopLoading(msg.channel);
+
+        if (error instanceof ShowtimesError) {
+          msg.channel.send(error.message);
+        } else {
+          msg.channel.send('Sorry, there was an error. Poke Desch');
+        }
+      });
+  }
+
+  staffMessage(msg, show, position, status) {
+    const body = new FormData();
+    body.append('username', msg.author.id);
+    body.append('status', this.convertStatus(status));
+    body.append('channel', msg.guild.id);
+    body.append('platform', 'discord');
+    body.append('name', show.trim());
+    body.append('position', position);
+    body.append('auth', SHOWTIMES.KEY);
+
+    Aquarius.Loading.startLoading(msg.channel);
+    fetch(`${SHOWTIMES.SERVER}/staff`, { method: 'PUT', body })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        return response.json().then(data => Promise.reject(new ShowtimesError(data.message)));
+      })
+      .then(data => {
+        msg.channel.send(data);
+        Aquarius.Loading.stopLoading(msg.channel);
+        return this.blameMessage(msg, show);
+      })
+      .catch(error => {
+        this.log(`Error: ${error.message}`);
+        Aquarius.Loading.stopLoading(msg.channel);
+
+        if (error instanceof ShowtimesError) {
+          msg.channel.send(error.message);
+        } else {
+          msg.channel.send('Sorry, there was an error. Poke Desch');
+        }
+      });
+  }
+
+  blameMessage(msg, show) {
+    const params = querystring.stringify({
+      channel: msg.guild.id,
+      platform: 'discord',
+      show: encodeURIComponent(show.trim()),
+    });
+
+    Aquarius.Loading.startLoading(msg.channel);
+    fetch(`${SHOWTIMES.SERVER}/blame.json?${params}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.message) {
+          return Promise.reject(new ShowtimesError(data.message));
+        }
+
+        this.showEmbedMessage(msg, data);
+        return Aquarius.Loading.stopLoading(msg.channel);
+      })
+      .catch(error => {
+        this.log(`Error: ${error.message}`);
+        Aquarius.Loading.stopLoading(msg.channel);
+
+        if (error instanceof ShowtimesError) {
+          msg.channel.send(error.message);
+        } else {
+          msg.channel.send('Sorry, there was an error. Poke Desch');
+        }
+      });
+  }
+
+  releaseMessage(msg, show) {
+    const body = new FormData();
+    body.append('platform', 'discord');
+    body.append('channel', msg.guild.id);
+    body.append('name', show.trim());
+    body.append('username', msg.author.id);
+    body.append('auth', SHOWTIMES.KEY);
+
+    Aquarius.Loading.startLoading(msg.channel);
+    fetch(`${SHOWTIMES.SERVER}/release`, { method: 'PUT', body })
+      .then(response => response.json())
+      .then(data => {
+        Aquarius.Loading.stopLoading(msg.channel);
+        msg.channel.send(data.message);
+      })
+      .catch(error => {
+        this.log(`Error: ${error.message}`);
+        Aquarius.Loading.stopLoading(msg.channel);
+        msg.channel.send('Sorry, there was an error. Poke Desch');
+      });
+  }
+
   message(msg) {
     if (this.checkForAreki(msg)) {
       return;
     }
 
-    let request = null;
     const blameInput = Aquarius.Triggers.messageTriggered(msg, /^blame (.+)$/i);
     const staffInput = Aquarius.Triggers.messageTriggered(msg, /^(?:(?:(done|undone) (tl|tlc|enc|ed|tm|ts|qc) (.+)))$/i);
     const releaseInput = Aquarius.Triggers.messageTriggered(msg, /^release\s(.+)$/i);
@@ -194,46 +276,22 @@ class Showtimes extends Aquarius.Command {
 
     if (blameInput) {
       this.log(`Blame request for ${blameInput[1]} in ${msg.guild.name}`);
-      Aquarius.Loading.startLoading(msg.channel);
-      request = this.blameRequest(msg.guild.id, blameInput[1]);
+      this.blameMessage(msg, blameInput[1]);
     }
 
     if (staffInput) {
       this.log(`${staffInput[1]} request for ${staffInput[3]} by ${msg.author.username}`);
-      Aquarius.Loading.startLoading(msg.channel);
-      request = this.staffRequest(msg.guild.id,
-                                  staffInput[3],
-                                  msg.author.id,
-                                  staffInput[2],
-                                  staffInput[1]);
+      this.staffMessage(msg, staffInput[3], staffInput[2], staffInput[1]);
     }
 
     if (releaseInput) {
       this.log(`Release request for ${releaseInput[1]} by ${msg.author.username}`);
-      Aquarius.Loading.startLoading(msg.channel);
-      request = this.releaseRequest(msg.guild.id, msg.author.id, releaseInput[1]);
+      this.releaseMessage(msg, releaseInput[1]);
     }
 
     if (airingInput) {
       this.log(`Airing input by ${msg.author.username}`);
-      Aquarius.Loading.startLoading(msg.channel);
-      request = this.airingRequest(msg.guild.id);
-    }
-
-    if (request) {
-      request.then(message => {
-        msg.channel.sendMessage(message);
-        Aquarius.Loading.stopLoading(msg.channel);
-      }, error => {
-        this.log(`Error: ${error.message}`);
-        Aquarius.Loading.stopLoading(msg.channel);
-
-        if (error instanceof ShowtimesError) {
-          msg.channel.sendMessage(error.message);
-        } else {
-          msg.channel.sendMessage('Sorry, there was an error. Poke Desch');
-        }
-      });
+      this.airingMessage(msg);
     }
   }
 }

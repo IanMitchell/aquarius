@@ -152,13 +152,13 @@ class Weather extends Aquarius.Command {
 
       try {
         this.getWeather(weatherInput[1]).then(message => {
-          msg.channel.sendMessage(message);
+          msg.channel.send(message);
           Aquarius.Loading.stopLoading(msg.channel);
         });
       } catch (e) {
         this.log(e.message);
         Aquarius.Loading.stopLoading(msg.channel);
-        msg.channel.sendMessage('Error connecting to Yahoo Weather.');
+        msg.channel.send('Error connecting to Yahoo Weather.');
       }
     }
   }

@@ -35,7 +35,7 @@ class Overwatch extends Aquarius.Command {
         region = REGIONS[profile[1].toUpperCase()];
       }
 
-      msg.channel.sendMessage(`${URL}/${region}/${profile[2].replace('#', '-')}`);
+      msg.channel.send(`${URL}/${region}/${profile[2].replace('#', '-')}`);
     }
   }
 }
