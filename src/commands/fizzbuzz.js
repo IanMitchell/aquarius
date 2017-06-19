@@ -41,7 +41,7 @@ class FizzBuzz extends Aquarius.Command {
 
       Aquarius.Loading.startLoading(msg.channel);
 
-      if (parsed_int !== 0) and !(parsed_int) {
+      if ((parsed_int !== 0) && (!parsed_int)) {
         msg.channel.send(`unable to convert ${input} to integer. Ping @IanMitchel1 on twitter with your complaints`);
         Aquarius.Loading.stopLoading(msg.channel);
       } else if (parsed_int != parsed_float) {
@@ -60,7 +60,7 @@ class FizzBuzz extends Aquarius.Command {
             msg.channel.send(`unable to fizzbuzz. Failed with ${errorString}. Ping @IanMitchel1 on twitter with your complaints`);
             Aquarius.Loading.stopLoading(msg.channel);
           });
-        }
+      }
     }
   }
 }
