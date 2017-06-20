@@ -120,7 +120,7 @@ class ReplyCommand extends Aquarius.Command {
         Reply.findOrCreate({
           where: {
             guildId: msg.guild.id,
-            trigger: addInputs[2],
+            trigger: addInputs[2].toLowerCase(),
           },
           defaults: {
             response: addInputs[5],
@@ -142,12 +142,12 @@ class ReplyCommand extends Aquarius.Command {
         Reply.destroy({
           where: {
             guildId: msg.guild.id,
-            trigger: removeInputs[1],
+            trigger: removeInputs[1].toLowerCase(),
           },
         }).then(removedRows => {
           if (removedRows > 0) {
             msg.channel.send(`Removed '${removeInputs[1]}' reply`);
-            this.responses.get(msg.guild.id).delete(removeInputs[1]);
+            this.responses.get(msg.guild.id).delete(removeInputs[1].toLowerCase());
           } else {
             msg.channel.send(`Could not find a reply with '${removeInputs[1]}'`);
           }
