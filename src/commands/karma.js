@@ -181,8 +181,6 @@ class KarmaCommand extends Aquarius.Command {
 
           if (karmaInput[1] === 'plus' || karmaInput[3] === '++') {
             this.log('increasing karma');
-            // karma.count = this.getEffectiveKarma(karma) + 1;
-            // karma = moment().unix();
             karma.update({
               count: this.getEffectiveKarma(karma) + 1,
               lastChanged: moment().unix(),
@@ -191,8 +189,6 @@ class KarmaCommand extends Aquarius.Command {
           }
 
           this.log('Decreasing karma');
-          // karma.count = this.getEffectiveKarma(karma) - 1;
-          // karma.lastChanged = moment().unix();
           karma.update({
             count: this.getEffectiveKarma(karma) - 1,
             lastChanged: moment().unix(),
