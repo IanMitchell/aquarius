@@ -96,12 +96,6 @@ class ReplyCommand extends Aquarius.Command {
         this.log(`Input: ${msg.cleanContent}`);
         msg.channel.send(this.responses.get(msg.guild.id).get(msg.cleanContent.trim().toLowerCase()));
       }
-    } else {
-      this.addGuild(msg.guild.id);
-
-      if (this.genericResponses().has(msg.cleanContent.trim().toLowerCase())) {
-        msg.channel.send(this.genericResponses().get(msg.cleanContent.trim().toLowerCase()));
-      }
     }
 
     if (Aquarius.Permissions.isGuildModerator(msg.guild, msg.author)) {
@@ -120,7 +114,7 @@ class ReplyCommand extends Aquarius.Command {
         Reply.findOrCreate({
           where: {
             guildId: msg.guild.id,
-            trigger: addInputs[2],
+            trigger: addInputs[2].toLowerCase(),
           },
           defaults: {
             response: addInputs[5],
@@ -142,12 +136,12 @@ class ReplyCommand extends Aquarius.Command {
         Reply.destroy({
           where: {
             guildId: msg.guild.id,
-            trigger: removeInputs[1],
+            trigger: removeInputs[1].toLowerCase(),
           },
         }).then(removedRows => {
           if (removedRows > 0) {
             msg.channel.send(`Removed '${removeInputs[1]}' reply`);
-            this.responses.get(msg.guild.id).delete(removeInputs[1]);
+            this.responses.get(msg.guild.id).delete(removeInputs[1].toLowerCase());
           } else {
             msg.channel.send(`Could not find a reply with '${removeInputs[1]}'`);
           }

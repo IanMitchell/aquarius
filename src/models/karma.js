@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     count: DataTypes.INTEGER,
     totalGiven: DataTypes.INTEGER,
     lastGiven: DataTypes.INTEGER,
+    lastChanged: DataTypes.INTEGER,
   });
 
   return karma;
