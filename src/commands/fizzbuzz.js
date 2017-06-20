@@ -36,23 +36,23 @@ class FizzBuzz extends Aquarius.Command {
     const input = Aquarius.Triggers.messageTriggered(msg, /^fizzbuzz (.+)$/i);
 
     if (input) {
-      const parsed_float = parseFloat(input[1]);
-      const parsed_int = parseInt(input[1]);
+      const inputToFloat = parseFloat(input[1]);
+      const inputToInt = parseInt(input[1], 10);
 
       Aquarius.Loading.startLoading(msg.channel);
 
-      if ((parsed_int !== 0) && (!parsed_int)) {
+      if ((inputToInt !== 0 && !inputToInt)) {
         msg.channel.send(`unable to convert ${input[1]} to integer. Ping @IanMitchel1 on twitter with your complaints`);
         Aquarius.Loading.stopLoading(msg.channel);
-      } else if (parsed_int != parsed_float) {
+      } else if (inputToInt !== inputToFloat) {
         msg.channel.send(`fizzbuzziness of a non-integer number is not defined. Ping @IanMitchel1 on twitter with your complaints`);
         Aquarius.Loading.stopLoading(msg.channel);
-      } else if (parsed_int < 0) {
+      } else if (inputToInt < 0) {
         msg.channel.send(`fizzbuzziness of a negative number is not defined. Ping @IanMitchel1 on twitter with your complaints`);
         Aquarius.Loading.stopLoading(msg.channel);
       } else {
 
-        FizzBuzz.makeFizzBuzzCall(parsed_int)
+        FizzBuzz.makeFizzBuzzCall(inputToInt)
           .then(finalString => {
             msg.channel.send(finalString);
             Aquarius.Loading.stopLoading(msg.channel);
