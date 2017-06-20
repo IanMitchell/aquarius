@@ -96,12 +96,6 @@ class ReplyCommand extends Aquarius.Command {
         this.log(`Input: ${msg.cleanContent}`);
         msg.channel.send(this.responses.get(msg.guild.id).get(msg.cleanContent.trim().toLowerCase()));
       }
-    } else {
-      this.addGuild(msg.guild.id);
-
-      if (this.genericResponses().has(msg.cleanContent.trim().toLowerCase())) {
-        msg.channel.send(this.genericResponses().get(msg.cleanContent.trim().toLowerCase()));
-      }
     }
 
     if (Aquarius.Permissions.isGuildModerator(msg.guild, msg.author)) {
