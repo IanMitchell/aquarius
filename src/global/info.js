@@ -35,7 +35,7 @@ class Info extends Aquarius.Command {
           ],
         });
 
-        msg.channel.sendEmbed(message);
+        msg.channel.send('', { embed: message });
       });
     }
 
