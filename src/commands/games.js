@@ -38,7 +38,7 @@ class Games extends Aquarius.Command {
         } else {
           this.log(`Registering ${this.roleName(registerInput[2])}`);
 
-          msg.guild.createRole({ name: this.roleName(registerInput[2]) })
+          msg.guild.createRole({ data: { name: this.roleName(registerInput[2]) }})
             .then(role => role.setMentionable(true))
             .then(role => role.setColor(registerInput[3]))
             .then(role => role.setPermissions([]))
