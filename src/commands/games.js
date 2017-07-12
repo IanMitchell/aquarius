@@ -36,7 +36,7 @@ class Games extends Aquarius.Command {
         if (msg.guild.roles.exists('name', this.roleName(registerInput[2]))) {
           msg.channel.send('Game already registered');
         } else {
-          this.log(`Registering ${registerInput[2]}`);
+          this.log(`Registering ${this.roleName(registerInput[2])}`);
 
           msg.guild.createRole({ name: this.roleName(registerInput[2]) })
             .then(role => role.setMentionable(true))
