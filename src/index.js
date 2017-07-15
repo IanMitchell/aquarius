@@ -25,6 +25,7 @@ function loadCommands(filePath) {
       if (file.endsWith('.js')) {
         log(`Loading ${file}`);
         // eslint-disable-next-line global-require
+        // eslint-disable-next-line import/no-dynamic-require
         const cmd = require(path.join(filePath, file));
         cmds.set(cmd.name.toLowerCase(), cmd);
       }
@@ -70,7 +71,7 @@ function generateAdminCommandHelp(message) {
       str += `${command.helpMessage(Aquarius.Client.user.username)}`;
 
       if (keys.length > 0) {
-        str += `\n\n*Configuration Options:*\n`;
+        str += '\n\n*Configuration Options:*\n';
 
         keys.forEach(key => {
           str += `* \`${key}\` (Default: ${command.getSettingDefault(key)}): `;

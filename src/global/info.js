@@ -8,34 +8,34 @@ class Info extends Aquarius.Command {
       this.log('Info Request');
 
       Aquarius.Users.getNickname(msg.guild, Aquarius.Client.user).then(nickname => {
-        const message = new Discord.RichEmbed({
-          title: 'Aquarius',
-          color: 0x008000,
-          description: "I'm a bot!",
-          url: Aquarius.Links.botLink(),
-          footer: {
-            text: `Version: ${pkg.version}`,
+        msg.channel.send('', {
+          embed: {
+            title: 'Aquarius',
+            color: 0x008000,
+            description: "I'm a bot!",
+            url: Aquarius.Links.botLink(),
+            footer: {
+              text: `Version: ${pkg.version}`,
+            },
+            thumbnail: {
+              url: Aquarius.Client.user.displayAvatarURL,
+            },
+            fields: [
+              {
+                name: 'Developer',
+                value: 'Desch#3091',
+              },
+              {
+                name: 'Repository',
+                value: Aquarius.Links.repoLink(),
+              },
+              {
+                name: 'Need Help?',
+                value: `Type \`@${nickname} help\``,
+              },
+            ],
           },
-          thumbnail: {
-            url: Aquarius.Client.user.displayAvatarURL,
-          },
-          fields: [
-            {
-              name: 'Developer',
-              value: 'Desch#3091',
-            },
-            {
-              name: 'Repository',
-              value: Aquarius.Links.repoLink(),
-            },
-            {
-              name: 'Need Help?',
-              value: `Type \`@${nickname} help\``,
-            },
-          ],
         });
-
-        msg.channel.send('', { embed: message });
       });
     }
 

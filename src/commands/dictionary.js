@@ -61,29 +61,29 @@ class Dictionary extends Aquarius.Command {
           const parser = new DOMParser();
           const dom = parser.parseFromString(xml, 'text/xml');
 
-          const message = new Discord.RichEmbed({
-            title: dom.getElementsByTagName('ew')[0].textContent.capitalize(),
-            color: 0x0074D9,
-            footer: {
-              text: 'Definitions provided by Merriam Webster',
+          msg.channel.send('', {
+            embed: {
+              title: dom.getElementsByTagName('ew')[0].textContent.capitalize(),
+              color: 0x0074D9,
+              footer: {
+                text: 'Definitions provided by Merriam Webster',
+              },
+              fields: [
+                {
+                  name: 'Definition',
+                  value: this.getDefinition(dom),
+                },
+                {
+                  name: 'Plural',
+                  value: this.getPlural(dom),
+                },
+                {
+                  name: 'Pronunciation',
+                  value: this.getPronunciation(dom),
+                },
+              ],
             },
-            fields: [
-              {
-                name: 'Definition',
-                value: this.getDefinition(dom),
-              },
-              {
-                name: 'Plural',
-                value: this.getPlural(dom),
-              },
-              {
-                name: 'Pronunciation',
-                value: this.getPronunciation(dom),
-              },
-            ],
-          });
-
-          msg.channel.sendEmbed(message).catch(this.log);
+          }).catch(this.log);
           Aquarius.Loading.stopLoading(msg.channel);
         })
         .catch(err => {
