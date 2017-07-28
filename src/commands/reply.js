@@ -106,7 +106,7 @@ class ReplyCommand extends Aquarius.Command {
       ].join(''), 'i');
 
       const addInputs = Aquarius.Triggers.messageTriggered(msg, newRegex);
-      const removeInputs = Aquarius.Triggers.messageTriggered(msg, /^reply remove "(.+)"$/i);
+      const removeInputs = Aquarius.Triggers.messageTriggered(msg, /^reply remove "([\s\S]+)"$/i);
 
       if (addInputs) {
         this.log(`Adding reply: "${addInputs[2]}" -> "${addInputs[5]}"`);
