@@ -101,8 +101,8 @@ class ReplyCommand extends Aquarius.Command {
     if (Aquarius.Permissions.isGuildModerator(msg.guild, msg.author)) {
       const newRegex = new RegExp([
         '^(?:(?:new reply)|(?:reply add)) ',  // Cmd Trigger
-        '(["\'])((?:(?=(\\\\?))\\3.)*?)\\1 ', // Reply trigger (Quoted text block 1)
-        '(["\'])((?:(?=(\\\\?))\\3.)*?)\\1$', // Response (Quoted text block 2)
+        '(["\'])((?:(?=(\\\\?))\\3[\s\S])*?)\\1 ', // Reply trigger (Quoted text block 1)
+        '(["\'])((?:(?=(\\\\?))\\3[\s\S])*?)\\1$', // Response (Quoted text block 2)
       ].join(''), 'i');
 
       const addInputs = Aquarius.Triggers.messageTriggered(msg, newRegex);
