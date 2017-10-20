@@ -28,7 +28,7 @@ class Hearthstone extends Aquarius.Command {
         Aquarius.Loading.startLoading(msg.channel);
         hdb.allCards.some(card => {
           if (card.name.toLowerCase().replace(/[^\w\s]/g, "") === cardName) {
-            msg.channel.sendFile(card.image_url, `${card.name}.png`);
+            msg.channel.send(card.image_url);
             return true;
           }
           return false;
