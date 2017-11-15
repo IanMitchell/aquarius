@@ -99,7 +99,7 @@ class Showtimes extends Aquarius.Command {
   showEmbedMessage(msg, json) {
     this.getShowPoster(json.name)
       .then(thumbnail => {
-        const message = new Discord.MessageEmbed('', {
+        const message = new Discord.RichEmbed('', {
           title: `${json.name} #${json.episode}`,
           color: 0x008000,
           footer: {
@@ -133,7 +133,7 @@ class Showtimes extends Aquarius.Command {
           message.addField((airDate > Date.now() ? 'Airs' : 'Aired'), airDate.fromNow());
         }
 
-        msg.channel.send('', { embed: message });
+        msg.channel.send('', message);
       });
   }
 
