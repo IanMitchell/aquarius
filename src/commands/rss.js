@@ -35,7 +35,12 @@ class RSS extends Aquarius.Command {
   checkForUpdates(guild) {
     const url = this.getSetting(guild.id, 'url');
     const target = this.getSetting(guild.id, 'channel');
-    const channel = guild.channels.array().find(c => c.name === target) || guild.defaultChannel;
+    const channel = guild.channels.array().find(c => c.name === target);
+    
+    if (!channel) {
+      this.log(`No channel set for ${guild.name}. Exiting`);
+      return;
+    }
 
     if (!url) {
       const admin = guild.owner.user;
