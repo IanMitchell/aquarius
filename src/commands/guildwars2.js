@@ -86,12 +86,16 @@ class GuildWars extends Aquarius.Command {
         Aquarius.Client.guilds.forEach(guild => {
           if (Aquarius.Permissions.isCommandEnabled(guild, this)) {
             const target = this.getSetting(guild.id, 'channel');
-            let channel = guild.defaultChannel;
+            let channel = null;
 
             if (target !== null && target !== '') {
               channel = guild.channels.array().find(c => c.name === target);
             }
 
+            if (!channel) {
+              return;
+            }
+            
             channel.send(`🚨 Starting in ${INTERVAL}m: ${event.name}`);
           }
         });
