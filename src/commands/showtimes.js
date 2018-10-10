@@ -97,7 +97,7 @@ class Showtimes extends Aquarius.Command {
   }
 
   showEmbedMessage(msg, json) {
-    this.getShowPoster(json.name)
+    this.getShowPoster(json.tvdb_name || json.name)
       .then(thumbnail => {
         const message = new Discord.RichEmbed({
           title: `${json.name} #${json.episode}`,
