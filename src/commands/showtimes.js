@@ -83,7 +83,10 @@ class Showtimes extends Aquarius.Command {
       .then(res => res.json())
       .then(res => {
         const id = res.data[0].id;
-        return fetch(`${TVDB_URL}/series/${id}/images/query?keyType=poster`, { headers });
+        return fetch(
+          `${TVDB_URL}/series/${id}/images/query?keyType=poster`,
+          { headers: Object.assign({}, headers, { 'Accept-Language': 'ja' }) }
+          );
       })
       .then(res => res.json())
       .then(res => {
