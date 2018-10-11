@@ -73,7 +73,7 @@ class KarmaCommand extends Aquarius.Command {
               const entry = {
                 index,
                 nick,
-                karma: record.count,
+                karma: this.getEffectiveKarma(record),
               };
 
               return entry;
@@ -112,7 +112,7 @@ class KarmaCommand extends Aquarius.Command {
         },
       }).spread((karma) => {
         Aquarius.Users.getNickname(msg.guild, user.id).then(nick => {
-          msg.channel.send(`${nick} has ${karma.count} ${karmaName}.`);
+          msg.channel.send(`${nick} has ${this.getEffectiveKarma(karma)} ${karmaName}.`);
         });
       });
 
@@ -173,16 +173,27 @@ class KarmaCommand extends Aquarius.Command {
           },
         }).spread((karma, newRecord) => {
           if (newRecord) {
+            karma.update({
+              lastChanged: moment().unix(),
+            });
             this.log('Karma record created');
           }
 
           if (karmaInput[1] === 'plus' || karmaInput[3] === '++') {
             this.log('increasing karma');
-            return karma.increment('count', { by: 1 });
+            karma.update({
+              count: this.getEffectiveKarma(karma) + 1,
+              lastChanged: moment().unix(),
+            });
+            return karma;
           }
 
           this.log('Decreasing karma');
-          return karma.decrement('count', { by: 1 });
+          karma.update({
+            count: this.getEffectiveKarma(karma) - 1,
+            lastChanged: moment().unix(),
+          });
+          return karma;
         }).then(result => {
           karmaGiver.update({
             lastGiven: moment().unix(),
@@ -196,7 +207,7 @@ class KarmaCommand extends Aquarius.Command {
             }
 
             const nick = Aquarius.Users.getNickname(msg.guild, user).then(nickname => {
-              str += `${nickname} now has ${result.count} ${karmaName}.`;
+              str += `${nickname} now has ${this.getEffectiveKarma(result)} ${karmaName}.`;
             });
 
             return Promise.all([nick]).then(() => msg.channel.send(str));
@@ -208,6 +219,20 @@ class KarmaCommand extends Aquarius.Command {
     }
 
     return;
+  }
+
+  getEffectiveKarma(record) {
+    const daysBeforeDecay = 30; // days
+    const timeToDecay = 24 * 60 * 60 * daysBeforeDecay;
+    const timeSinceUpdate = moment().unix() - record.lastChanged;
+    const falloffTimeScaleDays = 365; // karma goes to 1/e * karma in 1 year
+    const falloffTimeScale = 24 * 60 * 60 * falloffTimeScaleDays;
+
+    if (timeSinceUpdate > timeToDecay) {
+      return Math.floor(record.count * Math.exp(-1 * (timeSinceUpdate - timeToDecay) / falloffTimeScale)) + 1;
+    } else {
+      return record.count;
+    }
   }
 }
 
