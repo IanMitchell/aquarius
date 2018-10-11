@@ -33,19 +33,34 @@ class FizzBuzz extends Aquarius.Command {
   }
 
   message(msg) {
-    const input = Aquarius.Triggers.messageTriggered(msg, /^fizzbuzz ([\d]+)$/i);
+    const input = Aquarius.Triggers.messageTriggered(msg, /^fizzbuzz (.+)$/i);
 
     if (input) {
+      const inputToFloat = parseFloat(input[1]);
+      const inputToInt = parseInt(input[1], 10);
+
       Aquarius.Loading.startLoading(msg.channel);
 
-      FizzBuzz.makeFizzBuzzCall(input[1])
-        .then(finalString => {
-          msg.channel.send(finalString);
-          Aquarius.Loading.stopLoading(msg.channel);
-        }).catch(errorString => {
-          msg.channel.send(`unable to fizzbuzz. Failed with ${errorString}. Ping @IanMitchel1 on twitter with your complaints`);
-          Aquarius.Loading.stopLoading(msg.channel);
-        });
+      if ((inputToInt !== 0 && !inputToInt)) {
+        msg.channel.send(`unable to convert ${input[1]} to integer. Ping @IanMitchel1 on twitter with your complaints`);
+        Aquarius.Loading.stopLoading(msg.channel);
+      } else if (inputToInt !== inputToFloat) {
+        msg.channel.send(`fizzbuzziness of a non-integer number is not defined. Ping @IanMitchel1 on twitter with your complaints`);
+        Aquarius.Loading.stopLoading(msg.channel);
+      } else if (inputToInt < 0) {
+        msg.channel.send(`fizzbuzziness of a negative number is not defined. Ping @IanMitchel1 on twitter with your complaints`);
+        Aquarius.Loading.stopLoading(msg.channel);
+      } else {
+
+        FizzBuzz.makeFizzBuzzCall(inputToInt)
+          .then(finalString => {
+            msg.channel.send(finalString);
+            Aquarius.Loading.stopLoading(msg.channel);
+          }).catch(errorString => {
+            msg.channel.send(`unable to fizzbuzz. Failed with ${errorString}. Ping @IanMitchel1 on twitter with your complaints`);
+            Aquarius.Loading.stopLoading(msg.channel);
+          });
+      }
     }
   }
 }
