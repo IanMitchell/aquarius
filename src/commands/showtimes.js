@@ -83,9 +83,26 @@ class Showtimes extends Aquarius.Command {
       .then(res => res.json())
       .then(res => {
         const id = res.data[0].id;
-        return fetch(`${TVDB_URL}/series/${id}/images/query?keyType=poster`, { headers });
+        let requests = [];
+        requests.push(fetch(
+          `${TVDB_URL}/series/${id}/images/query?keyType=poster`,
+          { headers: Object.assign({}, headers, { 'Accept-Language': 'ja' }) }
+          ));
+        requests.push(fetch(
+          `${TVDB_URL}/series/${id}/images/query?keyType=poster`,
+          { headers }
+          ));
+        return Promise.all(requests);
       })
-      .then(res => res.json())
+      .then(responses => Promise.all(responses.map(res => res.json())))
+      .then(res => {
+        // no Japanese posters, fallback to English
+        if ('Error' in res[0]) {
+          return res[1];
+        }
+        // default to Japanese posters
+        return res[0];
+      })
       .then(res => {
         const results = res.data.sort((a, b) => a.ratingsInfo.average < b.ratingsInfo.average);
         const url = `https://thetvdb.com/banners/${results[0].fileName}`;
