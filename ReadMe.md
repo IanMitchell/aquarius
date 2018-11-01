@@ -1,5 +1,7 @@
 # Aquarius
 
+Note: Currently being rewritten in a private repo (and has been for the past year...)
+
 __*If you run a Discord server and would like the bot, [click here to add it!](https://discordapp.com/oauth2/authorize?client_id=176793254350684160&scope=bot&permissions=0)*__
 
 A highly configurable [Discord](https://discordapp.com/) bot. [ARX-7's](https://github.com/IanMitchell/ARX-7) younger sibling.
