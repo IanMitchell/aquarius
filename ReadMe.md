@@ -1,6 +1,6 @@
 # Aquarius
 
-Note: Currently being rewritten in a private repo (and has been for the past year...)
+Note: Currently being rewritten in a private repo (and has been for the past year...). The tasks and milestones in this project reflect the progress of the rewrite, not of the current codebase.
 
 __*If you run a Discord server and would like the bot, [click here to add it!](https://discordapp.com/oauth2/authorize?client_id=176793254350684160&scope=bot&permissions=0)*__
 
