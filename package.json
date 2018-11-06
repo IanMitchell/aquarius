@@ -20,32 +20,32 @@
   "dependencies": {
     "blessed": "^0.1.81",
     "blessed-contrib": "^4.6.5",
-    "chalk": "^1.1.3",
-    "debug": "^2.3.3",
+    "chalk": "^2.4.1",
+    "debug": "^4.1.0",
     "discord.js": "^11.2.1",
-    "dotenv": "^4.0.0",
+    "dotenv": "^6.1.0",
     "form-data": "^2.1.2",
     "hearthstone-db": "^1.0.4",
     "moment": "^2.16.0",
-    "mtgsdk": "^0.2.0",
-    "node-fetch": "^1.6.3",
-    "node-opus": "^0.2.4",
+    "mtgsdk": "^0.4.2",
+    "node-fetch": "^2.2.1",
+    "node-opus": "^0.3.1",
     "parse-rss": "^1.0.3",
-    "pg": "^6.0.0",
+    "pg": "^7.6.0",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^3.27.0",
-    "sequelize-cli": "^2.4.0",
-    "stack-trace": "0.0.9",
-    "umzug": "^1.11.0",
+    "sequelize": "^4.41.0",
+    "sequelize-cli": "^5.3.0",
+    "stack-trace": "0.0.10",
+    "umzug": "^2.1.0",
     "xmldom": "^0.1.27"
   },
   "peerDependencies": {
     "bufferutil": "^2.0.0"
   },
   "devDependencies": {
-    "eslint": "^3.10.2",
-    "eslint-config-airbnb": "^14.1.0",
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.2.0",
-    "jest": "^19.0.2"
+    "jest": "^23.6.0"
   }
 }
