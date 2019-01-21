@@ -1,0 +1,23 @@
+{
+  "name": "Aquarius",
+  "alias": "aquarius.sh",
+  "public": true,
+  "version": 1,
+  "env": {
+    "NODE_ENV": "@aquarius-env",
+    "TOKEN": "@aquarius-token",
+    "CLIENT_ID": "@aquarius-client-id",
+    "MONGO": "@aquarius-mongo",
+    "SENTRY": "@aquarius-sentry",
+    "DICTIONARY_API_KEY": "@aquarius-dictionary-api-key",
+    "TEST_BOT_TOKEN": "@aquarius-test-bot-token",
+    "HEARTHSTONE_KEY": "@aquarius-hearthstone-key",
+    "TIMBER_KEY": "@aquarius-timber-key",
+    "SHOWTIMES_SERVER": "@aquarius-showtimes-server",
+    "SHOWTIMES_KEY": "@aquarius-showtimes-key",
+    "TVDB_API_KEY": "@aquarius-tvdb-api-key",
+    "GITHUB_API_TOKEN": "@aquarius-github-api-token",
+    "DARK_SKY_API_KEY": "@aquarius-dark-sky-api-key",
+    "MAPBOX_API_KEY": "@aquarius-mapbox-api-key"
+  }
+}

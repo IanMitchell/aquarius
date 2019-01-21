@@ -1,72 +1,82 @@
 # Aquarius
 
-Note: Currently being rewritten in a private repo (and has been for the past year...). The tasks and milestones in this project reflect the progress of the rewrite, not of the current codebase.
+Aquarius is a general purpose [Discord](https://discordapp.com/) chat bot.
 
-__*If you run a Discord server and would like the bot, [click here to add it!](https://discordapp.com/oauth2/authorize?client_id=176793254350684160&scope=bot&permissions=0)*__
+### Adding Aquarius to your Server
 
-A highly configurable [Discord](https://discordapp.com/) bot. [ARX-7's](https://github.com/IanMitchell/ARX-7) younger sibling.
+[Click here](https://aquarius.sh/link) to add Aquarius to your server.
 
+### Aquarius Assistance
+
+If you have questions, concerns, suggestions, or need general assistance, please create an issue, tweet [@IanMitchel1](https://twitter.com/ianmitchel1), or join [Aquarius's Discord Server](http://discord.companyinc.company/).
 
 ## Development Guide
 
-#### Setup
+Aquarius is a Node.js application that integrates with Azure Cosmos through the MongoDB API bridge. It is hosted on Zeit's Now.
 
-If you'd like to get a local version of Aquarius up and running, you'll need to do the following:
+### Setup
 
-1. Install PostgreSQL
-2. Install Node.js (v6+)
-3. Register a bot user on discord (https://discordapp.com/developers/applications/me)
-4. Add the bot to your server
-5. Create a `.env` file
+You'll first need to create a development server and bot, and add the bot to your development server. You can do that by creating the following URL:
 
-Note when you're creating the Discord bot you'll need to convert your bot to a App Bot User account - it will warn you about the process being irreversible when you do this.
+TODO: Define how to create bot
 
-Once you have PostgreSQL installed, create a `aquarius_dev` database. You'll need to add the connection string to the `.env` file.
+#### Prerequisites: Windows
 
-The `.env` file should look like the following:
+_I highly recommend running Aquarius through [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/about). It's untested on native Windows, but I believe it should work._
 
-```
-TOKEN=[Discord "Token"]
-CLIENT_ID=[Discord "Client/Application ID"]
-OWNER_ID=[Your Discord User ID]
-DATABASE_URL=postgresql://ianm@localhost/aquarius_dev
-```
+Install and run the [Cosmos Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator).
 
-The bot should work across all OS environments and is controlled via the following npm scripts.
+#### Prerequisites: macOS and Linux
 
-1. `$ npm start` Starts the bot.
-2. `$ npm test` Runs the test suite.
+Install MongoDB.
 
-#### Adding a new Command
+### Running Aquarius
 
-Adding new commands is detailed in the wiki.
+Aquarius requires version 10 or later of Node.js.
 
-#### Adding Database Tables
+Create a file named `now-secrets.json` with the following structure:
 
-We use Sequelize and the Sequelize CLI. To generate a table, you can run
-
-```
-$ node_modules/.bin/sequelize model:create --config ./.sequelizerc --name quotes --attributes name:string,quote:text
+```json
+{
+  "@aquarius-env": "development",
+  "@aquarius-token": "<BOT TOKEN>",
+  "@aquarius-client-id": "<BOT CLIENT",
+  "@aquarius-mongo": "mongodb://127.0.0.1:27017/aquarius",
+  ...
+}
 ```
 
-To migrate the changes, you can run
+_**Windows:** Change the `@aquarius-mongo` value to be `mongodb://localhost:C2y6yDjf5%2FR%2Bob0N8A7Cgv30VRDJIWEHLM%2B4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw%2FJw%3D%3D@localhost:10255/aquarius?ssl=true` in order to target the emulator._
+
+<details>
+  <summary>
+    <strong>Key Descriptions</strong>
+  </summary>
+
+  * `@aquarius-env` - Defines the `NODE_ENV`
+  * `@aquarius-token` - Discord Token that allows API Access
+  *  `@aquarius-client-id` - Discord Client ID for API Integration
+  * `@aquarius-mongo` - Database URL to connect to
+</details>
+
+---
+
+Once the file is created, run
 
 ```
-$ node_modules/.bin/sequelize db:migrate --config ./.sequelizerc
+$ yarn install
 ```
 
-#### Enabling Commands
-
-By default all commands are disabled. To enable a command, DM the bot and tell it
+This will fetch all the dependencies needed to run the bot. You can start it with the following command:
 
 ```
-add <command_name>
+$ yarn start
 ```
 
-To enable all commands, run
+### Adding New Commands and Plugins
 
-```
-add all
-```
+For further information on creating Commands and Plugins check the [Wiki](/wiki).
 
-Disable commands by using remove instead of add
+### Visual Studio Code
+
+The repository is setup to work well with Visual Studio Code. You can add breakpoints and run the "Launch Aquarius" task to start the bot in "Debug" mode. Many of the core APIs also have JSDoc integrations for VS Code's intellisence.

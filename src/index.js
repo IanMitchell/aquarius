@@ -1,329 +1,384 @@
-const fs = require('fs');
-const path = require('path');
-const debug = require('debug');
-const Aquarius = require('./aquarius');
+import chalk from 'chalk';
+import debug from 'debug';
+import Discord from 'discord.js';
+import fs from 'fs';
+import yaml from 'js-yaml';
+import path from 'path';
+import Raven from './lib/analytics/raven';
+import * as loading from './lib/core/loading';
+import * as permissions from './lib/core/permissions';
+import * as services from './lib/core/services';
+import * as triggers from './lib/core/triggers';
+import database from './lib/database';
+import DirectMessageManager from './lib/managers/direct-message';
+import GuildManager from './lib/managers/guild-manager';
+import { isDirectMessage, isBot } from './lib/helpers/messages';
+import TriggerMap from './lib/settings/trigger-map';
+import CommandConfig from './lib/settings/command-config';
+import Settings from './lib/commands/settings';
+import Analytics from './lib/commands/analytics';
+
 
 const log = debug('Aquarius');
+const errorLog = debug('Aquarius:Error');
 
-// Stores a map of all the configurable commands
-// and the core / global commands
-const commands = {
-  core: new Map(),
-  plugins: new Map(),
-};
+// TODO: Document
+
+/**
+ * The core Aquarius client
+ */
+export class Aquarius extends Discord.Client {
+  constructor() {
+    log('Booting up...');
+    super();
+
+    // We have more listeners than normal - each command registers one to
+    // several on average, so we hit the warning frequently. Small bumps
+    // ensure no actual leaks rather than setting the limit to a thousand.
+    this.setMaxListeners(60);
 
 
-function loadCommands(filePath) {
-  const cmds = new Map();
+    // Setup internal data structures
 
-  fs.readdir(filePath, (err, files) => {
-    if (err) {
-      throw err;
-    }
 
-    files.forEach(file => {
-      if (file.endsWith('.js')) {
-        log(`Loading ${file}`);
-        // eslint-disable-next-line global-require
-        // eslint-disable-next-line import/no-dynamic-require
-        const cmd = require(path.join(filePath, file));
-        cmds.set(cmd.name.toLowerCase(), cmd);
+    /**
+     * TODO: Doocument
+     */
+    this.config = this.loadConfig();
+
+    /**
+     *
+     * @type { typeof import('./lib/managers/guild-manager') }
+     */
+    this.guildManager = new GuildManager();
+
+    /**
+     * TODO: Document
+     * @type {Map}
+     */
+    this.commandConfigs = new Map();
+
+    /**
+     * TODO: Document
+     * @type { typeof import('./lib/managers/direct-message') }
+     */
+    this.directMessages = new DirectMessageManager();
+
+
+    /**
+     * A list of every command and plugin
+     * @type {Set}
+     */
+    this.commandList = new Map();
+
+    /**
+     * TODO: Document
+     * @type {Map}
+     */
+    this.help = new Map();
+
+    /**
+     * TODO: Document
+     * @type { typeof import('./lib/settings/trigger-map') }
+     */
+    this.triggerMap = new TriggerMap();
+
+
+    // Setup API
+
+
+    /**
+     * TODO: Document
+     * @type { typeof import('./lib/core/permissions') }
+     */
+    this.permissions = permissions;
+
+    /**
+     * Control the loading indicators
+     * @type { typeof import('./lib/core/loading') }
+     */
+    this.loading = loading;
+
+    /**
+     * TODO: document
+     * @type { typeof import('./lib/core/services') }
+     */
+    this.services = services;
+
+    /**
+     * Triggers of stuff
+     * @type { typeof import('./lib/core/triggers') }
+     */
+    this.triggers = triggers;
+
+    /**
+     * TODO: Document
+     * @type {}
+     */
+    this.database = database;
+
+
+    // Load Commands and Plugins
+    this.loadGlobals();
+    this.loadCommands();
+
+    this.on('ready', this.initialize);
+    this.on('error', (error) => errorLog(error));
+  }
+
+  /**
+   * Initialization logic that runs after the bot has logged in
+   */
+  initialize() { // TODO: Make Private
+    this.guildManager.initialize();
+  }
+
+  /**
+   * Loads and returns the config file
+   */
+  loadConfig() { // TODO: Make Private
+    const configPath = path.join(__dirname, '../config.yml');
+    return yaml.safeLoad(fs.readFileSync(configPath));
+  }
+
+  /**
+   * Loads and initializes all global commands and plugins
+   */
+  loadGlobals() { // TODO: Make Private
+    log('Loading Global Commands...');
+    this.loadDirectory(path.join(__dirname, 'global/commands'), true);
+    log('Loading Global Plugins...');
+    this.loadDirectory(path.join(__dirname, 'global/plugins'), true);
+  }
+
+  /**
+   * Loads and initializes all non-global commands and plugins
+   */
+  loadCommands() { // TODO: Make Private
+    log('Loading Bot Commands...');
+    this.loadDirectory(path.join(__dirname, 'bot/commands'));
+    log('Loading Bot Plugins...');
+    this.loadDirectory(path.join(__dirname, 'bot/plugins'));
+  }
+
+  /**
+   * Loads each JavaScript file in a given directory
+   * @param {string} directory - directory to load `.js` files from
+   * @param {boolean=false} globalFile - whether to treat the file as global
+   */
+  loadDirectory(directory, globalFile = false) { // TODO: Make Private
+    fs.readdir(directory, (err, files) => {
+      if (err) {
+        throw err;
       }
+
+      files.forEach(file => this.loadFile(directory, file, globalFile));
     });
-  });
+  }
 
-  return cmds;
-}
+  /**
+   * Loads and initializes a command from the given file. Should only be
+   * called by Aquarius.
+   * @param {string} directory - directory to load files from
+   * @param {strong} file - path to the file to load
+   * @param {boolean} globalFile - whether the loaded item is a global or not
+   */
+  async loadFile(directory, file, globalFile) { // TODO: Make Private
+    if (file.endsWith('.js')) {
+      log(`Loading ${file}`);
 
-function initializeCommands() {
-  commands.core = loadCommands(path.join(__dirname, 'global/'));
-  commands.plugins = loadCommands(path.join(__dirname, 'commands/'));
-}
+      try {
+        const command = await import(path.join(directory, file));
 
+        // Set Global Flag
+        command.info.global = globalFile;
 
-function generateAdminCommandList() {
-  log('Generating Admin Command List');
+        // If command currently disabled, early exit
+        if (command.info.disabled) {
+          log(`${chalk.yellow('Warning:')} ${command.info.name} is disabled`);
+          return;
+        }
 
-  let str = '**Available Commands**\n';
+        // Initialize Command
+        try {
+          if (this.commandConfigs.has(command.info.name)) {
+            throw new Error('Duplicate Name Registration In Config Manager');
+          }
 
-  // TODO: Filter by server availability
-  commands.plugins.forEach(command => {
-    str += `* *${command.name}* - ${command.description}\n`;
-  });
+          // Create Config
+          this.commandConfigs.set(
+            command.info.name,
+            new CommandConfig(command.info.name)
+          );
 
-  str += '\nFor more information, use `help [command]`\n\n';
-  str += 'To add a command to your server, use `add [command]`.\n';
-  str += 'If you are an admin on multiple servers, designate which one by using `add [server id] [command]`.\n\n';
-  str += 'To remove a command from your server, use `remove [command]`.\n';
-  str += 'If you are an admin on multiple servers, designate which one by using `remove [server id] [command]`.';
+          await command.default({
+            aquarius: this,
+            analytics: new Analytics(command.info.name),
+            settings: new Settings(command.info.name),
+          });
 
-  return str;
-}
+          // Register Help Information
+          this.addHelp(command.info);
 
-function generateAdminCommandHelp(message) {
-  let str = '';
+          // TODO: Gonna have to make a better system for this
+          // Create a map of regex triggers and commands
+          this.triggerMap.setCurrentCommand(command.info);
+          await command.default({
+            aquarius: this.triggerMap,
+            settings: {
+              register: () => { },
+            },
+            analytics: {},
+          });
 
-  [...commands.plugins.values()].forEach(command => {
-    if (message.cleanContent.toLowerCase().includes(command.name.toLowerCase())) {
-      log(`Help request for ${command.name}`);
-
-      const keys = [...command.getKeys()];
-      str += `${command.helpMessage(Aquarius.Client.user.username)}`;
-
-      if (keys.length > 0) {
-        str += '\n\n*Configuration Options:*\n';
-
-        keys.forEach(key => {
-          str += `* \`${key}\` (Default: ${command.getSettingDefault(key)}): `;
-          str += `${command.getSettingDescription(key)}\n`;
+          this.commandList.set(command.info.name, command.info);
+        } catch (err) {
+          Raven.captureException(err);
+          errorLog(err);
+        }
+      } catch (e) {
+        Raven.captureException(e, () => {
+          errorLog(file);
+          errorLog(e);
+          process.exit(1);
         });
       }
     }
-  });
-
-  if (str === '') {
-    str = 'Module not found :(';
   }
 
-  message.channel.send(str);
-}
+  /**
+   * Get the list of Global Command Names
+   * @return {Array<string>} List of Global Command Names
+   */
+  getGlobalCommandNames(includeHidden = true) {
+    return Array.from(this.help.entries())
+      .filter(([, info]) => info.global && (includeHidden || !info.hidden))
+      .map(([key]) => key.toLowerCase());
+  }
 
-function generateCommandHelp(message) {
-  let str = '';
-
-  Aquarius.Users.getNickname(message.guild, Aquarius.Client.user).then(nickname => {
-    [...commands.plugins.values()].forEach(command => {
-      if (Aquarius.Permissions.hasPermission(message.guild, Aquarius.Client.user, command) &&
-          message.cleanContent.toLowerCase().includes(command.name.toLowerCase())) {
-        log(`Help request for ${command.name}`);
-
-        str += `${command.helpMessage(nickname)}`;
-      }
-    });
-
-    if (str === '') {
-      str = 'Module not found :(';
+  // TODO: Document
+  addHelp(commandInfo) {
+    if (this.help.has(commandInfo.name)) {
+      throw new Error('Duplicate Help Registration');
     }
 
-    message.channel.send(str);
-  });
-}
+    this.help.set(commandInfo.name, commandInfo);
+  }
 
-function generateCommandNameList(message) {
-  let str = '**Available commands**\n';
+  // TODO: Document
+  isCommandEnabled(guild, commandInfo) {
+    const guildSettings = this.guildManager.get(guild.id);
 
-  str += [...commands.plugins.keys()].map(command => {
-    if (Aquarius.Permissions.hasPermission(message.guild,
-                                           Aquarius.Client.user,
-                                           commands.plugins.get(command))) {
-      return command;
+    if (commandInfo.global) {
+      return !guildSettings.muted;
     }
 
-    return '';
-  }).filter(Boolean).join(', ');
-  str += `.\n\nFor more information, use \`@${Aquarius.Client.user.username} help [command]\`.`;
-
-  return str;
-}
-
-
-function adminAddCommandHandler(message, cmdMatch) {
-  if (cmdMatch[3].toLowerCase() === 'all') {
-    [...commands.plugins.values()].forEach(command => {
-      Aquarius.Admin.addCommand(message, cmdMatch[2], command);
-    });
-  } else if (commands.plugins.has(cmdMatch[3].toLowerCase())) {
-    const command = commands.plugins.get(cmdMatch[3].toLowerCase());
-    Aquarius.Admin.addCommand(message, cmdMatch[2], command);
-  } else {
-    message.channel.send(`Command ${cmdMatch[3]} not found.`);
-  }
-}
-
-function adminRemoveCommandHandler(message, cmdMatch) {
-  if (cmdMatch[3].toLowerCase() === 'all') {
-    Aquarius.Settings.clearCommands(cmdMatch[2]);
-    message.channel.send('All commands removed.');
-  } else if (commands.plugins.has(cmdMatch[3].toLowerCase())) {
-    const cmd = commands.plugins.get(cmdMatch[3].toLowerCase());
-    Aquarius.Settings.removeCommand(cmdMatch[2], cmd.constructor.name);
-    message.channel.send(`${cmd.name} removed.`);
-  } else {
-    message.channel.send('Command not found!');
-  }
-}
-
-function handleAdminCommandChange(message, cmdMatch) {
-  log(`Handling ${cmdMatch[1]} on ${cmdMatch[3]} for ${cmdMatch[2]}`);
-  if (cmdMatch[1].toLowerCase() === 'add') {
-    adminAddCommandHandler(message, cmdMatch);
-  } else if (cmdMatch[1].toLowerCase() === 'remove') {
-    adminRemoveCommandHandler(message, cmdMatch);
-  }
-}
-
-function handleAdminConfigChange(message, setMatch) {
-  let logstr = `Set '${setMatch[2]}#${setMatch[3]}' to ${setMatch[4]} `;
-  logstr += `by ${message.author.name}`;
-
-  // If the user didn't specify a valid command
-  if (!commands.plugins.has(setMatch[2].toLowerCase())) {
-    log(`${logstr} [CMD FAIL]`);
-    message.channel.send(`Command ${setMatch[1]} not found! Use \`help\` for a list of commands.`);
-    return;
+    return guildSettings.isCommandEnabled(commandInfo.name);
   }
 
-  // If the command doesn't have that key
-  const keys = [...commands.plugins.get(setMatch[2].toLowerCase()).getKeys()];
-  keys.push('permission');
-
-  if (!keys.includes(setMatch[3])) {
-    log(`${logstr} [KEY FAIL]`);
-    message.channel.send(`${setMatch[2]} key \`${setMatch[3]}\` not found! Valid keys: ${keys.join(', ')}.`);
-    return;
-  }
-
-  // Update the key
-  log(`${logstr}`);
-
-  if (setMatch[3] !== 'permission') {
-    commands.plugins.get(setMatch[2].toLowerCase()).setSetting(setMatch[1], setMatch[3], setMatch[4]);
-    message.channel.send(`Successfully updated ${setMatch[2]}`);
-  } else if (commands.plugins.get(setMatch[2].toLowerCase()).setPermission(setMatch[1], setMatch[4])) {
-    message.channel.send(`Successfully updated ${setMatch[2]}`);
-  } else {
-    message.channel.send('ERROR: Please use [ADMIN, RESTRICTED, ALL].');
-  }
-}
-
-
-function handleHelp(message) {
-  const guilds = Aquarius.Users.getGuildsWithAdmin(message.author);
-  const admin = ((message.guild === undefined || message.guild === null) && guilds.length > 0);
-
-  if (Aquarius.Triggers.messageTriggered(message, /^(list|commands|help)$/)) {
-    if (admin) {
-      message.channel.send(generateAdminCommandList(message));
-    } else {
-      message.channel.send(generateCommandNameList(message));
+  // TODO: Document
+  isUsageAllowed(message, commandInfo) {
+    if (!this.isCommandEnabled(message.guild, commandInfo)) {
+      return false;
     }
 
-    return true;
-  } else if (Aquarius.Triggers.messageTriggered(message, /^help .+$/)) {
-    if (admin) {
-      message.channel.send(generateAdminCommandHelp(message));
-    } else {
-      message.channel.send(generateCommandHelp(message));
+    if (this.permissions.isUserIgnored(message.guild, message.author)) {
+      return false;
     }
 
     return true;
   }
 
-  return false;
-}
-
-function handleCommands(message) {
-  commands.core.forEach(command => command.message(message));
-
-  commands.plugins.forEach(command => {
-    if (Aquarius.Permissions.hasPermission(message.guild, message.author, command)) {
-      command.message(message);
-    }
-  });
-}
-
-
-// TODO: Refactor
-function handleAdminCommands(message, guilds) {
-  const cmdMatch = Aquarius.Triggers.messageTriggered(message, /^(add|remove) (?:([0-9]+) )?(.+)$/i);
-  const roleMatch = Aquarius.Triggers.messageTriggered(message, /^create roles(?: ([0-9]+))?$/i);
-  // TODO: Expand to allow unsetting
-  const setMatch = Aquarius.Triggers.messageTriggered(message,
-                                                      /^set (?:([0-9]+) )?([\w]+) ([\w]+) (.+)$/i);
-
-  if (cmdMatch) {
-    if (guilds.length > 1 && !cmdMatch[2]) {
-      message.channel.send(
-        'You are an admin on multiple servers; please specify which one you mean.\n' +
-        '`[add|remove] [server] [all|<command>]`');
+  // TODO: Document
+  async handleCommand(message, regex, handler, matchFn) {
+    if (isDirectMessage(message)) {
       return;
-    } else if (guilds.length > 1 && cmdMatch[2]) {
-      if (!guilds.some(g => g.id === cmdMatch[2])) {
-        message.channel.send("You aren't an admin on that server!");
-        return;
-      }
-    } else if (guilds.length === 1) {
-      cmdMatch[2] = guilds[0].id;
     }
 
-    handleAdminCommandChange(message, cmdMatch);
-  } else if (setMatch) {
-    if (guilds.length > 1 && !setMatch[1]) {
-      message.channel.send(
-        'You are an admin on multiple servers; please specify which one you mean.\n' +
-        '`set [server] [command] [key] [value]`');
+    const commandInfo = this.triggerMap.get(regex.toString());
+
+    if (this.isUsageAllowed(message, commandInfo)) {
+      try {
+        const match = matchFn(message, regex);
+        if (match) {
+          // TODO: Better Raven Usage
+          // TODO: Benchmark?
+          await handler(message, match);
+        }
+      } catch (err) {
+        Raven.captureException(err);
+        errorLog(err);
+      }
+    }
+  }
+
+  // TODO: Document
+  async handleMessage(message, commandInfo, handler, matchFn) {
+    if (isDirectMessage(message)) {
       return;
-    } else if (guilds.length > 1 && setMatch[1]) {
-      if (!guilds.some(g => g.id === setMatch[1])) {
-        message.channel.send("You aren't an admin on that server!");
-        return;
-      }
-    } else if (guilds.length === 1) {
-      setMatch[1] = guilds[0].id;
     }
 
-    handleAdminConfigChange(message, setMatch);
-  } else if (roleMatch) {
-    if (guilds.length > 1 && !roleMatch[1]) {
-      message.channel.send(
-        'You are an admin on multiple servers; please specify which one you mean.\n' +
-        '`create roles [server]`');
-      return;
-    } else if (guilds.length > 1 && roleMatch[1]) {
-      if (!guilds.some(g => g.id === roleMatch[1])) {
-        message.channel.send("You aren't an admin on that server!");
-        return;
+    if (this.isUsageAllowed(message, commandInfo) && !isBot(message.author)) {
+      try {
+        const match = matchFn(message);
+
+        if (match) {
+          // TODO: Better Raven Usage
+          // TODO: Benchmark?
+          handler(message, match);
+        }
+      } catch (error) {
+        Raven.captureException(error);
+        errorLog(error);
       }
-    } else if (guilds.length === 1) {
-      roleMatch[1] = guilds[0].id;
     }
+  }
 
-    Aquarius.Admin.createRoles(message, roleMatch[1]);
-  } else if (!handleHelp(message)) {
-    message.channel.send("Sorry, I didn't understand!");
+  // TODO: Document
+  onDirectMessage(regex, handler) {
+    this.on('message', message => {
+      if (message.channel.type === 'dm') {
+        if (isBot(message.author)) {
+          return;
+        }
+
+        const match = this.triggers.customTrigger(message, regex);
+
+        if (match) {
+          handler(message, match);
+        }
+      }
+    });
+  }
+
+  // TODO: Document
+  onMessage(info, handler) {
+    this.on('message', message =>
+      this.handleMessage(message, info, handler, () => (true)));
+  }
+
+  // TODO: Document
+  onCommand(regex, handler) {
+    this.on('message', message =>
+      this.handleCommand(message, regex, handler, this.triggers.messageTriggered));
+  }
+
+  // TODO: Document
+  onTrigger(regex, handler) {
+    this.on('message', message =>
+      this.handleCommand(message, regex, handler, this.triggers.customTrigger));
+  }
+
+  // TODO: Document
+  onDynamicTrigger(commandInfo, matchFn, handler) {
+    this.on('message', message =>
+      this.handleMessage(message, commandInfo, handler, matchFn));
   }
 }
 
-function handleQuery(message) {
-  // When bot responds to a query, the event triggers
-  if (message.author.bot) {
-    return;
-  }
-
-  const guilds = Aquarius.Users.getGuildsWithAdmin(message.author);
-
-  if (guilds.length > 0) {
-    handleAdminCommands(message, guilds);
-  } else {
-    message.channel.send(`Sorry, queries are restricted to server admins.\n\n` +
-      `To add the bot to your server, click here: ${Aquarius.Links.botLink()}`);
-  }
-}
-
-function handleMessage(message) {
-  if (message.guild === undefined || message.guild === null) {
-    handleQuery(message);
-  } else if (!Aquarius.Permissions.isGuildMuted(message.guild, message.author)) {
-    handleHelp(message);
-    handleCommands(message);
-  }
-}
-
-
-// Register Handlers
-Aquarius.Client.on('message', handleMessage);
-Aquarius.Client.on('guildCreated', Aquarius.Admin.addGuild);
-
-// Start the bot!
-Aquarius.Client.login(process.env.TOKEN);
-Aquarius.Client.on('ready', initializeCommands);
+const aquarius = (() => {
+  const bot = new Aquarius();
+  bot.login(process.env.TOKEN).catch(errorLog);
+  return bot;
+})();
+export default aquarius;
