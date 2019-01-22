@@ -1,4 +1,13 @@
+# Dependencies and Build
 node_modules
+.esm-cache
+.next
+
+# Environment
+now-secrets.json
+
+# Logs
 *.log
-.env
+
+# System
 .DS_Store
