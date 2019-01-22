@@ -1,20 +1,11 @@
-// TODO: Implement
-export function getSentMessages() {
-  return 0;
-}
+export function getWeeklyUsage(weeksAgo) {
+  const startTarget = getDateAgo(ONE_WEEK * weeksAgo);
+  const endTarget = getDateAgo(ONE_WEEK * (weeksAgo - 1));
 
-// TODO: Implement
-export function getReadMessages() {
-  return 0;
-}
-
-// TODO: Listen for new messages, increase counter
-
-
-export function getWeeklyActivations() {
-
-}
-
-export function saveWeeklyActivationSnapshot() {
-
+  return aquarius.database.analytics.count({
+    date: {
+      $gte: startTarget,
+      $lte: endTarget,
+    },
+  });
 }

@@ -54,7 +54,7 @@ export async function guildEmbed(guild, ...fields) {
     `, true)
     .addField('Members', dedent`
       ${activeMembers.size} Online
-      ${guild.memberCount} Total
+      ${guild.members.size} Total
     `, true)
     .setFooter(`Server ID: ${guild.id}`);
 

@@ -36,6 +36,7 @@ export default async ({ aquarius, analytics }) => {
 
       RESPONSES.set(guild.id, new Map());
 
+      // TODO: Move this to a bulk op
       const records = await aquarius.database.replies.find({
         guildId: guild.id,
       });

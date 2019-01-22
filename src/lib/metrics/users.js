@@ -5,7 +5,7 @@ import { ONE_WEEK, getDateAgo } from '../helpers/times';
 export function getTotalUserCount() {
   return aquarius.guilds
     .array()
-    .reduce((val, guild) => val + guild.memberCount, 0);
+    .reduce((val, guild) => val + guild.members.size, 0);
 }
 
 // TODO: Document
@@ -18,10 +18,10 @@ export async function getWeeklyUserCount(weeksAgo) {
   const startTarget = getDateAgo(ONE_WEEK * weeksAgo);
   const endTarget = getDateAgo(ONE_WEEK * (weeksAgo - 1));
 
-  // TODO: Make this real
   const records = await aquarius.database.guildSnapshots.find({
     date: {
-      $between: [startTarget, endTarget],
+      $gte: startTarget,
+      $lte: endTarget,
     },
   });
 

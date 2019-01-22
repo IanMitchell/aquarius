@@ -16,7 +16,7 @@ export const info = {
 };
 
 function formatGuild(guild, idx) {
-  const members = `${guild.memberCount} ${pluralize('Member', guild.memberCount)}`;
+  const members = `${guild.members.size} ${pluralize('Member', guild.members.size)}`;
   return `${idx + 1}. ${guild.name} -- *(${members})*\n`;
 }
 

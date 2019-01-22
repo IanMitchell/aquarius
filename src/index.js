@@ -17,6 +17,7 @@ import TriggerMap from './lib/settings/trigger-map';
 import CommandConfig from './lib/settings/command-config';
 import Settings from './lib/commands/settings';
 import Analytics from './lib/commands/analytics';
+import { setupWeeklyGuildLoop } from './lib/metrics/guilds';
 
 
 const log = debug('Aquarius');
@@ -131,6 +132,7 @@ export class Aquarius extends Discord.Client {
    */
   initialize() { // TODO: Make Private
     this.guildManager.initialize();
+    setupWeeklyGuildLoop();
   }
 
   /**

@@ -12,6 +12,7 @@ export const COLLECTION_NAMES = [
   'replies',
   'karma',
   'quotes',
+  'guildSnapshots',
 ];
 
 // TODO: Document
