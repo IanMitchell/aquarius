@@ -1,7 +1,6 @@
 import React from 'react';
 import SocketContext from '../contexts/Socket';
 import Metrics from '../components/Metrics';
-import Header from '../components/Header';
 
 export default class extends React.Component {
   static contextType = SocketContext;
@@ -29,7 +28,7 @@ export default class extends React.Component {
 
   subscribe() {
     if (!this.state.subscribed) {
-      this.context.on('update', (event) => {
+      this.context.on('update', event => {
         this.setState({ members: event.members });
       });
 
