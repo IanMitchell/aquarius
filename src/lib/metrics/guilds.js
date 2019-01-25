@@ -8,11 +8,13 @@ const log = debug('Guild Metrics');
 export async function saveSnapshots() {
   log('Saving snapshots');
 
-  // FIXME: Cosmos
-  const bulk = aquarius.database.guildSnapshots.initializeOrderedBulkOp();
+  const batch = aquarius.database.batch();
 
+  // TODO: Make this in groups of 500 max
   aquarius.guilds.forEach(guild => {
-    bulk.insert({
+    const ref = aquarius.database.guildSnapshots.doc();
+
+    batch.set(ref, {
       channels: guild.channels.size,
       users: guild.members.size,
       bots: guild.members.filter(member => member.user.bot).size,
@@ -27,7 +29,7 @@ export async function saveSnapshots() {
     });
   });
 
-  return bulk.execute();
+  return batch.commit();
 }
 
 // TODO: Implement
@@ -36,35 +38,35 @@ export function getTrends(guildId) {
 }
 
 // TODO: Document
-export async function getGuildMetrics() {
-  const guilds = aquarius.guilds.map(async (guild) => {
-    // FIXME: Cosmos
-    const snapshot = await aquarius.database.guildSnapshots
-      .findAsCursor({ guildId: guild.id })
-      .sort({ date: -1 })
-      .limit(5)
-      .toArray();
+// export async function getGuildMetrics() {
+//   const guilds = aquarius.guilds.map(async (guild) => {
+//     const snapshot = await aquarius.database.guildSnapshots
+//       .findAsCursor({ guildId: guild.id })
+//       .sort({ date: -1 })
+//       .limit(5)
+//       .toArray();
 
-    return {
-      name: guild.name,
-      members: {
-        online: 0,
-        offline: 0,
-        bots: 0,
-        total: 0,
-      },
-      triggers: snapshot.triggers,
-      popular: 'N/A',
-    };
-  });
+//     return {
+//       name: guild.name,
+//       members: {
+//         online: 0,
+//         offline: 0,
+//         bots: 0,
+//         total: 0,
+//       },
+//       triggers: snapshot.triggers,
+//       popular: 'N/A',
+//     };
+//   });
 
-  return Promise.all(guilds);
-}
+//   return Promise.all(guilds);
+// }
 
 export async function setupWeeklyGuildLoop() {
   log('Registering Metric Tracking');
 
   // Retrieve the last time we updated
+  // FIXME: Cosmos
   const [lastSnapshot] = await aquarius.database.guildSnapshots.findAsCursor()
     .sort({ date: -1 })
     .limit(1)
