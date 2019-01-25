@@ -8,10 +8,13 @@ const log = debug('Guild Metrics');
 export async function saveSnapshots() {
   log('Saving snapshots');
 
-  const bulk = aquarius.database.guildSnapshots.initializeOrderedBulkOp();
+  const batch = aquarius.database.batch();
 
+  // TODO: Make this in groups of 500 max
   aquarius.guilds.forEach(guild => {
-    bulk.insert({
+    const ref = aquarius.database.guildSnapshots.doc();
+
+    batch.set(ref, {
       channels: guild.channels.size,
       users: guild.members.size,
       bots: guild.members.filter(member => member.user.bot).size,
@@ -26,7 +29,7 @@ export async function saveSnapshots() {
     });
   });
 
-  return bulk.execute();
+  return batch.commit();
 }
 
 // TODO: Implement
@@ -35,44 +38,45 @@ export function getTrends(guildId) {
 }
 
 // TODO: Document
-export async function getGuildMetrics() {
-  const guilds = aquarius.guilds.map(async (guild) => {
-    const snapshot = await aquarius.database.guildSnapshots
-      .findAsCursor({ guildId: guild.id })
-      .sort({ date: -1 })
-      .limit(5)
-      .toArray();
+// export async function getGuildMetrics() {
+//   const guilds = aquarius.guilds.map(async (guild) => {
+//     const snapshot = await aquarius.database.guildSnapshots
+//       .findAsCursor({ guildId: guild.id })
+//       .sort({ date: -1 })
+//       .limit(5)
+//       .toArray();
 
-    return {
-      name: guild.name,
-      members: {
-        online: 0,
-        offline: 0,
-        bots: 0,
-        total: 0,
-      },
-      triggers: snapshot.triggers,
-      popular: 'N/A',
-    };
-  });
+//     return {
+//       name: guild.name,
+//       members: {
+//         online: 0,
+//         offline: 0,
+//         bots: 0,
+//         total: 0,
+//       },
+//       triggers: snapshot.triggers,
+//       popular: 'N/A',
+//     };
+//   });
 
-  return Promise.all(guilds);
-}
+//   return Promise.all(guilds);
+// }
 
 export async function setupWeeklyGuildLoop() {
   log('Registering Metric Tracking');
 
   // Retrieve the last time we updated
-  const [lastSnapshot] = await aquarius.database.guildSnapshots.findAsCursor()
-    .sort({ date: -1 })
+  const snapshotList = await aquarius.database.guildSnapshots
+    .orderBy('date', 'desc')
     .limit(1)
-    .toArray();
+    .get();
 
   let target = 0;
 
-  if (lastSnapshot) {
+  if (!snapshotList.empty) {
+    const snapshot = snapshotList.docs[0].data();
     // We want to target 1:00 on Sunday of the next week
-    target = startOfWeek(new Date(lastSnapshot.date + ONE_WEEK)).getTime() + ONE_HOUR;
+    target = startOfWeek(new Date(snapshot.date + ONE_WEEK)).getTime() + ONE_HOUR;
   }
 
   // If we missed it, save immediately and push to next week

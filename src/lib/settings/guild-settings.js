@@ -1,5 +1,6 @@
 import debug from 'debug';
 import database from '../database';
+import { serializeMap, deserializeMap } from '../database/serialization';
 import { TEN_MINUTES } from '../helpers/times';
 
 const log = debug('Guild Setting');
@@ -181,16 +182,9 @@ export default class GuildSettings {
       duration
     );
 
-    return database.guildSettings.findAndModify({
-      query: {
-        guildId: this.id,
-      },
-      update: {
-        $set: {
-          mute: Date.now() + duration,
-        },
-      },
-    });
+    database.guildSettings.doc(this.id).set({
+      mute: Date.now() + duration,
+    }, { merge: true });
   }
 
   /**
@@ -208,24 +202,24 @@ export default class GuildSettings {
    * Loads from the database and overrides current settings
    */
   async loadSettings() {
-    const guild = await database.guildSettings.findOne({
-      guildId: this.id,
-    });
+    const guild = await database.guildSettings.doc(this.id).get();
 
-    if (!guild) {
+    if (!guild.exists) {
       log(`No settings found for ${this.id}`);
       this.saveSettings();
     } else {
-      log(`Loading settings for ${this.id}`);
-      this.enabledCommands = new Set(guild.enabledCommands);
-      this.ignoredUsers = new Set(guild.ignoredUsers);
-      this.commandConfig = new Map(
-        guild.commandConfig.map(([key, value]) => [key, new Map(value)])
-      );
-      this.muted = guild.mute;
+      const data = guild.data();
 
-      if (Date.now() < guild.mute) {
-        this.muteGuild(guild.mute - Date.now());
+      log(`Loading settings for ${this.id}`);
+      this.enabledCommands = new Set(data.enabledCommands);
+      this.ignoredUsers = new Set(data.ignoredUsers);
+      this.commandConfig = new Map(
+        Object.entries(data.commandConfig).map(([command, settings]) => [command, deserializeMap(settings)])
+      );
+      this.muted = data.mute;
+
+      if (Date.now() < data.mute) {
+        this.muteGuild(data.mute - Date.now());
       } else {
         this.unMuteGuild();
       }
@@ -238,26 +232,18 @@ export default class GuildSettings {
   async saveSettings() {
     log(`Saving settings for ${this.id}`);
     try {
-      const serializedConfig = Array.from(this.commandConfig.entries()).map(
-        ([key, value]) => [key, Array.from(value.entries())]
-      );
+      const serializedConfig = Array.from(this.commandConfig.entries())
+        .reduce(
+          (config, [command, settings]) => Object.assign(config, { [command]: serializeMap(settings) }),
+          {}
+        );
 
-
-      return database.guildSettings.findAndModify({
-        query: {
-          guildId: this.id,
-        },
-        update: {
-          $set: {
-            guildId: this.id,
-            mute: this.muted,
-            enabledCommands: Array.from(this.enabledCommands),
-            commandConfig: serializedConfig,
-            ignoredUsers: Array.from(this.ignoredUsers),
-          },
-        },
-        upsert: true,
-      });
+      return database.guildSettings.doc(this.id).set({
+        mute: this.muted,
+        enabledCommands: Array.from(this.enabledCommands),
+        commandConfig: serializedConfig,
+        ignoredUsers: Array.from(this.ignoredUsers),
+      }, { merge: true });
     } catch (error) {
       // TODO: Raven Integration
       log(error);

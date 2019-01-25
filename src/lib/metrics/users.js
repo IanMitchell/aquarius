@@ -14,16 +14,16 @@ export function getUniqueUserCount() {
 }
 
 // TODO: Document
-export async function getWeeklyUserCount(weeksAgo) {
-  const startTarget = getDateAgo(ONE_WEEK * weeksAgo);
-  const endTarget = getDateAgo(ONE_WEEK * (weeksAgo - 1));
+// export async function getWeeklyUserCount(weeksAgo) {
+//   const startTarget = getDateAgo(ONE_WEEK * weeksAgo);
+//   const endTarget = getDateAgo(ONE_WEEK * (weeksAgo - 1));
 
-  const records = await aquarius.database.guildSnapshots.find({
-    date: {
-      $gte: startTarget,
-      $lte: endTarget,
-    },
-  });
+//   const records = await aquarius.database.guildSnapshots.find({
+//     date: {
+//       $gte: startTarget,
+//       $lte: endTarget,
+//     },
+//   });
 
-  return records.reduce((members, document) => members + document.members, 0);
-}
+//   return records.reduce((members, document) => members + document.members, 0);
+// }

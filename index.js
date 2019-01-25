@@ -2,14 +2,10 @@ import 'now-env';
 import debug from 'debug';
 import Raven from 'raven';
 import timber from 'timber';
-import createCollections from './src/lib/database/setup';
 
 const log = debug('Host');
 
 async function initialize() {
-  log('Initializing Database');
-  await createCollections();
-
   log('Loading Bot');
   await import('./src');
 
