@@ -134,8 +134,7 @@ export class Aquarius extends Discord.Client {
    */
   initialize() { // TODO: Make Private
     this.guildManager.initialize();
-    // FIXME: Cosmos
-    // setupWeeklyGuildLoop();
+    setupWeeklyGuildLoop();
   }
 
   /**

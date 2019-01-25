@@ -66,17 +66,17 @@ export async function setupWeeklyGuildLoop() {
   log('Registering Metric Tracking');
 
   // Retrieve the last time we updated
-  // FIXME: Cosmos
-  const [lastSnapshot] = await aquarius.database.guildSnapshots.findAsCursor()
-    .sort({ date: -1 })
+  const snapshotList = await aquarius.database.guildSnapshots
+    .orderBy('date', 'desc')
     .limit(1)
-    .toArray();
+    .get();
 
   let target = 0;
 
-  if (lastSnapshot) {
+  if (!snapshotList.empty) {
+    const snapshot = snapshotList.docs[0].data();
     // We want to target 1:00 on Sunday of the next week
-    target = startOfWeek(new Date(lastSnapshot.date + ONE_WEEK)).getTime() + ONE_HOUR;
+    target = startOfWeek(new Date(snapshot.date + ONE_WEEK)).getTime() + ONE_HOUR;
   }
 
   // If we missed it, save immediately and push to next week
