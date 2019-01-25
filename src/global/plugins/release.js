@@ -18,9 +18,8 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.on('ready', async () => {
-    let previousVersion = await aquarius.database.settings.findOne({
-      key: 'LAST_RELEASE_ID',
-    });
+    const setting = await aquarius.database.collection('settings').doc('LAST_RELEASE_ID').get();
+    let previousVersion = setting.exists && setting.data();
 
     if (!previousVersion) {
       log('Could not find previous version setting');
@@ -65,16 +64,8 @@ export default async ({ aquarius, analytics }) => {
 
       analytics.trackUsage('release', null, { release: json[0].id });
 
-      aquarius.database.settings.findAndModify({
-        query: {
-          key: 'LAST_RELEASE_ID',
-        },
-        update: {
-          $set: {
-            value: json[0].id,
-          },
-        },
-        upsert: true,
+      aquarius.database.collection('settings').doc('LAST_RELEASE_ID').set({
+        value: json[0].id
       });
     }
   });

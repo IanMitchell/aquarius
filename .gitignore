@@ -11,3 +11,6 @@ now-secrets.json
 
 # System
 .DS_Store
+
+# Auth
+.keyfile.json

@@ -13,17 +13,7 @@ export const info = {
 };
 
 async function updateLastSeen(user) {
-  return database.lastSeen.findAndModify({
-    query: {
-      userId: user.id,
-    },
-    update: {
-      $set: {
-        lastSeen: Date.now(),
-      },
-    },
-    upsert: true,
-  });
+  return database.lastSeen.doc(user.id).set({ lastSeen: Date.now() });
 }
 
 /** @type {import('../../typedefs').Command} */
@@ -40,14 +30,13 @@ export default async ({ aquarius, analytics }) => {
       if (user.presence.status !== 'offline') {
         message.channel.send("They're online right now!");
       } else {
-        const lastSeen = await database.lastSeen.findOne({
-          userId: user.id,
-        });
+        const lastSeen = await database.lastSeen.doc(user.id).get();
 
-        if (!lastSeen) {
+        if (!lastSeen.exists) {
           message.channel.send(`I don't know when ${user} was last online. Sorry!`);
         } else {
-          message.channel.send(`${user} was last seen ${formatDistance(lastSeen.lastSeen, new Date(), { addSuffix: true })}`);
+          const data = lastSeen.data();
+          message.channel.send(`${user} was last seen ${formatDistance(data.lastSeen, new Date(), { addSuffix: true })}`);
         }
       }
 

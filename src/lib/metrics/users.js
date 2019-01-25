@@ -18,6 +18,7 @@ export async function getWeeklyUserCount(weeksAgo) {
   const startTarget = getDateAgo(ONE_WEEK * weeksAgo);
   const endTarget = getDateAgo(ONE_WEEK * (weeksAgo - 1));
 
+  // FIXME: Cosmos
   const records = await aquarius.database.guildSnapshots.find({
     date: {
       $gte: startTarget,

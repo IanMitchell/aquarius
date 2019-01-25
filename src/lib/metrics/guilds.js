@@ -8,6 +8,7 @@ const log = debug('Guild Metrics');
 export async function saveSnapshots() {
   log('Saving snapshots');
 
+  // FIXME: Cosmos
   const bulk = aquarius.database.guildSnapshots.initializeOrderedBulkOp();
 
   aquarius.guilds.forEach(guild => {
@@ -37,6 +38,7 @@ export function getTrends(guildId) {
 // TODO: Document
 export async function getGuildMetrics() {
   const guilds = aquarius.guilds.map(async (guild) => {
+    // FIXME: Cosmos
     const snapshot = await aquarius.database.guildSnapshots
       .findAsCursor({ guildId: guild.id })
       .sort({ date: -1 })

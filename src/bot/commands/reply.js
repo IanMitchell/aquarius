@@ -36,16 +36,16 @@ export default async ({ aquarius, analytics }) => {
 
       RESPONSES.set(guild.id, new Map());
 
-      // TODO: Move this to a bulk op
-      const records = await aquarius.database.replies.find({
-        guildId: guild.id,
-      });
+      const recordList = await aquarius.database.replies
+        .where('guildId', '==', guild.id)
+        .get();
 
-      if (!records) {
+      if (recordList.empty) {
         return;
       }
 
-      records.forEach(reply => {
+      recordList.docs.forEach(record => {
+        const reply = record.data();
         RESPONSES.get(reply.guildId).set(reply.trigger, reply.response);
       });
     });
@@ -66,7 +66,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^reply list$/i, async (message) => {
     log('Listing replies');
 
-    if (RESPONSES.has(message.guild.id)) {
+    if (RESPONSES.has(message.guild.id) && RESPONSES.get(message.guild.id).size > 0) {
       const entries = Array.from(RESPONSES.get(message.guild.id)).reduce(
         (str, [key, value]) => str + `* '${key}'\n`,
         ''
@@ -88,17 +88,15 @@ export default async ({ aquarius, analytics }) => {
     if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
       log(`Removing ${groups.trigger}`);
 
-      const response = await aquarius.database.replies.remove(
-        {
-          guildId: message.guild.id,
-          trigger: groups.trigger.toLowerCase(),
-        }, {
-          justOne: true,
-        },
-      );
+      const responses = await aquarius.database.replies
+        .where('guildId', '==', message.guild.id)
+        .where('trigger', '==', groups.trigger.toLowerCase())
+        .get();
 
-      if (response) {
+      if (!responses.empty) {
+        responses.docs[0].ref.delete();
         RESPONSES.get(message.guild.id).delete(groups.trigger.toLowerCase());
+
         message.channel.send(`Removed '${groups.trigger}'`);
         analytics.trackUsage('remove', message);
       } else {
@@ -123,18 +121,10 @@ export default async ({ aquarius, analytics }) => {
           return;
         }
 
-        const response = await aquarius.database.replies.findAndModify({
-          query: {
-            guildId: message.guild.id,
-            trigger: groups.trigger.toLowerCase(),
-          },
-          update: {
-            guildId: message.guild.id,
-            trigger: groups.trigger.toLowerCase(),
-            response: groups.response,
-          },
-          new: true,
-          upsert: true,
+        const response = await aquarius.database.replies.add({
+          guildId: message.guild.id,
+          trigger: groups.trigger.toLowerCase(),
+          response: groups.response,
         });
 
         if (response) {

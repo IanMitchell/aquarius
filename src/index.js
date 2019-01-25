@@ -124,7 +124,9 @@ export class Aquarius extends Discord.Client {
     this.loadCommands();
 
     this.on('ready', this.initialize);
-    this.on('error', (error) => errorLog(error));
+    this.on('error', (error) => Raven.captureException(error, () => {
+      errorLog(error);
+    }));
   }
 
   /**
@@ -132,7 +134,8 @@ export class Aquarius extends Discord.Client {
    */
   initialize() { // TODO: Make Private
     this.guildManager.initialize();
-    setupWeeklyGuildLoop();
+    // FIXME: Cosmos
+    // setupWeeklyGuildLoop();
   }
 
   /**

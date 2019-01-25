@@ -24,6 +24,9 @@
     "TVDB_API_KEY": "@aquarius-tvdb-api-key",
     "GITHUB_API_TOKEN": "@aquarius-github-api-token",
     "DARK_SKY_API_KEY": "@aquarius-dark-sky-api-key",
-    "MAPBOX_API_KEY": "@aquarius-mapbox-api-key"
+    "MAPBOX_API_KEY": "@aquarius-mapbox-api-key",
+    "FIREBASE_KEYFILE": "@aquarius-firebase-keyfile",
+    "FIREBASE_KEYFILE_CONTENTS": "@aquarius-firebase-contents",
+    "FIREBASE_PROJECT": "@aquarius-firebase-project"
   }
 }

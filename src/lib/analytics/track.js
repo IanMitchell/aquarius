@@ -7,6 +7,8 @@ const log = debug('Analytics');
 export default async function track(category, label, action, context) {
   log(`Tracking ${category}>${label}>${action}`);
 
+  return;
+  // FIXME: Cosmos
   return database.analytics.insert({
     category,
     label,

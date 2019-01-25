@@ -1,6 +1,7 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { formatDistance } from 'date-fns';
+import database from '../../lib/database';
 import { MENTION_USER } from '../../lib/helpers/regex';
 import { getNickname } from '../../lib/core/users';
 
@@ -25,6 +26,27 @@ const COOLDOWN = {
   MIN: 1,
   DEFAULT: 60 * 5,
 };
+
+async function getRecord(guildId, userId) {
+  const list = await database.karma
+    .where('userId', '==', userId)
+    .where('guildId', '==', guildId)
+    .get();
+
+  if (list.empty) {
+    const doc = database.karma.add({
+      userId,
+      guildId,
+      lastUsage: 0,
+      karma: 0,
+    });
+
+    return database.karma.doc(doc.id).get();
+  }
+
+  return list.docs[0];
+}
+
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, settings, analytics }) => {
@@ -54,6 +76,7 @@ export default async ({ aquarius, settings, analytics }) => {
 
       const name = settings.get(message.guild.id, 'name');
 
+      // FIXME: Cosmos
       const rows = await aquarius.database.karma
         .findAsCursor({ guildId: message.guild.id })
         .sort({ karma: -1 })
@@ -104,6 +127,7 @@ export default async ({ aquarius, settings, analytics }) => {
 
       const name = settings.get(message.guild.id, 'name');
 
+      // FIXME: Cosmos
       const row = await aquarius.database.karma.find({
         guildId: message.guild.id,
         userId: user.id,
@@ -143,6 +167,7 @@ export default async ({ aquarius, settings, analytics }) => {
       log(`${message.author.username} gave karma to ${user.username}`);
 
       try {
+        // FIXME: Cosmos
         const giver = await aquarius.database.karma.findAndModify({
           query: {
             userId: message.author.id,
@@ -166,6 +191,7 @@ export default async ({ aquarius, settings, analytics }) => {
           return;
         }
 
+        // FIXME: Cosmos
         const receiver = await aquarius.database.karma.findAndModify({
           query: {
             userId: user.id,
@@ -189,6 +215,7 @@ export default async ({ aquarius, settings, analytics }) => {
         message.channel.send(`${name} given! ${nickname} now has ${receiver.karma} ${name}.`);
         analytics.trackUsage('increase', message);
 
+        // FIXME: Cosmos
         aquarius.database.karma.findAndModify({
           query: {
             userId: message.author.id,
@@ -229,22 +256,8 @@ export default async ({ aquarius, settings, analytics }) => {
       log(`${message.author.username} took karma from ${user.username}`);
 
       try {
-        const giver = await aquarius.database.karma.findAndModify({
-          query: {
-            userId: message.author.id,
-            guildId: message.guild.id,
-          },
-          update: {
-            $setOnInsert: {
-              userId: message.author.id,
-              guildId: message.guild.id,
-              karma: 0,
-              lastUsage: 0,
-            },
-          },
-          new: true,
-          upsert: true,
-        });
+        const giverRef = await getRecord(message.guild.id, message.author.id);
+        const giver = giverRef.data();
 
         if (cooldown > Date.now() - giver.lastUsage) {
           log('Karma cooldown');
@@ -252,38 +265,18 @@ export default async ({ aquarius, settings, analytics }) => {
           return;
         }
 
-        const receiver = await aquarius.database.karma.findAndModify({
-          query: {
-            userId: user.id,
-            guildId: message.guild.id,
-          },
-          update: {
-            $setOnInsert: {
-              userId: user.id,
-              guildId: message.guild.id,
-              lastUsage: 0,
-            },
-            $inc: {
-              karma: -1,
-            },
-          },
-          new: true,
-          upsert: true,
-        });
+        const receiverRef = await getRecord(message.guild.id, user.id);
+        receiverRef.set({
+          karma: receiverRef.data().karma - 1,
+        }, { merge: true });
 
         const nickname = await getNickname(message.guild, user);
-        message.channel.send(`${name} taken! ${nickname} now has ${receiver.karma} ${name}.`);
+        message.channel.send(`${name} taken! ${nickname} now has ${receiverRef.data().karma} ${name}.`);
         analytics.trackUsage('decrease', message);
 
-        aquarius.database.karma.findAndModify({
-          query: {
-            userId: message.author.id,
-            guildId: message.guild.id,
-          },
-          update: {
-            $set: { lastUsage: Date.now() },
-          },
-        });
+        giverRef.set({
+          lastUsage: Date.now(),
+        }, { merge: true });
       } catch (error) {
         log(error);
       }

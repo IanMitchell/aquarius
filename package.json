@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node -r esm index.js",
-    "build": "cd web && next build",
+    "build": "node scripts/install-keyfile && cd web && next build",
     "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect-brk=9229 -r esm index.js",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
     "pretest": "yarn run lint",
@@ -26,6 +26,7 @@
     "cjs": true
   },
   "dependencies": {
+    "@google-cloud/firestore": "^0.20.0",
     "chalk": "^2.3.0",
     "cross-env": "^5.1.3",
     "date-fns": "^2.0.0-alpha.26",
@@ -33,12 +34,11 @@
     "dedent-js": "^1.0.1",
     "discord.js": "^11.4.2",
     "downsize": "^0.0.8",
-    "esm": "^3.1.0",
+    "esm": "^3.1.1",
     "form-data": "^2.3.3",
     "js-yaml": "^3.10.0",
     "micro": "^9.1.0",
     "micro-route": "^2.5.0",
-    "mongoist": "^2.0.0",
     "next": "^7.0.2-canary.50",
     "node-fetch": "^2.3.0",
     "node-opus": "^0.3.1",

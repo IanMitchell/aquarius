@@ -17,6 +17,7 @@ export const info = {
     **Random Quote**
     \`\`\`@Aquarius quotes random\`\`\`
   `,
+  disabled: true,
 };
 
 function getQuoteMessage(quote) {
@@ -35,6 +36,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^quotes random$/, async (message) => {
     log('Getting random quote');
 
+    // FIXME: Cosmos
     const [quote] = await aquarius.database.quotes.aggregate([
       {
         $match: { guildId: message.guild.id },
@@ -56,6 +58,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^quotes read #?(?<id>[0-9]+)$/i, async (message, { groups }) => {
     log(`Reading quote ${groups.id}`);
 
+    // FIXME: Cosmos
     const quote = await aquarius.database.quotes.findOne({
       guildId: message.guild.id,
       quoteId: parseInt(groups.id, 10),
@@ -73,6 +76,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^quotes (?:new|add) (?<quote>[^]*)$/i, async (message, { groups }) => {
     log('Adding new quote');
 
+    // FIXME: Cosmos
     const [latestQuote] = await aquarius.database.quotes
       .findAsCursor({ guildId: message.guild.id })
       .sort({ quoteId: -1 })
@@ -81,6 +85,7 @@ export default async ({ aquarius, analytics }) => {
 
     const id = 1 + (latestQuote ? latestQuote.quoteId : 0);
 
+    // FIXME: Cosmos
     await aquarius.database.quotes.insert({
       guildId: message.guild.id,
       channelName: message.channel.name,
