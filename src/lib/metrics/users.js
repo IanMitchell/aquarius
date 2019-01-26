@@ -5,7 +5,7 @@ import { ONE_WEEK, getDateAgo } from '../helpers/times';
 export function getTotalUserCount() {
   return aquarius.guilds
     .array()
-    .reduce((val, guild) => val + guild.members.size, 0);
+    .reduce((val, guild) => val + guild.memberCount, 0);
 }
 
 // TODO: Document

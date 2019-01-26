@@ -16,7 +16,7 @@ export async function saveSnapshots() {
 
     batch.set(ref, {
       channels: guild.channels.size,
-      users: guild.members.size,
+      users: guild.memberCount,
       bots: guild.members.filter(member => member.user.bot).size,
       date: Date.now(),
       guildId: guild.id,
