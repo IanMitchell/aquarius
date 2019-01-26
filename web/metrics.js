@@ -1,7 +1,8 @@
 import dedent from 'dedent-js';
 import fetch from 'node-fetch';
 import { getResourceUsage } from '../src/lib/metrics/resources';
-import { getGuildMetrics, getTotalGuildCount } from '../src/lib/metrics/guilds';
+// import { getGuildMetrics, getTotalGuildCount } from '../src/lib/metrics/guilds';
+import { getTotalGuildCount } from '../src/lib/metrics/guilds';
 import { ONE_MINUTE, THIRTY_MINUTES } from '../src/lib/helpers/times';
 import { getUniqueUserCount, getTotalUserCount } from '../src/lib/metrics/users';
 import aquarius from '../src';
@@ -62,7 +63,7 @@ export function getSentryInformation() {
 export async function getMetricHandler() {
   // Create Data Structures
   let messagesReceived = 0;
-  let guildMetricCache = await getGuildMetrics();
+  // let guildMetricCache = await getGuildMetrics();
 
   aquarius.on('message', () => {
     messagesReceived += 1;
@@ -73,9 +74,9 @@ export async function getMetricHandler() {
     messagesReceived = 0;
   }, ONE_MINUTE);
 
-  setInterval(async () => {
-    guildMetricCache = await getGuildMetrics();
-  }, THIRTY_MINUTES);
+  // setInterval(async () => {
+  //   guildMetricCache = await getGuildMetrics();
+  // }, THIRTY_MINUTES);
 
   // Create Interface
   return {
@@ -91,7 +92,7 @@ export async function getMetricHandler() {
     }),
 
     // Row 2 Table
-    getServerList: () => guildMetricCache,
+    // getServerList: () => guildMetricCache,
 
     // Row 3
     // getWeeklyStats: () => {
