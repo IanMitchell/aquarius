@@ -73,6 +73,10 @@ function getEmojiIcon(type) {
   }
 }
 
+function convertFToC(temperature) {
+  return (temperature - 32) * 5 / 9;
+}
+
 async function getLatitudeAndLongitude(searchTerm) {
   const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchTerm)}.json?access_token=${process.env.MAPBOX_API_KEY}`);
   const data = await response.json();
@@ -92,9 +96,9 @@ function getWeatherEmbed(location, data) {
   const embed = new RichEmbed({
     title: `Weather Forecast for ${location}`,
     description: dedent`
-      ${data.daily.data[0].summary} Currently ${Math.round(data.currently.temperature)}°F with a high of ${Math.round(data.daily.data[0].temperatureHigh)}°F and a low of ${Math.round(data.daily.data[0].temperatureLow)}°F.
+      ${data.daily.data[0].summary} Currently ${Math.round(data.currently.temperature)}°F/${Math.round(convertFToC(data.currently.temperature))}°C with a high of ${Math.round(data.daily.data[0].temperatureHigh)}°F/${Math.round(convertFToC(data.daily.data[0].temperatureHigh))}°C and a low of ${Math.round(data.daily.data[0].temperatureLow)}°F/${Math.round(convertFToC(data.daily.data[0].temperatureLow))}°C.
 
-      There is a ${100 * data.daily.data[0].precipProbability}% chance of rain today.
+      There is a ${Math.round(100 * data.daily.data[0].precipProbability)}% chance of rain today.
     `,
     color: 0x7FDBFF,
     footer: {
@@ -108,7 +112,7 @@ function getWeatherEmbed(location, data) {
 
   // Remove current day and the 8th day
   data.daily.data.slice(1).slice(0, -1).forEach(day => {
-    let str = `${getEmojiIcon(day.icon)} ${Math.round(day.temperatureHigh)}°F / ${Math.round(day.temperatureLow)}°F.`;
+    let str = `${getEmojiIcon(day.icon)} ${Math.round(day.temperatureHigh)}°F/${Math.round(convertFToC(day.temperatureHigh))}°C | ${Math.round(day.temperatureLow)}°F/${Math.round(convertFToC(day.temperatureLow))}°C.`;
 
     if (day.precipProbability > 0) {
       str += ` :sweat_drops: ${Math.round(100 * day.precipProbability)}%`;
