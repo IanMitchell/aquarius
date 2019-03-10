@@ -73,8 +73,9 @@ function getEmojiIcon(type) {
   }
 }
 
-function convertFToC(temperature) {
-  return (temperature - 32) * 5 / 9;
+function displayFahrenheitAndCelsius(fahrenheit) {
+  const celsius = (fahrenheit - 32) * 5 / 9;
+  return `${Math.round(fahrenheit)}°F/${Math.round(celsius)}°C`
 }
 
 async function getLatitudeAndLongitude(searchTerm) {
@@ -96,7 +97,7 @@ function getWeatherEmbed(location, data) {
   const embed = new RichEmbed({
     title: `Weather Forecast for ${location}`,
     description: dedent`
-      ${data.daily.data[0].summary} Currently ${Math.round(data.currently.temperature)}°F/${Math.round(convertFToC(data.currently.temperature))}°C with a high of ${Math.round(data.daily.data[0].temperatureHigh)}°F/${Math.round(convertFToC(data.daily.data[0].temperatureHigh))}°C and a low of ${Math.round(data.daily.data[0].temperatureLow)}°F/${Math.round(convertFToC(data.daily.data[0].temperatureLow))}°C.
+      ${data.daily.data[0].summary} Currently ${displayFahrenheitAndCelsius(data.currently.temperature)} with a high of ${displayFahrenheitAndCelsius(data.daily.data[0].temperatureHigh)} and a low of ${displayFahrenheitAndCelsius(data.daily.data[0].temperatureLow)}.
 
       There is a ${Math.round(100 * data.daily.data[0].precipProbability)}% chance of rain today.
     `,
@@ -112,7 +113,7 @@ function getWeatherEmbed(location, data) {
 
   // Remove current day and the 8th day
   data.daily.data.slice(1).slice(0, -1).forEach(day => {
-    let str = `${getEmojiIcon(day.icon)} ${Math.round(day.temperatureHigh)}°F/${Math.round(convertFToC(day.temperatureHigh))}°C | ${Math.round(day.temperatureLow)}°F/${Math.round(convertFToC(day.temperatureLow))}°C.`;
+    let str = `${getEmojiIcon(day.icon)} ${displayFahrenheitAndCelsius(day.temperatureHigh)} | ${displayFahrenheitAndCelsius(day.temperatureLow)}`;
 
     if (day.precipProbability > 0) {
       str += ` :sweat_drops: ${Math.round(100 * day.precipProbability)}%`;
