@@ -19,7 +19,9 @@
     "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect-brk=9229 -r esm index.js",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
     "pretest": "yarn run lint",
-    "test": "jest --config ./jest.config.json --maxWorkers=1"
+    "test": "jest --config ./jest.config.json --maxWorkers=1",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "esm": {
     "mode": "auto",
@@ -57,7 +59,8 @@
     "timber": "^3.1.3",
     "turndown": "^5.0.1",
     "unzalgo": "^2.0.5",
-    "xmldom": "^0.1.27"
+    "xmldom": "^0.1.27",
+    "snyk": "^1.161.1"
   },
   "devDependencies": {
     "@babel/core": "^7.2.0",
@@ -77,5 +80,6 @@
     "jest-discord": "^0.1.0",
     "jest-environment-discord": "^0.1.0",
     "regenerator-runtime": "^0.13.1"
-  }
+  },
+  "snyk": true
 }
