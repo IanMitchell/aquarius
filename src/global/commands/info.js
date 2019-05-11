@@ -6,22 +6,20 @@ import { getVanityBotLink, getGitHubLink } from '../../lib/helpers/links';
 import { pluralize } from '../../lib/helpers/strings';
 import { getResourceUsage } from '../../lib/metrics/resources';
 import { getTotalGuildCount } from '../../lib/metrics/guilds';
-import { getTotalUserCount, getUniqueUserCount } from '../../lib/metrics/users';
+import { getTotalUserCount } from '../../lib/metrics/users';
 
 const log = debug('Info');
 
 export const info = {
   name: 'info',
   description: 'Displays basic information about Aquarius.',
-  permissions: [
-    Permissions.FLAGS.EMBED_LINKS,
-  ],
+  permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: '```@Aquarius info```',
 };
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^info/i, async (message) => {
+  aquarius.onCommand(/^info/i, async message => {
     log(`Request in ${message.guild.name}`);
 
     const check = aquarius.permissions.check(
@@ -31,7 +29,9 @@ export default async ({ aquarius, analytics }) => {
 
     if (!check.valid) {
       log('Invalid permissions');
-      message.channel.send(aquarius.permissions.getRequestMessage(check.missing));
+      message.channel.send(
+        aquarius.permissions.getRequestMessage(check.missing)
+      );
       return;
     }
 
@@ -46,10 +46,7 @@ export default async ({ aquarius, analytics }) => {
       return value;
     }, 0);
 
-    const users = {
-      total: getTotalUserCount(),
-      unique: getUniqueUserCount(),
-    };
+    const users = getTotalUserCount();
 
     const metrics = await getResourceUsage();
 
@@ -57,19 +54,29 @@ export default async ({ aquarius, analytics }) => {
       .setTitle('Aquarius')
       .setColor(0x008000)
       .setURL(getGitHubLink())
-      .setDescription(`You can add me to your server by clicking this link: ${getVanityBotLink()}`)
+      .setDescription(
+        `You can add me to your server by clicking this link: ${getVanityBotLink()}`
+      )
       .setThumbnail(aquarius.user.displayAvatarURL)
       .addField('Developer', 'Desch#3091')
-      .addField('Stats', dedent`
+      .addField(
+        'Stats',
+        dedent`
         ${guilds} ${pluralize('Guild', guilds)}
         ${channels} ${pluralize('Channel', channels)}
-        ${users.total} ${pluralize('User', users.total)} (${users.unique} Unique)
-      `, true)
-      .addField('Metrics', dedent`
+        ${users} ${pluralize('User', users)}
+      `,
+        true
+      )
+      .addField(
+        'Metrics',
+        dedent`
         Uptime: ${metrics.uptime}
         Memory: ${metrics.memory}
         CPU: ${metrics.cpu}
-      `, true)
+      `,
+        true
+      )
       .addField('Need Help?', 'Type `@Aquarius help`')
       .setFooter(`Version: ${pkg.version} | Server Donations: $IanMitchel1`);
 

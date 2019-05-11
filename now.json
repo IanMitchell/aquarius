@@ -13,7 +13,6 @@
     "NODE_ENV": "@aquarius-env",
     "TOKEN": "@aquarius-token",
     "CLIENT_ID": "@aquarius-client-id",
-    "MONGO": "@aquarius-mongo",
     "SENTRY": "@aquarius-sentry",
     "DICTIONARY_API_KEY": "@aquarius-dictionary-api-key",
     "TEST_BOT_TOKEN": "@aquarius-test-bot-token",
