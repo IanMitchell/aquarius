@@ -69,13 +69,16 @@
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^4.2.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jest": "^22.1.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.11.1",
     "jest": "^23.6.0",
     "jest-discord": "^0.1.0",
     "jest-environment-discord": "^0.1.0",
+    "prettier": "^1.17.0",
     "regenerator-runtime": "^0.13.1"
   }
 }

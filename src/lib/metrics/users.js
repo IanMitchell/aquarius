@@ -9,11 +9,6 @@ export function getTotalUserCount() {
 }
 
 // TODO: Document
-export function getUniqueUserCount() {
-  return aquarius.users.size;
-}
-
-// TODO: Document
 // export async function getWeeklyUserCount(weeksAgo) {
 //   const startTarget = getDateAgo(ONE_WEEK * weeksAgo);
 //   const endTarget = getDateAgo(ONE_WEEK * (weeksAgo - 1));
