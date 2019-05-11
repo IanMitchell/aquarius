@@ -1,8 +1,16 @@
-workflow "New workflow" {
+workflow "Lint" {
   on = "push"
-  resolves = ["ESLint"]
+  resolves = ["Eslint"]
 }
 
-action "ESLint" {
-  uses = "stefanoeb/eslint-action@master"
+action "Dependencies" {
+  uses = "actions/npm@master"
+  args = "install"
+}
+
+action "Eslint" {
+  uses = "docker://rkusa/eslint-action:latest"
+  secrets = ["GITHUB_TOKEN"]
+  args = ""
+  needs = ["Dependencies"]
 }
