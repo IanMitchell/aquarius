@@ -12,9 +12,7 @@ const log = debug('Weather');
 export const info = {
   name: 'weather',
   description: 'View weekly weather forecast.',
-  permissions: [
-    Permissions.FLAGS.EMBED_LINKS,
-  ],
+  permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: '```@Aquarius weather <search term>```',
 };
 
@@ -73,13 +71,20 @@ function getEmojiIcon(type) {
   }
 }
 
-function displayFahrenheitAndCelsius(fahrenheit) {
-  const celsius = (fahrenheit - 32) * 5 / 9;
-  return `${Math.round(fahrenheit)}°F/${Math.round(celsius)}°C`
+function getCelsius(fahrenheit) {
+  return Math.round(((fahrenheit - 32) * 5) / 9);
+}
+
+function formatTemperature(value, type = 'F') {
+  return `${Math.round(value)}°${type}`;
 }
 
 async function getLatitudeAndLongitude(searchTerm) {
-  const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchTerm)}.json?access_token=${process.env.MAPBOX_API_KEY}`);
+  const response = await fetch(
+    `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+      searchTerm
+    )}.json?access_token=${process.env.MAPBOX_API_KEY}`
+  );
   const data = await response.json();
 
   return {
@@ -89,7 +94,11 @@ async function getLatitudeAndLongitude(searchTerm) {
 }
 
 async function getDarkSkyForecast(longitude, latitude) {
-  const response = await fetch(`https://api.darksky.net/forecast/${process.env.DARK_SKY_API_KEY}/${latitude},${longitude}`);
+  const response = await fetch(
+    `https://api.darksky.net/forecast/${
+      process.env.DARK_SKY_API_KEY
+    }/${latitude},${longitude}`
+  );
   return response.json();
 }
 
@@ -97,11 +106,28 @@ function getWeatherEmbed(location, data) {
   const embed = new RichEmbed({
     title: `Weather Forecast for ${location}`,
     description: dedent`
-      ${data.daily.data[0].summary} Currently ${displayFahrenheitAndCelsius(data.currently.temperature)} with a high of ${displayFahrenheitAndCelsius(data.daily.data[0].temperatureHigh)} and a low of ${displayFahrenheitAndCelsius(data.daily.data[0].temperatureLow)}.
+      ${data.daily.data[0].summary} Currently ${formatTemperature(
+      data.currently.temperature
+    )} (${formatTemperature(
+      getCelsius(data.currently.temperature),
+      'C'
+    )}) with a high of ${formatTemperature(
+      data.daily.data[0].temperatureHigh
+    )} (${formatTemperature(
+      getCelsius(data.daily.data[0].temperatureHigh),
+      'C'
+    )}) and a low of ${formatTemperature(
+      data.daily.data[0].temperatureLow
+    )} (${formatTemperature(
+      getCelsius(data.daily.data[0].temperatureLow),
+      'C'
+    )}).
 
-      There is a ${Math.round(100 * data.daily.data[0].precipProbability)}% chance of rain today.
+      There is a ${Math.round(
+        100 * data.daily.data[0].precipProbability
+      )}% chance of rain today.
     `,
-    color: 0x7FDBFF,
+    color: 0x7fdbff,
     footer: {
       icon_url: 'https://darksky.net/images/darkskylogo.png',
       text: 'Powered by Dark Sky and Mapbox',
@@ -112,38 +138,59 @@ function getWeatherEmbed(location, data) {
   });
 
   // Remove current day and the 8th day
-  data.daily.data.slice(1).slice(0, -1).forEach(day => {
-    let str = `${getEmojiIcon(day.icon)} ${displayFahrenheitAndCelsius(day.temperatureHigh)} | ${displayFahrenheitAndCelsius(day.temperatureLow)}`;
+  data.daily.data
+    .slice(1)
+    .slice(0, -1)
+    .forEach(day => {
+      let str = `High: ${formatTemperature(
+        day.temperatureHigh
+      )} (${formatTemperature(getCelsius(day.temperatureHigh), 'C')})
+      Low: ${formatTemperature(day.temperatureLow)} (${formatTemperature(
+        getCelsius(day.temperatureLow),
+        'C'
+      )})`;
 
-    if (day.precipProbability > 0) {
-      str += ` :sweat_drops: ${Math.round(100 * day.precipProbability)}%`;
-    }
+      if (day.precipProbability > 0.1) {
+        str += `\n:sweat_drops: ${Math.round(100 * day.precipProbability)}%`;
+      }
 
-    embed.addField(format(new Date(day.time * 1000), 'EEEE'), str, true);
-  });
+      embed.addField(
+        `${getEmojiIcon(day.icon)} ${format(
+          new Date(day.time * 1000),
+          'EEEE'
+        )}`,
+        str,
+        true
+      );
+    });
 
   return embed;
 }
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^(?:w|weather) (?<input>.*)/i, async (message, { groups }) => {
-    log(`Weather request for ${groups.input}`);
+  aquarius.onCommand(
+    /^(?:w|weather) (?<input>.*)/i,
+    async (message, { groups }) => {
+      log(`Weather request for ${groups.input}`);
 
-    const check = aquarius.permissions.check(
-      message.guild,
-      ...info.permissions
-    );
+      const check = aquarius.permissions.check(
+        message.guild,
+        ...info.permissions
+      );
 
-    if (!check.valid) {
-      log('Invalid permissions');
-      message.channel.send(aquarius.permissions.getRequestMessage(check.missing));
-      return;
+      if (!check.valid) {
+        log('Invalid permissions');
+        message.channel.send(
+          aquarius.permissions.getRequestMessage(check.missing)
+        );
+        return;
+      }
+
+      const location = await getLatitudeAndLongitude(groups.input);
+      const data = await getDarkSkyForecast(...location.coordinates);
+      message.channel.send(getWeatherEmbed(location.name, data));
+      analytics.trackUsage('lookup', message);
     }
-
-    const location = await getLatitudeAndLongitude(groups.input);
-    const data = await getDarkSkyForecast(...location.coordinates);
-    message.channel.send(getWeatherEmbed(location.name, data));
-    analytics.trackUsage('lookup', message);
-  });
+  );
 };

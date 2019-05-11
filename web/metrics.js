@@ -4,7 +4,7 @@ import { getResourceUsage } from '../src/lib/metrics/resources';
 // import { getGuildMetrics, getTotalGuildCount } from '../src/lib/metrics/guilds';
 import { getTotalGuildCount } from '../src/lib/metrics/guilds';
 import { ONE_MINUTE, THIRTY_MINUTES } from '../src/lib/helpers/times';
-import { getUniqueUserCount, getTotalUserCount } from '../src/lib/metrics/users';
+import { getTotalUserCount } from '../src/lib/metrics/users';
 import aquarius from '../src';
 
 // TODO: Generate and store metrics via a cron type system
@@ -30,14 +30,14 @@ export async function getGitHubInformation() {
     }
   `;
 
-  const auth = Buffer
-    .from(`bearer ${process.env.GITHUB_API_TOKEN}`)
-    .toString('base64');
+  const auth = Buffer.from(`bearer ${process.env.GITHUB_API_TOKEN}`).toString(
+    'base64'
+  );
 
   const response = await fetch('https://api.github.com/graphql', {
     method: 'POST',
     headers: {
-      'Authorization': `Basic ${auth}`,
+      Authorization: `Basic ${auth}`,
     },
     body: JSON.stringify({ query }),
   });
@@ -85,7 +85,6 @@ export async function getMetricHandler() {
     getMessagesReceived: () => messagesReceived,
     getCurrentUserCount: () => ({
       totalUsers: getTotalUserCount(),
-      uniqueUsers: getUniqueUserCount(),
     }),
     getCurrentGuildCount: () => ({
       totalGuilds: getTotalGuildCount(),
