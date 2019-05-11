@@ -1,9 +1,8 @@
-workflow "Pull Request" {
-  on = "pull_request"
+workflow "New workflow" {
+  on = "push"
   resolves = ["ESLint"]
 }
 
 action "ESLint" {
-  uses = "hallee/eslint-action@master"
-  secrets = ["GITHUB_TOKEN"]
+  uses = "stefanoeb/eslint-action@master"
 }
