@@ -1,6 +1,6 @@
 workflow "Lint" {
   on = "push"
-  resolves = ["Lint"]
+  resolves = ["ESLint"]
 }
 
 action "Install Dependencies" {
@@ -8,7 +8,7 @@ action "Install Dependencies" {
   args = "install"
 }
 
-action "Lint" {
+action "ESLint" {
   uses = "hallee/eslint-action@master"
   secrets = ["GITHUB_TOKEN"]
   needs = ["Install Dependencies"]
