@@ -1,6 +1,6 @@
 workflow "Lint" {
   on = "push"
-  resolves = ["ESLint"]
+  resolves = ["Eslint"]
 }
 
 action "Install" {
