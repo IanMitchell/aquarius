@@ -1,16 +1,15 @@
 workflow "Lint" {
   on = "push"
-  resolves = ["Eslint"]
+  resolves = ["Lint"]
 }
 
-action "Dependencies" {
-  uses = "actions/npm@master"
+action "Install Dependencies" {
+  uses = "Borales/actions-yarn@master"
   args = "install"
 }
 
-action "Eslint" {
-  uses = "docker://rkusa/eslint-action:latest"
+action "Lint" {
+  uses = "hallee/eslint-action@master"
   secrets = ["GITHUB_TOKEN"]
-  args = ""
-  needs = ["Dependencies"]
+  needs = ["Install Dependencies"]
 }
