@@ -13,7 +13,10 @@ const database = (() => {
 
   const firestore = new Firestore({
     projectId: process.env.FIREBASE_PROJECT,
-    keyFilename: path.join(__dirname, `../../../${process.env.FIREBASE_KEYFILE}`),
+    keyFilename: path.join(
+      __dirname,
+      `../../../${process.env.FIREBASE_KEYFILE}`
+    ),
   });
 
   const methods = Object.create(null);

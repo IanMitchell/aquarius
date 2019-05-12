@@ -1,3 +1,5 @@
+/* global prompt */
+
 describe('Ping', () => {
   test('response', async () => {
     const response = await prompt('ping');

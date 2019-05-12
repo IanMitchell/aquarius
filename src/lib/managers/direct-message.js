@@ -24,8 +24,8 @@ export default class DirectMessageManager {
         user.send(str);
 
         const collector = user.dmChannel.createMessageCollector(
-          (msg) => !msg.author.bot,
-          { time: this.defaultMaxResponseTime },
+          msg => !msg.author.bot,
+          { time: this.defaultMaxResponseTime }
         );
 
         collector.on('collect', msg => {
@@ -49,7 +49,10 @@ export default class DirectMessageManager {
       };
     });
 
-    this.userQueue.get(user.id).then(task).catch(task);
+    this.userQueue
+      .get(user.id)
+      .then(task)
+      .catch(task);
     this.userQueue.set(user.id, promise);
     return promise;
   }

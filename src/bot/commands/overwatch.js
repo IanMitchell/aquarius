@@ -18,17 +18,22 @@ const REGIONS = {
 // TODO: Switch to account lookup
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^overwatch (?:(?<region>[A-Za-z]{2}) )?(?<account>[\w]+#[\d]{4,5})$/i, async (message, { groups }) => {
-    let region = REGIONS.US;
+  aquarius.onCommand(
+    /^overwatch (?:(?<region>[A-Za-z]{2}) )?(?<account>[\w]+#[\d]{4,5})$/i,
+    async (message, { groups }) => {
+      let region = REGIONS.US;
 
-    if (groups.region && (groups.region.toUpperCase() in REGIONS)) {
-      region = REGIONS[groups.region.toUpperCase()];
+      if (groups.region && groups.region.toUpperCase() in REGIONS) {
+        region = REGIONS[groups.region.toUpperCase()];
+      }
+
+      log(`Looking up ${groups.account} in ${region}`);
+
+      message.channel.send(
+        `${URL}/${region}/${groups.account.replace('#', '-')}`
+      );
+
+      analytics.trackUsage('link', message);
     }
-
-    log(`Looking up ${groups.account} in ${region}`);
-
-    message.channel.send(`${URL}/${region}/${groups.account.replace('#', '-')}`);
-
-    analytics.trackUsage('link', message);
-  });
+  );
 };

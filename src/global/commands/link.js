@@ -41,11 +41,11 @@ function* accountLinkGenerator(services) {
   accountInformation.name = input.toLowerCase();
 
   log('Prompting for steps');
-  for (const step of services.getServiceInformation(input.toLowerCase()).steps) {
+  for (const step of services.getServiceInformation(input.toLowerCase())
+    .steps) {
     const value = yield step.instructions;
     accountInformation.fields.push({ name: step.field, value });
   }
-
 
   // yield *services.getServiceInformation(input.toLowerCase()).steps;
 
@@ -59,21 +59,23 @@ export default async ({ aquarius }) => {
   const activeRequests = new Set();
 
   // Gently guide people trying to link accounts in a guild channel
-  aquarius.onCommand(/link/i, async (message) => {
+  aquarius.onCommand(/link/i, async message => {
     if (message.channel.type === 'dm') {
       message.channel.send(helpMessage(info));
     } else {
-      message.channel.send('To link an account with me, please send me "link" via direct message');
+      message.channel.send(
+        'To link an account with me, please send me "link" via direct message'
+      );
     }
   });
 
-  aquarius.onTrigger(/link/i, async (message) => {
+  aquarius.onTrigger(/link/i, async message => {
     if (message.channel.type === 'dm') {
       message.channel.send(helpMessage(info));
     }
   });
 
-  aquarius.onTrigger(/link remove/i, async (message) => {
+  aquarius.onTrigger(/link remove/i, async message => {
     if (message.channel.type === 'dm') {
       log(`Unlink request by ${message.author.username}`);
       // TODO: Prompt for and Remove service link
@@ -81,7 +83,7 @@ export default async ({ aquarius }) => {
   });
 
   // Guide users through linking accounts in DM
-  aquarius.onTrigger(/link add/i, async (message) => {
+  aquarius.onTrigger(/link add/i, async message => {
     if (message.channel.type === 'dm') {
       if (!activeRequests.has(message.author.id)) {
         return;
@@ -98,8 +100,8 @@ export default async ({ aquarius }) => {
 
       // Wait for response
       const collector = message.channel.createMessageCollector(
-        (msg) => !msg.author.bot,
-        { time: LINK_RESPONSE_PERIOD },
+        msg => !msg.author.bot,
+        { time: LINK_RESPONSE_PERIOD }
       );
 
       // Response handler
@@ -135,9 +137,13 @@ export default async ({ aquarius }) => {
 
         // Send a message based on why we stopped listening
         if (reason === 'manual') {
-          message.channel.send('Ok! If you want to link a service later just type `link add`!');
+          message.channel.send(
+            'Ok! If you want to link a service later just type `link add`!'
+          );
         } else if (reason !== 'linked') {
-          message.channel.send("I haven't heard from you, so I'm going to stop the link process. If you want to try again later please type `link add`!");
+          message.channel.send(
+            "I haven't heard from you, so I'm going to stop the link process. If you want to try again later please type `link add`!"
+          );
         }
 
         // Remove active request

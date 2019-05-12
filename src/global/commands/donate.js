@@ -13,7 +13,7 @@ export const info = {
 // TODO: Write up donation message
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^donate/i, async (message) => {
+  aquarius.onCommand(/^donate/i, async message => {
     log(`Donate request in ${message.guild.name}`);
 
     message.channel.send('You can donate by sending money to $IanMitchel1');

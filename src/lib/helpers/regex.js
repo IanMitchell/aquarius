@@ -6,8 +6,9 @@ function escapedPattern(str) {
 }
 
 function escapedRegExp(flags, strings, ...values) {
-  const pattern = strings[0] + values.map((v, i) =>
-    escapedPattern(v) + strings[i + 1]).join('');
+  const pattern =
+    strings[0] +
+    values.map((v, i) => escapedPattern(v) + strings[i + 1]).join('');
 
   return RegExp(pattern, flags);
 }
@@ -37,4 +38,4 @@ export const EMOJI_CUSTOM_ANIMATED = /<a:(?<name>.+):(?<id>.+):>/i;
  */
 
 /** Matches the `[[Card Name]]` syntax */
-export const BRACKET = /\[\[(?<name>.+?)\]\]/ig;
+export const BRACKET = /\[\[(?<name>.+?)\]\]/gi;

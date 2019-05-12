@@ -25,7 +25,7 @@ function setGenericMessage(aquarius) {
 // TODO: Check for presence (sign in while bot is on)
 // TODO: What if you sign off of discord while streaming?
 /** @type {import('../../typedefs').Command} */
-export default async ({ aquarius, analytics }) => {
+export default async ({ aquarius }) => {
   // aquarius.on('presenceUpdate', async (oldUser, newUser) => {
   //   // If owner starts streaming, advertise it. If they stop, also stop.
   //   if (

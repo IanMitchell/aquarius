@@ -17,9 +17,7 @@ const EMOJI = {
 export const info = {
   name: 'help',
   description: 'Provides information on how to use a command.',
-  permissions: [
-    Permissions.FLAGS.EMBED_LINKS,
-  ],
+  permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: dedent`
     **View General Help**
     \`\`\`@Aquarius help\`\`\`
@@ -57,13 +55,16 @@ export function helpMessage(aquarius, commandInfo, guild) {
   }
 
   if (commandInfo.permissions) {
-    embed.addField('Permissions', commandInfo.permissions.map(permission => {
-      if (guild.me.hasPermission(permission)) {
-        return `${EMOJI.VALID} ${getPermissionName(permission)}`;
-      }
+    embed.addField(
+      'Permissions',
+      commandInfo.permissions.map(permission => {
+        if (guild.me.hasPermission(permission)) {
+          return `${EMOJI.VALID} ${getPermissionName(permission)}`;
+        }
 
-      return `${EMOJI.INVALID} ${getPermissionName(permission)}`;
-    }));
+        return `${EMOJI.INVALID} ${getPermissionName(permission)}`;
+      })
+    );
   }
 
   if (commandInfo.global) {
@@ -80,7 +81,7 @@ export function helpMessage(aquarius, commandInfo, guild) {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   // Handle generic help
-  aquarius.onCommand(/^help$/i, async (message) => {
+  aquarius.onCommand(/^help$/i, async message => {
     log(`Help request in "${message.guild.name}#${message.channel.name}"`);
 
     const check = aquarius.permissions.check(
@@ -90,7 +91,9 @@ export default async ({ aquarius, analytics }) => {
 
     if (!check.valid) {
       log('Invalid permissions');
-      message.channel.send(aquarius.permissions.getRequestMessage(check.missing));
+      message.channel.send(
+        aquarius.permissions.getRequestMessage(check.missing)
+      );
       return;
     }
 
@@ -103,13 +106,12 @@ export default async ({ aquarius, analytics }) => {
       setDifference(
         new Set(
           Array.from(aquarius.commandList.entries())
-            .filter(([key, value]) => !value.hidden)
-            .map(([key, value]) => key)
+            .filter(([, value]) => !value.hidden)
+            .map(([key]) => key)
         ),
         new Set(commandList)
       )
     );
-
 
     const embed = helpMessage(aquarius, info, message.guild);
 
@@ -125,7 +127,11 @@ export default async ({ aquarius, analytics }) => {
 
   // Handle help for specific command
   aquarius.onCommand(/^help (?<command>.+)$/i, async (message, { groups }) => {
-    log(`Help request for ${groups.command} in "${message.guild.name}#${message.channel.name}"`);
+    log(
+      `Help request for ${groups.command} in "${message.guild.name}#${
+        message.channel.name
+      }"`
+    );
     const help = aquarius.help.get(groups.command);
 
     if (help) {
@@ -136,13 +142,17 @@ export default async ({ aquarius, analytics }) => {
 
       if (!check.valid) {
         log('Invalid permissions');
-        message.channel.send(aquarius.permissions.getRequestMessage(check.missing));
+        message.channel.send(
+          aquarius.permissions.getRequestMessage(check.missing)
+        );
         return;
       }
 
       message.channel.send(helpMessage(aquarius, help, message.guild));
     } else {
-      message.channel.send(`Sorry, I can't find a command named ${groups.command} :frowning:`);
+      message.channel.send(
+        `Sorry, I can't find a command named ${groups.command} :frowning:`
+      );
     }
 
     analytics.trackUsage('lookup', message);

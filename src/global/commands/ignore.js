@@ -25,7 +25,7 @@ export const info = {
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     new RegExp(`^ignore add ${MENTION.source}`, 'i'),
-    async (message) => {
+    async message => {
       if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
         if (message.mentions.users.size > 0) {
           const user = message.mentions.users.last();
@@ -39,12 +39,12 @@ export default async ({ aquarius, analytics }) => {
           message.channel.send('Please tag the user you want me to ignore');
         }
       }
-    },
+    }
   );
 
   aquarius.onCommand(
     new RegExp(`^ignore remove ${MENTION.source}`, 'i'),
-    async (message) => {
+    async message => {
       if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
         if (message.mentions.users.size > 0) {
           const user = message.mentions.users.last();
@@ -55,16 +55,20 @@ export default async ({ aquarius, analytics }) => {
 
           analytics.trackUsage('remove', message, { targetUser: user.id });
         } else {
-          message.channel.send('Please tag the user you want to remove from my ignore list');
+          message.channel.send(
+            'Please tag the user you want to remove from my ignore list'
+          );
         }
       }
-    },
+    }
   );
 
-  aquarius.onCommand(/^ignore list$/i, async (message) => {
+  aquarius.onCommand(/^ignore list$/i, async message => {
     log(`Generating list for ${message.guild.name}`);
     const ids = aquarius.guildManager.get(message.guild.id).ignoredUsers;
-    const list = Array.from(ids).map(userId => getNickname(message.guild, userId));
+    const list = Array.from(ids).map(userId =>
+      getNickname(message.guild, userId)
+    );
 
     message.channel.send(`I'm ignoring ${humanize(list)}.`);
     analytics.trackUsage('list', message);

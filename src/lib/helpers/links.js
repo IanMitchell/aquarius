@@ -49,7 +49,6 @@ export function getDashboardLink() {
   return '';
 }
 
-
 /**
  * Get the URL for Aquarius Documentation
  * @returns {string} The URL for the documentation

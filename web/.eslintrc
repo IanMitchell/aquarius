@@ -1,5 +1,9 @@
 {
-  "extends": "airbnb",
+  "extends": [
+    "airbnb",
+    "plugin:jest/recommended",
+    "plugin:prettier/recommended"
+  ],
   "rules": {
     "react/jsx-filename-extension": 0,
     "react/destructuring-assignment": 0,

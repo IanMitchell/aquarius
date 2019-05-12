@@ -16,7 +16,6 @@ export const ONE_DAY = 24 * ONE_HOUR;
 // Weeks
 export const ONE_WEEK = 7 * ONE_DAY;
 
-
 // TODO: Document
 export function getDateAgo(duration) {
   return new Date(Date.now() - duration);

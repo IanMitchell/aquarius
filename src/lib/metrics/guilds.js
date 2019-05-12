@@ -1,7 +1,7 @@
 import debug from 'debug';
+import { startOfWeek } from 'date-fns/esm';
 import aquarius from '../..';
 import { ONE_WEEK, ONE_HOUR } from '../helpers/times';
-import { startOfWeek } from 'date-fns/esm';
 
 const log = debug('Guild Metrics');
 
@@ -33,9 +33,7 @@ export async function saveSnapshots() {
 }
 
 // TODO: Implement
-export function getTrends(guildId) {
-
-}
+export function getTrends(/* guildId */) {}
 
 // TODO: Document
 // export async function getGuildMetrics() {
@@ -76,7 +74,8 @@ export async function setupWeeklyGuildLoop() {
   if (!snapshotList.empty) {
     const snapshot = snapshotList.docs[0].data();
     // We want to target 1:00 on Sunday of the next week
-    target = startOfWeek(new Date(snapshot.date + ONE_WEEK)).getTime() + ONE_HOUR;
+    target =
+      startOfWeek(new Date(snapshot.date + ONE_WEEK)).getTime() + ONE_HOUR;
   }
 
   // If we missed it, save immediately and push to next week
@@ -90,7 +89,7 @@ export async function setupWeeklyGuildLoop() {
     saveSnapshots();
     setInterval(
       saveSnapshots,
-      (ONE_WEEK + ONE_HOUR) - (Date.now() - startOfWeek(new Date()).getTime())
+      ONE_WEEK + ONE_HOUR - (Date.now() - startOfWeek(new Date()).getTime())
     );
   }, target - Date.now());
 }

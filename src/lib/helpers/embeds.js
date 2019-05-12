@@ -21,8 +21,9 @@ const log = debug('Embeds');
 export async function guildEmbed(guild, ...fields) {
   const date = getStandardDate(guild.createdAt);
 
-  const activeMembers = guild.members.filter(member =>
-    member.presence.status === 'online');
+  const activeMembers = guild.members.filter(
+    member => member.presence.status === 'online'
+  );
 
   const channelTypes = {
     text: 0,
@@ -48,14 +49,22 @@ export async function guildEmbed(guild, ...fields) {
     .setThumbnail(guild.iconURL)
     .setDescription(`Created on ${date} by ${guild.owner.displayName}`)
     .setColor(color)
-    .addField('Channels', dedent`
+    .addField(
+      'Channels',
+      dedent`
       ${channelTypes.voice} Voice Channels
       ${channelTypes.text} Text Channels
-    `, true)
-    .addField('Members', dedent`
+    `,
+      true
+    )
+    .addField(
+      'Members',
+      dedent`
       ${activeMembers.size} Online
       ${guild.memberCount} Total
-    `, true)
+    `,
+      true
+    )
     .setFooter(`Server ID: ${guild.id}`);
 
   fields.forEach(({ title, content }) => embed.addField(title, content));
@@ -69,7 +78,7 @@ export async function guildEmbed(guild, ...fields) {
  * @param {...EmbedField} fields - A list of RichEmbed fields to add
  * @returns {RichEmbed} the RichEmbed for the User
  */
-export function userEmbed(user, ...fields) {
-  // TODO: Implement
-  return user.name;
-}
+// export function userEmbed(user, ...fields) {
+//   // TODO: Implement
+//   return user.name;
+// }

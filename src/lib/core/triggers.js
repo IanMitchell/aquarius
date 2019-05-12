@@ -26,9 +26,7 @@ export function botMention() {
  * @returns {Array|null} the regex match array or null if no match
  */
 export function botMentionTrigger(message) {
-  return message.content
-    .trim()
-    .match(new RegExp(`^${botMention().source}`));
+  return message.content.trim().match(new RegExp(`^${botMention().source}`));
 }
 
 /**
@@ -110,14 +108,18 @@ export function messageTriggered(message, trigger) {
 
   // @aquarius trigger [message]
   if (botMentionTrigger(message)) {
-    return message.content.trim()
+    return message.content
+      .trim()
       .replace(new RegExp(`^${regex.MENTION_USER.source} `), '')
       .match(trigger);
   }
 
   // .trigger [message] OR !trigger [message]
   if (dotTrigger(message, trigger) || exclamationTrigger(message, trigger)) {
-    return message.content.trim().substr(1).match(trigger);
+    return message.content
+      .trim()
+      .substr(1)
+      .match(trigger);
   }
 
   return false;

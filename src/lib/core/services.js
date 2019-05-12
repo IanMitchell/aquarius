@@ -10,7 +10,6 @@ const SERVICE_LIST = new Map();
 // TODO: Document
 // TODO: Test
 
-
 async function loadServiceFiles() {
   const serviceDirectory = path.join(__dirname, '../../../data/services');
 
@@ -19,7 +18,7 @@ async function loadServiceFiles() {
       throw err;
     }
 
-    files.forEach(async (file) => {
+    files.forEach(async file => {
       if (file.endsWith('.yml')) {
         log(`Loading ${file}`);
 
@@ -58,6 +57,6 @@ export async function getServiceForUser(user, serviceName) {
 }
 
 // eslint-disable-next-line func-names
-(function () {
+(function() {
   loadServiceFiles();
-}());
+})();

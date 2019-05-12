@@ -19,7 +19,6 @@ import Settings from './lib/commands/settings';
 import Analytics from './lib/commands/analytics';
 import { setupWeeklyGuildLoop } from './lib/metrics/guilds';
 
-
 const log = debug('Aquarius');
 const errorLog = debug('Aquarius:Error');
 
@@ -38,9 +37,7 @@ export class Aquarius extends Discord.Client {
     // ensure no actual leaks rather than setting the limit to a thousand.
     this.setMaxListeners(60);
 
-
     // Setup internal data structures
-
 
     /**
      * TODO: Doocument
@@ -65,7 +62,6 @@ export class Aquarius extends Discord.Client {
      */
     this.directMessages = new DirectMessageManager();
 
-
     /**
      * A list of every command and plugin
      * @type {Set}
@@ -84,9 +80,7 @@ export class Aquarius extends Discord.Client {
      */
     this.triggerMap = new TriggerMap();
 
-
     // Setup API
-
 
     /**
      * TODO: Document
@@ -118,21 +112,23 @@ export class Aquarius extends Discord.Client {
      */
     this.database = database;
 
-
     // Load Commands and Plugins
     this.loadGlobals();
     this.loadCommands();
 
     this.on('ready', this.initialize);
-    this.on('error', (error) => Raven.captureException(error, () => {
-      errorLog(error);
-    }));
+    this.on('error', error =>
+      Raven.captureException(error, () => {
+        errorLog(error);
+      })
+    );
   }
 
   /**
    * Initialization logic that runs after the bot has logged in
    */
-  initialize() { // TODO: Make Private
+  initialize() {
+    // TODO: Make Private
     this.guildManager.initialize();
     setupWeeklyGuildLoop();
   }
@@ -140,7 +136,8 @@ export class Aquarius extends Discord.Client {
   /**
    * Loads and returns the config file
    */
-  loadConfig() { // TODO: Make Private
+  loadConfig() {
+    // TODO: Make Private
     const configPath = path.join(__dirname, '../config.yml');
     return yaml.safeLoad(fs.readFileSync(configPath));
   }
@@ -148,7 +145,8 @@ export class Aquarius extends Discord.Client {
   /**
    * Loads and initializes all global commands and plugins
    */
-  loadGlobals() { // TODO: Make Private
+  loadGlobals() {
+    // TODO: Make Private
     log('Loading Global Commands...');
     this.loadDirectory(path.join(__dirname, 'global/commands'), true);
     log('Loading Global Plugins...');
@@ -158,7 +156,8 @@ export class Aquarius extends Discord.Client {
   /**
    * Loads and initializes all non-global commands and plugins
    */
-  loadCommands() { // TODO: Make Private
+  loadCommands() {
+    // TODO: Make Private
     log('Loading Bot Commands...');
     this.loadDirectory(path.join(__dirname, 'bot/commands'));
     log('Loading Bot Plugins...');
@@ -170,7 +169,8 @@ export class Aquarius extends Discord.Client {
    * @param {string} directory - directory to load `.js` files from
    * @param {boolean=false} globalFile - whether to treat the file as global
    */
-  loadDirectory(directory, globalFile = false) { // TODO: Make Private
+  loadDirectory(directory, globalFile = false) {
+    // TODO: Make Private
     fs.readdir(directory, (err, files) => {
       if (err) {
         throw err;
@@ -187,7 +187,8 @@ export class Aquarius extends Discord.Client {
    * @param {strong} file - path to the file to load
    * @param {boolean} globalFile - whether the loaded item is a global or not
    */
-  async loadFile(directory, file, globalFile) { // TODO: Make Private
+  async loadFile(directory, file, globalFile) {
+    // TODO: Make Private
     if (file.endsWith('.js')) {
       log(`Loading ${file}`);
 
@@ -230,7 +231,7 @@ export class Aquarius extends Discord.Client {
           await command.default({
             aquarius: this.triggerMap,
             settings: {
-              register: () => { },
+              register: () => {},
             },
             analytics: {},
           });
@@ -358,25 +359,34 @@ export class Aquarius extends Discord.Client {
   // TODO: Document
   onMessage(info, handler) {
     this.on('message', message =>
-      this.handleMessage(message, info, handler, () => (true)));
+      this.handleMessage(message, info, handler, () => true)
+    );
   }
 
   // TODO: Document
   onCommand(regex, handler) {
     this.on('message', message =>
-      this.handleCommand(message, regex, handler, this.triggers.messageTriggered));
+      this.handleCommand(
+        message,
+        regex,
+        handler,
+        this.triggers.messageTriggered
+      )
+    );
   }
 
   // TODO: Document
   onTrigger(regex, handler) {
     this.on('message', message =>
-      this.handleCommand(message, regex, handler, this.triggers.customTrigger));
+      this.handleCommand(message, regex, handler, this.triggers.customTrigger)
+    );
   }
 
   // TODO: Document
   onDynamicTrigger(commandInfo, matchFn, handler) {
     this.on('message', message =>
-      this.handleMessage(message, commandInfo, handler, matchFn));
+      this.handleMessage(message, commandInfo, handler, matchFn)
+    );
   }
 }
 

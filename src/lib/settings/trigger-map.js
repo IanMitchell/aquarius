@@ -26,7 +26,9 @@ export default class TriggerMap extends Map {
     if (this.has(regex.toString())) {
       // TODO: Determine if this can be supported, should kill the bot,
       // or even matters
-      log(`${chalk.red('WARNING:')} Duplicate Regex detected: ${regex.toString()}`);
+      log(
+        `${chalk.red('WARNING:')} Duplicate Regex detected: ${regex.toString()}`
+      );
     }
 
     this.set(regex.toString(), this.currentCommand);
@@ -41,12 +43,12 @@ export default class TriggerMap extends Map {
   }
 
   // Method Stubs (core Discord.js Client methods)
-  on() { }
+  on() {}
 
   // TODO: Figure this one out
-  onMessage() { }
+  onMessage() {}
 
-  onDynamicTrigger() { }
+  onDynamicTrigger() {}
 
-  onDirectMessage() { }
+  onDirectMessage() {}
 }

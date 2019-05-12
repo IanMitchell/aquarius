@@ -8,9 +8,7 @@ const log = debug('xkcd');
 export const info = {
   name: 'xkcd',
   description: 'View an xkcd comic.',
-  permissions: [
-    Permissions.FLAGS.EMBED_LINKS,
-  ],
+  permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: dedent`
     **View Random Comic**
     \`\`\`@Aquarius xkcd\`\`\`
@@ -26,7 +24,7 @@ export const info = {
 function createEmbedFromJson(postJson) {
   const embed = new RichEmbed()
     .setTitle(postJson.safe_title)
-    .setColor(0x96A8C8)
+    .setColor(0x96a8c8)
     .setFooter(postJson.alt)
     .setImage(postJson.img);
   return embed;
@@ -46,7 +44,7 @@ async function getPostJsonById(id) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^xkcd$/i, async (message) => {
+  aquarius.onCommand(/^xkcd$/i, async message => {
     log('Retrieving latest comic');
 
     const check = aquarius.permissions.check(
@@ -56,7 +54,9 @@ export default async ({ aquarius, analytics }) => {
 
     if (!check.valid) {
       log('Invalid permissions');
-      message.channel.send(aquarius.permissions.getRequestMessage(check.missing));
+      message.channel.send(
+        aquarius.permissions.getRequestMessage(check.missing)
+      );
       return;
     }
 
@@ -77,7 +77,7 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('latest', message);
   });
 
-  aquarius.onCommand(/^xkcd random$/i, async (message) => {
+  aquarius.onCommand(/^xkcd random$/i, async message => {
     log('Retrieving random comic');
 
     const check = aquarius.permissions.check(
@@ -87,7 +87,9 @@ export default async ({ aquarius, analytics }) => {
 
     if (!check.valid) {
       log('Invalid permissions');
-      message.channel.send(aquarius.permissions.getRequestMessage(check.missing));
+      message.channel.send(
+        aquarius.permissions.getRequestMessage(check.missing)
+      );
       return;
     }
 
@@ -108,7 +110,7 @@ export default async ({ aquarius, analytics }) => {
           postJson = null;
         }
         countAttempts += 1;
-      } while ((postJson === null) && (countAttempts < 5));
+      } while (postJson === null && countAttempts < 5);
 
       if (postJson === null) {
         log('Random comic retrieval timed-out after 5 attempts.');
@@ -136,7 +138,9 @@ export default async ({ aquarius, analytics }) => {
 
     if (!check.valid) {
       log('Invalid permissions');
-      message.channel.send(aquarius.permissions.getRequestMessage(check.missing));
+      message.channel.send(
+        aquarius.permissions.getRequestMessage(check.missing)
+      );
       return;
     }
 

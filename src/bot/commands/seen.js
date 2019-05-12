@@ -23,7 +23,7 @@ export default async ({ aquarius, analytics }) => {
 
   aquarius.onCommand(
     new RegExp(`^seen ${MENTION_USER.source}$`, 'i'),
-    async (message) => {
+    async message => {
       const user = message.mentions.users.first();
       log(`Request for ${user.username}`);
 
@@ -33,10 +33,16 @@ export default async ({ aquarius, analytics }) => {
         const lastSeen = await database.lastSeen.doc(user.id).get();
 
         if (!lastSeen.exists) {
-          message.channel.send(`I don't know when ${user} was last online. Sorry!`);
+          message.channel.send(
+            `I don't know when ${user} was last online. Sorry!`
+          );
         } else {
           const data = lastSeen.data();
-          message.channel.send(`${user} was last seen ${formatDistance(data.lastSeen, new Date(), { addSuffix: true })}`);
+          message.channel.send(
+            `${user} was last seen ${formatDistance(data.lastSeen, new Date(), {
+              addSuffix: true,
+            })}`
+          );
         }
       }
 
@@ -45,15 +51,15 @@ export default async ({ aquarius, analytics }) => {
   );
 
   aquarius.on('presenceUpdate', async (oldMember, newMember) => {
-    if (newMember.presence.status === 'offline' && !statusDebounce.has(newMember.user.id)) {
+    if (
+      newMember.presence.status === 'offline' &&
+      !statusDebounce.has(newMember.user.id)
+    ) {
       statusDebounce.add(newMember.user.id);
       log(`${getNickname(newMember.guild, newMember)} signed off`);
       await updateLastSeen(newMember.user);
 
-      setTimeout(
-        () => statusDebounce.delete(newMember.user.id),
-        500
-      );
+      setTimeout(() => statusDebounce.delete(newMember.user.id), 500);
     }
   });
 };

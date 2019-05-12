@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import { getResourceUsage } from '../src/lib/metrics/resources';
 // import { getGuildMetrics, getTotalGuildCount } from '../src/lib/metrics/guilds';
 import { getTotalGuildCount } from '../src/lib/metrics/guilds';
-import { ONE_MINUTE, THIRTY_MINUTES } from '../src/lib/helpers/times';
+import { ONE_MINUTE } from '../src/lib/helpers/times';
 import { getTotalUserCount } from '../src/lib/metrics/users';
 import aquarius from '../src';
 
