@@ -1,4 +1,5 @@
-import Command, { info } from '../info';
+/* global prompt */
+import { info } from '../info';
 
 describe('Metadata', () => {
   test('exposes an info object', () => {

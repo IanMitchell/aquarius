@@ -71,7 +71,7 @@ export default async ({ aquarius, analytics }) => {
       RESPONSES.get(message.guild.id).size > 0
     ) {
       const entries = Array.from(RESPONSES.get(message.guild.id)).reduce(
-        (str, [key, value]) => str + `* '${key}'\n`,
+        (str, [key]) => `${str} * '${key}'\n`,
         ''
       );
 
