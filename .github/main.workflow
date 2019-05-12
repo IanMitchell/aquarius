@@ -3,13 +3,14 @@ workflow "Lint" {
   resolves = ["ESLint"]
 }
 
-action "Install Dependencies" {
+action "Install" {
   uses = "Borales/actions-yarn@master"
   args = "install"
 }
 
-action "ESLint" {
-  uses = "hallee/eslint-action@master"
+action "Eslint" {
+  uses = "docker://rkusa/eslint-action:latest"
   secrets = ["GITHUB_TOKEN"]
-  needs = ["Install Dependencies"]
+  args = ""
+  needs = ["Install"]
 }
