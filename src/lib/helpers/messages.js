@@ -18,3 +18,11 @@ export function isDirectMessage(message) {
 export function isBot(user) {
   return user.bot && process.env.NODE_ENV !== 'test';
 }
+
+export function getLink(message) {
+  const { guild, channel } = message;
+
+  return `https://discordapp.com/channels/${guild.id}/${channel.id}/${
+    message.id
+  }`;
+}

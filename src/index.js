@@ -18,6 +18,7 @@ import CommandConfig from './lib/settings/command-config';
 import Settings from './lib/commands/settings';
 import Analytics from './lib/commands/analytics';
 import { setupWeeklyGuildLoop } from './lib/metrics/guilds';
+import { fixPartialReactionEvents } from './lib/discord/library-fixes';
 
 const log = debug('Aquarius');
 const errorLog = debug('Aquarius:Error');
@@ -111,6 +112,9 @@ export class Aquarius extends Discord.Client {
      * @type {}
      */
     this.database = database;
+
+    // Apply discord.js Fixes
+    fixPartialReactionEvents(this);
 
     // Load Commands and Plugins
     this.loadGlobals();
