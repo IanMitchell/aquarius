@@ -214,7 +214,7 @@ export default async ({ aquarius, analytics }) => {
   );
 
   aquarius.onCommand(
-    /commands add (?<commands>.+)/i,
+    /commands (add|enable) (?<commands>.+)/i,
     async (message, { groups }) => {
       if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
         log(
@@ -272,7 +272,7 @@ export default async ({ aquarius, analytics }) => {
   );
 
   aquarius.onCommand(
-    /commands remove (?<commands>.+)/i,
+    /commands (remove|disable) (?<commands>.+)/i,
     async (message, { groups }) => {
       if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
         log(
