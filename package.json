@@ -32,7 +32,7 @@
     "date-fns": "^2.0.0-alpha.26",
     "debug": "^2.6.9",
     "dedent-js": "^1.0.1",
-    "discord.js": "^11.4.2",
+    "discord.js": "^11.5.0",
     "downsize": "^0.0.8",
     "esm": "^3.1.1",
     "form-data": "^2.3.3",
