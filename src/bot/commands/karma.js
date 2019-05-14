@@ -188,7 +188,7 @@ export default async ({ aquarius, settings, analytics }) => {
               `You need to wait ${formatDistance(
                 Date.now(),
                 giver.lastUsage + cooldown
-              )} to take ${name}!`
+              )} to give ${name}!`
             );
             return;
           }
