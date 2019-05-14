@@ -9,20 +9,21 @@ const log = debug('Guild');
 export const info = {
   name: 'guild',
   description: 'Displays basic information about your server.',
-  permissions: [
-    Permissions.FLAGS.EMBED_LINKS,
-  ],
+  permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: '```@Aquarius guild```',
 };
 
 function formatGuild(guild, idx) {
-  const members = `${guild.memberCount} ${pluralize('Member', guild.memberCount)}`;
+  const members = `${guild.memberCount} ${pluralize(
+    'Member',
+    guild.memberCount
+  )}`;
   return `${idx + 1}. ${guild.name} -- *(${members})*\n`;
 }
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^(?:server|guild)$/i, async (message) => {
+  aquarius.onCommand(/^(?:server|guild)$/i, async message => {
     log(`Info for ${message.guild.name}`);
 
     const check = aquarius.permissions.check(
@@ -32,7 +33,9 @@ export default async ({ aquarius, analytics }) => {
 
     if (!check.valid) {
       log('Invalid permissions');
-      message.channel.send(aquarius.permissions.getRequestMessage(check.missing));
+      message.channel.send(
+        aquarius.permissions.getRequestMessage(check.missing)
+      );
       return;
     }
 
@@ -49,7 +52,7 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('stats', message);
   });
 
-  aquarius.onCommand(/(server|guild) list/i, async (message) => {
+  aquarius.onCommand(/(server|guild) list/i, async message => {
     if (aquarius.permissions.isBotOwner(message.author)) {
       log('List Requested');
       const guilds = aquarius.guilds.array();
@@ -64,31 +67,38 @@ export default async ({ aquarius, analytics }) => {
     }
   });
 
-  aquarius.onCommand(/(?:server|guild) info (?<name>.+)/i, async (message, { groups }) => {
-    if (aquarius.permissions.isBotOwner(message.author)) {
-      log(`Specific request for ${groups.name}`);
+  aquarius.onCommand(
+    /(?:server|guild) info (?<name>.+)/i,
+    async (message, { groups }) => {
+      if (aquarius.permissions.isBotOwner(message.author)) {
+        log(`Specific request for ${groups.name}`);
 
-      const check = aquarius.permissions.check(
-        message.guild,
-        ...info.permissions
-      );
+        const check = aquarius.permissions.check(
+          message.guild,
+          ...info.permissions
+        );
 
-      if (!check.valid) {
-        log('Invalid permissions');
-        message.channel.send(aquarius.permissions.getRequestMessage(check.missing));
-        return;
+        if (!check.valid) {
+          log('Invalid permissions');
+          message.channel.send(
+            aquarius.permissions.getRequestMessage(check.missing)
+          );
+          return;
+        }
+
+        const guild = aquarius.guilds.find(
+          server => server.name === groups.name
+        );
+
+        if (guild) {
+          const embed = await guildEmbed(guild);
+          message.channel.send(embed);
+        } else {
+          message.channel.send("Sorry, I couldn't find that guild!");
+        }
+
+        analytics.trackUsage('lookup', message);
       }
-
-      const guild = aquarius.guilds.find(server => server.name === groups.name);
-
-      if (guild) {
-        const embed = await guildEmbed(guild);
-        message.channel.send(embed);
-      } else {
-        message.channel.send("Sorry, I couldn't find that guild!");
-      }
-
-      analytics.trackUsage('lookup', message);
     }
-  });
+  );
 };

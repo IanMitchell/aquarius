@@ -30,11 +30,11 @@ describe('Loading', () => {
 
   test('start calls the correct method', () => {
     loading.start(channel);
-    expect(channel.startTyping).toBeCalled();
+    expect(channel.startTyping).toHaveBeenCalled();
   });
 
   test('stop calls the correct method', () => {
     loading.stop(channel);
-    expect(channel.stopTyping).toBeCalled();
+    expect(channel.stopTyping).toHaveBeenCalled();
   });
 });

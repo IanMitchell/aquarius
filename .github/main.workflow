@@ -1,9 +1,16 @@
-workflow "Pull Request" {
-  on = "pull_request"
-  resolves = ["ESLint"]
+workflow "Lint" {
+  on = "push"
+  resolves = ["Eslint"]
 }
 
-action "ESLint" {
-  uses = "hallee/eslint-action@master"
+action "Install" {
+  uses = "Borales/actions-yarn@master"
+  args = "install"
+}
+
+action "Eslint" {
+  uses = "docker://rkusa/eslint-action:latest"
   secrets = ["GITHUB_TOKEN"]
+  args = ""
+  needs = ["Install"]
 }

@@ -9,7 +9,8 @@ const log = debug('Greeting');
 export const info = {
   name: 'greeting',
   hidden: true,
-  description: 'Sends Admins information about Aquarius when it joins a new server.',
+  description:
+    'Sends Admins information about Aquarius when it joins a new server.',
 };
 
 async function getWelcomeMessage(guild) {
@@ -17,7 +18,9 @@ async function getWelcomeMessage(guild) {
   const user = `${owner.username}#${owner.discriminator}`;
 
   return dedent`
-    Hey! My name is Aquarius - I'm a general purpose Discord bot. I was just added to ${guild.name} and wanted to introduce myself!
+    Hey! My name is Aquarius - I'm a general purpose Discord bot. I was just added to ${
+      guild.name
+    } and wanted to introduce myself!
 
     You can read more about me and how to add commands here: ${getDocsLink()}.
 
@@ -27,7 +30,7 @@ async function getWelcomeMessage(guild) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.on('guildCreate', async (guild) => {
+  aquarius.on('guildCreate', async guild => {
     const message = await getWelcomeMessage(guild);
     const count = { success: 0, failure: 0 };
 
@@ -36,7 +39,7 @@ export default async ({ aquarius, analytics }) => {
     guild.members
       .filter(member => member.hasPermission(Permissions.FLAGS.ADMINISTRATOR))
       .array()
-      .forEach(async (member) => {
+      .forEach(async member => {
         try {
           await member.send(message);
           count.success += 1;

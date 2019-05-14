@@ -10,9 +10,7 @@ const API = 'http://www.dictionaryapi.com/api/v1/references/collegiate/xml';
 export const info = {
   name: 'define',
   description: 'Provides the definition for a word',
-  permissions: [
-    Permissions.FLAGS.EMBED_LINKS,
-  ],
+  permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: '```@Aquarius define <word>```',
 };
 
@@ -49,7 +47,9 @@ export default async ({ aquarius, analytics }) => {
 
     if (!check.valid) {
       log('Invalid permissions');
-      message.channel.send(aquarius.permissions.getRequestMessage(check.missing));
+      message.channel.send(
+        aquarius.permissions.getRequestMessage(check.missing)
+      );
       return;
     }
 
@@ -66,7 +66,7 @@ export default async ({ aquarius, analytics }) => {
 
       const embed = new RichEmbed()
         .setTitle(capitalize(dom.getElementsByTagName('ew')[0].textContent))
-        .setColor(0x0074D9)
+        .setColor(0x0074d9)
         .setFooter('Definitions provided by Merriam Webster')
         .addField('Definition', getDefinition(dom))
         .addField('Plural', getPlural(dom))

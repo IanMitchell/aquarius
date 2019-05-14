@@ -30,33 +30,20 @@ const COOLDOWN = {
   DEFAULT: 60 * 5,
 };
 
-async function getRecord(guildId, userId) {
-  const list = await database.karma
-    .where('userId', '==', userId)
-    .where('guildId', '==', guildId)
-    .get();
-
-  if (list.empty) {
-    const doc = database.karma.add({
-      userId,
-      guildId,
-      lastUsage: 0,
-      karma: 0,
-    });
-
-    return database.karma.doc(doc.id).get();
-  }
-
-  return list.docs[0];
-}
-
-
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, settings, analytics }) => {
-  settings.register('name', 'Name for the Karma command in your guild', 'Karma');
-  settings.register('cooldown', 'Timeout in seconds before a user can use the command again', COOLDOWN.DEFAULT);
+  settings.register(
+    'name',
+    'Name for the Karma command in your guild',
+    'Karma'
+  );
+  settings.register(
+    'cooldown',
+    'Timeout in seconds before a user can use the command again',
+    COOLDOWN.DEFAULT
+  );
 
-  const getCooldown = (guild) => {
+  const getCooldown = guild => {
     let val = parseInt(settings.get(guild.id, 'cooldown'), 10);
 
     if (Number.isNaN(val)) {
@@ -69,12 +56,12 @@ export default async ({ aquarius, settings, analytics }) => {
   // Leaderboard Trigger
   aquarius.onDynamicTrigger(
     info,
-    (message) => {
+    message => {
       const name = settings.get(message.guild.id, 'name');
       const regex = new RegExp(`^(?:karma|${name}) leaderboard$`, 'i');
       return aquarius.triggers.messageTriggered(message, regex);
     },
-    async (message) => {
+    async message => {
       log('Leaderboard requested');
 
       const name = settings.get(message.guild.id, 'name');
@@ -86,19 +73,21 @@ export default async ({ aquarius, settings, analytics }) => {
         .get();
 
       if (list.empty === 0) {
-        message.channel.send('It appears no one in this server has any karma yet!');
+        message.channel.send(
+          'It appears no one in this server has any karma yet!'
+        );
         return;
       }
 
       // TODO: Convert into RichEmbed
-      const entries = list.docs.reduce(
-        (val, row, idx) => {
-          const data = row.data();
-          const nickname = getNickname(message.guild, aquarius.users.get(data.userId));
-          return val + `${idx + 1}. ${nickname} - ${data.karma} ${name}\n`;
-        },
-        ''
-      );
+      const entries = list.docs.reduce((val, row, idx) => {
+        const data = row.data();
+        const nickname = getNickname(
+          message.guild,
+          aquarius.users.get(data.userId)
+        );
+        return `${val} ${idx + 1}. ${nickname} - ${data.karma} ${name}\n`;
+      }, '');
 
       const str = dedent`
         **${name} Leaderboard**
@@ -114,12 +103,15 @@ export default async ({ aquarius, settings, analytics }) => {
   // Lookup Trigger
   aquarius.onDynamicTrigger(
     info,
-    (message) => {
+    message => {
       const name = settings.get(message.guild.id, 'name');
-      const regex = new RegExp(`^(?:karma|${name}) ${MENTION_USER.source}$`, 'i');
+      const regex = new RegExp(
+        `^(?:karma|${name}) ${MENTION_USER.source}$`,
+        'i'
+      );
       return aquarius.triggers.messageTriggered(message, regex);
     },
-    async (message) => {
+    async message => {
       const user = message.mentions.users.first();
 
       if (user === undefined) {
@@ -137,7 +129,9 @@ export default async ({ aquarius, settings, analytics }) => {
 
       const str = recordList.empty
         ? "They don't have any karma yet!"
-        : `${getNickname(message.guild, user)} has ${recordList.docs[0].data().karma} ${name}`;
+        : `${getNickname(message.guild, user)} has ${
+            recordList.docs[0].data().karma
+          } ${name}`;
 
       message.channel.send(str);
       analytics.trackUsage('lookup', message);
@@ -147,11 +141,11 @@ export default async ({ aquarius, settings, analytics }) => {
   // Increase
   aquarius.onDynamicTrigger(
     info,
-    (message) => {
+    message => {
       const regex = new RegExp(`^${MENTION_USER.source} ?\\+\\+.*$`, 'i');
       return message.content.match(regex);
     },
-    async (message) => {
+    async message => {
       const user = message.mentions.users.first();
 
       if (!user) {
@@ -161,7 +155,10 @@ export default async ({ aquarius, settings, analytics }) => {
       const name = settings.get(message.guild.id, 'name');
       const cooldown = getCooldown(message.guild);
 
-      if (user === message.author && !aquarius.permissions.isBotOwner(message.author)) {
+      if (
+        user === message.author &&
+        !aquarius.permissions.isBotOwner(message.author)
+      ) {
         message.channel.send(`You cannot give ${name} to yourself!`);
         return;
       }
@@ -187,7 +184,12 @@ export default async ({ aquarius, settings, analytics }) => {
 
           if (cooldown > Date.now() - giver.lastUsage) {
             log('Karma cooldown');
-            message.channel.send(`You need to wait ${formatDistance(Date.now(), giver.lastUsage + cooldown)} to take ${name}!`);
+            message.channel.send(
+              `You need to wait ${formatDistance(
+                Date.now(),
+                giver.lastUsage + cooldown
+              )} to give ${name}!`
+            );
             return;
           }
 
@@ -216,7 +218,9 @@ export default async ({ aquarius, settings, analytics }) => {
         }
 
         const nickname = await getNickname(message.guild, user);
-        message.channel.send(`${name} given! ${nickname} now has ${karma} ${name}.`);
+        message.channel.send(
+          `${name} given! ${nickname} now has ${karma} ${name}.`
+        );
         analytics.trackUsage('increase', message);
       } catch (error) {
         log(error);
@@ -227,11 +231,11 @@ export default async ({ aquarius, settings, analytics }) => {
   // Decrease
   aquarius.onDynamicTrigger(
     info,
-    (message) => {
+    message => {
       const regex = new RegExp(`^${MENTION_USER.source} ?--.*$`, 'i');
       return message.content.match(regex);
     },
-    async (message) => {
+    async message => {
       const user = message.mentions.users.first();
 
       if (!user) {
@@ -241,7 +245,10 @@ export default async ({ aquarius, settings, analytics }) => {
       const name = settings.get(message.guild.id, 'name');
       const cooldown = getCooldown(message.guild);
 
-      if (user === message.author && !aquarius.permissions.isBotOwner(message.author)) {
+      if (
+        user === message.author &&
+        !aquarius.permissions.isBotOwner(message.author)
+      ) {
         message.channel.send(`You cannot take ${name} to yourself!`);
         return;
       }
@@ -267,7 +274,12 @@ export default async ({ aquarius, settings, analytics }) => {
 
           if (cooldown > Date.now() - giver.lastUsage) {
             log('Karma cooldown');
-            message.channel.send(`You need to wait ${formatDistance(Date.now(), giver.lastUsage + cooldown)} to take ${name}!`);
+            message.channel.send(
+              `You need to wait ${formatDistance(
+                Date.now(),
+                giver.lastUsage + cooldown
+              )} to take ${name}!`
+            );
             return;
           }
 
@@ -296,7 +308,9 @@ export default async ({ aquarius, settings, analytics }) => {
         }
 
         const nickname = await getNickname(message.guild, user);
-        message.channel.send(`${name} taken! ${nickname} now has ${karma} ${name}.`);
+        message.channel.send(
+          `${name} taken! ${nickname} now has ${karma} ${name}.`
+        );
         analytics.trackUsage('decrease', message);
       } catch (error) {
         log(error);

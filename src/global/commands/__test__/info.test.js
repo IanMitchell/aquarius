@@ -1,12 +1,15 @@
-import Command, { info } from '../info';
+/* global prompt */
+import { info } from '../info';
 
 describe('Metadata', () => {
   test('exposes an info object', () => {
-    expect(info).toEqual(expect.objectContaining({
-      name: expect.any(String),
-      description: expect.any(String),
-      usage: expect.any(String),
-    }));
+    expect(info).toEqual(
+      expect.objectContaining({
+        name: expect.any(String),
+        description: expect.any(String),
+        usage: expect.any(String),
+      })
+    );
   });
 });
 

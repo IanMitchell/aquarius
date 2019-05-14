@@ -27,7 +27,7 @@ export default class extends React.Component {
 
   subscribe() {
     if (!this.state.subscribed) {
-      this.context.on('updateMetrics', (event) => {
+      this.context.on('updateMetrics', event => {
         this.setState({ metrics: event.metrics });
       });
 

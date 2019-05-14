@@ -27,7 +27,7 @@ const values = [
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^slots$/i, async (message) => {
+  aquarius.onCommand(/^slots$/i, async message => {
     log('Rolling');
     message.channel.send(dedent`
       ${randomValue(values)} | ${randomValue(values)} | ${randomValue(values)}

@@ -1,5 +1,6 @@
 import { URL } from 'url';
 import pkg from '../../../package';
+import aquarius from '../..';
 
 /**
  * Get the raw URL to add Aquarius to your Guild
@@ -13,9 +14,14 @@ export function botLink() {
   return url.href;
 }
 
-// TODO: Document
+/**
+ * Get the host URL for Aquarius
+ * @return {string} The service URL for Aquarius (localhost in development mode)
+ */
 export function getHost() {
-  return process.env.NOW_URL || 'http://localhost:3000';
+  return process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000'
+    : aquarius.config.url;
 }
 
 /**
@@ -42,7 +48,6 @@ export function getDashboardLink() {
   // TODO: Generate Web Link
   return '';
 }
-
 
 /**
  * Get the URL for Aquarius Documentation

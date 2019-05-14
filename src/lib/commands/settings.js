@@ -21,7 +21,9 @@ export default class Settings {
    * @param {string} description - A description of what the setting does
    */
   register(key, description, defaultValue) {
-    aquarius.commandConfigs.get(this.name).addSetting(key, description, defaultValue);
+    aquarius.commandConfigs
+      .get(this.name)
+      .addSetting(key, description, defaultValue);
   }
 
   /**

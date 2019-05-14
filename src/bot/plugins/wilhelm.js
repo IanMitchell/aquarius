@@ -3,13 +3,17 @@ import debug from 'debug';
 
 const log = debug('Wilhelm');
 
-const WILHELM_SCREAM = path.join(__dirname, '../../../data/wilhelm/WilhelmScreap.mp3');
+const WILHELM_SCREAM = path.join(
+  __dirname,
+  '../../../data/wilhelm/WilhelmScreap.mp3'
+);
 
 // TODO: Write Info, test, analytics, enable
 // May require discord.js v12: https://github.com/discordjs/discord.js/issues/2820
 export const info = {
   name: 'Wilhelm',
-  description: 'Will occassionaly Wilhelm Scream at a specific user (Sorry Shaun)',
+  description:
+    'Will occassionaly Wilhelm Scream at a specific user (Sorry Shaun)',
   disabled: true,
 };
 
@@ -70,10 +74,7 @@ function voiceCheck(aquarius, settings) {
     }
   });
 
-  setTimeout(
-    () => voiceCheck(aquarius, settings),
-    getRandomInterval()
-  );
+  setTimeout(() => voiceCheck(aquarius, settings), getRandomInterval());
 }
 
 /** @type {import('../../typedefs').Command} */
@@ -81,9 +82,6 @@ export default async ({ aquarius, settings }) => {
   settings.register('target', 'User ID to Target', null);
 
   aquarius.on('ready', () => {
-    setTimeout(
-      () => voiceCheck(aquarius, settings),
-      getRandomInterval()
-    );
+    setTimeout(() => voiceCheck(aquarius, settings), getRandomInterval());
   });
 };

@@ -7,11 +7,11 @@ import URL from 'url';
 import { Constants } from 'discord.js';
 import aquarius from '../src';
 import { botLink } from '../src/lib/helpers/links';
-import { getMetricHandler } from './metrics';
+// import { getMetricHandler } from './metrics';
 
 const log = debug('Server');
 
-const metricHandler = getMetricHandler();
+// const metricHandler = getMetricHandler();
 
 // Web Dashboard
 const app = next({
@@ -19,7 +19,6 @@ const app = next({
   dir: __dirname,
 });
 const handle = app.getRequestHandler();
-
 
 function handleLink(request, response) {
   response.setHeader('Location', botLink());
@@ -54,7 +53,7 @@ const server = micro(async (request, response) => {
 // Socket.io Events
 const io = socketio(server);
 
-io.on('connection', (socket) => {
+io.on('connection', socket => {
   socket.on('disconnect', () => {
     log('user disconnect');
   });

@@ -11,7 +11,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^gdq$/i, async (message) => {
+  aquarius.onCommand(/^gdq$/i, async message => {
     log('Getting message');
     aquarius.loading.start(message.channel);
 
@@ -21,7 +21,9 @@ export default async ({ aquarius, analytics }) => {
       message.channel.send(body);
     } catch (error) {
       log(error);
-      message.channel.send("Sorry, I wasn't able to create a donation message!");
+      message.channel.send(
+        "Sorry, I wasn't able to create a donation message!"
+      );
     }
 
     aquarius.loading.stop(message.channel);

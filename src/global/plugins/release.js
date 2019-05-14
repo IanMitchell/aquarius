@@ -18,7 +18,10 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.on('ready', async () => {
-    const setting = await aquarius.database.collection('settings').doc('LAST_RELEASE_ID').get();
+    const setting = await aquarius.database
+      .collection('settings')
+      .doc('LAST_RELEASE_ID')
+      .get();
     let previousVersion = setting.exists && setting.data();
 
     if (!previousVersion) {
@@ -34,12 +37,13 @@ export default async ({ aquarius, analytics }) => {
 
       const message = new RichEmbed({
         title: 'New Release!',
-        description: 'A new version of Aquarius has been released! The changelog is below:',
+        description:
+          'A new version of Aquarius has been released! The changelog is below:',
         url: getDocsLink(),
         color: await getIconColor(aquarius.user.avatarURL),
       });
 
-      json.forEach(async (release) => {
+      json.forEach(async release => {
         if (release.id > previousVersion.value) {
           message.addField(release.name, release.body);
         }
@@ -49,11 +53,13 @@ export default async ({ aquarius, analytics }) => {
         log(`Alerting ${guild.name}`);
         guild.members
           .filter(member => {
-            return member.hasPermission(Permissions.FLAGS.ADMINISTRATOR)
-              && !isBot(member.user);
+            return (
+              member.hasPermission(Permissions.FLAGS.ADMINISTRATOR) &&
+              !isBot(member.user)
+            );
           })
           .array()
-          .forEach(async (member) => {
+          .forEach(async member => {
             try {
               member.send(message);
             } catch (error) {
@@ -64,9 +70,12 @@ export default async ({ aquarius, analytics }) => {
 
       analytics.trackUsage('release', null, { release: json[0].id });
 
-      aquarius.database.collection('settings').doc('LAST_RELEASE_ID').set({
-        value: json[0].id
-      });
+      aquarius.database
+        .collection('settings')
+        .doc('LAST_RELEASE_ID')
+        .set({
+          value: json[0].id,
+        });
     }
   });
 };

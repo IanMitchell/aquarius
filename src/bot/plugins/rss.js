@@ -7,7 +7,8 @@ const log = debug('RSS');
 
 export const info = {
   name: 'rss',
-  description: 'Posts new RSS entries to a channel every five minutes. If the URL has not been posted in the past 50 channel messages, it is considered new.',
+  description:
+    'Posts new RSS entries to a channel every five minutes. If the URL has not been posted in the past 50 channel messages, it is considered new.',
 };
 
 const FREQUENCY = FIVE_MINUTES;
@@ -34,7 +35,11 @@ async function checkForUpdates(guild, url, name, analytics) {
 
     // TODO: Handle no channel better
     if (channel) {
-      channel.send(`Hey ${guild.owner.user}! It looks like my RSS command isn't set up correctly. Please set a URL and channel name. DM me \`settings list rss\`!`);
+      channel.send(
+        `Hey ${
+          guild.owner.user
+        }! It looks like my RSS command isn't set up correctly. Please set a URL and channel name. DM me \`settings list rss\`!`
+      );
     }
 
     return;
@@ -45,7 +50,11 @@ async function checkForUpdates(guild, url, name, analytics) {
       log(err);
 
       // Don't repeat error messages
-      const errorPosted = await checkForPastContent(channel, 'Could not parse this RSS feed', 1);
+      const errorPosted = await checkForPastContent(
+        channel,
+        'Could not parse this RSS feed',
+        1
+      );
       if (!errorPosted) {
         channel.send(`Could not parse this RSS feed: ${url}`);
       }
@@ -53,7 +62,7 @@ async function checkForUpdates(guild, url, name, analytics) {
       return;
     }
 
-    rss.reverse().forEach(async (entry) => {
+    rss.reverse().forEach(async entry => {
       const posted = await checkForPastContent(channel, entry.link);
       if (!posted) {
         log(`Posting ${entry.title} to ${guild.name}`);
@@ -61,7 +70,10 @@ async function checkForUpdates(guild, url, name, analytics) {
 
         ${entry.link}`);
 
-        analytics.trackUsage('new entry', null, { title: entry.title, link: entry.link });
+        analytics.trackUsage('new entry', null, {
+          title: entry.title,
+          link: entry.link,
+        });
       }
     });
   });

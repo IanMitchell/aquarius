@@ -28,11 +28,17 @@ function pushMessage(message, stackSize) {
     messageStack.get(guild.id).set(channel.id, []);
   }
 
-  messageStack.get(guild.id).get(channel.id).push(message.content);
+  messageStack
+    .get(guild.id)
+    .get(channel.id)
+    .push(message.content);
 
   // Only track last couple messages
   if (messageStack.get(guild.id).get(channel.id).length > stackSize) {
-    messageStack.get(guild.id).get(channel.id).shift();
+    messageStack
+      .get(guild.id)
+      .get(channel.id)
+      .shift();
   }
 }
 
@@ -59,9 +65,13 @@ function isSame(message, stackSize) {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, settings, analytics }) => {
   // Default repeat message trigger length
-  settings.register('size', 'Amount of messages to trigger on', MESSAGE_STACK_SIZE);
+  settings.register(
+    'size',
+    'Amount of messages to trigger on',
+    MESSAGE_STACK_SIZE
+  );
 
-  const getSize = (guild) => {
+  const getSize = guild => {
     let val = parseInt(settings.get(guild.id, 'size'), 10);
 
     if (Number.isNaN(val)) {
@@ -72,7 +82,7 @@ export default async ({ aquarius, settings, analytics }) => {
   };
 
   // We want to track bot messages for this too, otherwise it looks weird
-  aquarius.on('message', async (message) => {
+  aquarius.on('message', async message => {
     if (message.content === '' || !message.guild) {
       return;
     }
@@ -81,13 +91,17 @@ export default async ({ aquarius, settings, analytics }) => {
     pushMessage(message, size);
   });
 
-  aquarius.onMessage(info, async (message) => {
+  aquarius.onMessage(info, async message => {
     if (message.content === '' || !message.guild) {
       return;
     }
 
     if (isSame(message, getSize(message.guild))) {
-      log(`Sending '${message.content}' to ${message.guild.name}#${message.channel.name}`);
+      log(
+        `Sending '${message.content}' to ${message.guild.name}#${
+          message.channel.name
+        }`
+      );
       messageStack.get(message.guild.id).set(message.channel.id, []);
       message.channel.send(message.content);
 

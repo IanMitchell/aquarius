@@ -7,9 +7,9 @@
  */
 
 /**
-* Function that defines commands and plugins
-* @typedef {({ aquarius, settings, analytics}: CommandParameter) => null} Command
-*/
+ * Function that defines commands and plugins
+ * @typedef {({ aquarius, settings, analytics}: CommandParameter) => null} Command
+ */
 
 /**
  * Description of a CommandParameter passed into Plugins and Commands
@@ -35,4 +35,4 @@
  */
 
 // Needed to have typedefs work
-export default () => { };
+export default () => {};

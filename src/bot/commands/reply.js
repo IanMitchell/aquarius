@@ -26,7 +26,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.on('ready', () => {
     log('Loading Responses');
 
-    aquarius.guilds.map(async (guild) => {
+    aquarius.guilds.map(async guild => {
       // This loop will be run twice - the first is the 'real' time, and the
       // second is the trigger map generation. We only want to have this run
       // on the real initialization.
@@ -51,7 +51,7 @@ export default async ({ aquarius, analytics }) => {
     });
   });
 
-  aquarius.onMessage(info, async (message) => {
+  aquarius.onMessage(info, async message => {
     const { id } = message.guild;
     const content = message.cleanContent.trim().toLowerCase();
 
@@ -63,12 +63,15 @@ export default async ({ aquarius, analytics }) => {
     }
   });
 
-  aquarius.onCommand(/^reply list$/i, async (message) => {
+  aquarius.onCommand(/^reply list$/i, async message => {
     log('Listing replies');
 
-    if (RESPONSES.has(message.guild.id) && RESPONSES.get(message.guild.id).size > 0) {
+    if (
+      RESPONSES.has(message.guild.id) &&
+      RESPONSES.get(message.guild.id).size > 0
+    ) {
       const entries = Array.from(RESPONSES.get(message.guild.id)).reduce(
-        (str, [key, value]) => str + `* '${key}'\n`,
+        (str, [key]) => `${str} * '${key}'\n`,
         ''
       );
 
@@ -84,34 +87,42 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('list', message);
   });
 
-  aquarius.onCommand(/^reply remove "(?<trigger>[\s\S]+)"$/i, async (message, { groups }) => {
-    if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
-      log(`Removing ${groups.trigger}`);
+  aquarius.onCommand(
+    /^reply remove "(?<trigger>[\s\S]+)"$/i,
+    async (message, { groups }) => {
+      if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
+        log(`Removing ${groups.trigger}`);
 
-      const responses = await aquarius.database.replies
-        .where('guildId', '==', message.guild.id)
-        .where('trigger', '==', groups.trigger.toLowerCase())
-        .get();
+        const responses = await aquarius.database.replies
+          .where('guildId', '==', message.guild.id)
+          .where('trigger', '==', groups.trigger.toLowerCase())
+          .get();
 
-      if (!responses.empty) {
-        responses.docs[0].ref.delete();
-        RESPONSES.get(message.guild.id).delete(groups.trigger.toLowerCase());
+        if (!responses.empty) {
+          responses.docs[0].ref.delete();
+          RESPONSES.get(message.guild.id).delete(groups.trigger.toLowerCase());
 
-        message.channel.send(`Removed '${groups.trigger}'`);
-        analytics.trackUsage('remove', message);
-      } else {
-        message.channel.send(`I couldn't find a reply for '${groups.trigger}', sorry!`);
+          message.channel.send(`Removed '${groups.trigger}'`);
+          analytics.trackUsage('remove', message);
+        } else {
+          message.channel.send(
+            `I couldn't find a reply for '${groups.trigger}', sorry!`
+          );
+        }
       }
     }
-  });
+  );
 
   aquarius.onCommand(
     // Lol :'(
-    new RegExp([
-      '^reply add ',                                          // Cmd Trigger
-      '(["\'])(?<trigger>(?:(?=(\\\\?))\\3[\\s\\S])*?)\\1 ',  // Reply trigger (Quoted text block 1)
-      '(["\'])(?<response>(?:(?=(\\\\?))\\3[\\s\\S])*?)\\1$', // Response (Quoted text block 2)
-    ].join(''), 'i'),
+    new RegExp(
+      [
+        '^reply add ', // Cmd Trigger
+        '(["\'])(?<trigger>(?:(?=(\\\\?))\\3[\\s\\S])*?)\\1 ', // Reply trigger (Quoted text block 1)
+        '(["\'])(?<response>(?:(?=(\\\\?))\\3[\\s\\S])*?)\\1$', // Response (Quoted text block 2)
+      ].join(''),
+      'i'
+    ),
     async (message, { groups }) => {
       if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
         log(`Adding reply: "${groups.trigger}" -> "${groups.response}"`);
@@ -128,7 +139,10 @@ export default async ({ aquarius, analytics }) => {
         });
 
         if (response) {
-          RESPONSES.get(message.guild.id).set(groups.trigger.toLowerCase(), groups.response);
+          RESPONSES.get(message.guild.id).set(
+            groups.trigger.toLowerCase(),
+            groups.response
+          );
           message.channel.send('Reply added!');
           analytics.trackUsage('add', message);
         } else {

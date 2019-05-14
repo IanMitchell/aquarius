@@ -13,7 +13,7 @@ export default class Analytics {
 
   // TODO: Document
   trackUsage(action, message, context = {}) {
-    let ctx = {};
+    const ctx = {};
 
     if (message) {
       if (message.guild) {

@@ -22,31 +22,63 @@ function setGenericMessage(aquarius) {
   }
 }
 
-// TODO: Check for presence (sign in while bot is on)
-// TODO: What if you sign off of discord while streaming?
+function setStreaming(aquarius, game) {
+  aquarius.user.setActivity(game.name, {
+    url: game.url,
+    type: Constants.ActivityTypes.STREAMING,
+  });
+}
+
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  // aquarius.on('presenceUpdate', async (oldUser, newUser) => {
-  //   // If owner starts streaming, advertise it. If they stop, also stop.
-  //   if (
-  //     newUser.id === aquarius.config.owner
-  //     && oldUser.presence.game
-  //     && newUser.presence.game
-  //   ) {
-  //     if (!oldUser.presence.game.streaming && newUser.presence.game.streaming) {
-  //       log('Broadcasting Stream');
-  //       analytics.trackUsage('twitch owner update');
-  //       aquarius.user.setActivity(newUser.presence.game.name, {
-  //         url: newUser.presence.game.url,
-  //         type: Constants.ActivityTypes.STREAMING,
-  //       });
-  //     } else if (oldUser.presence.game.streaming && !newUser.presence.game.streaming) {
-  //       log('Ending Stream Broadcast');
-  //       analytics.trackUsage('twitch owner update');
-  //       setGenericMessage(aquarius);
-  //     }
-  //   }
-  // });
+  aquarius.on('presenceUpdate', async (oldUser, newUser) => {
+    if (newUser.id !== aquarius.config.owner) {
+      return;
+    }
+
+    // No game change means we don't update
+    if (!(oldUser.presence.game && newUser.presence.game)) {
+      return;
+    }
+
+    // User signs off, end a stream
+    if (newUser.presence.status === 'offline') {
+      log('Ending Stream Broadcast');
+
+      setGenericMessage(aquarius);
+      analytics.trackUsage('broadcast twitch');
+    }
+
+    // User signs on while streaming, broadcast it
+    if (
+      oldUser.presence.status === 'offline' &&
+      newUser.presence.status !== 'offline' &&
+      newUser.presence.game.streaming
+    ) {
+      log('Broadcasting Stream');
+
+      setStreaming(aquarius, newUser.presence.game);
+      analytics.trackUsage('broadcast twitch');
+      return;
+    }
+
+    // If owner starts streaming, advertise it.
+    if (!oldUser.presence.game.streaming && newUser.presence.game.streaming) {
+      log('Broadcasting Stream');
+
+      setStreaming(aquarius, newUser.presence.game);
+      analytics.trackUsage('broadcast twitch');
+      return;
+    }
+
+    // If a user stops streaming, also stop.
+    if (oldUser.presence.game.streaming && !newUser.presence.game.streaming) {
+      log('Ending Stream Broadcast');
+
+      setGenericMessage(aquarius);
+      analytics.trackUsage('broadcast twitch');
+    }
+  });
 
   aquarius.on('ready', () => setGenericMessage(aquarius));
 };

@@ -6,7 +6,7 @@ import SocketContext from '../contexts/Socket';
 class MyApp extends App {
   state = {
     socket: null,
-  }
+  };
 
   static async getInitialProps({ Component, ctx }) {
     let pageProps = {};

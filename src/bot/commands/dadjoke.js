@@ -11,15 +11,16 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^dadjoke$/i, async (message) => {
+  aquarius.onCommand(/^dadjoke$/i, async message => {
     log('Sending dadjoke');
     aquarius.loading.start(message.channel);
 
     try {
       const response = await fetch('https://icanhazdadjoke.com/', {
         headers: {
-          'Accept': 'text/plain',
-          'User-Agent': 'Aquarius-V2 (https://github.com/IanMitchell/aquarius-v2)'
+          Accept: 'text/plain',
+          'User-Agent':
+            'Aquarius-V2 (https://github.com/IanMitchell/aquarius-v2)',
         },
       });
 

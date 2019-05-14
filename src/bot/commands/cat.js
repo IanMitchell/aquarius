@@ -12,7 +12,7 @@ export const info = {
 };
 
 export default async ({ aquarius }) => {
-  aquarius.onCommand(/^cat$/i, async (message) => {
+  aquarius.onCommand(/^cat$/i, async message => {
     log('Image request');
     aquarius.loading.start(message.channel);
 

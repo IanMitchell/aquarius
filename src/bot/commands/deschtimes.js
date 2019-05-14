@@ -11,9 +11,7 @@ const log = debug('Deschtimes');
 export const info = {
   name: 'deschtimes',
   description: 'Read and Update your Deschtimes database from Discord',
-  permissions: [
-    Permissions.FLAGS.EMBED_LINKS,
-  ],
+  permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: dedent`
     **Blame**:
     \`\`\`@Aquarius blame <show>\`\`\`
@@ -67,12 +65,15 @@ async function getShowPoster(name) {
 
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     };
 
-    const seriesResponse = await fetch(`${TVDB_URL}/search/series?name=${name}`, {
-      headers
-    });
+    const seriesResponse = await fetch(
+      `${TVDB_URL}/search/series?name=${name}`,
+      {
+        headers,
+      }
+    );
     const seriesJson = await seriesResponse.json();
 
     if (!seriesJson.data) {
@@ -83,12 +84,17 @@ async function getShowPoster(name) {
     // a network call
     const { id } = seriesJson.data[0];
 
-    const response = await fetch(`${TVDB_URL}/series/${id}/images/query?keyType=poster`, {
-      headers
-    });
+    const response = await fetch(
+      `${TVDB_URL}/series/${id}/images/query?keyType=poster`,
+      {
+        headers,
+      }
+    );
     const json = await response.json();
 
-    const results = json.data.sort((a, b) => a.ratingsInfo.average < b.ratingsInfo.average);
+    const results = json.data.sort(
+      (a, b) => a.ratingsInfo.average < b.ratingsInfo.average
+    );
 
     const url = `https://thetvdb.com/banners/${results[0].fileName}`;
 
@@ -97,6 +103,8 @@ async function getShowPoster(name) {
   } catch (error) {
     log(error);
   }
+
+  return null;
 }
 
 async function createShowEmbed(show) {
@@ -135,11 +143,20 @@ async function createShowEmbed(show) {
   const airDate = new Date(show.air_date);
 
   if (updatedDate > airDate) {
-    embed.addField('Last Update', formatDistance(updatedDate, new Date(), { addSuffix: true }));
+    embed.addField(
+      'Last Update',
+      formatDistance(updatedDate, new Date(), { addSuffix: true })
+    );
   } else if (airDate > Date.now()) {
-    embed.addField('Airs', formatDistance(airDate, new Date(), { addSuffix: true }));
+    embed.addField(
+      'Airs',
+      formatDistance(airDate, new Date(), { addSuffix: true })
+    );
   } else {
-    embed.addField('Aired', formatDistance(new Date(), airDate, { addSuffix: true }));
+    embed.addField(
+      'Aired',
+      formatDistance(new Date(), airDate, { addSuffix: true })
+    );
   }
 
   return embed;
@@ -167,7 +184,9 @@ export default async ({ aquarius, analytics }) => {
 
     if (!check.valid) {
       log('Invalid permissions');
-      message.channel.send(aquarius.permissions.getRequestMessage(check.missing));
+      message.channel.send(
+        aquarius.permissions.getRequestMessage(check.missing)
+      );
       return;
     }
 
@@ -188,7 +207,9 @@ export default async ({ aquarius, analytics }) => {
     } catch (error) {
       log(error);
       const owner = await getBotOwner();
-      message.channel.send(`Sorry, there was a problem. ${owner} might be able to help!`);
+      message.channel.send(
+        `Sorry, there was a problem. ${owner} might be able to help!`
+      );
     } finally {
       aquarius.loading.stop(message.channel);
     }
@@ -206,7 +227,9 @@ export default async ({ aquarius, analytics }) => {
 
       if (!check.valid) {
         log('Invalid permissions');
-        message.channel.send(aquarius.permissions.getRequestMessage(check.missing));
+        message.channel.send(
+          aquarius.permissions.getRequestMessage(check.missing)
+        );
         return;
       }
 
@@ -222,7 +245,10 @@ export default async ({ aquarius, analytics }) => {
         body.append('position', groups.position);
         body.append('auth', SHOWTIMES.KEY);
 
-        const response = await fetch(`${SHOWTIMES.SERVER}/staff`, { method: 'PUT', body });
+        const response = await fetch(`${SHOWTIMES.SERVER}/staff`, {
+          method: 'PUT',
+          body,
+        });
         const data = await response.json();
 
         if (!response.ok) {
@@ -233,7 +259,10 @@ export default async ({ aquarius, analytics }) => {
 
         message.channel.send(data.message);
 
-        const showData = await getShowData(message.guild.id, groups.show.trim());
+        const showData = await getShowData(
+          message.guild.id,
+          groups.show.trim()
+        );
         if (showData.message) {
           return;
         }
@@ -244,7 +273,9 @@ export default async ({ aquarius, analytics }) => {
       } catch (error) {
         log(error);
         const owner = await getBotOwner();
-        message.channel.send(`Sorry, there was a problem. ${owner} might be able to help!`);
+        message.channel.send(
+          `Sorry, there was a problem. ${owner} might be able to help!`
+        );
       } finally {
         aquarius.loading.stop(message.channel);
       }
@@ -264,7 +295,10 @@ export default async ({ aquarius, analytics }) => {
       body.append('username', message.author.id);
       body.append('auth', SHOWTIMES.KEY);
 
-      const response = await fetch(`${SHOWTIMES.SERVER}/release`, { method: 'PUT', body });
+      const response = await fetch(`${SHOWTIMES.SERVER}/release`, {
+        method: 'PUT',
+        body,
+      });
       const data = await response.json();
 
       message.channel.send(data.message);
@@ -272,20 +306,24 @@ export default async ({ aquarius, analytics }) => {
     } catch (error) {
       log(error);
       const owner = await getBotOwner();
-      message.channel.send(`Sorry, there was a problem. ${owner} might be able to help!`);
+      message.channel.send(
+        `Sorry, there was a problem. ${owner} might be able to help!`
+      );
     } finally {
       aquarius.loading.stop(message.channel);
     }
   });
 
   // TODO: Deprecate and move into `.anime airing <show>`
-  aquarius.onCommand(/^airing$/i, async (message) => {
+  aquarius.onCommand(/^airing$/i, async message => {
     log('Airing request');
 
     try {
       aquarius.loading.start(message.channel);
 
-      const uri = `${SHOWTIMES.SERVER}/shows.json?platform=discord&channel=${message.guild.id}`;
+      const uri = `${SHOWTIMES.SERVER}/shows.json?platform=discord&channel=${
+        message.guild.id
+      }`;
 
       const response = await fetch(uri);
       const data = await response.json();
@@ -302,10 +340,14 @@ export default async ({ aquarius, analytics }) => {
       }
 
       const msg = data.shows.reduce(
-        (str, show) => (str + dedent`
+        (str, show) =>
+          str +
+          dedent`
           **${show.name}** #${show.episode_number}
-          Airs ${formatDistance(new Date(show.air_date), new Date(), { addSuffix: true })}.\n\n
-        `),
+          Airs ${formatDistance(new Date(show.air_date), new Date(), {
+            addSuffix: true,
+          })}.\n\n
+        `,
         ''
       );
 
@@ -314,7 +356,9 @@ export default async ({ aquarius, analytics }) => {
     } catch (error) {
       log(error);
       const owner = await getBotOwner();
-      message.channel.send(`Sorry, there was a problem. ${owner} might be able to help!`);
+      message.channel.send(
+        `Sorry, there was a problem. ${owner} might be able to help!`
+      );
     } finally {
       aquarius.loading.stop(message.channel);
     }

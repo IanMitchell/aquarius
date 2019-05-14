@@ -31,7 +31,7 @@ function getUsage() {
       const idle = final.idle - initial.idle;
       const total = final.total - initial.total;
 
-      resolve(((1 - (idle / total)) * 100).toFixed(2));
+      resolve(((1 - idle / total) * 100).toFixed(2));
     }, 1000)
   );
 }

@@ -177,14 +177,14 @@ export default class GuildSettings {
 
     this.muted = duration;
 
-    setTimeout(
-      () => this.unMuteGuild(),
-      duration
-    );
+    setTimeout(() => this.unMuteGuild(), duration);
 
-    database.guildSettings.doc(this.id).set({
-      mute: Date.now() + duration,
-    }, { merge: true });
+    database.guildSettings.doc(this.id).set(
+      {
+        mute: Date.now() + duration,
+      },
+      { merge: true }
+    );
   }
 
   /**
@@ -214,7 +214,10 @@ export default class GuildSettings {
       this.enabledCommands = new Set(data.enabledCommands);
       this.ignoredUsers = new Set(data.ignoredUsers);
       this.commandConfig = new Map(
-        Object.entries(data.commandConfig).map(([command, settings]) => [command, deserializeMap(settings)])
+        Object.entries(data.commandConfig).map(([command, settings]) => [
+          command,
+          deserializeMap(settings),
+        ])
       );
       this.muted = data.mute;
 
@@ -232,18 +235,21 @@ export default class GuildSettings {
   async saveSettings() {
     log(`Saving settings for ${this.id}`);
     try {
-      const serializedConfig = Array.from(this.commandConfig.entries())
-        .reduce(
-          (config, [command, settings]) => Object.assign(config, { [command]: serializeMap(settings) }),
-          {}
-        );
+      const serializedConfig = Array.from(this.commandConfig.entries()).reduce(
+        (config, [command, settings]) =>
+          Object.assign(config, { [command]: serializeMap(settings) }),
+        {}
+      );
 
-      return database.guildSettings.doc(this.id).set({
-        mute: this.muted,
-        enabledCommands: Array.from(this.enabledCommands),
-        commandConfig: serializedConfig,
-        ignoredUsers: Array.from(this.ignoredUsers),
-      }, { merge: true });
+      return database.guildSettings.doc(this.id).set(
+        {
+          mute: this.muted,
+          enabledCommands: Array.from(this.enabledCommands),
+          commandConfig: serializedConfig,
+          ignoredUsers: Array.from(this.ignoredUsers),
+        },
+        { merge: true }
+      );
     } catch (error) {
       // TODO: Raven Integration
       log(error);
