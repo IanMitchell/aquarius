@@ -101,15 +101,15 @@ export default async ({ aquarius, analytics }) => {
         );
 
       const msg = dedent`
-      **Settings for ${groups.command}**
+        **Settings for ${groups.command}**
 
-      ${keys}
+        ${keys}
 
-      **To modify a setting:**
-      \`\`\`set <command> <setting> <value>\`\`\`
-      **To remove a setting:**
-      \`\`\`unset <command> <setting>\`\`\`
-    `;
+        **To modify a setting:**
+        \`\`\`set <command> <setting> <value>\`\`\`
+        **To remove a setting:**
+        \`\`\`unset <command> <setting>\`\`\`
+      `;
 
       channel.send(msg);
       analytics.trackUsage('settings list', message);
