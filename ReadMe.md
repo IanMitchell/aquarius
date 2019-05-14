@@ -68,7 +68,3 @@ For further information on creating Commands and Plugins check the [Wiki](/wiki)
 ### Visual Studio Code
 
 The repository is setup to work well with Visual Studio Code. You can add breakpoints and run the "Launch Aquarius" task to start the bot in "Debug" mode. Many of the core APIs also have JSDoc integrations for VS Code's intellisence.
-
-```
-
-```
