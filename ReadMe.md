@@ -1,77 +1,65 @@
 # Aquarius
 
-Aquarius is a general purpose [Discord](https://discordapp.com/) chat bot.
+Aquarius is a general purpose [Discord](https://discordapp.com/) chat bot. If you would like to add Aquarius to your server, [click here](https://aquarius.sh/link).
 
-### Adding Aquarius to your Server
-
-[Click here](https://aquarius.sh/link) to add Aquarius to your server.
-
-### Aquarius Assistance
+###### Aquarius Assistance
 
 If you have questions, concerns, suggestions, or need general assistance, please create an issue, tweet [@IanMitchel1](https://twitter.com/ianmitchel1), or join [Aquarius's Discord Server](http://discord.companyinc.company/).
 
 ## Development Guide
 
-Aquarius is a Node.js application that integrates with Azure Cosmos through the MongoDB API bridge. It is hosted on Zeit's Now.
+Aquarius is a Node.js application that integrates with Firebase Cloud Firestore. It is hosted on Zeit's Now.
 
 ### Setup
 
-You'll first need to create a development server and bot, and add the bot to your development server. You can do that by creating the following URL:
+You'll first need to [create a bot](https://discordapp.com/developers/applications/) and add the bot to a development server.
 
-TODO: Define how to create bot
+You'll then need to install v10 or later of [Node.js](https://nodejs.org/en/download/).
 
-#### Prerequisites: Windows
+Sign up for a Firebase account and create a Cloud Firestore database. To connect to it, create a file named `.keyfile.json` with your Firebase credentials. You can [follow the instructions here](https://cloud.google.com/firestore/docs/quickstart-servers#set_up_authentication) to get the contents of the file.
 
-_I highly recommend running Aquarius through [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/about). It's untested on native Windows, but I believe it should work._
-
-Install and run the [Cosmos Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator).
-
-#### Prerequisites: macOS and Linux
-
-Install MongoDB.
-
-### Running Aquarius
-
-Aquarius requires version 10 or later of Node.js.
-
-Create a file named `now-secrets.json` with the following structure:
+Finally, create a file named `now-secrets.json` with the following structure:
 
 ```json
 {
   "@aquarius-env": "development",
-  "@aquarius-token": "<BOT TOKEN>",
-  "@aquarius-client-id": "<BOT CLIENT",
-  "@aquarius-mongo": "mongodb://127.0.0.1:27017/aquarius",
-  ...
+  "@aquarius-token": "token",
+  "@aquarius-client-id": "id",
+  "@aquarius-firebase-keyfile": ".keyfile.json",
+  "@aquarius-firebase-project": "database-name"
 }
 ```
 
-_**Windows:** Change the `@aquarius-mongo` value to be `mongodb://localhost:C2y6yDjf5%2FR%2Bob0N8A7Cgv30VRDJIWEHLM%2B4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw%2FJw%3D%3D@localhost:10255/aquarius?ssl=true` in order to target the emulator._
-
 <details>
   <summary>
-    <strong>Key Descriptions</strong>
+    <strong>Additional Optional Fields</strong>
   </summary>
 
-  * `@aquarius-env` - Defines the `NODE_ENV`
-  * `@aquarius-token` - Discord Token that allows API Access
-  *  `@aquarius-client-id` - Discord Client ID for API Integration
-  * `@aquarius-mongo` - Database URL to connect to
+- `"@aquarius-sentry": "url"` - Integrates with [Sentry](https://sentry.io) error reporting
+- `"@aquarius-dictionary-api-key": "key"` - Enables the Dictionary command
+- `"@aquarius-test-bot-token": "token"` - Enables the test framework (WIP)
+- `"@aquarius-hearthstone-key": "key"` - Enables the Hearthstone command
+- `"@aquarius-timber-key": "key"` - Enables logging to [Timber](https://timber.io)
+- `"@aquarius-showtimes-server": "url"` - Enables the [Deschtimes](http://github.com/ianmitchell/showtimes) command
+- `"@aquarius-showtimes-key": "key"` - Enables the [Deschtimes](http://github.com/ianmitchell/showtimes) command
+- `"@aquarius-tvdb-api-key": "key"` - Adds Images to the [Deschtimes](http://github.com/ianmitchell/showtimes) Command
+- `"@aquarius-github-api-token": "token"` - Enables the Release command to automatically notify users of updates
+- `"@aquarius-dark-sky-api-key": "key"` - Enables the Weather command
+- `"@aquarius-mapbox-api-key": "key"` - Enables the Weather command
+
 </details>
 
 ---
 
-Once the file is created, run
+Once the file is created, run:
 
-```
-$ yarn install
-```
+    $ yarn install
 
-This will fetch all the dependencies needed to run the bot. You can start it with the following command:
+This will fetch all the dependencies needed to run the bot. You can then start Aquarius by running:
 
-```
-$ yarn start
-```
+    $ yarn start
+
+The bot will take a few seconds to connect. You can test it by sending `ping` in a channel it can respond in (Aquarius should reply with `pong`).
 
 ### Adding New Commands and Plugins
 
@@ -80,3 +68,7 @@ For further information on creating Commands and Plugins check the [Wiki](/wiki)
 ### Visual Studio Code
 
 The repository is setup to work well with Visual Studio Code. You can add breakpoints and run the "Launch Aquarius" task to start the bot in "Debug" mode. Many of the core APIs also have JSDoc integrations for VS Code's intellisence.
+
+```
+
+```
