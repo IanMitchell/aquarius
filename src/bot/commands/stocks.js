@@ -16,6 +16,13 @@ const API = 'https://cloud.iexapis.com/stable/stock/';
 
 const TOKEN = `quote?token=${process.env.IEXCLOUD_KEY}`;
 
+function Unix_timestamp(t) {
+  const dt = new Date(t * 1000);
+  const hr = dt.getHours();
+  const m = `0${dt.getMinutes()}`;
+  const s = `0${dt.getSeconds()}`;
+  return `${hr}:${m.substr(-2)}:${s.substr(-2)}`;
+}
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^stocks (?<sign>.+)$/i, async (message, { groups }) => {
@@ -35,7 +42,13 @@ export default async ({ aquarius, analytics }) => {
     try {
       const response = await fetch(`${API}/${groups.sign}/${TOKEN}`);
       const data = await response.json();
-      message.channel.send(data);
+      message.channel.send(`Stock info for ${data.companyName} (${
+        data.symbol
+      }) at ${Unix_timestamp(data.latestUpdate)}\n
+      Today's high: ${data.high}\n
+      Today's low: ${data.low}\n
+      Today's open: ${data.open}\n
+      Today's closing: ${data.close}`);
     } catch (error) {
       log(error);
       message.channel.send(
