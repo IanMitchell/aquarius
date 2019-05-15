@@ -1,44 +1,63 @@
-import { RichEmbed } from 'discord.js';
+import debug from 'debug';
+import { RichEmbed, Permissions } from 'discord.js';
+import fetch from 'node-fetch';
+
+const log = debug('stocks');
 
 // TODO: Write Info
 export const info = {
   name: 'stocks',
   description: '',
+  permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: '',
-  disabled: true,
 };
 
-async function getStock(sign) {
-  return Promise.resolve(sign);
-}
+const API = 'https://cloud.iexapis.com/stable/stock/';
+
+const TOKEN = `quote?token=${process.env.IEXCLOUD_KEY}`;
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(
-    /^stocks(?: (?<duration>(?:1d|1w|1m|3m|6m|1y|2y|5y|10y)))? (?<sign>.+)$/i,
-    async (message, { groups }) => {
-      const data = await getStock(groups.sign);
+  aquarius.onCommand(/^stocks (?<sign>.+)$/i, async (message, { groups }) => {
+    const check = aquarius.permissions.check(
+      message.guild,
+      ...info.permissions
+    );
 
-      /**
-       * Chart
-       * Open
-       * High
-       * Low
-       * Vol
-       * P/E
-       * Market Cap
-       * 52w High
-       * 52w Low
-       * Avg Vol
-       * Yield
-       * Beta
-       * EPS
-       */
-
-      const embed = new RichEmbed().setURL(data.url);
-
-      message.channel.send(embed);
-      analytics.trackUsage('stocks', message);
+    if (!check.valid) {
+      log('Invalid permissions');
+      message.channel.send(
+        aquarius.permissions.getRequestMessage(check.missing)
+      );
+      return;
     }
-  );
+
+    try {
+      const response = await fetch(`${API}/${groups.sign}/${TOKEN}`);
+      const data = await response.json();
+      message.channel.send(data);
+    } catch (error) {
+      log(error);
+      message.channel.send(
+        'Sorry, something went wrong! (Maybe you mistyped the symbol?'
+      );
+    }
+    /**
+     * Chart
+     * Open
+     * High
+     * Low
+     * Vol
+     * P/E
+     * Market Cap
+     * 52w High
+     * 52w Low
+     * Avg Vol
+     * Yield
+     * Beta
+     * EPS
+     */
+
+    analytics.trackUsage('stocks', message);
+  });
 };

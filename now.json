@@ -26,6 +26,7 @@
     "MAPBOX_API_KEY": "@aquarius-mapbox-api-key",
     "FIREBASE_KEYFILE": "@aquarius-firebase-keyfile",
     "FIREBASE_KEYFILE_CONTENTS": "@aquarius-firebase-contents",
-    "FIREBASE_PROJECT": "@aquarius-firebase-project"
+    "FIREBASE_PROJECT": "@aquarius-firebase-project",
+    "IEXCLOUD_KEY": "@aquarius-iexcloud-key"
   }
 }
