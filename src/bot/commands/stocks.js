@@ -12,9 +12,6 @@ export const info = {
   permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: '```@Aquarius stocks <stock symbol>```',
 };
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
 
 const API = 'https://cloud.iexapis.com/stable/stock/';
 
@@ -75,7 +72,7 @@ function createStocksEmbed(data) {
       },
       {
         name: 'Market Cap :moneybag:',
-        value: `$${numberWithCommas(data.marketCap)}`,
+        value: `$${data.marketCap.toLocaleString()}`,
         inline: true,
       },
     ],
