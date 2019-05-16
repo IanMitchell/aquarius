@@ -3,6 +3,11 @@ workflow "Lint" {
   resolves = ["Eslint"]
 }
 
+workflow "PR Lint" {
+  on = "pull_request"
+  resolves = ["Eslint"]
+}
+
 action "Install" {
   uses = "Borales/actions-yarn@master"
   args = "install"
