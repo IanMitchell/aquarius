@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { RichEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
-import { fromUnixTime, format } from 'date-fns';
+import { fromUnixTime } from 'date-fns';
 
 const log = debug('stocks');
 
@@ -12,13 +12,6 @@ export const info = {
   permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: '```@Aquarius stocks <stock symbol>```',
 };
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-const API = 'https://cloud.iexapis.com/stable/stock/';
-
-const TOKEN = `quote?token=${process.env.IEXCLOUD_KEY}`;
 
 function createStocksEmbed(data) {
   const change = `Change ${
@@ -29,7 +22,7 @@ function createStocksEmbed(data) {
   const embed = new RichEmbed({
     description: `*Stock Symbol: $${data.symbol}*`,
     color: 16318579,
-    timestamp: `${fromUnixTime(data.latestUpdate / 1000)}`,
+    timestamp: fromUnixTime(data.latestUpdate / 1000),
     footer: {
       text: 'Data provided by IEX Cloud',
     },
@@ -59,7 +52,7 @@ function createStocksEmbed(data) {
         inline: true,
       },
       {
-        name: `${change}`,
+        name: change,
         value: `${data.change}`,
         inline: true,
       },
@@ -75,11 +68,7 @@ function createStocksEmbed(data) {
       },
       {
         name: 'Market Cap :moneybag:',
-<<<<<<< HEAD
         value: `$${data.marketCap.toLocaleString()}`,
-=======
-        value: `$${numberWithCommas(data.marketCap)}`,
->>>>>>> 6c7c0f56db1965a20bdff7fc454b184a98446208
         inline: true,
       },
     ],
@@ -105,33 +94,21 @@ export default async ({ aquarius, analytics }) => {
 
     try {
       aquarius.loading.start(message.channel);
-      const response = await fetch(`${API}/${groups.sign}/${TOKEN}`);
+      const response = await fetch(
+        `https://cloud.iexapis.com/stable/stock/${groups.sign}/quote?token=${
+          process.env.IEXCLOUD_KEY
+        }`
+      );
       const data = await response.json();
-      const embed = await createStocksEmbed(data);
+      const embed = createStocksEmbed(data);
       message.channel.send(embed);
-      aquarius.loading.stop(message.channel);
     } catch (error) {
       log(error);
       message.channel.send(
         'Sorry, something went wrong! (Maybe you mistyped the symbol?)'
       );
-      aquarius.loading.stop(message.channel);
     }
-    /**
-     * Chart
-     * Open
-     * High
-     * Low
-     * Vol
-     * P/E
-     * Market Cap
-     * 52w High
-     * 52w Low
-     * Avg Vol
-     * Yield
-     * Beta
-     * EPS
-     */
+    aquarius.loading.stop(message.channel);
 
     analytics.trackUsage('stocks', message);
   });
