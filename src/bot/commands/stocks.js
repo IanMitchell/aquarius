@@ -33,42 +33,42 @@ function createStocksEmbed(data) {
     fields: [
       {
         name: 'Open :bell:',
-        value: `${data.open}`,
+        value: data.open.toString(),
         inline: true,
       },
       {
         name: 'Closing :no_bell:',
-        value: `${data.close}`,
+        value: data.close.toString(),
         inline: true,
       },
       {
         name: 'High :dollar:',
-        value: `${data.high}`,
+        value: data.high.toString(),
         inline: true,
       },
       {
         name: 'Low :fire:',
-        value: `${data.low}`,
+        value: data.low.toString(),
         inline: true,
       },
       {
         name: change,
-        value: `${data.change}`,
+        value: `$${data.change.toString()}`,
         inline: true,
       },
       {
         name: '52 Week High  :money_with_wings:',
-        value: `${data.week52High}`,
+        value: data.week52High.toString(),
         inline: true,
       },
       {
         name: '52 Week Low :scream:',
-        value: `${data.week52Low}`,
+        value: data.week52Low.toString(),
         inline: true,
       },
       {
         name: 'Market Cap :moneybag:',
-        value: `$${data.marketCap.toLocaleString()}`,
+        value: data.marketCap.toLocaleString(),
         inline: true,
       },
     ],
