@@ -9,7 +9,6 @@ export const info = {
   name: 'link',
   description: '',
   usage: '',
-  disabled: true,
 };
 
 // TODO: Finish Implementation and Test
@@ -60,22 +59,16 @@ export default async ({ aquarius }) => {
 
   // Gently guide people trying to link accounts in a guild channel
   aquarius.onCommand(/link/i, async message => {
-    if (message.channel.type === 'dm') {
-      message.channel.send(helpMessage(info));
-    } else {
-      message.channel.send(
-        'To link an account with me, please send me "link" via direct message'
-      );
-    }
+    message.channel.send(
+      'To link an account with me, please send me "link" via direct message'
+    );
   });
 
-  aquarius.onTrigger(/link/i, async message => {
-    if (message.channel.type === 'dm') {
-      message.channel.send(helpMessage(info));
-    }
+  aquarius.onDirectMessage(/link/i, async message => {
+    message.channel.send(helpMessage(info));
   });
 
-  aquarius.onTrigger(/link remove/i, async message => {
+  aquarius.onDirectMessage(/link remove/i, async message => {
     if (message.channel.type === 'dm') {
       log(`Unlink request by ${message.author.username}`);
       // TODO: Prompt for and Remove service link
@@ -83,9 +76,9 @@ export default async ({ aquarius }) => {
   });
 
   // Guide users through linking accounts in DM
-  aquarius.onTrigger(/link add/i, async message => {
+  aquarius.onDirectMessage(/link add/i, async message => {
     if (message.channel.type === 'dm') {
-      if (!activeRequests.has(message.author.id)) {
+      if (activeRequests.has(message.author.id)) {
         return;
       }
 

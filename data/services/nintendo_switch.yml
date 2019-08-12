@@ -1,0 +1,4 @@
+name: Nintendo Switch
+steps:
+  - field: Friend Code
+    instructions: Enter your Nintendo Switch Friend ID code here
