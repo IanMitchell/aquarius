@@ -14,7 +14,11 @@ export const info = {
 const FREQUENCY = FIVE_MINUTES;
 const MESSAGE_LIMIT = 50;
 
-const parser = new Parser();
+const parser = new Parser({
+  headers: {
+    'Cache-Control': 'no-cache',
+  },
+});
 
 // TODO: Maybe move into a lib function
 async function checkForPastContent(channel, content, limit = MESSAGE_LIMIT) {
