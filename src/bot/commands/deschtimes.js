@@ -150,12 +150,12 @@ async function createShowEmbed(show) {
   } else if (airDate > Date.now()) {
     embed.addField(
       'Airs',
-      formatDistance(airDate, new Date(), { addSuffix: true })
+      formatDistance(new Date(), airDate, { addSuffix: true })
     );
   } else {
     embed.addField(
       'Aired',
-      formatDistance(new Date(), airDate, { addSuffix: true })
+      formatDistance(airDate, new Date(), { addSuffix: true })
     );
   }
 
