@@ -1,6 +1,0 @@
-name: Guild Wars 2
-steps:
-  - field: API Key
-    instructions: Visit https://account.arena.net/applications and create a new key titled `Aquarius` with all fields selected. Post the key here.
-  - field: Legendary Item
-    instructions: Send me a legendary weapon

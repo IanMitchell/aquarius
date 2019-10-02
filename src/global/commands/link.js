@@ -1,5 +1,6 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
+import { RichEmbed } from 'discord.js';
 import { helpMessage } from './help';
 
 const log = debug('Link');
@@ -7,16 +8,15 @@ const log = debug('Link');
 // TODO: Write Info
 export const info = {
   name: 'link',
-  description: '',
-  usage: '',
+  description:
+    'Link profiles to your Discord account for easy lookup and API use',
+  usage: 'DM me `link`',
 };
-
-// TODO: Finish Implementation and Test
 
 // DM Timeout
 const LINK_RESPONSE_PERIOD = 1000 * 60 * 5;
 
-function* accountLinkGenerator(services) {
+function* getServiceLinkInformation(services) {
   const accountInformation = {
     name: '',
     fields: [],
@@ -24,11 +24,11 @@ function* accountLinkGenerator(services) {
 
   log('Beginning prompt');
   let input = yield dedent`
-    Hello! There are several services you can link with me. Please respond with a supported service name to begin, or 'stop' at any time to quit.
-
-    **Available Services**
+    Hello! There are several services you can to:
 
     ${services.getServiceNames().join(', ')}
+
+    Which would you link to setup? (You can reply \`stop\` at any time to quit)
   `;
   log(input);
 
@@ -46,8 +46,6 @@ function* accountLinkGenerator(services) {
     accountInformation.fields.push({ name: step.field, value });
   }
 
-  // yield *services.getServiceInformation(input.toLowerCase()).steps;
-
   log('Creating link');
   return accountInformation;
 }
@@ -58,22 +56,98 @@ export default async ({ aquarius }) => {
   const activeRequests = new Set();
 
   // Gently guide people trying to link accounts in a guild channel
-  aquarius.onCommand(/link/i, async message => {
+  aquarius.onCommand(/^link$/i, async message => {
     message.channel.send(
       'To link an account with me, please send me "link" via direct message'
     );
   });
 
-  aquarius.onDirectMessage(/link/i, async message => {
+  aquarius.onDirectMessage(/^link$/i, async message => {
+    // TODO: Fix
     message.channel.send(helpMessage(info));
   });
 
-  aquarius.onDirectMessage(/link remove/i, async message => {
-    if (message.channel.type === 'dm') {
-      log(`Unlink request by ${message.author.username}`);
-      // TODO: Prompt for and Remove service link
+  aquarius.onDirectMessage(/^link list$/i, async message => {
+    const services = await aquarius.services.getServiceListForUser(
+      message.author
+    );
+
+    if (services.length < 1) {
+      message.channel.send("You don't have any services linked");
+      return;
     }
+
+    message.channel.send(
+      `You have links to these services: ${services.join(', ')}`
+    );
   });
+
+  aquarius.onDirectMessage(
+    /^link view (?<service>.+)$/i,
+    async (message, { groups }) => {
+      const serviceKey = groups.service.toLowerCase();
+
+      if (!aquarius.services.hasService(serviceKey)) {
+        message.channel.send("Sorry but I don't know that service name");
+        return;
+      }
+
+      const serviceKeys = await aquarius.services.getServiceKeysForUser(
+        message.author
+      );
+
+      if (!serviceKeys.includes(serviceKey)) {
+        message.channel.send(
+          "It doesn't look like you have a link to that service!"
+        );
+        return;
+      }
+
+      const service = aquarius.services.getServiceInformation(serviceKey);
+
+      const embed = new RichEmbed({
+        title: service.name,
+      });
+
+      const fields = await aquarius.services.getServiceForUser(
+        message.author,
+        serviceKey
+      );
+
+      Array.from(Object.entries(fields)).map(([name, value]) =>
+        embed.addField(name, value, true)
+      );
+
+      message.channel.send(embed);
+    }
+  );
+
+  aquarius.onDirectMessage(
+    /^link remove (?<service>.+)$/i,
+    async (message, { groups }) => {
+      const serviceKey = groups.service.toLowerCase();
+
+      if (!aquarius.services.hasService(serviceKey)) {
+        message.channel.send("Sorry but I don't know that service name");
+        return;
+      }
+
+      const list = await aquarius.services.getServiceKeysForUser(
+        message.author
+      );
+
+      if (!list.includes(serviceKey)) {
+        message.channel.send(
+          "It doesn't look like you have a link to that service!"
+        );
+        return;
+      }
+
+      await aquarius.services.removeServiceForUser(message.author, serviceKey);
+
+      message.channel.send('Link removed!');
+    }
+  );
 
   // Guide users through linking accounts in DM
   aquarius.onDirectMessage(/link add/i, async message => {
@@ -86,9 +160,9 @@ export default async ({ aquarius }) => {
       activeRequests.add(message.author.id);
 
       // Begin service name prompt
-      const link = accountLinkGenerator(aquarius.services);
+      const link = getServiceLinkInformation(aquarius.services);
       const initialPrompt = link.next();
-      log(initialPrompt);
+
       message.channel.send(initialPrompt.value);
 
       // Wait for response
@@ -98,7 +172,7 @@ export default async ({ aquarius }) => {
       );
 
       // Response handler
-      collector.on('collect', msg => {
+      collector.on('collect', async msg => {
         // Handle exist requests
         if (msg.cleanContent === 'stop') {
           collector.stop('manual');
@@ -111,15 +185,20 @@ export default async ({ aquarius }) => {
         if (!prompt.done) {
           msg.channel.send(prompt.value);
         } else {
-          // TODO: Prompt has all information we need to save to database
           log(prompt);
-          message.channel.send(dedent`
-            Setting up a link for ${prompt.value.name} with fields:
 
-            \`\`\`
-            ${prompt.value.fields.map(field => `${field.name}: ${field.value}`)}
-            \`\`\`
-          `);
+          const fields = {};
+          prompt.value.fields.forEach(field => {
+            fields[field.name] = field.value;
+          });
+
+          await aquarius.services.setServiceInformationForUser(
+            message.author,
+            prompt.value.name,
+            fields
+          );
+
+          message.channel.send(`Set up a link for ${prompt.value.name}!`);
           collector.stop('linked');
         }
       });
@@ -131,11 +210,11 @@ export default async ({ aquarius }) => {
         // Send a message based on why we stopped listening
         if (reason === 'manual') {
           message.channel.send(
-            'Ok! If you want to link a service later just type `link add`!'
+            'Ok! If you want to link a service later just DM me `link add`!'
           );
         } else if (reason !== 'linked') {
           message.channel.send(
-            "I haven't heard from you, so I'm going to stop the link process. If you want to try again later please type `link add`!"
+            "I haven't heard from you in a bit, so I'm going to stop listening. If you want to try again later please type `link add`!"
           );
         }
 
