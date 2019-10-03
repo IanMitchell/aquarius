@@ -1,0 +1,29 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: aquarius
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: aquarius
+    spec:
+      containers:
+        - name: aquarius
+          image: <IMAGE>
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              cpu: 100m
+          env:
+            - name: NODE_ENV
+              value: production

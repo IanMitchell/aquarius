@@ -1,8 +1,9 @@
-import 'now-env';
+import dotenv from 'dotenv';
 import debug from 'debug';
 import Raven from 'raven';
 import timber from 'timber';
 
+dotenv();
 const log = debug('Host');
 
 async function initialize() {
