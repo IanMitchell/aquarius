@@ -58,7 +58,7 @@ jobs:
         MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}
         FIREBASE_KEYFILE: ${{ secrets.FIREBASE_KEYFILE }}
         FIREBASE_PROJECT: ${{ secrets.FIREBASE_PROJECT }}
-        FIREBASE_CONTENTS: ${{ secrets.FIREBASE_CONTENTS }}
+        FIREBASE_KEYFILE_CONTENTS: ${{ secrets.FIREBASE_KEYFILE_CONTENTS }}
       run: envsubst < $GITHUB_WORKSPACE/config/secrets.yaml > $GITHUB_WORKSPACE/config/secrets.yaml
 
     - name: Deploy to DigitalOcean Kubernetes
