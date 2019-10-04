@@ -10,7 +10,7 @@ jobs:
       - name: Use Node.js 11.x
         uses: actions/setup-node@v1
         with:
-          version: 11.x
+          node-version: 11.x
       - name: Lint
         run: |
           yarn install
