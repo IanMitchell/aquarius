@@ -1,5 +1,8 @@
 FROM alpine:latest
 
+ENV FIREBASE_KEYFILE .keyfile.json
+ENV FIREBASE_KEYFILE_CONTENTS blank
+
 # Setup Bot directory
 WORKDIR /usr/src/bot
 
