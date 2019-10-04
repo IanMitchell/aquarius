@@ -15,6 +15,7 @@
   },
   "scripts": {
     "start": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node -r esm index.js",
+    "build": "node scripts/install-keyfile && cd web && next build",
     "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect-brk=9229 -r esm index.js",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
     "pretest": "yarn run lint",

@@ -11,9 +11,7 @@ RUN apk add --update \
     apk add --no-cache nodejs-current
     apk add yarn \
     && yarn install \
-
-# Build Dashboard
-RUN cd web && next build
+    && yarn run build
 
 # Let's run it!
 CMD [ "yarn", "start" ]
