@@ -61,12 +61,12 @@ jobs:
         MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}
         FIREBASE_KEYFILE: ${{ secrets.FIREBASE_KEYFILE }}
         FIREBASE_PROJECT: ${{ secrets.FIREBASE_PROJECT }}
-      run: envsubst < $GITHUB_WORKSPACE/config/secrets.yaml > $GITHUB_WORKSPACE/config/secrets.yaml
+      run: envsubst < $GITHUB_WORKSPACE/config/secrets.yml > $GITHUB_WORKSPACE/config/secrets.yml
 
     - name: Deploy to DigitalOcean Kubernetes
       uses: docker://lachlanevenson/k8s-kubectl
       with:
-        args: --kubeconfig=/github/workspace/.kubeconfig apply -f $GITHUB_WORKSPACE/config/deployment.yml apply -f $GITHUB_WORKSPACE/config/secrets.yaml
+        args: --kubeconfig=/github/workspace/.kubeconfig apply -f $GITHUB_WORKSPACE/config/deployment.yml apply -f $GITHUB_WORKSPACE/config/secrets.yml
 
     - name: Verify deployment
       uses: docker://lachlanevenson/k8s-kubectl
