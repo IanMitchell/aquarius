@@ -18,6 +18,7 @@ jobs:
     - name: Build container image
       uses: actions/docker/cli@master
       env:
+        FIREBASE_KEYFILE: ${{ secrets.FIREBASE_KEYFILE }}
         FIREBASE_KEYFILE_CONTENTS: ${{ secrets.FIREBASE_KEYFILE_CONTENTS }}
       with:
         args: build -t ianmitchell/aquarius:$(echo $GITHUB_SHA | head -c7) .
