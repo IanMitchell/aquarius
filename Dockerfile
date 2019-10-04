@@ -8,9 +8,10 @@ COPY . .
 
 # Install Bot
 RUN apk add --update --no-cache \
+  make \
+  python \
   nodejs-current \
   yarn \
-  python \
   && yarn install \
   && yarn run build
 
