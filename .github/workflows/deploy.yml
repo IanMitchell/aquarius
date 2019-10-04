@@ -17,6 +17,8 @@ jobs:
 
     - name: Build container image
       uses: actions/docker/cli@master
+      env:
+        FIREBASE_KEYFILE_CONTENTS: ${{ secrets.FIREBASE_KEYFILE_CONTENTS }}
       with:
         args: build -t ianmitchell/aquarius:$(echo $GITHUB_SHA | head -c7) .
 
@@ -58,7 +60,6 @@ jobs:
         MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}
         FIREBASE_KEYFILE: ${{ secrets.FIREBASE_KEYFILE }}
         FIREBASE_PROJECT: ${{ secrets.FIREBASE_PROJECT }}
-        FIREBASE_KEYFILE_CONTENTS: ${{ secrets.FIREBASE_KEYFILE_CONTENTS }}
       run: envsubst < $GITHUB_WORKSPACE/config/secrets.yaml > $GITHUB_WORKSPACE/config/secrets.yaml
 
     - name: Deploy to DigitalOcean Kubernetes
