@@ -5,8 +5,8 @@ on:
 
 jobs:
 
-  build:
-    name: Build, push, and deploy
+  Deploy:
+    name: Digital Ocean
     runs-on: ubuntu-latest
     steps:
 
