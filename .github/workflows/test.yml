@@ -1,0 +1,17 @@
+name: Test
+
+on: [push]
+
+jobs:
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          version: 11.x
+      - name: Lint
+        run: |
+          npm install
+          npm run lint
