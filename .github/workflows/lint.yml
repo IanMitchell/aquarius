@@ -1,4 +1,4 @@
-name: Test
+name: Lint
 
 on: [push]
 
@@ -7,11 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Use Node.js 10.x
+      - name: Use Node.js 11.x
         uses: actions/setup-node@v1
         with:
           version: 11.x
       - name: Lint
         run: |
-          npm install
-          npm run lint
+          yarn install
+          yarn run lint
