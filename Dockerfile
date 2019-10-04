@@ -7,9 +7,10 @@ WORKDIR /usr/src/bot
 COPY . .
 
 # Install Bot
-RUN apk add --update \
-  && apk add --no-cache nodejs-current \
-  && apk add yarn \
+RUN apk add --update --no-cache \
+  nodejs-current \
+  yarn \
+  python \
   && yarn install \
   && yarn run build
 
