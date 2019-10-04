@@ -1,0 +1,109 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: aquarius
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: aquarius
+    spec:
+      containers:
+        - name: aquarius
+          image: <IMAGE>
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              cpu: 100m
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: TOKEN
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: CLIENT_ID
+            - name: SENTRY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: SENTRY
+            - name: DICTIONARY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: DICTIONARY_API_KEY
+            - name: TEST_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: TEST_BOT_TOKEN
+            - name: HEARTHSTONE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: HEARTHSTONE_KEY
+            - name: TIMBER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: TIMBER_KEY
+            - name: SHOWTIMES_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: SHOWTIMES_SERVER
+            - name: SHOWTIMES_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: SHOWTIMES_KEY
+            - name: TVDB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: TVDB_API_KEY
+            - name: GITHUB_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: GITHUB_API_TOKEN
+            - name: DARK_SKY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: DARK_SKY_API_KEY
+            - name: MAPBOX_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: MAPBOX_API_KEY
+            - name: FIREBASE_KEYFILE
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: FIREBASE_KEYFILE
+            - name: FIREBASE_PROJECT
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: FIREBASE_PROJECT
+            - name: FIREBASE_KEYFILE_CONTENTS
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: FIREBASE_KEYFILE_CONTENTS

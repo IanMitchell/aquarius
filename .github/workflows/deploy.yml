@@ -1,0 +1,70 @@
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  Deploy:
+    name: Digital Ocean
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout master
+      uses: actions/checkout@master
+
+    - name: Build container image
+      uses: actions/docker/cli@master
+      with:
+        args: build -t ianmitchell/aquarius:$(echo $GITHUB_SHA | head -c7) .
+
+    - name: Docker Login
+      uses: actions/docker/login@master
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Push image to Docker Hub
+      uses: actions/docker/cli@master
+      with:
+        args: push ianmitchell/aquarius
+
+    - name: Update deployment file
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|ianmitchell/aquarius:'${TAG}'|' $GITHUB_WORKSPACE/config/deployment.yml
+
+    - name: Save DigitalOcean kubeconfig
+      uses: digitalocean/action-doctl@master
+      env:
+        DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      with:
+        args: kubernetes cluster kubeconfig show acquarius > $GITHUB_WORKSPACE/.kubeconfig
+
+    - name: Configure Kubernetes Secrets
+      env:
+        TOKEN: ${{ secrets.TOKEN }}
+        CLIENT_ID: ${{ secrets.CLIENT_ID }}
+        SENTRY: ${{ secrets.SENTRY }}
+        DICTIONARY_API_KEY: ${{ secrets.DICTIONARY_API_KEY }}
+        TEST_BOT_TOKEN: ${{ secrets.TEST_BOT_TOKEN }}
+        HEARTHSTONE_KEY: ${{ secrets.HEARTHSTONE_KEY }}
+        TIMBER_KEY: ${{ secrets.TIMBER_KEY }}
+        SHOWTIMES_SERVER: ${{ secrets.SHOWTIMES_SERVER }}
+        SHOWTIMES_KEY: ${{ secrets.SHOWTIMES_KEY }}
+        TVDB_API_KEY: ${{ secrets.TVDB_API_KEY }}
+        GITHUB_API_TOKEN: ${{ secrets.GITHUB_API_TOKEN }}
+        DARK_SKY_API_KEY: ${{ secrets.DARK_SKY_API_KEY }}
+        MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}
+        FIREBASE_KEYFILE: ${{ secrets.FIREBASE_KEYFILE }}
+        FIREBASE_PROJECT: ${{ secrets.FIREBASE_PROJECT }}
+        FIREBASE_CONTENTS: ${{ secrets.FIREBASE_CONTENTS }}
+      run: envsubst < $GITHUB_WORKSPACE/config/secrets.yaml > $GITHUB_WORKSPACE/config/secrets.yaml
+
+    - name: Deploy to DigitalOcean Kubernetes
+      uses: docker://lachlanevenson/k8s-kubectl
+      with:
+        args: --kubeconfig=/github/workspace/.kubeconfig apply -f $GITHUB_WORKSPACE/config/deployment.yml apply -f $GITHUB_WORKSPACE/config/secrets.yaml
+
+    - name: Verify deployment
+      uses: docker://lachlanevenson/k8s-kubectl
+      with:
+        args: --kubeconfig=$GITHUB_WORKSPACE/.kubeconfig rollout status deployment/aquarius
