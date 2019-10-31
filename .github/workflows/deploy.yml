@@ -19,7 +19,7 @@ jobs:
         env:
           FIREBASE_KEYFILE: ${{ secrets.FIREBASE_KEYFILE }}
           FIREBASE_KEYFILE_CONTENTS: ${{ secrets.FIREBASE_KEYFILE_CONTENTS }}
-        run: docker build -t ianmitchell/aquarius:$(echo $GITHUB_SHA | head -c7) . --build-arg keyfile=${FIREBASE_KEYFILE_CONTENTS// /}
+        run: docker build -t ianmitchell/aquarius:$(echo $GITHUB_SHA | head -c7) . --build-arg keyfile=${FIREBASE_KEYFILE_CONTENTS//[$'\t\r\n ']}
 
       - name: Docker Login
         env:
