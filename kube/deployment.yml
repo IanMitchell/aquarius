@@ -4,11 +4,9 @@ metadata:
   name: aquarius
 spec:
   replicas: 1
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-  minReadySeconds: 5
+  selector:
+    matchLabels:
+      app: aquarius
   template:
     metadata:
       labels:
@@ -16,7 +14,7 @@ spec:
     spec:
       containers:
         - name: aquarius
-          image: <IMAGE>
+          image: ianmitchell/aquarius:latest
           ports:
             - containerPort: 3000
           resources:
