@@ -18,7 +18,7 @@ spec:
         - name: aquarius
           image: <IMAGE>
           ports:
-            - containerPort: 5000
+            - containerPort: 3000
           resources:
             requests:
               cpu: 100m

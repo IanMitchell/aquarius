@@ -18,5 +18,8 @@ RUN apk add --update --no-cache \
   && yarn install \
   && yarn run build
 
+# Open the Dashboard
+EXPOSE 3000
+
 # Let's run it!
 CMD [ "yarn", "start" ]
