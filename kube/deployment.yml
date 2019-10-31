@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: aquarius
-          image: ianmitchell/aquarius:latest
+          image: <IMAGE>
           ports:
             - containerPort: 3000
           resources:
@@ -105,3 +105,5 @@ spec:
                 secretKeyRef:
                   name: aquarius-secrets
                   key: FIREBASE_KEYFILE_CONTENTS
+      imagePullSecrets:
+          - name: dockerhub
