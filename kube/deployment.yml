@@ -100,10 +100,5 @@ spec:
                 secretKeyRef:
                   name: aquarius-secrets
                   key: FIREBASE_PROJECT
-            - name: FIREBASE_KEYFILE_CONTENTS
-              valueFrom:
-                secretKeyRef:
-                  name: aquarius-secrets
-                  key: FIREBASE_KEYFILE_CONTENTS
       imagePullSecrets:
           - name: dockerhub
