@@ -68,3 +68,10 @@ jobs:
         uses: docker://lachlanevenson/k8s-kubectl
         with:
           args: --kubeconfig=/github/workspace/.kubeconfig rollout status deployment/aquarius
+
+      - name: Discord Notification
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: Aquarius has been redeployed
