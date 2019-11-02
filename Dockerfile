@@ -12,6 +12,7 @@ COPY . .
 
 # Install Bot
 RUN apk add --update --no-cache \
+  curl \
   libressl \
   ca-certificates \
   build-base \
@@ -24,5 +25,6 @@ RUN apk add --update --no-cache \
 # Open the Dashboard
 EXPOSE 3000
 
+CMD [ "curl -v https://discordapp.com/api/gateway"]
 # Let's run it!
-CMD [ "yarn", "start" ]
+# CMD [ "yarn", "start" ]
