@@ -24,7 +24,7 @@ spec:
               cpu: 100m
           env:
             - name: NODE_ENV
-              value: production
+              value: development
             - name: TOKEN
               valueFrom:
                 secretKeyRef:
