@@ -26,4 +26,4 @@ RUN apk add --update --no-cache \
 EXPOSE 3000
 
 # Let's run it!
-CMD [ "yarn", "start" ]
+CMD [ "strace", "-vvtf", "yarn", "start" ]
