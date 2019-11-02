@@ -12,8 +12,6 @@ COPY . .
 
 # Install Bot
 RUN apk add --update --no-cache \
-  strace \
-  curl \
   libressl \
   ca-certificates \
   build-base \
@@ -27,4 +25,4 @@ RUN apk add --update --no-cache \
 EXPOSE 3000
 
 # Let's run it!
-CMD [ "strace", "-vtf", "yarn", "start" ]
+CMD [ "yarn", "start" ]
