@@ -12,6 +12,7 @@ COPY . .
 
 # Install Bot
 RUN apk add --update --no-cache \
+  libressl \
   ca-certificates \
   build-base \
   python \
