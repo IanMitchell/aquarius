@@ -14,7 +14,7 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "cross-env DEBUG=* node -r esm index.js",
+    "start": "cross-env DEBUG=*,-engine*,-babel*,-send,-ref*,-express* node -r esm index.js",
     "build": "node scripts/install-keyfile",
     "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect-brk=9229 -r esm index.js",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
