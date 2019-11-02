@@ -12,6 +12,7 @@ COPY . .
 
 # Install Bot
 RUN apk add --update --no-cache \
+  ca-certificates \
   build-base \
   python \
   nodejs-current \
