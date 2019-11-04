@@ -1,11 +1,20 @@
----
-controller:
-  kind: DaemonSet
-  hostNetwork: true
-  dnsPolicy: ClusterFirstWithHostNet
-  daemonset:
-    useHostPort: true
-  service:
-    type: ClusterIP
-rbac:
-  create: true
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: aquarius
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # certmanager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - aquarius.sh
+    secretName: aquarius-tls
+  rules:
+    - host: aquarius.sh
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: aquarius
+              servicePort: 80

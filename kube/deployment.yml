@@ -1,24 +1,3 @@
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: aquarius
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    certmanager.io/cluster-issuer: letsencrypt
-spec:
-  tls:
-  - hosts:
-    - aquarius.sh
-    secretName: letsencrypt
-  rules:
-    - host: aquarius.sh
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: aquarius
-              servicePort: 3000
----
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -35,7 +14,7 @@ spec:
     spec:
       containers:
         - name: aquarius
-          image: ianmitchell/aquarius:caa445b
+          image: ianmitchell/aquarius:53c65af
           ports:
             - containerPort: 3000
           resources:
