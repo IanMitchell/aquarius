@@ -28,6 +28,12 @@ app.get('/ping', (request, response) => {
   return response.status(500).json({ error: 'bot not running' });
 });
 
+app.get('/health', (request, response) => {
+  log('Health Request');
+  // TODO: Check some stuff
+  return response.status(200);
+});
+
 export default (async () => {
   return app.listen(3000);
 })();
