@@ -10,3 +10,8 @@ doctl compute firewall create \
   --tag-names=k8s:CLUSTER_UUID \
   --name=k8s-extra-mycluster
 ```
+
+
+Install cert:
+
+https://docs.cert-manager.io/en/latest/tutorials/acme/quick-start/index.html

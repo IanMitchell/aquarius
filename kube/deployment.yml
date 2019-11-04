@@ -1,10 +1,15 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: aquarius-ingress
+  name: aquarius
   annotations:
     kubernetes.io/ingress.class: nginx
+    certmanager.io/cluster-issuer: letsencrypt
 spec:
+  tls:
+  - hosts:
+    - aquarius.sh
+    secretName: letsencrypt
   rules:
     - host: aquarius.sh
       http:
