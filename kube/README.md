@@ -1,5 +1,9 @@
 # Digital Ocean Kubernetes Setup
 
+Before setting this up, it's very possible to run the bot without Kubernetes. I have this set up so I can add additional monitors and other things to the bot and have it autodeploy on commit - if you don't need that functionality (and you don't when doing dev work) I highly recommend avoiding this.
+
+## Setup
+
 First, create a secret for your Docker Hub credentials:
 
 ```bash
