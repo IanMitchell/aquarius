@@ -8,7 +8,7 @@ If you have questions, concerns, suggestions, or need general assistance, please
 
 ## Development Guide
 
-Aquarius is a Node.js application that integrates with Firebase Cloud Firestore. It is hosted on Zeit's Now.
+Aquarius is a Node.js application that integrates with Firebase Cloud Firestore. It is hosted on Digital Ocean.
 
 ### Setup
 
