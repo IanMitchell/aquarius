@@ -19,7 +19,7 @@ spec:
             - containerPort: 3000
           env:
             - name: NODE_ENV
-              value: development
+              value: production
             - name: TOKEN
               valueFrom:
                 secretKeyRef:
