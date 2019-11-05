@@ -4,7 +4,7 @@ metadata:
   name: aquarius
   annotations:
     kubernetes.io/ingress.class: nginx
-    # certmanager.io/cluster-issuer: letsencrypt
+    cert-manager.io/issuer: "letsencrypt-prod"
 spec:
   tls:
   - hosts:

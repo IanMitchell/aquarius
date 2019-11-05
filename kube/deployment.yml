@@ -14,14 +14,9 @@ spec:
     spec:
       containers:
         - name: aquarius
-          image: ianmitchell/aquarius:53c65af
+          image: <IMAGE>
           ports:
             - containerPort: 3000
-          resources:
-            requests:
-              cpu: 100m
-            limits:
-              cpu: 100m
           env:
             - name: NODE_ENV
               value: development

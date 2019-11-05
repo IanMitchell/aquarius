@@ -15,6 +15,37 @@ doctl compute firewall create \
   --name=aquarius-api
 ```
 
+Install nginx:
+
+```bash
+helm install stable/nginx-ingress --name=aquarius-nginx -f kube/nginx.yml
+```
+
+Install external-dns:
+
+```bash
+helm install --name=aquarius-dns -f kube/dns.yml stable/external-dns
+```
+
 Next, install cert manager:
 
-https://docs.cert-manager.io/en/latest/tutorials/acme/quick-start/index.html
+Ref: https://docs.cert-manager.io/en/latest/tutorials/acme/quick-start/index.html
+
+
+```bash
+kubectl create namespace cert-manager
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml
+```
+
+Verify with:
+
+```
+kubectl get pods --namespace cert-manager
+```
+
+Then install Certs:
+
+```bash
+kubectl apply -f kube/certificate.yml
+kubectl apply -f kube/ingress.yml
+```

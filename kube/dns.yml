@@ -1,0 +1,9 @@
+provider: digitalocean
+digitalocean:
+  # Create the R+W API token at
+  # https://cloud.digitalocean.com/account/api/tokens
+  apiToken: <TOKEN>
+domainFilters:
+  - aquarius.sh
+rbac:
+  create: true
