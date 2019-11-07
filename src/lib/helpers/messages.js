@@ -22,7 +22,5 @@ export function isBot(user) {
 export function getLink(message) {
   const { guild, channel } = message;
 
-  return `https://discordapp.com/channels/${guild.id}/${channel.id}/${
-    message.id
-  }`;
+  return `https://discordapp.com/channels/${guild.id}/${channel.id}/${message.id}`;
 }

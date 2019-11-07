@@ -42,9 +42,7 @@ async function checkForUpdates(guild, url, name, analytics) {
     // TODO: Handle no channel better
     if (channel) {
       channel.send(
-        `Hey ${
-          guild.owner.user
-        }! It looks like my RSS command isn't set up correctly. Please set a URL and channel name. DM me \`settings list rss\`!`
+        `Hey ${guild.owner.user}! It looks like my RSS command isn't set up correctly. Please set a URL and channel name. DM me \`settings list rss\`!`
       );
     }
 
