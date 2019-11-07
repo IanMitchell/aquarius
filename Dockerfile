@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM node:12
 
 ARG keyfile
 ENV FIREBASE_KEYFILE_CONTENTS=$keyfile
@@ -11,15 +11,10 @@ WORKDIR /usr/src/bot
 COPY . .
 
 # Install Bot
-RUN apk add --update --no-cache \
-  libressl \
-  ca-certificates \
-  build-base \
-  python \
-  nodejs-current \
-  yarn \
-  && yarn install \
-  && yarn run build
+RUN yarn install
+
+# Install Keyfile
+RUN yarn run build
 
 # Open the Dashboard
 EXPOSE 3000
