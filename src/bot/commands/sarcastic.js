@@ -20,7 +20,9 @@ export default async ({ aquarius, analytics }) => {
     /^sarcastic (?<string>.+)$/i,
     async (message, { groups }) => {
       log(`Sarcastic request on: ${groups.string}`);
-      message.channel.send(`${sarcastic(groups.string)} :spongebob:`);
+      message.channel.send(
+        `${sarcastic(groups.string)} <:spongebob:316311640188387328>`
+      );
       analytics.trackUsage('sarcastic', message);
     }
   );
