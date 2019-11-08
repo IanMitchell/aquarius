@@ -54,8 +54,8 @@ export default async ({ aquarius, analytics }) => {
         guild.members
           .filter(member => {
             return (
-              member.hasPermission(Permissions.FLAGS.ADMINISTRATOR) &&
-              !isBot(member.user)
+              (member.hasPermission(Permissions.FLAGS.ADMINISTRATOR) &&
+              !isBot(member.user))
             );
           })
           .array()

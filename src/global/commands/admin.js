@@ -218,9 +218,7 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
         log(
-          `Add ${groups.commands} in ${message.guild.name} by ${
-            message.author.username
-          }`
+          `Add ${groups.commands} in ${message.guild.name} by ${message.author.username}`
         );
 
         let response = '';
@@ -276,9 +274,7 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
         log(
-          `Remove ${groups.commands} in ${message.guild.name} by ${
-            message.author.username
-          }`
+          `Remove ${groups.commands} in ${message.guild.name} by ${message.author.username}`
         );
 
         let response = '';

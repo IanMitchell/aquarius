@@ -128,9 +128,7 @@ export default async ({ aquarius, analytics }) => {
   // Handle help for specific command
   aquarius.onCommand(/^help (?<command>.+)$/i, async (message, { groups }) => {
     log(
-      `Help request for ${groups.command} in "${message.guild.name}#${
-        message.channel.name
-      }"`
+      `Help request for ${groups.command} in "${message.guild.name}#${message.channel.name}"`
     );
     const help = aquarius.help.get(groups.command);
 
