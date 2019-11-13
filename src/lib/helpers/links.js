@@ -10,7 +10,7 @@ export function botLink() {
   const url = new URL('https://discordapp.com/oauth2/authorize');
   url.searchParams.append('client_id', process.env.CLIENT_ID);
   url.searchParams.append('scope', 'bot');
-  url.searchParams.append('permissions', '0'); // TODO: Set defaults?
+  url.searchParams.append('permissions', '1543892032');
   return url.href;
 }
 

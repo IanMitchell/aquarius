@@ -155,7 +155,7 @@ async function createShowEmbed(show) {
   } else {
     embed.addField(
       'Aired',
-      formatDistance(new Date(), airDate, { addSuffix: true })
+      formatDistance(airDate, new Date(), { addSuffix: true })
     );
   }
 
@@ -321,9 +321,7 @@ export default async ({ aquarius, analytics }) => {
     try {
       aquarius.loading.start(message.channel);
 
-      const uri = `${SHOWTIMES.SERVER}/shows.json?platform=discord&channel=${
-        message.guild.id
-      }`;
+      const uri = `${SHOWTIMES.SERVER}/shows.json?platform=discord&channel=${message.guild.id}`;
 
       const response = await fetch(uri);
       const data = await response.json();

@@ -4,7 +4,7 @@ node_modules
 .next
 
 # Environment
-now-secrets.json
+.env
 
 # Logs
 *.log

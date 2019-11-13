@@ -11,34 +11,41 @@ function isValidCollectionName(name) {
 const database = (() => {
   log('Connecting to Firebase...');
 
-  const firestore = new Firestore({
-    projectId: process.env.FIREBASE_PROJECT,
-    keyFilename: path.join(
-      __dirname,
-      `../../../${process.env.FIREBASE_KEYFILE}`
-    ),
-  });
+  try {
+    const firestore = new Firestore({
+      projectId: process.env.FIREBASE_PROJECT,
+      keyFilename: path.join(
+        __dirname,
+        `../../../${process.env.FIREBASE_KEYFILE}`
+      ),
+    });
 
-  const methods = Object.create(null);
+    const methods = Object.create(null);
 
-  // Inspired my Mongoist
-  return new Proxy(firestore, {
-    get: (obj, prop) => {
-      const fbProp = obj[prop];
+    // Inspired my Mongoist
+    return new Proxy(firestore, {
+      get: (obj, prop) => {
+        const fbProp = obj[prop];
 
-      // Cache, lazily
-      if (typeof fbProp === 'function') {
-        methods[prop] = methods[prop] || fbProp.bind(firestore);
-        return methods[prop];
-      }
+        // Cache, lazily
+        if (typeof fbProp === 'function') {
+          methods[prop] = methods[prop] || fbProp.bind(firestore);
+          return methods[prop];
+        }
 
-      if (isValidCollectionName(prop)) {
-        return firestore.collection(prop);
-      }
+        if (isValidCollectionName(prop)) {
+          return firestore.collection(prop);
+        }
 
-      return fbProp;
-    },
-  });
+        return fbProp;
+      },
+    });
+  } catch (error) {
+    log('Database failed to initialize!');
+    log(error);
+  }
+
+  return null;
 })();
 
 export default database;

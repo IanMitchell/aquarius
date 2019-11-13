@@ -1,5 +1,5 @@
 import debug from 'debug';
-import parser from 'parse-rss';
+import Parser from 'rss-parser';
 import dedent from 'dedent-js';
 import { FIVE_MINUTES } from '../../lib/helpers/times';
 
@@ -13,6 +13,12 @@ export const info = {
 
 const FREQUENCY = FIVE_MINUTES;
 const MESSAGE_LIMIT = 50;
+
+const parser = new Parser({
+  headers: {
+    'Cache-Control': 'no-cache',
+  },
+});
 
 // TODO: Maybe move into a lib function
 async function checkForPastContent(channel, content, limit = MESSAGE_LIMIT) {
@@ -36,34 +42,19 @@ async function checkForUpdates(guild, url, name, analytics) {
     // TODO: Handle no channel better
     if (channel) {
       channel.send(
-        `Hey ${
-          guild.owner.user
-        }! It looks like my RSS command isn't set up correctly. Please set a URL and channel name. DM me \`settings list rss\`!`
+        `Hey ${guild.owner.user}! It looks like my RSS command isn't set up correctly. Please set a URL and channel name. DM me \`settings list rss\`!`
       );
     }
 
     return;
   }
 
-  parser(url, async (err, rss) => {
-    if (err) {
-      log(err);
+  try {
+    const feed = await parser.parseURL(url);
 
-      // Don't repeat error messages
-      const errorPosted = await checkForPastContent(
-        channel,
-        'Could not parse this RSS feed',
-        1
-      );
-      if (!errorPosted) {
-        channel.send(`Could not parse this RSS feed: ${url}`);
-      }
-
-      return;
-    }
-
-    rss.reverse().forEach(async entry => {
+    feed.items.reverse().forEach(async entry => {
       const posted = await checkForPastContent(channel, entry.link);
+
       if (!posted) {
         log(`Posting ${entry.title} to ${guild.name}`);
         channel.send(dedent`📰 **${entry.title}**
@@ -76,7 +67,18 @@ async function checkForUpdates(guild, url, name, analytics) {
         });
       }
     });
-  });
+  } catch (error) {
+    log(error);
+
+    const errorPosted = await checkForPastContent(
+      channel,
+      'Could not parse this RSS feed',
+      1
+    );
+    if (!errorPosted) {
+      channel.send(`Could not parse this RSS feed: ${url}`);
+    }
+  }
 }
 
 function loop(aquarius, settings, analytics) {
