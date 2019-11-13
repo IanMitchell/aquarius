@@ -3,13 +3,5 @@
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
-  "prettier.singleQuote": true,
-  "prettier.trailingComma": "es5",
-  "prettier.disableLanguages": [
-    "json",
-    "scss",
-    "less",
-    "yaml",
-    "graphql"
-  ]
+  "editor.formatOnSave": true
 }

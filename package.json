@@ -38,7 +38,6 @@
     "esm": "^3.1.1",
     "express": "^4.17.1",
     "form-data": "^2.3.3",
-    "grpc": "^1.20.3",
     "js-yaml": "^3.10.0",
     "node-fetch": "^2.3.0",
     "node-vibrant": "^3.0.0",
