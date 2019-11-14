@@ -4,7 +4,7 @@ import Discord from 'discord.js';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
-import Raven from './lib/analytics/raven';
+import Sentry from './lib/errors/sentry';
 import * as loading from './lib/core/loading';
 import * as permissions from './lib/core/permissions';
 import * as services from './lib/core/services';
@@ -121,11 +121,10 @@ export class Aquarius extends Discord.Client {
     this.loadCommands();
 
     this.on('ready', this.initialize);
-    this.on('error', error =>
-      Raven.captureException(error, () => {
-        errorLog(error);
-      })
-    );
+    this.on('error', error => {
+      errorLog(error);
+      Sentry.captureException(error);
+    });
   }
 
   /**
@@ -241,16 +240,15 @@ export class Aquarius extends Discord.Client {
           });
 
           this.commandList.set(command.info.name, command.info);
-        } catch (err) {
-          Raven.captureException(err);
-          errorLog(err);
+        } catch (error) {
+          errorLog(error);
+          Sentry.captureException(error);
         }
-      } catch (e) {
-        Raven.captureException(e, () => {
-          errorLog(file);
-          errorLog(e);
-          process.exit(1);
-        });
+      } catch (error) {
+        errorLog(file);
+        errorLog(error);
+        Sentry.captureException(error);
+        process.exit(1);
       }
     }
   }
@@ -314,9 +312,9 @@ export class Aquarius extends Discord.Client {
           // TODO: Benchmark?
           await handler(message, match);
         }
-      } catch (err) {
-        Raven.captureException(err);
-        errorLog(err);
+      } catch (error) {
+        errorLog(error);
+        Sentry.captureException(error);
       }
     }
   }
@@ -337,8 +335,8 @@ export class Aquarius extends Discord.Client {
           handler(message, match);
         }
       } catch (error) {
-        Raven.captureException(error);
         errorLog(error);
+        Sentry.captureException(error);
       }
     }
   }

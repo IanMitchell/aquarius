@@ -2,6 +2,7 @@ import debug from 'debug';
 import { RichEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import { DOMParser } from 'xmldom';
+import Sentry from '../../lib/errors/sentry';
 import { capitalize } from '../../lib/helpers/strings';
 
 const log = debug('Define');
@@ -74,8 +75,9 @@ export default async ({ aquarius, analytics }) => {
 
       message.channel.send(embed);
       analytics.trackUsage('define', message);
-    } catch (err) {
-      log(err);
+    } catch (error) {
+      log(error);
+      Sentry.captureException(error);
     }
 
     aquarius.loading.stop(message.channel);

@@ -1,5 +1,6 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
+import Sentry from '../../lib/errors/sentry';
 import { humanize } from '../../lib/helpers/lists';
 import { pluralize } from '../../lib/helpers/strings';
 
@@ -58,6 +59,9 @@ async function getGuildTarget(aquarius, message) {
         return 0;
       }
     } catch (error) {
+      log(error);
+      Sentry.captureException(error);
+
       message.channel.send('Sorry, something happened. Please try again!');
       return 0;
     }

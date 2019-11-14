@@ -1,6 +1,7 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { RichEmbed } from 'discord.js';
+import Sentry from '../errors/sentry';
 import { getIconColor } from './colors';
 import { getStandardDate } from './dates';
 
@@ -42,6 +43,7 @@ export async function guildEmbed(guild, ...fields) {
     color = await getIconColor(guild.iconURL);
   } catch (error) {
     log(error);
+    Sentry.captureException(error);
   }
 
   const embed = new RichEmbed()

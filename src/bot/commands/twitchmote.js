@@ -1,6 +1,7 @@
 import debug from 'debug';
 import fetch from 'node-fetch';
 import { Permissions } from 'discord.js';
+import Sentry from '../../lib/errors/sentry';
 import { ONE_HOUR } from '../../lib/helpers/times';
 
 const log = debug('Twitchmote');
@@ -31,6 +32,7 @@ async function getTwitchEmoteList() {
     json.emotes.forEach(emoji => EMOTES.set(emoji.code, getUrl(emoji.id)));
   } catch (error) {
     log(`Error syncing Twitch Emotes`);
+    Sentry.captureException(error);
   }
 }
 
@@ -81,6 +83,8 @@ export default async ({ aquarius, analytics }) => {
         message.channel.send(`I've imported ${emote}!`);
       } catch (error) {
         log(error);
+        Sentry.captureException(error);
+
         message.channel.send("Sorry, I wasn't able to import the emoji :sad:");
       }
 

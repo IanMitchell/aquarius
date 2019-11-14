@@ -5,6 +5,7 @@ import Turndown from 'turndown';
 import downsize from 'downsize';
 import { RichEmbed, Permissions } from 'discord.js';
 import { formatDistance } from 'date-fns';
+import Sentry from '../../lib/errors/sentry';
 
 const log = debug('Anime');
 
@@ -154,6 +155,7 @@ export default async ({ aquarius, analytics }) => {
         message.channel.send(embed);
       } catch (error) {
         log(error);
+        Sentry.captureException(error);
         message.channel.send('Sorry, something went wrong');
       }
 

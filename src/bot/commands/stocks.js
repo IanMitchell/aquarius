@@ -4,6 +4,7 @@ import { parse } from 'date-fns';
 import { RichEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import alphaVantageAPI from 'alphavantage';
+import Sentry from '../../lib/errors/sentry';
 import { getIconColor } from '../../lib/helpers/colors';
 
 const log = debug('stocks');
@@ -188,6 +189,8 @@ export default async ({ aquarius, analytics }) => {
         }
       } catch (error) {
         log(error);
+        Sentry.captureException(error);
+
         message.channel.send(
           'Sorry, something went wrong! Please try again later'
         );
@@ -253,6 +256,8 @@ export default async ({ aquarius, analytics }) => {
         }
       } catch (error) {
         log(error);
+        Sentry.captureException(error);
+
         message.channel.send(
           'Sorry, something went wrong! Please try again later'
         );
@@ -313,6 +318,8 @@ export default async ({ aquarius, analytics }) => {
       message.channel.send(embed);
     } catch (error) {
       log(error);
+      Sentry.captureException(error);
+
       message.channel.send(
         'Sorry, something went wrong! Please try again later'
       );
@@ -366,6 +373,8 @@ export default async ({ aquarius, analytics }) => {
         message.channel.send(embed);
       } catch (error) {
         log(error);
+        Sentry.captureException(error);
+
         message.channel.send(
           'Sorry, something went wrong! Please try again later'
         );

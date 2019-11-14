@@ -1,5 +1,6 @@
 import debug from 'debug';
 import database from '../database';
+import Sentry from '../errors/sentry';
 import { serializeMap, deserializeMap } from '../database/serialization';
 import { TEN_MINUTES } from '../helpers/times';
 
@@ -251,8 +252,9 @@ export default class GuildSettings {
         { merge: true }
       );
     } catch (error) {
-      // TODO: Raven Integration
       log(error);
+      Sentry.captureException(error);
+
       return null;
     }
   }
