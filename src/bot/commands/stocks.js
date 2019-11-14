@@ -43,12 +43,15 @@ function getCurrencyString(value, signed = false) {
 
 async function getStockEmbed(profileData, historyData) {
   const today = historyData.historical[0];
+  const imageColor = await getIconColor(profileData.profile.image);
+
   const changeIcon = `**${
     today.change >= 0
       ? ':chart_with_upwards_trend:'
       : ':chart_with_downwards_trend:'
   } Change**`;
-  const imageColor = await getIconColor(profileData.profile.image);
+  const changeValue =
+    today.open < today.close ? today.change : -1 * today.change;
 
   const embed = new RichEmbed({
     title: `$${profileData.symbol} ${profileData.profile.changesPercentage}`,
@@ -80,6 +83,11 @@ async function getStockEmbed(profileData, historyData) {
         inline: true,
       },
       {
+        name: changeIcon,
+        value: getCurrencyString(changeValue, true),
+        inline: true,
+      },
+      {
         name: '**:dollar: High**',
         value: getCurrencyString(today.high),
         inline: true,
@@ -87,11 +95,6 @@ async function getStockEmbed(profileData, historyData) {
       {
         name: '**:fire: Low**',
         value: getCurrencyString(today.low),
-        inline: true,
-      },
-      {
-        name: changeIcon,
-        value: getCurrencyString(today.change),
         inline: true,
       },
       {
