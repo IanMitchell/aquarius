@@ -1,7 +1,9 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
+import { parse } from 'date-fns';
 import { RichEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
+import alphaVantageAPI from 'alphavantage';
 import { getIconColor } from '../../lib/helpers/colors';
 
 const log = debug('stocks');
@@ -19,8 +21,44 @@ export const info = {
 
     **Get Stock Index Performance**
     \`\`\`@Aquarius stocks indexes\`\`\`
+
+    **Get Sector Performance**
+    \`\`\`@Aquarius stocks sectors [(1d|5d|1m|3m|ytd|1y|3y|5y|10y)]\`\`\`
+    Without a time duration, Aquarius will default to looking at the current day.
   `,
 };
+
+const ALPHA_VANTAGE = alphaVantageAPI({ key: process.env.ALPHA_VANTAGE_KEY });
+
+function normalize(data) {
+  return ALPHA_VANTAGE.util.polish(data);
+}
+
+function getKeyFromDuration(time) {
+  switch (time) {
+    case '1d':
+      return '1day';
+    case '5d':
+      return '5day';
+    case '1m':
+      return '1month';
+    case '3m':
+      return '3month';
+    case 'ytd':
+      return 'ytd';
+    case '1y':
+      return '1year';
+    case '3y':
+      return '3year';
+    case '5y':
+      return '5year';
+    case '10y':
+      return '10year';
+    case 'now':
+    default:
+      return 'real';
+  }
+}
 
 function getCurrencyString(value, signed = false) {
   const amount = parseFloat(value);
@@ -41,20 +79,17 @@ function getCurrencyString(value, signed = false) {
   return '---';
 }
 
-async function getStockEmbed(profileData, historyData) {
-  const today = historyData.historical[0];
+async function getStockEmbed(profileData, priceData) {
   const imageColor = await getIconColor(profileData.profile.image);
 
   const changeIcon = `**${
-    today.change >= 0
+    priceData.change >= 0
       ? ':chart_with_upwards_trend:'
       : ':chart_with_downwards_trend:'
   } Change**`;
-  const changeValue =
-    today.open < today.close ? today.change : -1 * today.change;
 
   const embed = new RichEmbed({
-    title: `$${profileData.symbol} ${profileData.profile.changesPercentage}`,
+    title: profileData.symbol,
     description: profileData.profile.description,
     thumbnail: {
       url: profileData.profile.image,
@@ -65,36 +100,38 @@ async function getStockEmbed(profileData, historyData) {
     },
     color: imageColor,
     footer: {
-      text: 'Data provided by Financial Modeling Prep',
+      text: 'Data provided by Financial Modeling Prep and Alpha Vantage',
     },
     fields: [
       {
-        name: 'Price',
-        value: getCurrencyString(profileData.profile.price),
-      },
-      {
-        name: '**:bell: Open**',
-        value: getCurrencyString(today.open),
-        inline: true,
-      },
-      {
-        name: '**:no_bell: Closing**',
-        value: getCurrencyString(today.close),
+        name: '**:dollar: Price**',
+        value: getCurrencyString(priceData.price),
         inline: true,
       },
       {
         name: changeIcon,
-        value: getCurrencyString(changeValue, true),
+        value: `${getCurrencyString(priceData.change, true)} (${
+          priceData.change_percent
+        })`,
+        inline: true,
+      },
+      {
+        name: '\u200B',
+        value: '\u200B',
+      },
+      {
+        name: '**:bell: Open**',
+        value: getCurrencyString(priceData.open),
         inline: true,
       },
       {
         name: '**:dollar: High**',
-        value: getCurrencyString(today.high),
+        value: getCurrencyString(priceData.high),
         inline: true,
       },
       {
         name: '**:fire: Low**',
-        value: getCurrencyString(today.low),
+        value: getCurrencyString(priceData.low),
         inline: true,
       },
       {
@@ -131,17 +168,22 @@ export default async ({ aquarius, analytics }) => {
       try {
         aquarius.loading.start(message.channel);
 
-        const [profileData, historyData] = await Promise.all(
-          [
-            `https://financialmodelingprep.com/api/v3/company/profile/${groups.sign}/`,
-            `https://financialmodelingprep.com/api/v3/historical-price-full/${groups.sign}?timeseries=5`,
-          ].map(url => fetch(url).then(response => response.json()))
-        );
+        const [profileDataResponse, priceData] = await Promise.all([
+          fetch(
+            `https://financialmodelingprep.com/api/v3/company/profile/${groups.sign}/`
+          ),
+          ALPHA_VANTAGE.data.quote(groups.sign),
+        ]);
+
+        const profileData = await profileDataResponse.json();
 
         if (!profileData.symbol) {
           message.channel.send("I wasn't able to find that stock sign");
         } else {
-          const embed = await getStockEmbed(profileData, historyData);
+          const embed = await getStockEmbed(
+            profileData,
+            normalize(priceData).data
+          );
           message.channel.send(embed);
         }
       } catch (error) {
@@ -252,6 +294,9 @@ export default async ({ aquarius, analytics }) => {
 
       const embed = new RichEmbed({
         title: 'Major Stock Indexes',
+        footer: {
+          text: 'Data provided by Financial Modeling Prep',
+        },
       });
 
       data.majorIndexesList.forEach(index => {
@@ -276,4 +321,58 @@ export default async ({ aquarius, analytics }) => {
     aquarius.loading.stop(message.channel);
     analytics.trackUsage('indexes', message);
   });
+
+  aquarius.onCommand(
+    /^stocks sectors(?: (?<time>1d|5d|1m|3m|ytd|1y|3y|5y|10y))?$/i,
+    async (message, { groups }) => {
+      const time = getKeyFromDuration(groups.time);
+
+      log(`Looking up sectors for ${time}`);
+
+      const check = aquarius.permissions.check(
+        message.guild,
+        ...info.permissions
+      );
+
+      if (!check.valid) {
+        log('Invalid permissions');
+        message.channel.send(
+          aquarius.permissions.getRequestMessage(check.missing)
+        );
+        return;
+      }
+
+      try {
+        aquarius.loading.start(message.channel);
+
+        const data = normalize(await ALPHA_VANTAGE.performance.sector());
+
+        const embed = new RichEmbed({
+          title: `${data.meta.information} (${time} view)`,
+          timestamp: parse(
+            data.meta.updated.replace(/ET /, ''),
+            'p P',
+            new Date()
+          ),
+          footer: {
+            text: 'Data provided by Alpha Vantage',
+          },
+        });
+
+        Object.keys(data[time]).forEach(sector => {
+          embed.addField(`**${sector}**`, data[time][sector], true);
+        });
+
+        message.channel.send(embed);
+      } catch (error) {
+        log(error);
+        message.channel.send(
+          'Sorry, something went wrong! Please try again later'
+        );
+      }
+
+      aquarius.loading.stop(message.channel);
+      analytics.trackUsage('sectors', message);
+    }
+  );
 };

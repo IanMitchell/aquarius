@@ -95,5 +95,10 @@ spec:
                 secretKeyRef:
                   name: aquarius-secrets
                   key: FIREBASE_PROJECT
+            - name: ALPHA_VANTAGE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: ALPHA_VANTAGE_KEY
       imagePullSecrets:
           - name: dockerhub
