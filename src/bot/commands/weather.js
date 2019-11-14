@@ -95,9 +95,7 @@ async function getLatitudeAndLongitude(searchTerm) {
 
 async function getDarkSkyForecast(longitude, latitude) {
   const response = await fetch(
-    `https://api.darksky.net/forecast/${
-      process.env.DARK_SKY_API_KEY
-    }/${latitude},${longitude}`
+    `https://api.darksky.net/forecast/${process.env.DARK_SKY_API_KEY}/${latitude},${longitude}`
   );
   return response.json();
 }

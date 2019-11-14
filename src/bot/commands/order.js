@@ -66,9 +66,7 @@ export default async ({ aquarius, analytics }) => {
       if (rangeMatch) {
         const { groups: rangeGroups } = rangeMatch;
         log(
-          `Matching between ${rangeGroups.lowerBound} and ${
-            rangeGroups.upperBound
-          }`
+          `Matching between ${rangeGroups.lowerBound} and ${rangeGroups.upperBound}`
         );
 
         const min = Math.min(
