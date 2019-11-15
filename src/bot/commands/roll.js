@@ -16,25 +16,24 @@ export const info = {
 function getRolls(amount, die) {
   return new Array(parseInt(amount, 10) || 1)
     .fill('')
-    .map(() => 1 + Math.round(Math.random() * parseInt(die, 10)));
+    .map(() => 1 + Math.floor(Math.random() * parseInt(die, 10)));
 }
 
 function getSequenceSum(sequence) {
   return sequence.rolls.reduce((a, b) => a + b, 0) + sequence.modifier;
 }
 
-function getSequenceDescription({ sign, maxValue, rolls, type, modifier }) {
-  let description = '[';
+function getSequenceDescription({ sign, emoji, rolls, modifier }) {
+  let description = `${emoji}[`;
 
   if (sign) {
-    description = `${sign} [`;
+    description = `${sign} ${emoji}[`;
   }
 
-  description += rolls.map(val => `(${val})`).join(' + ');
-  description += `](/d${maxValue})`;
+  description += `${rolls.join(', ')}]`;
 
   if (modifier) {
-    description += ` ${type} ${modifier}`;
+    description += modifier > 0 ? ` + ${modifier}` : ` - ${modifier * -1}`;
   }
 
   return description;
@@ -45,11 +44,9 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^roll (?<roll>.*)$/i, async (message, { groups }) => {
     const { roll } = groups;
 
-    log(roll);
-
     const values = Array.from(
       roll.matchAll(
-        /(?:(?<sign>[+-]) )?(?<dieCount>\d+)?d(?<dieType>4|6|8|10|12|20|100)(?: ?(?<type>[+-]) ?(?<modifier>\d+))?/gi
+        /(?:(?<sign>[+-]) )?(?<dieCount>\d+)?d(?<dieType>4|6|8|10|12|20|100)(?: ?(?<type>[+-]) ?(?<modifier>\d+(?!d)))?/gi
       )
     );
 
@@ -60,8 +57,8 @@ export default async ({ aquarius, analytics }) => {
         const { sign, dieCount, dieType, type, modifier } = match.groups;
         const sequence = {
           sign,
+          emoji: aquarius.emojiList.get(`d${dieType}`),
           rolls: getRolls(dieCount, dieType),
-          maxValue: dieType,
           modifier: null,
         };
 
@@ -72,27 +69,22 @@ export default async ({ aquarius, analytics }) => {
             value *= -1;
           }
 
-          sequence.type = type;
           sequence.modifier = value;
         }
 
         return sequence;
       });
 
-      log(sequences);
-
       message.channel.send(dedent`
-        ${sequences.reduce((val, sequence) => {
+        **${sequences.reduce((val, sequence) => {
           if (sequence.sign === '-') {
             return val - getSequenceSum(sequence);
           }
 
           return val + getSequenceSum(sequence);
-        }, 0)}
-
-        > ${sequences
-          .map(sequence => getSequenceDescription(sequence))
-          .join(' ')}
+        }, 0)}!** | ${sequences
+        .map(sequence => getSequenceDescription(sequence))
+        .join(' ')}
       `);
     } else {
       message.channel.send(

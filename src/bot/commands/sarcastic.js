@@ -21,7 +21,7 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       log(`Sarcastic request on: ${groups.string}`);
       message.channel.send(
-        `${sarcastic(groups.string)} <:spongebob:316311640188387328>`
+        `${sarcastic(groups.string)} ${aquarius.emojiList.get('spongebob')}`
       );
       analytics.trackUsage('sarcastic', message);
     }

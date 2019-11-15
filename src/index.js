@@ -12,6 +12,7 @@ import * as triggers from './lib/core/triggers';
 import database from './lib/database';
 import DirectMessageManager from './lib/managers/direct-message';
 import GuildManager from './lib/managers/guild-manager';
+import EmojiManager from './lib/managers/emojis';
 import { isDirectMessage, isBot } from './lib/helpers/messages';
 import TriggerMap from './lib/settings/trigger-map';
 import CommandConfig from './lib/settings/command-config';
@@ -62,6 +63,12 @@ export class Aquarius extends Discord.Client {
      * @type { typeof import('./lib/managers/direct-message') }
      */
     this.directMessages = new DirectMessageManager();
+
+    /**
+     * TODO: Document
+     * @type { typeof import('./lib/managers/direct-message') }
+     */
+    this.emojiList = new EmojiManager();
 
     /**
      * A list of every command and plugin
@@ -133,6 +140,7 @@ export class Aquarius extends Discord.Client {
   initialize() {
     // TODO: Make Private
     this.guildManager.initialize();
+    this.emojiList.initialize();
     setupWeeklyGuildLoop();
   }
 
