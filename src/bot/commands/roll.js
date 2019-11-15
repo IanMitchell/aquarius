@@ -88,7 +88,7 @@ export default async ({ aquarius, analytics }) => {
           }
 
           return val + getSequenceSum(sequence);
-        }, 0)}!** | ${sequences
+        }, 0)}** | ${sequences
         .map(sequence => getSequenceDescription(sequence))
         .join(' ')}
       `);
