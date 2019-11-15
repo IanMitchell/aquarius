@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import debug from 'debug';
+import Sentry from '../../lib/errors/sentry';
 
 const log = debug('Fizzbuzz');
 
@@ -32,8 +33,10 @@ export default async ({ aquarius, analytics }) => {
 
           message.channel.send(str);
         }
-      } catch (e) {
-        log(e);
+      } catch (error) {
+        log(error);
+        Sentry.captureException(error);
+
         message.channel.send(
           'Unable to fizzbuzz. Ping @IanMitchel1 on twitter with your complaints'
         );

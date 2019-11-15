@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import debug from 'debug';
+import Sentry from '../../lib/errors/sentry';
 
 const log = debug('DadJoke');
 
@@ -28,6 +29,8 @@ export default async ({ aquarius, analytics }) => {
       message.channel.send(body);
     } catch (error) {
       log(error);
+      Sentry.captureException(error);
+
       message.channel.send("Sorry, I wasn't able to get a dad joke!");
     }
 

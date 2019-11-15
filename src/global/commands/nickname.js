@@ -1,5 +1,6 @@
 import { Permissions } from 'discord.js';
 import debug from 'debug';
+import Sentry from '../../lib/errors/sentry';
 
 const log = debug('Nickname');
 
@@ -39,6 +40,7 @@ export default async ({ aquarius, analytics }) => {
           message.channel.send('Nickname changed!');
           analytics.trackUsage('nickname', message);
         } catch (error) {
+          Sentry.captureException(error);
           message.channel.send(
             "I couldn't update my nickname - please make sure it's valid!"
           );

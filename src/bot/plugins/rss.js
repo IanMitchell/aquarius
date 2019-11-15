@@ -1,6 +1,7 @@
 import debug from 'debug';
 import Parser from 'rss-parser';
 import dedent from 'dedent-js';
+import Sentry from '../../lib/errors/sentry';
 import { FIVE_MINUTES } from '../../lib/helpers/times';
 
 const log = debug('RSS');
@@ -27,6 +28,7 @@ async function checkForPastContent(channel, content, limit = MESSAGE_LIMIT) {
     return messages.array().some(message => message.content.includes(content));
   } catch (error) {
     log(error);
+    Sentry.captureException(error);
 
     // Assume content exists
     return true;
@@ -69,6 +71,7 @@ async function checkForUpdates(guild, url, name, analytics) {
     });
   } catch (error) {
     log(error);
+    Sentry.captureException(error);
 
     const errorPosted = await checkForPastContent(
       channel,

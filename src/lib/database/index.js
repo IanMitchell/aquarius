@@ -1,6 +1,7 @@
 import path from 'path';
 import debug from 'debug';
 import Firestore from '@google-cloud/firestore';
+import Sentry from '../errors/sentry';
 
 const log = debug('Database');
 
@@ -43,6 +44,7 @@ const database = (() => {
   } catch (error) {
     log('Database failed to initialize!');
     log(error);
+    Sentry.captureException(error);
   }
 
   return null;

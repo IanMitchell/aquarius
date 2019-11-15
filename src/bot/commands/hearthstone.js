@@ -1,6 +1,7 @@
 import debug from 'debug';
 import fetch from 'node-fetch';
 import { Permissions } from 'discord.js';
+import Sentry from '../../lib/errors/sentry';
 
 const log = debug('Hearthstone');
 
@@ -64,6 +65,7 @@ export default async ({ aquarius, analytics }) => {
         }
       } catch (error) {
         log(error);
+        Sentry.captureException(error);
       }
 
       aquarius.loading.stop(message.channel);

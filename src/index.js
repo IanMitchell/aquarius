@@ -4,7 +4,7 @@ import Discord from 'discord.js';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
-import Raven from './lib/analytics/raven';
+import Sentry from './lib/errors/sentry';
 import * as loading from './lib/core/loading';
 import * as permissions from './lib/core/permissions';
 import * as services from './lib/core/services';
@@ -12,6 +12,7 @@ import * as triggers from './lib/core/triggers';
 import database from './lib/database';
 import DirectMessageManager from './lib/managers/direct-message';
 import GuildManager from './lib/managers/guild-manager';
+import EmojiManager from './lib/managers/emojis';
 import { isDirectMessage, isBot } from './lib/helpers/messages';
 import TriggerMap from './lib/settings/trigger-map';
 import CommandConfig from './lib/settings/command-config';
@@ -62,6 +63,12 @@ export class Aquarius extends Discord.Client {
      * @type { typeof import('./lib/managers/direct-message') }
      */
     this.directMessages = new DirectMessageManager();
+
+    /**
+     * TODO: Document
+     * @type { typeof import('./lib/managers/direct-message') }
+     */
+    this.emojiList = new EmojiManager();
 
     /**
      * A list of every command and plugin
@@ -121,11 +128,10 @@ export class Aquarius extends Discord.Client {
     this.loadCommands();
 
     this.on('ready', this.initialize);
-    this.on('error', error =>
-      Raven.captureException(error, () => {
-        errorLog(error);
-      })
-    );
+    this.on('error', error => {
+      errorLog(error);
+      Sentry.captureException(error);
+    });
   }
 
   /**
@@ -134,6 +140,7 @@ export class Aquarius extends Discord.Client {
   initialize() {
     // TODO: Make Private
     this.guildManager.initialize();
+    this.emojiList.initialize();
     setupWeeklyGuildLoop();
   }
 
@@ -241,16 +248,15 @@ export class Aquarius extends Discord.Client {
           });
 
           this.commandList.set(command.info.name, command.info);
-        } catch (err) {
-          Raven.captureException(err);
-          errorLog(err);
+        } catch (error) {
+          errorLog(error);
+          Sentry.captureException(error);
         }
-      } catch (e) {
-        Raven.captureException(e, () => {
-          errorLog(file);
-          errorLog(e);
-          process.exit(1);
-        });
+      } catch (error) {
+        errorLog(file);
+        errorLog(error);
+        Sentry.captureException(error);
+        process.exit(1);
       }
     }
   }
@@ -314,9 +320,9 @@ export class Aquarius extends Discord.Client {
           // TODO: Benchmark?
           await handler(message, match);
         }
-      } catch (err) {
-        Raven.captureException(err);
-        errorLog(err);
+      } catch (error) {
+        errorLog(error);
+        Sentry.captureException(error);
       }
     }
   }
@@ -337,8 +343,8 @@ export class Aquarius extends Discord.Client {
           handler(message, match);
         }
       } catch (error) {
-        Raven.captureException(error);
         errorLog(error);
+        Sentry.captureException(error);
       }
     }
   }

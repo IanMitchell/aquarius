@@ -1,17 +1,20 @@
 import debug from 'debug';
-import Raven from 'raven';
 import timber from 'timber';
-import { config } from 'dotenv';
+import Sentry from './src/lib/errors/sentry';
 
-config();
 const log = debug('Host');
 
 async function initialize() {
-  log('Loading Bot');
-  await import('./src');
+  try {
+    log('Loading Bot');
+    await import('./src');
 
-  log('Starting Server');
-  await import('./web');
+    log('Starting Server');
+    await import('./web');
+  } catch (error) {
+    log(error);
+    Sentry.captureException(error);
+  }
 }
 
 if (process.env.TIMBER_KEY && process.env.NODE_ENV !== 'development') {
@@ -20,11 +23,4 @@ if (process.env.TIMBER_KEY && process.env.NODE_ENV !== 'development') {
   log('Timber Activated');
 }
 
-if (process.env.SENTRY) {
-  Raven.config(process.env.SENTRY).install();
-  log('Sentry Activated');
-
-  Raven.context(initialize);
-} else {
-  initialize();
-}
+initialize();
