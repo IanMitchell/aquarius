@@ -50,7 +50,7 @@ export default async ({ aquarius, analytics }) => {
       )
     );
 
-    if (values) {
+    if (values.length > 0) {
       log(`Rolling ${roll}`);
 
       const sequences = values.map(match => {
