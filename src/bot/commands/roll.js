@@ -1,9 +1,105 @@
-// TODO: Write Info
+import debug from 'debug';
+import dedent from 'dedent-js';
+
+const log = debug('Roll');
+
 export const info = {
   name: 'roll',
-  description: '',
-  usage: '',
-  disabled: true,
+  description: 'Simulates a tabletop dice roll',
+  usage: dedent`
+    \`\`\`@Aquarius roll <dice>\`\`\`
+
+    See this article for supported dice formats: https://wiki.roll20.net/How_to_Roll_Dice
+  `,
 };
 
-// TODO: Implement
+function getRolls(amount, die) {
+  return new Array(parseInt(amount, 10) || 1)
+    .fill('')
+    .map(() => 1 + Math.round(Math.random() * parseInt(die, 10)));
+}
+
+function getSequenceSum(sequence) {
+  return sequence.rolls.reduce((a, b) => a + b, 0) + sequence.modifier;
+}
+
+function getSequenceDescription({ sign, maxValue, rolls, type, modifier }) {
+  let description = '[';
+
+  if (sign) {
+    description = `${sign} [`;
+  }
+
+  description += rolls.map(val => `(${val})`).join(' + ');
+  description += `](/d${maxValue})`;
+
+  if (modifier) {
+    description += ` ${type} ${modifier}`;
+  }
+
+  return description;
+}
+
+/** @type {import('../../typedefs').Command} */
+export default async ({ aquarius, analytics }) => {
+  aquarius.onCommand(/^roll (?<roll>.*)$/i, async (message, { groups }) => {
+    const { roll } = groups;
+
+    log(roll);
+
+    const values = Array.from(
+      roll.matchAll(
+        /(?:(?<sign>[+-]) )?(?<dieCount>\d+)?d(?<dieType>4|6|8|10|12|20|100)(?: ?(?<type>[+-]) ?(?<modifier>\d+))?/gi
+      )
+    );
+
+    if (values) {
+      log(`Rolling ${roll}`);
+
+      const sequences = values.map(match => {
+        const { sign, dieCount, dieType, type, modifier } = match.groups;
+        const sequence = {
+          sign,
+          rolls: getRolls(dieCount, dieType),
+          maxValue: dieType,
+          modifier: null,
+        };
+
+        if (modifier) {
+          let value = parseInt(modifier, 10);
+
+          if (type === '-') {
+            value *= -1;
+          }
+
+          sequence.type = type;
+          sequence.modifier = value;
+        }
+
+        return sequence;
+      });
+
+      log(sequences);
+
+      message.channel.send(dedent`
+        ${sequences.reduce((val, sequence) => {
+          if (sequence.sign === '-') {
+            return val - getSequenceSum(sequence);
+          }
+
+          return val + getSequenceSum(sequence);
+        }, 0)}
+
+        > ${sequences
+          .map(sequence => getSequenceDescription(sequence))
+          .join(' ')}
+      `);
+    } else {
+      message.channel.send(
+        "Sorry, I don't recognize that format - if I should have, please open an issue! You can check what I support by running `.help roll`"
+      );
+    }
+
+    analytics.trackUsage('roll', message);
+  });
+};
