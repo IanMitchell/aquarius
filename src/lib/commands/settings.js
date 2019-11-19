@@ -8,7 +8,7 @@ import aquarius from '../..';
 export default class Settings {
   /**
    * Creates a new Settings for a given command
-   * @param {CommandInfo} info - The Command info object to use
+   * @param {string} name - The Command name to use
    */
   constructor(name) {
     this.name = name;

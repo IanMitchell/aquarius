@@ -3,7 +3,7 @@
 /**
  * @typedef {import('./index').Aquarius} Aquarius
  * @typedef {import('./lib/commands/settings').default} Settings
- * @typedef {import{'./lib/analytics/commands'}.default} Analytics
+ * @typedef {import('./lib/commands/analytics').default} Analytics
  */
 
 /**

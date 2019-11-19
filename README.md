@@ -1,14 +1,14 @@
 # Aquarius
 
+Aquarius is a general purpose [Discord](https://discordapp.com/) chat bot. If you have questions, concerns, suggestions, or need general assistance, please create an issue, tweet [@IanMitchel1](https://twitter.com/ianmitchel1), or join [Aquarius's Discord Server](http://discord.companyinc.company/).
+
 ---
 
-<p style="text-align: center">
+<p align="center">
   <strong><a href="https://aquarius.sh/link">Click Here to add Aquarius to your server</a></strong>
 </p>
 
 ---
-
-Aquarius is a general purpose [Discord](https://discordapp.com/) chat bot. If you have questions, concerns, suggestions, or need general assistance, please create an issue, tweet [@IanMitchel1](https://twitter.com/ianmitchel1), or join [Aquarius's Discord Server](http://discord.companyinc.company/).
 
 ## Usage
 
