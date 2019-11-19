@@ -2,6 +2,7 @@
 node_modules
 .esm-cache
 .next
+coverage
 
 # Environment
 .env
@@ -14,3 +15,7 @@ node_modules
 
 # Auth
 .keyfile.json
+
+# Facebook-specific Files
+# See: https://github.com/facebook/create-react-app/issues/346
+.watchmanconfig

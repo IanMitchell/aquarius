@@ -1,0 +1,17 @@
+name: Test
+
+on: [push]
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Node.js 11.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 11.x
+      - name: Jest
+        run: |
+          yarn install
+          yarn test

@@ -1,8 +1,1 @@
-/* global prompt */
-
-describe('Ping', () => {
-  test('response', async () => {
-    const response = await prompt('ping');
-    expect(response).toBeMessage('pong');
-  });
-});
+test.todo('Describe Tests');
