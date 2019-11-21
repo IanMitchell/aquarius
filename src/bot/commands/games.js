@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { isBot } from '../../lib/helpers/messages';
+import { isBot } from '../../lib/helpers/messages.js';
 
 const log = debug('Games');
 

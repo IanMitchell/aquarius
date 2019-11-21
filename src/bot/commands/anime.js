@@ -5,7 +5,7 @@ import Turndown from 'turndown';
 import downsize from 'downsize';
 import { RichEmbed, Permissions } from 'discord.js';
 import { formatDistance } from 'date-fns';
-import Sentry from '../../lib/errors/sentry';
+import Sentry from '../../lib/errors/sentry.js';
 
 const log = debug('Anime');
 

@@ -1,5 +1,5 @@
 import { GuildMember } from 'discord.js';
-import aquarius from '../..';
+import aquarius from '../../aquarius.js';
 
 /**
  * @typedef {import('discord.js').User} User

@@ -1,3 +1,4 @@
+import pluralize from 'pluralize';
 import {
   differenceInYears,
   subYears,
@@ -13,7 +14,6 @@ import {
   subMinutes,
   differenceInSeconds,
 } from 'date-fns';
-import { pluralize } from './strings';
 
 /**
  * Takes a Date and creates a standard date string from it

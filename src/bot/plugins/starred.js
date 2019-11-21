@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { Permissions, RichEmbed } from 'discord.js';
-import { getNickname } from '../../lib/core/users';
-import { getLink } from '../../lib/helpers/messages';
+import { getNickname } from '../../lib/core/users.js';
+import { getLink } from '../../lib/helpers/messages.js';
 
 const log = debug('Starred');
 

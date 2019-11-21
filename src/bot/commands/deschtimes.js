@@ -4,8 +4,8 @@ import fetch from 'node-fetch';
 import FormData from 'form-data';
 import { RichEmbed, Permissions } from 'discord.js';
 import formatDistance from 'date-fns/formatDistance';
-import Sentry from '../../lib/errors/sentry';
-import { getBotOwner } from '../../lib/core/users';
+import Sentry from '../../lib/errors/sentry.js';
+import { getBotOwner } from '../../lib/core/users.js';
 
 const log = debug('Deschtimes');
 

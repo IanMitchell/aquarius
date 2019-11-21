@@ -1,8 +1,8 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { Permissions } from 'discord.js';
-import { getDocsLink } from '../../lib/helpers/links';
-import { getBotOwner } from '../../lib/core/users';
+import { getDocsLink } from '../../lib/helpers/links.js';
+import { getBotOwner } from '../../lib/core/users.js';
 
 const log = debug('Greeting');
 

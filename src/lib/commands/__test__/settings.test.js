@@ -1,1 +1,5 @@
-test.todo('Describe Tests');
+import Settings from '../settings.js';
+
+test.todo('Can add a key to command settings');
+
+test.todo('Can retrieve value for guild from settings');

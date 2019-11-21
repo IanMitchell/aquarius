@@ -1,16 +1,16 @@
 import debug from 'debug';
 import timber from 'timber';
-import Sentry from './src/lib/errors/sentry';
+import Sentry from './src/lib/errors/sentry.js';
 
 const log = debug('Host');
 
 async function initialize() {
   try {
     log('Loading Bot');
-    await import('./src');
+    await import('./src/aquarius.js');
 
     log('Starting Server');
-    await import('./web');
+    await import('./web/server.js');
   } catch (error) {
     log(error);
     Sentry.captureException(error);

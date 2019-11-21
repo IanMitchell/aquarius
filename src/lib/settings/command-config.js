@@ -1,4 +1,4 @@
-import aquarius from '../..';
+import aquarius from '../../aquarius.js';
 
 // TODO: Document
 export default class CommandConfig {

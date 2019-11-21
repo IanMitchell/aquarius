@@ -2,7 +2,7 @@ import debug from 'debug';
 import dedent from 'dedent-js';
 import pluralize from 'pluralize';
 import { Permissions } from 'discord.js';
-import { guildEmbed } from '../../lib/helpers/embeds';
+import { guildEmbed } from '../../lib/helpers/embeds.js';
 
 const log = debug('Guild');
 

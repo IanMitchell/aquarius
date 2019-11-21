@@ -1,8 +1,8 @@
 import debug from 'debug';
 import fetch from 'node-fetch';
 import { Permissions } from 'discord.js';
-import Sentry from '../../lib/errors/sentry';
-import { ONE_HOUR } from '../../lib/helpers/times';
+import Sentry from '../../lib/errors/sentry.js';
+import { ONE_HOUR } from '../../lib/helpers/times.js';
 
 const log = debug('Twitchmote');
 

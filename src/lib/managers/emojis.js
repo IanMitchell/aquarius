@@ -1,6 +1,6 @@
 import debug from 'debug';
-import aquarius from '../..';
-import { TEN_MINUTES } from '../helpers/times';
+import aquarius from '../../aquarius.js';
+import { TEN_MINUTES } from '../helpers/times.js';
 
 const log = debug('Emoji Manager');
 

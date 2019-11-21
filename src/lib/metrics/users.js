@@ -1,4 +1,4 @@
-import aquarius from '../..';
+import aquarius from '../../aquarius.js';
 // import { ONE_WEEK, getDateAgo } from '../helpers/times';
 
 // TODO: Document

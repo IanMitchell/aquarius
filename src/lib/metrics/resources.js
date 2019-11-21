@@ -1,7 +1,7 @@
 import os from 'os';
 import prettyBytes from 'pretty-bytes';
 import { formatDistance } from 'date-fns';
-import aquarius from '../..';
+import aquarius from '../../aquarius.js';
 
 function getStats() {
   let totalIdle = 0;

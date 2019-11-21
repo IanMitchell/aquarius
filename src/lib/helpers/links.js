@@ -1,6 +1,6 @@
 import { URL } from 'url';
-import pkg from '../../../package';
-import aquarius from '../..';
+import pkg from '../../../package.json';
+import aquarius from '../../aquarius.js';
 
 /**
  * Get the raw URL to add Aquarius to your Guild
@@ -10,6 +10,8 @@ export function botLink() {
   const url = new URL('https://discordapp.com/oauth2/authorize');
   url.searchParams.append('client_id', process.env.CLIENT_ID);
   url.searchParams.append('scope', 'bot');
+
+  // TODO: Can this be dynamically calculated from flags in Commands?
   url.searchParams.append('permissions', '1543892032');
   return url.href;
 }
@@ -41,19 +43,9 @@ export function getGitHubLink() {
 }
 
 /**
- * Get the URL for the Aquarius Dashboard
- * @returns {string} The URL for the dashboard
- */
-export function getDashboardLink() {
-  // TODO: Generate Web Link
-  return '';
-}
-
-/**
  * Get the URL for Aquarius Documentation
  * @returns {string} The URL for the documentation
  */
 export function getDocsLink() {
-  // TODO: Generate Docs Link
   return `${getHost()}/docs`;
 }

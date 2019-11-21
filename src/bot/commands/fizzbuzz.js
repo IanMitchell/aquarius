@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import debug from 'debug';
-import Sentry from '../../lib/errors/sentry';
+import Sentry from '../../lib/errors/sentry.js';
 
 const log = debug('Fizzbuzz');
 

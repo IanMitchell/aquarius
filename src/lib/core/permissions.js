@@ -1,7 +1,7 @@
+import pluralize from 'pluralize';
 import { Permissions } from 'discord.js';
-import aquarius from '../..';
-import { pluralize } from '../helpers/strings';
-import { humanize } from '../helpers/lists';
+import aquarius from '../../aquarius.js';
+import { humanize } from '../helpers/lists.js';
 
 /**
  * @typedef {import('discord.js').User} User

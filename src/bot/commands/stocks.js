@@ -4,8 +4,8 @@ import { parse } from 'date-fns';
 import { RichEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import alphaVantageAPI from 'alphavantage';
-import Sentry from '../../lib/errors/sentry';
-import { getIconColor } from '../../lib/helpers/colors';
+import Sentry from '../../lib/errors/sentry.js';
+import { getIconColor } from '../../lib/helpers/colors.js';
 
 const log = debug('stocks');
 

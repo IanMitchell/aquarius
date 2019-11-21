@@ -1,10 +1,10 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { formatDistance } from 'date-fns';
-import database from '../../lib/database';
-import Sentry from '../../lib/errors/sentry';
-import { MENTION_USER } from '../../lib/helpers/regex';
-import { getNickname } from '../../lib/core/users';
+import { MENTION_USER } from '@aquarius/matchers';
+import database from '../../lib/database/database.js';
+import Sentry from '../../lib/errors/sentry.js';
+import { getNickname } from '../../lib/core/users.js';
 
 const log = debug('Karma');
 

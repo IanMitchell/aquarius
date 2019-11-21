@@ -4,6 +4,11 @@
   "description": "A highly configurable Discord chatbot",
   "main": "index.js",
   "repository": "ianmitchell/aquarius",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "author": {
     "name": "Ian Mitchell",
     "email": "ian.mitchel1@live.com",
@@ -14,17 +19,14 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "cross-env DEBUG=*,-engine*,-babel*,-send,-ref*,-express* node -r dotenv/config -r esm index.js",
+    "start": "cross-env DEBUG=*,-engine*,-babel*,-send,-ref*,-express* node --experimental-modules -r dotenv/config index.js",
     "build": "node scripts/install-keyfile",
-    "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect-brk=9229 -r dotenv/config -r esm index.js",
+    "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --experimental-modules --nolazy --inspect-brk=9229 -r dotenv/config index.js",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
     "test": "jest"
   },
-  "esm": {
-    "mode": "auto",
-    "cjs": true
-  },
   "dependencies": {
+    "@aquarius/matchers": "0.0.1",
     "@google-cloud/firestore": "^2.6.0",
     "@sentry/node": "5.9.0",
     "alphavantage": "^2.0.0",
@@ -36,7 +38,6 @@
     "discord.js": "^11.5.0",
     "dotenv": "^8.2.0",
     "downsize": "^0.0.8",
-    "esm": "^3.1.1",
     "express": "^4.17.1",
     "form-data": "^3.0.0",
     "js-yaml": "^3.10.0",

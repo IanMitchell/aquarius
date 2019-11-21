@@ -1,6 +1,6 @@
 import { Permissions } from 'discord.js';
 import debug from 'debug';
-import Sentry from '../../lib/errors/sentry';
+import Sentry from '../../lib/errors/sentry.js';
 
 const log = debug('Nickname');
 

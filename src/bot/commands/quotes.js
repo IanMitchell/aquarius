@@ -1,7 +1,7 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { formatDistance } from 'date-fns';
-import { randomValue } from '../../lib/helpers/lists';
+import { randomValue } from '../../lib/helpers/lists.js';
 
 const log = debug('Quotes');
 

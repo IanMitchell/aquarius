@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { getExactTimeInterval } from '../../lib/helpers/dates';
+import { getExactTimeInterval } from '../../lib/helpers/dates.js';
 
 const log = debug('Uptime');
 

@@ -1,40 +1,22 @@
-/**
- * @jest-environment node
- */
+import { start, stop } from '../loading.js';
 
-import { TextChannel } from 'discord.js';
-import * as loading from '../loading';
+const channel = {
+  startTyping: jest.fn(),
+  stopTyping: jest.fn(),
+};
 
-describe('Discord.js API', () => {
-  test('TextChannels have `startTyping`', () => {
-    const channel = new TextChannel({}, {});
-    expect(typeof channel.startTyping).toBe('function');
-  });
-
-  test('TextChannels have `stopTyping`', () => {
-    const channel = new TextChannel({}, {});
-    expect(typeof channel.stopTyping).toBe('function');
+describe('start', () => {
+  test('sends typing activity to channel', () => {
+    start(channel);
+    expect(channel.startTyping).toHaveBeenCalled();
+    expect(channel.stopTyping).not.toHaveBeenCalled();
   });
 });
 
-describe('Loading', () => {
-  const channel = {
-    startTyping: jest.fn(),
-    stopTyping: jest.fn(),
-  };
-
-  beforeEach(() => {
-    channel.startTyping.mockClear();
-    channel.stopTyping.mockClear();
-  });
-
-  test('start calls the correct method', () => {
-    loading.start(channel);
-    expect(channel.startTyping).toHaveBeenCalled();
-  });
-
-  test('stop calls the correct method', () => {
-    loading.stop(channel);
+describe('stop', () => {
+  test('sends stop typing activity to channel', () => {
+    stop(channel);
+    expect(channel.startTyping).not.toHaveBeenCalled();
     expect(channel.stopTyping).toHaveBeenCalled();
   });
 });

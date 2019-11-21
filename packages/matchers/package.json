@@ -1,0 +1,8 @@
+{
+  "name": "@aquarius/matchers",
+  "description": "Regex helpers for Discord messages",
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "matchers.js",
+  "type": "module"
+}

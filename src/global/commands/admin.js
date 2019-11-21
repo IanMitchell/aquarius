@@ -1,8 +1,8 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
-import Sentry from '../../lib/errors/sentry';
-import { humanize } from '../../lib/helpers/lists';
-import { pluralize } from '../../lib/helpers/strings';
+import pluralize from 'pluralize';
+import Sentry from '../../lib/errors/sentry.js';
+import { humanize } from '../../lib/helpers/lists.js';
 
 const log = debug('Admin');
 

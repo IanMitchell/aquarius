@@ -1,12 +1,12 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
+import pluralize from 'pluralize';
 import { RichEmbed, Permissions } from 'discord.js';
-import pkg from '../../../package';
-import { getVanityBotLink, getGitHubLink } from '../../lib/helpers/links';
-import { pluralize } from '../../lib/helpers/strings';
-import { getResourceUsage } from '../../lib/metrics/resources';
-import { getTotalGuildCount } from '../../lib/metrics/guilds';
-import { getTotalUserCount } from '../../lib/metrics/users';
+import pkg from '../../../package.json';
+import { getVanityBotLink, getGitHubLink } from '../../lib/helpers/links.js';
+import { getResourceUsage } from '../../lib/metrics/resources.js';
+import { getTotalGuildCount } from '../../lib/metrics/guilds.js';
+import { getTotalUserCount } from '../../lib/metrics/users.js';
 
 const log = debug('Info');
 
