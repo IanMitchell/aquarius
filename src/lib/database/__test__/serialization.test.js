@@ -1,4 +1,4 @@
-import { serializeMap, deserializeMap } from '../serialization.js';
+import { serializeMap, deserializeMap } from '../serialization';
 
 // Support for serializing maps is coming soon!
 // Once it ships we can remove this code.

@@ -1,9 +1,9 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { RichEmbed } from 'discord.js';
-import Sentry from '../errors/sentry.js';
-import { getIconColor } from './colors.js';
-import { getStandardDate } from './dates.js';
+import Sentry from '../errors/sentry';
+import { getIconColor } from './colors';
+import { getStandardDate } from './dates';
 
 const log = debug('Embeds');
 

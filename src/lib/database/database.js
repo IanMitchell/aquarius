@@ -1,7 +1,7 @@
 import path from 'path';
 import debug from 'debug';
 import Firestore from '@google-cloud/firestore';
-import Sentry from '../errors/sentry.js';
+import Sentry from '../errors/sentry';
 
 const log = debug('Database');
 

@@ -1,6 +1,6 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { helpMessage } from './help.js';
+import { helpMessage } from './help';
 
 const log = debug('Link');
 

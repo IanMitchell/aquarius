@@ -4,7 +4,7 @@ import {
   randomValue,
   shuffle,
   setDifference,
-} from '../lists.js';
+} from '../lists';
 
 describe('humanize', () => {
   test.todo('Handles null arrays');

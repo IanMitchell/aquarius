@@ -1,3 +1,3 @@
-import track from '../track.js';
+import track from '../track';
 
 test.todo('Adds date timestamp to event');

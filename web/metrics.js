@@ -1,11 +1,11 @@
 import dedent from 'dedent-js';
 import fetch from 'node-fetch';
-import { getResourceUsage } from '../src/lib/metrics/resources.js';
+import { getResourceUsage } from '../src/lib/metrics/resources';
 // import { getGuildMetrics, getTotalGuildCount } from '../src/lib/metrics/guilds';
-import { getTotalGuildCount } from '../src/lib/metrics/guilds.js';
-import { ONE_MINUTE } from '../src/lib/helpers/times.js';
-import { getTotalUserCount } from '../src/lib/metrics/users.js';
-import aquarius from '../src/aquarius.js';
+import { getTotalGuildCount } from '../src/lib/metrics/guilds';
+import { ONE_MINUTE } from '../src/lib/helpers/times';
+import { getTotalUserCount } from '../src/lib/metrics/users';
+import aquarius from '../src/aquarius';
 
 // TODO: Generate and store metrics via a cron type system
 

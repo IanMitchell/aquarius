@@ -1,4 +1,4 @@
-import { isDirectMessage, isBot, getLink } from '../messages.js';
+import { isDirectMessage, isBot, getLink } from '../messages';
 
 describe('isDirectMessage', () => {
   test.todo('Only matches DM Channels');

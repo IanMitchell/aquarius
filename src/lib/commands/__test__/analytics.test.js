@@ -1,4 +1,4 @@
-import Analytics from '../analytics.js';
+import Analytics from '../analytics';
 
 test.todo('trackUsage adds message metadata to event');
 

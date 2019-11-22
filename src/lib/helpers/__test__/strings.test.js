@@ -1,4 +1,4 @@
-import { capitalize } from '../strings.js';
+import { capitalize } from '../strings';
 
 describe('capitalize', () => {
   test('Capitalizes first character in string', () => {

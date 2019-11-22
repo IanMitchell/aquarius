@@ -1,4 +1,4 @@
-import { start, stop } from '../loading.js';
+import { start, stop } from '../loading';
 
 const channel = {
   startTyping: jest.fn(),

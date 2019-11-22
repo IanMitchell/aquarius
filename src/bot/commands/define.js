@@ -2,8 +2,8 @@ import debug from 'debug';
 import { RichEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import { DOMParser } from 'xmldom';
-import Sentry from '../../lib/errors/sentry.js';
-import { capitalize } from '../../lib/helpers/strings.js';
+import Sentry from '../../lib/errors/sentry';
+import { capitalize } from '../../lib/helpers/strings';
 
 const log = debug('Define');
 const API = 'http://www.dictionaryapi.com/api/v1/references/collegiate/xml';

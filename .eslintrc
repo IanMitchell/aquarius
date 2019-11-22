@@ -20,7 +20,6 @@
         "requireForBlockBody": false
       }
     ],
-    "import/extensions": ["error", "ignorePackages"],
     "import/prefer-default-export": 0,
     "import/no-cycle": 0,
     "no-restricted-syntax": [

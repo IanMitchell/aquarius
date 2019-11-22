@@ -1,4 +1,6 @@
-import GuildManger from '../guild-manager.js';
+import GuildManger from '../guild-manager';
+
+jest.mock('../../../aquarius.js', () => ({}));
 
 test.todo('Creates new entry when joining guild');
 

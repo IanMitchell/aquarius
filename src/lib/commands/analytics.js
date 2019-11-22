@@ -1,4 +1,4 @@
-import trackEvent from '../analytics/track.js';
+import trackEvent from '../analytics/track';
 
 /**
  * Used to create and store analytic events in Commands and Plugins

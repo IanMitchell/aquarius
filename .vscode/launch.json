@@ -10,15 +10,22 @@
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "yarn",
-      "runtimeArgs": [
-        "run",
-        "debug"
-      ],
+      "runtimeArgs": ["run", "debug"],
       "protocol": "inspector",
-      "port": 9229,
-      "windows": {
-        "useWSL": true
-      }
+      "port": 9229
+    },
+    {
+      "name": "Debug Jest Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/node_modules/.bin/jest",
+        "--runInBand"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229
     }
   ]
 }

@@ -1,4 +1,6 @@
-import EmojiManager from '../emojis.js';
+import EmojiManager from '../emojis';
+
+jest.mock('../../../aquarius.js', () => ({}));
 
 test.todo('Periodically checks for new emojis');
 

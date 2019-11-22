@@ -6,9 +6,9 @@ import {
   // getPermissionName,
   // check,
   // getRequestMessage,
-} from '../permissions.js';
+} from '../permissions';
 
-jest.mock('../../..', () => ({
+jest.mock('../../../aquarius.js', () => ({
   config: {
     owner: 123,
   },

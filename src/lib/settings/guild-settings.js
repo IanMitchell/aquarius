@@ -1,8 +1,8 @@
 import debug from 'debug';
-import database from '../database/database.js';
-import Sentry from '../errors/sentry.js';
-import { serializeMap, deserializeMap } from '../database/serialization.js';
-import { TEN_MINUTES } from '../helpers/times.js';
+import database from '../database/database';
+import Sentry from '../errors/sentry';
+import { serializeMap, deserializeMap } from '../database/serialization';
+import { TEN_MINUTES } from '../helpers/times';
 
 const log = debug('Guild Setting');
 

@@ -1,7 +1,7 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import pluralize from 'pluralize';
-import { MUTE_DURATION } from '../../lib/settings/guild-settings.js';
+import { MUTE_DURATION } from '../../lib/settings/guild-settings';
 
 const log = debug('Quiet');
 

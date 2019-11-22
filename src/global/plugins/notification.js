@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { Permissions } from 'discord.js';
-import { guildEmbed } from '../../lib/helpers/embeds.js';
+import { guildEmbed } from '../../lib/helpers/embeds';
 
 const log = debug('Notification');
 

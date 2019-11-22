@@ -1,6 +1,6 @@
 import { URL } from 'url';
 import pkg from '../../../package.json';
-import aquarius from '../../aquarius.js';
+import aquarius from '../../aquarius';
 
 /**
  * Get the raw URL to add Aquarius to your Guild

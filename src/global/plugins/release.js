@@ -2,9 +2,9 @@ import debug from 'debug';
 import fetch from 'node-fetch';
 import { Permissions, RichEmbed } from 'discord.js';
 import pkg from '../../../package.json';
-import { isBot } from '../../lib/helpers/messages.js';
-import { getDocsLink } from '../../lib/helpers/links.js';
-import { getIconColor } from '../../lib/helpers/colors.js';
+import { isBot } from '../../lib/helpers/messages';
+import { getDocsLink } from '../../lib/helpers/links';
+import { getIconColor } from '../../lib/helpers/colors';
 
 const log = debug('Release');
 const GITHUB_API = 'https://api.github.com/repos';

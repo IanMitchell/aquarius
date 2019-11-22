@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { FIVE_MINUTES } from '../helpers/times.js';
+import { FIVE_MINUTES } from '../helpers/times';
 
 const log = debug('DirectMessageManager');
 

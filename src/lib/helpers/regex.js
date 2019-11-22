@@ -55,4 +55,4 @@ export const ANIMATED_EMOJI = /<a:(?<name>.+):(?<id>.+):>/i;
 /**
  * Matches [[Bracket String]] syntax. Captures the text as `name`
  */
-export const BRACKET = /\[\[(?<name>.+?)\]\]/gi;
+export const BRACKET = /\[\[(?<name>.+?)\]\]/i;

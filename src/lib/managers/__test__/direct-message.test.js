@@ -1,4 +1,4 @@
-import DirectMessageManager from '../direct-message.js';
+import DirectMessageManager from '../direct-message';
 
 test.todo('Creates a new DM Queue if no DMs currently exist');
 

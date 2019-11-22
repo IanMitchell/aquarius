@@ -7,7 +7,9 @@ import {
   customTrigger,
   bracketTrigger,
   messageTriggered,
-} from '../triggers.js';
+} from '../triggers';
+
+jest.mock('../../../aquarius.js', () => ({}));
 
 describe('botString', () => {
   test.todo('Returns the client user string');

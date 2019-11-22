@@ -1,8 +1,8 @@
 import debug from 'debug';
 import Parser from 'rss-parser';
 import dedent from 'dedent-js';
-import Sentry from '../../lib/errors/sentry.js';
-import { FIVE_MINUTES } from '../../lib/helpers/times.js';
+import Sentry from '../../lib/errors/sentry';
+import { FIVE_MINUTES } from '../../lib/helpers/times';
 
 const log = debug('RSS');
 

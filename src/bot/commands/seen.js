@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { formatDistance } from 'date-fns';
-import { getNickname } from '../../lib/core/users.js';
-import { MENTION_USER } from '@aquarius/matchers';
+import { MENTION_USER } from '../../lib/helpers/regex';
+import { getNickname } from '../../lib/core/users';
 
 const log = debug('Seen');
 

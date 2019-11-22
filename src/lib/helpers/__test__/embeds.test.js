@@ -1,4 +1,4 @@
-import { guildEmbed } from '../embeds.js';
+import { guildEmbed } from '../embeds';
 
 describe('guildEmbed', () => {
   test.todo('Creates base embed');

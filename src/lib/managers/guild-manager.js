@@ -1,6 +1,6 @@
 import debug from 'debug';
-import aquarius from '../../aquarius.js';
-import GuildSettings from '../settings/guild-settings.js';
+import aquarius from '../../aquarius';
+import GuildSettings from '../settings/guild-settings';
 
 const log = debug('Guild Manager');
 

@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { humanize, randomValue } from '../../lib/helpers/lists.js';
+import { humanize, randomValue } from '../../lib/helpers/lists';
 
 const log = debug('Choose');
 

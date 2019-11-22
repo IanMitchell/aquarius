@@ -1,4 +1,6 @@
-import { getOwnedGuilds, getBotOwner, getNickname, hasRole } from '../users.js';
+import { getOwnedGuilds, getBotOwner, getNickname, hasRole } from '../users';
+
+jest.mock('../../../aquarius.js', () => ({}));
 
 describe('getOwnedGuilds', () => {
   test.todo('Finds guilds owned by user');

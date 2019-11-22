@@ -9,7 +9,7 @@ import {
   ONE_WEEK,
   getDateAgo,
   getDateIn,
-} from '../times.js';
+} from '../times';
 
 describe('Constants', () => {
   test('Constants should not change', () => {

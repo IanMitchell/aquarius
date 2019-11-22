@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import debug from 'debug';
-import Sentry from '../../lib/errors/sentry.js';
+import Sentry from '../../lib/errors/sentry';
 
 const log = debug('GDQ');
 

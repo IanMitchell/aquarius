@@ -4,7 +4,9 @@ import {
   getVanityBotLink,
   getGitHubLink,
   getDocsLink,
-} from '../links.js';
+} from '../links';
+
+jest.mock('../../../aquarius.js', () => ({}));
 
 describe('botLink', () => {
   test.todo('Creates Link');

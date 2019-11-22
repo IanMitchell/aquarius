@@ -1,8 +1,8 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { MENTION } from '@aquarius/matchers';
-import { humanize } from '../../lib/helpers/lists.js';
-import { getNickname } from '../../lib/core/users.js';
+import { MENTION } from '../../lib/helpers/regex';
+import { humanize } from '../../lib/helpers/lists';
+import { getNickname } from '../../lib/core/users';
 
 const log = debug('Ignore');
 

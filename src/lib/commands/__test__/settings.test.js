@@ -1,4 +1,6 @@
-import Settings from '../settings.js';
+import Settings from '../settings';
+
+jest.mock('../../../aquarius.js', () => ({}));
 
 test.todo('Can add a key to command settings');
 

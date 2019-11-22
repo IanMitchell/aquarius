@@ -1,5 +1,5 @@
 import debug from 'debug';
-import database from '../database/database.js';
+import database from '../database/database';
 
 const log = debug('Analytics');
 

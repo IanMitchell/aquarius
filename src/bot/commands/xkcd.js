@@ -2,7 +2,7 @@ import debug from 'debug';
 import dedent from 'dedent-js';
 import { RichEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
-import Sentry from '../../lib/errors/sentry.js';
+import Sentry from '../../lib/errors/sentry';
 
 const log = debug('xkcd');
 

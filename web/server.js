@@ -1,8 +1,8 @@
 import express from 'express';
 import debug from 'debug';
 import { Constants } from 'discord.js';
-import aquarius from '../src/aquarius.js';
-import { botLink } from '../src/lib/helpers/links.js';
+import aquarius from '../src/aquarius';
+import { botLink } from '../src/lib/helpers/links';
 // import { getMetricHandler } from './metrics';
 
 const log = debug('Server');

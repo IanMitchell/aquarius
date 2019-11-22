@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { startOfWeek } from 'date-fns/esm';
-import aquarius from '../../aquarius.js';
-import { ONE_WEEK, ONE_HOUR } from '../helpers/times.js';
+import aquarius from '../../aquarius';
+import { ONE_WEEK, ONE_HOUR } from '../helpers/times';
 
 const log = debug('Guild Metrics');
 

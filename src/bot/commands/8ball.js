@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { randomValue } from '../../lib/helpers/lists.js';
+import { randomValue } from '../../lib/helpers/lists';
 
 const log = debug('8ball');
 

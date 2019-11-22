@@ -1,4 +1,6 @@
-import CommandConfig from '../command-config.js';
+import CommandConfig from '../command-config';
+
+jest.mock('../../../aquarius.js', () => ({}));
 
 test.todo('Can add settings to command');
 

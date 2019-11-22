@@ -1,15 +1,11 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { RichEmbed, Permissions } from 'discord.js';
-import { getNickname } from '../../lib/core/users.js';
-import {
-  humanize,
-  uniqueValues,
-  setDifference,
-} from '../../lib/helpers/lists.js';
-import { capitalize } from '../../lib/helpers/strings.js';
-import { getHost, getGitHubLink } from '../../lib/helpers/links.js';
-import { getPermissionName } from '../../lib/core/permissions.js';
+import { getNickname } from '../../lib/core/users';
+import { humanize, uniqueValues, setDifference } from '../../lib/helpers/lists';
+import { capitalize } from '../../lib/helpers/strings';
+import { getHost, getGitHubLink } from '../../lib/helpers/links';
+import { getPermissionName } from '../../lib/core/permissions';
 
 const log = debug('Help');
 

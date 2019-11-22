@@ -1,4 +1,4 @@
-import aquarius from '../../aquarius.js';
+import aquarius from '../../aquarius';
 
 /** @typedef {import('../../typedefs').CommandInfo} CommandInfo */
 
