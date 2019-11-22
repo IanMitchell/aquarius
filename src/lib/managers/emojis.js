@@ -1,6 +1,7 @@
 import debug from 'debug';
 import aquarius from '../../aquarius';
 import { TEN_MINUTES } from '../helpers/times';
+import chalk from 'chalk';
 
 const log = debug('Emoji Manager');
 
@@ -20,6 +21,16 @@ export default class EmojiManager extends Map {
     log('Refreshing emoji list');
 
     const homeGuild = aquarius.guilds.get(aquarius.config.home.guild);
+
+    if (!homeGuild) {
+      log(
+        chalk.redBright(
+          'ERROR: Aquarius is not a member of the Home Server defined in `config.yml`'
+        )
+      );
+      return;
+    }
+
     homeGuild.emojis
       .filter(emoji => emoji.name.startsWith('aquarius'))
       .array()

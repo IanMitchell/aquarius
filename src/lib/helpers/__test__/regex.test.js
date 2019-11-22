@@ -13,16 +13,22 @@ import {
 
 const MESSAGES = {
   bracket: 'My favorite MTG card is [[Jace Beleren]] and I am not sorry',
-  animatedEmoji: '',
-  customEmoji: '',
+  animatedEmoji: 'This is an <a:eyesshaking:588234282468769814> Animated Emoji',
+  customEmoji: 'This is a <:fbslightsmile:340934564807573505> Custom Emoji',
   emoji: '',
-  mentionRole: '',
-  mentionChannel: '',
-  mentionUserNickname: '',
-  mentionUserId: '',
-  mentionUser: '',
+  mentionRole: 'Mention <@&481159087929688076> Role',
+  mentionChannel: 'Mention <#356522910569201665> Channel',
+  mentionUserNickname: 'Mention <@!356528540742582282> User Nickname',
+  mentionUserId: 'Mention <@356528540742582282> User ID',
+  mentionUser: 'Mention <@103635479097769984> User No Nickname',
   mention: '',
 };
+
+function filterMessages(name) {
+  return Object.keys(MESSAGES)
+    .filter(key => key !== name)
+    .map(key => MESSAGES[key]);
+}
 
 describe('MENTION', () => {
   test.todo('Captures ID');
@@ -81,9 +87,21 @@ describe('CUSTOM_EMOJI', () => {
 });
 
 describe('ANIMATED_EMOJI', () => {
-  test.todo('Captures Name and ID');
+  test('Captures Name and ID', () => {
+    const match = MESSAGES.animatedEmoji.match(ANIMATED_EMOJI);
+    expect(match).not.toBeNull();
+    expect(match.groups).toEqual({
+      id: '588234282468769814',
+      name: 'eyesshaking',
+    });
+  });
 
-  test.todo('Matches Animated Emoji');
+  test('Only Matches Animated Emoji', () => {
+    filterMessages('animatedEmoji').forEach(message => {
+      const match = message.match(ANIMATED_EMOJI);
+      expect(match).toBeNull();
+    });
+  });
 });
 
 describe('BRACKET', () => {

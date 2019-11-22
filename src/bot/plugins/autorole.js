@@ -11,12 +11,11 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius }) => {
-  // TODO: Listen for Reactions
-  aquarius.on('messageReactionAdd', async messageReaction => {
-    const { message } = messageReaction;
-    log(message.author.id);
-  });
-
-  // TODO: Listen for post creation
-  aquarius.onCommand();
+  // // TODO: Listen for Reactions
+  // aquarius.on('messageReactionAdd', async messageReaction => {
+  //   const { message } = messageReaction;
+  //   log(message.author.id);
+  // });
+  // // TODO: Listen for post creation
+  // aquarius.onCommand();
 };
