@@ -41,7 +41,7 @@ export const EMOJI = /<a?:(?<name>.+):(?<id>.+):>/i;
 /**
  * Matches Custom Emojis. Captures the `name` and `id` of the Emoji.
  */
-export const CUSTOM_EMOJI = /<:(?<name>.+):(?<id>.+):>/i;
+export const CUSTOM_EMOJI = /<:(?<name>.+):(?<id>.+)>/i;
 
 /**
  * Matches Animated Emojis. Captures the `name` and `id` of the Emoji.

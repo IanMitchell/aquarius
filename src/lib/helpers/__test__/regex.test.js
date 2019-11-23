@@ -29,8 +29,6 @@ function getAllMessagesBut(message) {
 
 describe('MENTION', () => {
   test.each([
-    ['Animated Emoji', MESSAGES.animatedEmoji, '588234282468769814'],
-    ['Custom Emoji', MESSAGES.customEmoji, '340934564807573505'],
     ['Role', MESSAGES.mentionRole, '481159087929688076'],
     ['Channel', MESSAGES.mentionChannel, '356522910569201665'],
     ['User Nickname', MESSAGES.mentionUserNickname, '356528540742582282'],
