@@ -6,12 +6,5 @@ jobs:
   Lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
       - name: Use Node.js 11.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 11.x
-      - name: Lint
-        run: |
-          yarn install
-          yarn run lint
+        uses: gimenete/eslint-action@1.0

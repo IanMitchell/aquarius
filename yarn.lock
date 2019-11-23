@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@actions/core@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@actions/core/-/core-1.2.0.tgz#aa5f52b26c362c821d41557e599371a42f6c0b3d"
+  integrity sha512-ZKdyhlSlyz38S6YFfPnyNgCDZuAF2T0Qv5eHflNWytPS8Qjvz39bZFMry9Bb/dpSnqWcNeav5yM2CTYpJeY+Dw==
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.0.0-beta.35", "@babel/code-frame@^7.5.5":
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.5.5.tgz#bc0782f6d69f7b7d49531219699b988f669a8f9d"
@@ -3891,6 +3896,13 @@ jest-get-type@^24.9.0:
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/jest-get-type/-/jest-get-type-24.9.0.tgz#1684a0c8a50f2e4901b6644ae861f579eed2ef0e"
   integrity sha512-lUseMzAley4LhIcpSP9Jf+fTrQ4a1yHQwLNeeVa2cEmbCGeoZAtYPOIv8JaxLD/sUpKxetKGP+gsHl8f8TSj8Q==
+
+jest-github-actions-reporter@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/jest-github-actions-reporter/-/jest-github-actions-reporter-1.0.2.tgz#218222b34dacdea0d9d83a2e2a2561136d25e252"
+  integrity sha512-iA8PfVL0cZYLJgPKc6K54nF8Y5PMo0vtONpi03H9I4dMPQtrrWaqXUX21dZRssIo7eGuEmhBcDrnwezRgkn+Rw==
+  dependencies:
+    "@actions/core" "^1.2.0"
 
 jest-haste-map@^24.9.0:
   version "24.9.0"
