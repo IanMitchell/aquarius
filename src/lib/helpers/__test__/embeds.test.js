@@ -3,7 +3,9 @@ import { guildEmbed } from '../embeds';
 const guildMock = {
   createdAt: Date.now(),
   members: [],
-  channels: [],
+  channels: {
+    array: () => [],
+  },
   iconUrl: '',
   name: 'Test',
   owner: {
@@ -14,8 +16,8 @@ const guildMock = {
 };
 
 describe('guildEmbed', () => {
-  test('Embed Test', () => {
-    expect(guildEmbed(guildMock)).toBeEmbed();
+  test('Embed Test', async () => {
+    expect(await guildEmbed(guildMock)).toBeEmbed();
   });
 
   test.todo('Creates base embed');

@@ -5,11 +5,9 @@ export default function toBeEmbed(received) {
   const pass = received instanceof RichEmbed;
 
   const message = () =>
-    `${matcherHint('.toBeEmbed', undefined, undefined, {
+    `${matcherHint('.toBeEmbed', undefined, '', {
       isNot: this.isNot,
-    })}\n\n` +
-    `Expected: RichEmbed\n` +
-    `Received: ${printReceived(typeof received)}`;
+    })}\n\nReceived: ${printReceived(received.constructor.name)}`;
 
   return {
     pass,
