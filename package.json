@@ -4,6 +4,10 @@
   "description": "A highly configurable Discord chatbot",
   "main": "index.js",
   "repository": "ianmitchell/aquarius",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "author": {
     "name": "Ian Mitchell",
     "email": "ian.mitchel1@live.com",
@@ -18,6 +22,7 @@
     "build": "node scripts/install-keyfile",
     "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect-brk=9229 -r dotenv/config -r esm index.js",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
+    "pretest": "yarn workspaces run build",
     "test": "jest"
   },
   "esm": {
@@ -53,11 +58,16 @@
     "yahoo-stocks": "^2.0.4"
   },
   "devDependencies": {
+    "@aquarius/discordjs-testing": "^0.0.1",
     "@babel/core": "^7.7.2",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "babel-cli": "^6.26.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^24.9.0",
+    "babel-plugin-add-module-exports": "^1.0.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-replace-object-assign": "^2.0.0",
     "babel-preset-env": "^1.6.1",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",

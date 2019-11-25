@@ -38,9 +38,13 @@ describe('Constants', () => {
 });
 
 describe('getDateAgo', () => {
-  test.todo('Date is in the past');
+  test('Date is in the past', () => {
+    expect(getDateAgo(ONE_HOUR).getTime()).toBeLessThan(Date.now());
+  });
 });
 
 describe('getDateIn', () => {
-  test.todo('Date is in the future');
+  test('Date is in the future', () => {
+    expect(getDateIn(ONE_HOUR).getTime()).toBeGreaterThan(Date.now());
+  });
 });

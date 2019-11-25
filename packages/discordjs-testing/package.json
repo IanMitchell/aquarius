@@ -1,0 +1,24 @@
+{
+  "name": "@aquarius/discordjs-testing",
+  "version": "0.0.1",
+  "description": "Helpers for testing discord.js bots",
+  "author": "Ian Mitchell <ian.mitchel1@live.com>",
+  "homepage": "https://github.com/ianmitchell/aquarius",
+  "repository": "ianmitchell/aquarius",
+  "license": "MIT",
+  "scripts": {
+    "build": "babel src --out-dir lib --copy-files"
+  },
+  "keywords": [
+    "discord",
+    "discord.js",
+    "bot",
+    "jest",
+    "testing",
+    "node"
+  ],
+  "main": "lib/index.js",
+  "peerDependencies": {
+    "discord.js": "^11.15.0"
+  }
+}

@@ -10,5 +10,6 @@ module.exports = {
   testEnvironment: 'node',
   verbose: true,
   testLocationInResults: true,
+  setupFilesAfterEnv: ['./jest.setup.js'],
   reporters,
 };

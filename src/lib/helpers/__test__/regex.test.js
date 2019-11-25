@@ -23,8 +23,8 @@ const MESSAGES = {
   mentionUser: 'Mention <@103635479097769984> User No Nickname',
 };
 
-function getAllMessagesBut(message) {
-  return Object.values(MESSAGES).filter(msg => msg !== message);
+function getAllMessagesExcept(...messages) {
+  return Object.values(MESSAGES).filter(msg => !messages.includes(msg));
 }
 
 describe('MENTION', () => {
@@ -49,7 +49,11 @@ describe('MENTION_USER', () => {
   });
 
   test('Matches User', () => {
-    getAllMessagesBut(MESSAGES.mentionUser).forEach(message => {
+    getAllMessagesExcept(
+      MESSAGES.mentionUser,
+      MESSAGES.mentionUserId,
+      MESSAGES.mentionUserNickname
+    ).forEach(message => {
       const match = message.match(MENTION_USER);
       expect(match).toBeNull();
     });
@@ -65,10 +69,12 @@ describe('MENTION_USER_ID', () => {
   });
 
   test('Only Matches User ID', () => {
-    getAllMessagesBut(MESSAGES.mentionUserId).forEach(message => {
-      const match = message.match(MENTION_USER_ID);
-      expect(match).toBeNull();
-    });
+    getAllMessagesExcept(MESSAGES.mentionUserId, MESSAGES.mentionUser).forEach(
+      message => {
+        const match = message.match(MENTION_USER_ID);
+        expect(match).toBeNull();
+      }
+    );
   });
 });
 
@@ -81,7 +87,7 @@ describe('MENTION_USER_NICKNAME', () => {
   });
 
   test('Only Matches User Nickname', () => {
-    getAllMessagesBut(MESSAGES.mentionUserNickname).forEach(message => {
+    getAllMessagesExcept(MESSAGES.mentionUserNickname).forEach(message => {
       const match = message.match(MENTION_USER_NICKNAME);
       expect(match).toBeNull();
     });
@@ -97,7 +103,7 @@ describe('MENTION_CHANNEL', () => {
   });
 
   test('Only Matches Channel', () => {
-    getAllMessagesBut(MESSAGES.mentionChannel).forEach(message => {
+    getAllMessagesExcept(MESSAGES.mentionChannel).forEach(message => {
       const match = message.match(MENTION_CHANNEL);
       expect(match).toBeNull();
     });
@@ -113,7 +119,7 @@ describe('MENTION_ROLE', () => {
   });
 
   test('Only Matches Role', () => {
-    getAllMessagesBut(MESSAGES.mentionRole).forEach(message => {
+    getAllMessagesExcept(MESSAGES.mentionRole).forEach(message => {
       const match = message.match(MENTION_ROLE);
       expect(match).toBeNull();
     });
@@ -136,7 +142,7 @@ describe('CUSTOM_EMOJI', () => {
   });
 
   test('Only Matches Custom Emoji', () => {
-    getAllMessagesBut(MESSAGES.customEmoji).forEach(message => {
+    getAllMessagesExcept(MESSAGES.customEmoji).forEach(message => {
       const match = message.match(CUSTOM_EMOJI);
       expect(match).toBeNull();
     });
@@ -153,7 +159,7 @@ describe('ANIMATED_EMOJI', () => {
   });
 
   test('Only Matches Animated Emoji', () => {
-    getAllMessagesBut(MESSAGES.animatedEmoji).forEach(message => {
+    getAllMessagesExcept(MESSAGES.animatedEmoji).forEach(message => {
       const match = message.match(ANIMATED_EMOJI);
       expect(match).toBeNull();
     });

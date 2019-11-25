@@ -6,7 +6,11 @@ import {
   getDocsLink,
 } from '../links';
 
-jest.mock('../../../aquarius.js', () => ({}));
+jest.mock('../../../aquarius.js', () => ({
+  config: {
+    url: 'test',
+  },
+}));
 
 describe('botLink', () => {
   test.todo('Creates Link');
