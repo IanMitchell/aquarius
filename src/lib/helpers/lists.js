@@ -14,9 +14,9 @@ export function humanize(array) {
     case 1:
       return array[0];
     case 2:
-      return array.sort().join(' and ');
+      return array.join(' and ');
     default: {
-      const [last, ...arr] = array.sort().reverse();
+      const [last, ...arr] = array.reverse();
       return `${arr.reverse().join(', ')}, and ${last}`;
     }
   }

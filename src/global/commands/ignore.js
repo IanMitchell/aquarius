@@ -70,7 +70,7 @@ export default async ({ aquarius, analytics }) => {
       getNickname(message.guild, userId)
     );
 
-    message.channel.send(`I'm ignoring ${humanize(list)}.`);
+    message.channel.send(`I'm ignoring ${humanize(list.sort())}.`);
     analytics.trackUsage('list', message);
   });
 };

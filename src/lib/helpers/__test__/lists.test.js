@@ -7,19 +7,37 @@ import {
 } from '../lists';
 
 describe('humanize', () => {
-  test.todo('Handles null arrays');
+  test('Handles null arrays', () => {
+    expect(humanize()).toBe('');
+  });
 
-  test.todo('Handles empty arrays');
+  test('Handles empty arrays', () => {
+    expect(humanize([])).toBe('');
+  });
 
-  test.todo('Handles single item');
+  test('Handles single item', () => {
+    expect(humanize(['Space'])).toBe('Space');
+  });
 
-  test.todo('Handles two items');
+  test('Handles twdo items', () => {
+    expect(humanize(['Space', 'Stars'])).toBe('Space and Stars');
+  });
 
-  test.todo('Handles multiple items');
+  test('Handles multiple items', () => {
+    expect(humanize(['Space', 'Flight', 'Stars'])).toBe(
+      'Space, Flight, and Stars'
+    );
+  });
 });
 
 describe('uniqueValues', () => {
-  test.todo('Removes duplicate items');
+  test('Removes duplicate items', () => {
+    expect(uniqueValues(['Test', 'Jest', 'Test', 'Eh?'])).toEqual([
+      'Test',
+      'Jest',
+      'Eh?',
+    ]);
+  });
 });
 
 describe('randomValue', () => {
@@ -31,5 +49,9 @@ describe('shuffle', () => {
 });
 
 describe('setDifference', () => {
-  test.todo('Calculates difference in set');
+  test('Calculates difference in set', () => {
+    expect(
+      setDifference(new Set([1, 2, 3, 4, 5, 6]), new Set([1, 3, 5]))
+    ).toEqual(new Set([2, 4, 6]));
+  });
 });

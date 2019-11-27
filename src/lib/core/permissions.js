@@ -108,6 +108,6 @@ export function check(guild, ...permissions) {
 
 export function getRequestMessage(permissions) {
   return `I need the ${humanize(
-    permissions.map(getPermissionName)
+    permissions.map(getPermissionName).sort()
   )} ${pluralize('permission', permissions.length)} in order to do that!`;
 }
