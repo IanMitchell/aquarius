@@ -3,6 +3,18 @@ name: Test
 on: [push]
 
 jobs:
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Node.js 11.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Lint
+        run: |
+          yarn install
+          yarn run lint
   Test:
     runs-on: ubuntu-latest
     steps:
