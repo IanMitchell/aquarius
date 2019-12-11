@@ -8,6 +8,10 @@ Aquarius is a general purpose [Discord](https://discordapp.com/) chat bot. If yo
   <strong><a href="https://aquarius.sh/link">Click Here to add Aquarius to your server</a></strong>
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/endpoint?url=https://aquarius.sh/shield">
+</p>
+
 ---
 
 ## Usage
