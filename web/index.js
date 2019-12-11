@@ -11,7 +11,31 @@ const app = express();
 // const metricHandler = getMetricHandler();
 
 app.get('/', (request, response) => {
-  return response.json({ server: 'hello world' });
+  return response.json({
+    server: 'hello world',
+    whereAreTheDocs: "Yeah yeah, I'm working on it. DM me - Desch#3091",
+  });
+});
+
+app.get('/shield', (request, response) => {
+  if (aquarius.status !== Constants.Status.READY) {
+    return response.json({
+      schemaVersion: 1,
+      message: 'Guilds',
+      label: 'Error',
+      color: 'red',
+      style: 'for-the-badge',
+      isError: true,
+    });
+  }
+
+  return response.json({
+    schemaVersion: 1,
+    message: 'Guilds',
+    label: aquarius.guilds.array().length.toLocaleString(),
+    color: 'green',
+    style: 'for-the-badge',
+  });
 });
 
 app.get('/link', (request, response) => {
