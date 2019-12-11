@@ -1,4 +1,4 @@
-import TriggerMap from '../trigger-map';
+// import TriggerMap from '../trigger-map';
 
 test.todo('Stubs out event hooks');
 

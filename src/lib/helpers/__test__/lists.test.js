@@ -1,8 +1,8 @@
 import {
   humanize,
   uniqueValues,
-  randomValue,
-  shuffle,
+  // randomValue,
+  // shuffle,
   setDifference,
 } from '../lists';
 

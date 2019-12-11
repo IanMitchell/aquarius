@@ -1,4 +1,4 @@
-import GuildManger from '../guild-manager';
+// import GuildManger from '../guild-manager';
 
 jest.mock('../../../aquarius.js', () => ({}));
 

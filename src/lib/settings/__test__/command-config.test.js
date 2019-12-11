@@ -1,4 +1,4 @@
-import CommandConfig from '../command-config';
+// import CommandConfig from '../command-config';
 
 jest.mock('../../../aquarius.js', () => ({}));
 

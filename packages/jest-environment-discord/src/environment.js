@@ -46,6 +46,7 @@ export default class DiscordEnvironment extends NodeEnvironment {
       this.global.testBot = this.testBot;
       this.global.prompt = msg => this.testBot.prompt(this.testChannel, msg);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error);
       process.exit(1);
     }

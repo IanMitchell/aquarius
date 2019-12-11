@@ -5,6 +5,7 @@ describe('Triggers', () => {
   let regex = null;
 
   beforeAll(() => {
+    // eslint-disable-next-line prefer-destructuring
     regex = getMatchers(command)[0];
   });
 

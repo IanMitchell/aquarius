@@ -11,10 +11,6 @@ export const info = {
   usage: '```@Aquarius seen <@User>```',
 };
 
-async function updateLastSeen(user) {
-  return;
-}
-
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   // Presence change event triggers once per guild
@@ -29,7 +25,7 @@ export default async ({ aquarius, analytics }) => {
       if (user.presence.status !== 'offline') {
         message.channel.send("They're online right now!");
       } else {
-        const lastSeen = await database.lastSeen.doc(user.id).get();
+        const lastSeen = await aquarius.database.lastSeen.doc(user.id).get();
 
         if (!lastSeen.exists) {
           message.channel.send(

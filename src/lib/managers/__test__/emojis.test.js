@@ -1,4 +1,4 @@
-import EmojiManager from '../emojis';
+// import EmojiManager from '../emojis';
 
 jest.mock('../../../aquarius.js', () => ({}));
 

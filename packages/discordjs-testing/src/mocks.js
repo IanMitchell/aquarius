@@ -1,4 +1,12 @@
-import { Message, TextChannel, GroupDMChannel, DMChannel } from 'discord.js';
+import {
+  Message,
+  TextChannel,
+  GroupDMChannel,
+  DMChannel,
+  User,
+  Guild,
+  // GuildMember,
+} from 'discord.js';
 import MockClient from './client';
 
 export function getMockTextChannel(client = new MockClient(), data) {
@@ -19,4 +27,19 @@ export function getMockMessage(
   client = new MockClient()
 ) {
   return new Message(channel, data, client);
+}
+
+export function getMockUser(client = new MockClient(), data) {
+  return new User(client, data);
+}
+
+export function getMockGuild(client = new MockClient(), data) {
+  return new Guild(client, data);
+  // const user = getMockUser();
+  // // const member = new GuildMember(guild, {
+  // //   user,
+  // //   roles: ['test'],
+  // // });
+
+  // guild._addMember(user, false);
 }

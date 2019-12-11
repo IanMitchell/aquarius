@@ -1,4 +1,10 @@
-import { getOwnedGuilds, getBotOwner, getNickname, hasRole } from '../users';
+// import { getMockGuild } from '@aquarius/discordjs-testing';
+// import {
+//   getOwnedGuilds,
+//   getBotOwner,
+//   getNickname,
+//   hasRole,
+// } from '../users';
 
 jest.mock('../../../aquarius.js', () => ({}));
 
@@ -17,7 +23,7 @@ describe('getNickname', () => {
 });
 
 describe('hasRole', () => {
-  test.todo('Handles users that are not guild members');
+  test.todo('Indicates if member has role or not');
 
-  test.todo('Indicates if user has role or not');
+  test.todo('Handles users that are not guild members');
 });

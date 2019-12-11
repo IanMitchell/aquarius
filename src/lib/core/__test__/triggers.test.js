@@ -1,13 +1,13 @@
-import {
-  botString,
-  botMention,
-  botMentionTrigger,
-  dotTrigger,
-  exclamationTrigger,
-  customTrigger,
-  bracketTrigger,
-  messageTriggered,
-} from '../triggers';
+// import {
+//   botString,
+//   botMention,
+//   botMentionTrigger,
+//   dotTrigger,
+//   exclamationTrigger,
+//   customTrigger,
+//   bracketTrigger,
+//   messageTriggered,
+// } from '../triggers';
 
 jest.mock('../../../aquarius.js', () => ({}));
 

@@ -1,7 +1,7 @@
 import debug from 'debug';
+import chalk from 'chalk';
 import aquarius from '../../aquarius';
 import { TEN_MINUTES } from '../helpers/times';
-import chalk from 'chalk';
 
 const log = debug('Emoji Manager');
 
