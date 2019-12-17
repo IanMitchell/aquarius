@@ -11,7 +11,10 @@ const app = express();
 // const metricHandler = getMetricHandler();
 
 app.get('/', (request, response) => {
-  return response.json({ server: 'hello world' });
+  return response.json({
+    server: 'hello world',
+    whereAreTheDocs: "Yeah yeah, I'm working on it. DM me - Desch#3091",
+  });
 });
 
 app.get('/shield', (request, response) => {
