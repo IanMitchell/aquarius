@@ -58,7 +58,12 @@ export function shuffle(array) {
   return arr;
 }
 
-// TODO: Document
+/**
+ * Determine the difference between two Sets
+ * @param {Set} setA - First Set
+ * @param {Set} setB - Second Set
+ * @returns {Set} Set containing the difference
+ */
 export function setDifference(setA, setB) {
   return new Set(Array.from(setA).filter(x => !setB.has(x)));
 }

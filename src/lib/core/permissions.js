@@ -83,6 +83,11 @@ export function isUserIgnored(guild, user) {
   return aquarius.guildManager.get(guild.id).isUserIgnored(user.id);
 }
 
+/**
+ * Converts a Permission Flag to its string representation
+ * @param {number} permission - Permission Flag
+ * @returns {string} The name of a Permission Flag
+ */
 export function getPermissionName(permission) {
   if (PERMISSION_NAMES.has(permission)) {
     return PERMISSION_NAMES.get(permission);
@@ -91,6 +96,15 @@ export function getPermissionName(permission) {
   return 'Unknown';
 }
 
+/**
+ * Checks to see if the bot is granted a given list of permission flags and
+ * indicates which ones it does not have
+ * @param {Guild} guild - Guild to check permission values in
+ * @param  {...number} permissions - Array of permission flags to check
+ * @returns {Object} check - Information about the bot's permission flags in the given guild
+ * @returns {boolean} check.valid - Whether the bot has all the permission flags granted
+ * @returns {number[]} check.missing - Missing permission flags
+ */
 export function check(guild, ...permissions) {
   const missingPermissions = new Set();
 
@@ -106,6 +120,12 @@ export function check(guild, ...permissions) {
   };
 }
 
+/**
+ * Tages a list of permission flags and generates a message requesting
+ * the permissions be granted
+ * @param {number[]} permissions - array of permission flags
+ * @returns {string} Request message for the given permission flags
+ */
 export function getRequestMessage(permissions) {
   return `I need the ${humanize(
     permissions.map(getPermissionName).sort()

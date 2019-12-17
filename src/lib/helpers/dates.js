@@ -28,6 +28,12 @@ export function getStandardDate(date) {
   });
 }
 
+/**
+ * Converts the difference between dates into an exact string representation
+ * @param {Date} start - Start date
+ * @param {Date} end - End date
+ * @returns {string} The exact time difference
+ */
 export function getExactTimeInterval(start, end) {
   const units = [];
   let startDate = start;

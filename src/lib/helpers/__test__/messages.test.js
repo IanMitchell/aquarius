@@ -2,7 +2,7 @@ import {
   getMockMessage,
   getMockGroupDMChannel,
   getMockDMChannel,
-} from '@aquarius/discordjs-testing';
+} from '@aquarius/testing';
 import { isDirectMessage, isBot, getLink } from '../messages';
 
 describe('isDirectMessage', () => {

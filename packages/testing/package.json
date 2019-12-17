@@ -1,5 +1,5 @@
 {
-  "name": "@aquarius/discordjs-testing",
+  "name": "@aquarius/testing",
   "version": "0.0.1",
   "description": "Helpers for testing discord.js bots",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",

@@ -3,14 +3,21 @@ import { FIVE_MINUTES } from '../helpers/times';
 
 const log = debug('DirectMessageManager');
 
-// TODO: Document
+/**
+ * Manages Direct Message commands to a user via a queue
+ */
 export default class DirectMessageManager {
   constructor() {
     this.defaultMaxResponseTime = FIVE_MINUTES;
     this.userQueue = new Map();
   }
 
-  // TODO: Document
+  /**
+   * Queues a prompt to Direct Message to a user. If other messages have been queued, they will happen first. Once a user responds the promise will resolve with their input. If the prompt times out or the user cancels the promise will reject with the collector end event reason (see Discord.js)
+   * @param {import('discord.js').User} user - User to message
+   * @param {string} str - Prompt
+   * @returns {Promise<string>} Promise that resolves with user input once a user responds or rejects with the collector end event reason
+   */
   async prompt(user, str) {
     let task;
 

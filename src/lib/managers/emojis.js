@@ -7,8 +7,13 @@ const log = debug('Emoji Manager');
 
 /**
  * Manages custom emoji for Aquarius
+ * @extends Map
  */
 export default class EmojiManager extends Map {
+  /**
+   * Registers handlers to run once Aquarius has logged on and
+   * loads information on boot.
+   */
   initialize() {
     log('Creating List');
 
@@ -17,6 +22,9 @@ export default class EmojiManager extends Map {
     setInterval(() => this.getList(), TEN_MINUTES);
   }
 
+  /**
+   * Refreshes Map state with uploaded emojis in the Home Guild
+   */
   getList() {
     log('Refreshing emoji list');
 
