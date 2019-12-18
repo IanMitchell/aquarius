@@ -9,12 +9,20 @@ describe('Triggers', () => {
     regex = getMatchers(command)[0];
   });
 
-  test('Does not trigger when message is not Ping', () => {
-    expect(regex.test('Test Ping')).toBe(false);
-    expect(regex.test('Ping Test')).toBe(false);
+  test('Matches Standalone Ping', () => {
+    expect(regex.test('ping')).toBe(true);
   });
 
-  test('Matches Standalone Ping', () => {
+  test('Does not match a `pin` trigger', () => {
+    expect(regex.test('pin')).toBe(false);
+  });
+
+  test('Does not match if in phrase', () => {
+    expect(regex.test('Test Ping')).toBe(false);
+    expect(regex.test('Test Ping Test')).toBe(false);
+  });
+
+  test('Match is case insensitive', () => {
     expect(regex.test('PING')).toBe(true);
     expect(regex.test('ping')).toBe(true);
   });
