@@ -43,37 +43,37 @@ export class Aquarius extends Discord.Client {
 
     // We have more listeners than normal - each command registers one to
     // several on average, so we hit the warning frequently. Small bumps
-    // ensure no actual leaks rather than setting the limit to a thousand.
+    // ensure no actual leaks (as opposed to setting the limit to a billion)
     this.setMaxListeners(60);
 
     // Setup internal data structures
 
     /**
-     * TODO: Doocument
+     * Static configuration for Aquarius
      */
     this.config = this.loadConfig();
 
     /**
-     *
+     * Manages the Guilds for which Aquarius is a member
      * @type { typeof import('./lib/managers/guild-manager') }
      */
     this.guildManager = new GuildManager();
 
     /**
-     * TODO: Document
+     * Manages the configuration for all the Commands and Plugins
      * @type {Map}
      */
     this.commandConfigs = new Map();
 
     /**
-     * TODO: Document
+     * Interface for sliding into a User's DMs
      * @type { typeof import('./lib/managers/direct-message') }
      */
     this.directMessages = new DirectMessageManager();
 
     /**
-     * TODO: Document
-     * @type { typeof import('./lib/managers/direct-message') }
+     * A list of custom emoji for usage in messages.
+     * @type { typeof import('./lib/managers/emojis') }
      */
     this.emojiList = new EmojiManager();
 
@@ -84,13 +84,13 @@ export class Aquarius extends Discord.Client {
     this.commandList = new Map();
 
     /**
-     * TODO: Document
+     * Holds the Help information for each Command and Plugin
      * @type {Map}
      */
     this.help = new Map();
 
     /**
-     * TODO: Document
+     * Associates RegExp triggers with the Command that registered them
      * @type { typeof import('./lib/settings/trigger-map') }
      */
     this.triggerMap = new TriggerMap();
@@ -98,7 +98,8 @@ export class Aquarius extends Discord.Client {
     // Setup API
 
     /**
-     * TODO: Document
+     * A collection of helper functions to use when dealing with Discord
+     * Permissions
      * @type { typeof import('./lib/core/permissions') }
      */
     this.permissions = permissions;
@@ -122,8 +123,8 @@ export class Aquarius extends Discord.Client {
     this.triggers = triggers;
 
     /**
-     * TODO: Document
-     * @type {}
+     * Interface for working with the Database
+     * @todo define type
      */
     this.database = database;
 
@@ -157,7 +158,7 @@ export class Aquarius extends Discord.Client {
    */
   loadConfig() {
     const configPath = path.join(__dirname, '../config.yml');
-    return yaml.safeLoad(fs.readFileSync(configPath));
+    return Object.freeze(yaml.safeLoad(fs.readFileSync(configPath)));
   }
 
   /**
