@@ -24,7 +24,14 @@ import { fixPartialReactionEvents } from './lib/discord/library-fixes';
 const log = debug('Aquarius');
 const errorLog = debug('Aquarius:Error');
 
-// TODO: Document
+/**
+ * @typedef { import('discord.js').Guild } Guild
+ * @typedef { import('discord.js').Message } Message
+ * @typedef { import('./typedefs').CommandInfo } CommandInfo
+ * @typedef { import('./typedefs').CommandHandler } CommandHandler
+ *
+ * @typedef {( message: Message, regex: RegExp ) => RegExpMatchArray|false} MatchFn
+ */
 
 /**
  * The core Aquarius client
@@ -136,9 +143,9 @@ export class Aquarius extends Discord.Client {
 
   /**
    * Initialization logic that runs after the bot has logged in
+   * @todo Make this method private
    */
   initialize() {
-    // TODO: Make Private
     this.guildManager.initialize();
     this.emojiList.initialize();
     setupWeeklyGuildLoop();
@@ -146,18 +153,18 @@ export class Aquarius extends Discord.Client {
 
   /**
    * Loads and returns the config file
+   * @todo Make this method private
    */
   loadConfig() {
-    // TODO: Make Private
     const configPath = path.join(__dirname, '../config.yml');
     return yaml.safeLoad(fs.readFileSync(configPath));
   }
 
   /**
    * Loads and initializes all global commands and plugins
+   * @todo Make this method private
    */
   loadGlobals() {
-    // TODO: Make Private
     log('Loading Global Commands...');
     this.loadDirectory(path.join(__dirname, 'global/commands'), true);
     log('Loading Global Plugins...');
@@ -166,9 +173,9 @@ export class Aquarius extends Discord.Client {
 
   /**
    * Loads and initializes all non-global commands and plugins
+   * @todo Make this method private
    */
   loadCommands() {
-    // TODO: Make Private
     log('Loading Bot Commands...');
     this.loadDirectory(path.join(__dirname, 'bot/commands'));
     log('Loading Bot Plugins...');
@@ -179,9 +186,9 @@ export class Aquarius extends Discord.Client {
    * Loads each JavaScript file in a given directory
    * @param {string} directory - directory to load `.js` files from
    * @param {boolean=false} globalFile - whether to treat the file as global
+   * @todo Make this method private
    */
   loadDirectory(directory, globalFile = false) {
-    // TODO: Make Private
     fs.readdir(directory, (err, files) => {
       if (err) {
         throw err;
@@ -197,9 +204,9 @@ export class Aquarius extends Discord.Client {
    * @param {string} directory - directory to load files from
    * @param {strong} file - path to the file to load
    * @param {boolean} globalFile - whether the loaded item is a global or not
+   * @todo Make this method private
    */
   async loadFile(directory, file, globalFile) {
-    // TODO: Make Private
     if (file.endsWith('.js')) {
       log(`Loading ${file}`);
 
@@ -263,7 +270,7 @@ export class Aquarius extends Discord.Client {
 
   /**
    * Get the list of Global Command Names
-   * @return {Array<string>} List of Global Command Names
+   * @return {string[]} List of Global Command Names
    */
   getGlobalCommandNames(includeHidden = true) {
     return Array.from(this.help.entries())
@@ -271,7 +278,12 @@ export class Aquarius extends Discord.Client {
       .map(([key]) => key.toLowerCase());
   }
 
-  // TODO: Document
+  /**
+   * Registers a command's help information. If the command name has already
+   * been registered an error will be thrown
+   * @param {CommandInfo} commandInfo - Command to add to Help system
+   * @todo Make this method private
+   */
   addHelp(commandInfo) {
     if (this.help.has(commandInfo.name)) {
       throw new Error('Duplicate Help Registration');
@@ -280,7 +292,12 @@ export class Aquarius extends Discord.Client {
     this.help.set(commandInfo.name, commandInfo);
   }
 
-  // TODO: Document
+  /**
+   * Checks to see if a guild has a command enabled
+   * @param {Guild} guild - Guild to check
+   * @param {CommandInfo} commandInfo - Command to check
+   * @returns {boolean} whether the guild has the command enabled or not
+   */
   isCommandEnabled(guild, commandInfo) {
     const guildSettings = this.guildManager.get(guild.id);
 
@@ -291,7 +308,14 @@ export class Aquarius extends Discord.Client {
     return guildSettings.isCommandEnabled(commandInfo.name);
   }
 
-  // TODO: Document
+  /**
+   * Checks to see if a user can activate a command. This checks to see if the
+   * user is ignored or the command is disabled
+   * @param {Message} message - Message containing the activation command
+   * @param {CommandInfo} commandInfo - Command to check
+   * @returns {boolean} Whether the user can activate the command or not
+   * @todo Make this method private
+   */
   isUsageAllowed(message, commandInfo) {
     if (!this.isCommandEnabled(message.guild, commandInfo)) {
       return false;
@@ -304,7 +328,14 @@ export class Aquarius extends Discord.Client {
     return true;
   }
 
-  // TODO: Document
+  /**
+   * Checks a message to see if it activates a command
+   * @param {Message} message - Message to check
+   * @param {RegExp} regex - RegExp to check against the message content
+   * @param {CommandHandler} handler - Command activation function that takes a
+   * @param {MatchFn} matchFn - Function that matches against the message content
+   * @todo Make this method private
+   */
   async handleCommand(message, regex, handler, matchFn) {
     if (isDirectMessage(message)) {
       return;
@@ -326,7 +357,16 @@ export class Aquarius extends Discord.Client {
     }
   }
 
-  // TODO: Document
+  /**
+   * Checks a message to see if it activates a command. This should be used
+   * when a command needs to check each message itself rather than providing
+   * a Regex trigger pattern.
+   * @param {Message} message - Message to check
+   * @param {CommandInfo} commandInfo - Command info for command to check activation for
+   * @param {CommandHandler} handler - Command activation function that takes a
+   * @param {MatchFn} matchFn - Function that matches against the message content
+   * @todo Make this method private
+   */
   async handleMessage(message, commandInfo, handler, matchFn) {
     if (isDirectMessage(message)) {
       return;
@@ -337,7 +377,6 @@ export class Aquarius extends Discord.Client {
         const match = matchFn(message);
 
         if (match) {
-          // TODO: Better Raven Usage
           // TODO: Benchmark?
           handler(message, match);
         }
@@ -348,7 +387,12 @@ export class Aquarius extends Discord.Client {
     }
   }
 
-  // TODO: Document
+  /**
+   * Registers a handler function for Direct Messages that match the provided
+   * RegExp pattern
+   * @param {RegExp} regex - RegExp pattern to check the DM against
+   * @param {CommandHandler} handler - Handler function for matching messages
+   */
   onDirectMessage(regex, handler) {
     this.on('message', message => {
       if (message.channel.type === 'dm') {
@@ -365,14 +409,35 @@ export class Aquarius extends Discord.Client {
     });
   }
 
-  // TODO: Document
+  /**
+   * Registers a handler function for every message received by Aquarius
+   * in guilds that have the command enabled by users that can invoke the command
+   * @param {CommandInfo} info - Command information for the command adding
+   * the listener
+   * @param {CommandHandler} handler - Function that runs on successful triggers.
+   * `match` will be set to `true`
+   */
   onMessage(info, handler) {
     this.on('message', message =>
       this.handleMessage(message, info, handler, () => true)
     );
   }
 
-  // TODO: Document
+  /**
+   * Registers a handler function for all messages that match the provided
+   * RegExp pattern in guilds that have the command enabled by users that can
+   * invoke the command.
+   *
+   * **Note**: Automatically checks for Command Invocation Syntax.
+   * This means it will only trigger on messages prepended with
+   * `@Aquarius`, `.`, `!`, etc. - without the pattern being defined in the
+   * provided RegExp. If you want to match against the RegExp pattern **exactly**
+   * use `onTrigger` instead.
+   *
+   * For more complicated usages (rare) see `onDynamicTrigger`.
+   * @param {RegExp} regex - RegExp pattern to check the message content with
+   * @param {CommandHandler} handler - Callback invoked for trigger messages
+   */
   onCommand(regex, handler) {
     this.on('message', message =>
       this.handleCommand(
@@ -384,14 +449,37 @@ export class Aquarius extends Discord.Client {
     );
   }
 
-  // TODO: Document
+  /**
+   * Registers a handler function for all messages that match the provided
+   * RegExp pattern **exactly** in guilds that have the command enabled by users
+   * that can invoke the command.
+   *
+   * **Note**: Does not automatically check for Command Invocation Syntax.
+   * If you want to register a pattern that should be invoked by prepending
+   * messages with `@Aquarius`, `.`, `!`, etc) use `onCommand` instead.
+   *
+   * For more complicated usages (rare) see `onDynamicTrigger`.
+   * @param {RegExp} regex - RegExp pattern to check the message content with
+   * @param {CommandHandler} handler - Callback invoked for trigger messages
+   */
   onTrigger(regex, handler) {
     this.on('message', message =>
       this.handleCommand(message, regex, handler, this.triggers.customTrigger)
     );
   }
 
-  // TODO: Document
+  /**
+   * Registers a handler function for all messages that successfully pass the
+   * provided Match callback function in guilds that have the command
+   * enabled by users that can invoke the command.
+   *
+   * **Note**: This should only be used in rare cases where static RegExp
+   * patterns aren't sufficient. For example, you might need this if your
+   * command is invoked differently per guild depending on a command setting.
+   * @param {commandInfo} commandInfo - Command registering the dynamic trigger
+   * @param {MatchFn} matchFn - Function that checks for successful matches
+   * @param {CommandHandler} handler - Callback invoked for trigger messages
+   */
   onDynamicTrigger(commandInfo, matchFn, handler) {
     this.on('message', message =>
       this.handleMessage(message, commandInfo, handler, matchFn)

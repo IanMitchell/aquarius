@@ -1,6 +1,8 @@
 import aquarius from '../../aquarius';
 
-// TODO: Document
+/**
+ * Holds the guild configuration information for commands
+ */
 export default class CommandConfig {
   constructor(name) {
     this.name = name;
@@ -8,20 +10,29 @@ export default class CommandConfig {
     this.defaultSettings = new Map();
   }
 
-  // TODO: Document
+  /**
+   * Registers a setting for a command and assigns a default value for guilds
+   * that haven't configured it
+   * @param {*} key - Key to retrieve setting value with
+   * @param {string} description - Description of the setting
+   * @param {*} value - Default value of the setting
+   */
   addSetting(key, description, value) {
     this.descriptions.set(key, description);
     this.defaultSettings.set(key, value);
   }
 
-  // TODO: Document
+  /**
+   * Checks to see if a command has any settings
+   * @returns {boolean} whether a command has settings
+   */
   hasSettings() {
     return this.defaultSettings.size > 0;
   }
 
   /**
    * Gets a list of setting names for a command
-   * @returns {string[]} - Array of setting names for the command
+   * @returns {any[]} - Array of setting names for the command
    */
   keys() {
     return Array.from(this.defaultSettings.keys());
@@ -30,7 +41,7 @@ export default class CommandConfig {
   /**
    * Gets the Command setting value for a given Guild
    * @param {string} guildId - The ID of the Guild to lookup
-   * @param {string} key - The Setting key to lookup
+   * @param {*} key - The Setting key to lookup
    */
   get(guildId, key) {
     const settings = aquarius.guildManager
@@ -44,7 +55,12 @@ export default class CommandConfig {
     return this.defaultSettings.get(key);
   }
 
-  // TODO: Document
+  /**
+   * Sets a value for the configuration option for a specific guild
+   * @param {string} guildId - Guild ID to set a value for
+   * @param {*} key - Command configuration key to set a value for
+   * @param {*} value - Value to register for the guild's command setting
+   */
   set(guildId, key, value) {
     const guild = aquarius.guildManager.get(guildId);
     const settings = guild.getCommandSettings(this.name);
@@ -53,7 +69,12 @@ export default class CommandConfig {
     guild.setCommandSettings(this.name, settings);
   }
 
-  // TODO: Document
+  /**
+   * Removes guild specific configuration for a command and uses the default
+   * value instead
+   * @param {string} guildId - Guild ID to remove guild configuration for
+   * @param {*} key - Command configuration key to reset
+   */
   remove(guildId, key) {
     const guild = aquarius.guildManager.get(guildId);
     const settings = guild.getCommandSettings(this.name);
@@ -62,7 +83,10 @@ export default class CommandConfig {
     guild.setCommandSettings(this.name, settings);
   }
 
-  // TODO: Document
+  /**
+   * Removes all guild configuration information for a command
+   * @param {string} guildId - Guild ID to clear configuration information for
+   */
   clear(guildId) {
     aquarius.guildManager.get(guildId).removeCommandSettings(this.name);
   }
