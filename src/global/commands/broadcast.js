@@ -3,20 +3,40 @@ import debug from 'debug';
 
 const log = debug('Broadcast');
 
-// TODO: Maybe dictate what the bot is currently playing on a `.broadcast` command?
 export const info = {
   name: 'broadcast',
   hidden: true,
-  description: "Advertises the Owner's Twitch stream",
+  description:
+    "Displays news and announcements and advertises the owner's Twitch stream",
+  usage: '```@Aquarius broadcast <message>```',
 };
 
-function setGenericMessage(aquarius) {
+async function setBroadcastMessage(aquarius, message = null) {
+  let msg = message;
+
   if (aquarius && aquarius.user) {
     log('Setting game to generic instructions');
 
-    aquarius.user.setActivity('Type `.info` for info', {
-      type: Constants.ActivityTypes.LISTENING,
-    });
+    if (msg) {
+      aquarius.user.setActivity(msg);
+      return;
+    }
+
+    const setting = await aquarius.database
+      .collection('settings')
+      .doc('BROADCAST')
+      .get();
+    msg = setting.exists && setting.data().value;
+
+    if (!msg) {
+      msg = 'Type `.info` for info';
+      aquarius.database
+        .collection('settings')
+        .doc('BROADCAST')
+        .set({ value: msg });
+    }
+
+    aquarius.user.setActivity(msg);
   } else {
     log('ERROR: No Aquarius User');
   }
@@ -31,6 +51,25 @@ function setStreaming(aquarius, game) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  aquarius.onCommand(
+    /^broadcast (?<message>.*)$/i,
+    async (message, { groups }) => {
+      if (aquarius.permissions.isBotOwner(message.author)) {
+        log(`Setting Broadcast Message to ${groups.message}`);
+
+        aquarius.database
+          .collection('settings')
+          .doc('BROADCAST')
+          .set({ value: groups.message });
+
+        setBroadcastMessage(aquarius, groups.message);
+        message.channel.send('Updated my broadcast message');
+
+        analytics.trackUsage('broadcast message');
+      }
+    }
+  );
+
   aquarius.on('presenceUpdate', async (oldUser, newUser) => {
     if (newUser.id !== aquarius.config.owner) {
       return;
@@ -45,7 +84,7 @@ export default async ({ aquarius, analytics }) => {
     if (newUser.presence.status === 'offline') {
       log('Ending Stream Broadcast');
 
-      setGenericMessage(aquarius);
+      setBroadcastMessage(aquarius);
       analytics.trackUsage('broadcast twitch');
     }
 
@@ -75,10 +114,10 @@ export default async ({ aquarius, analytics }) => {
     if (oldUser.presence.game.streaming && !newUser.presence.game.streaming) {
       log('Ending Stream Broadcast');
 
-      setGenericMessage(aquarius);
+      setBroadcastMessage(aquarius);
       analytics.trackUsage('broadcast twitch');
     }
   });
 
-  aquarius.on('ready', () => setGenericMessage(aquarius));
+  aquarius.on('ready', () => setBroadcastMessage(aquarius));
 };
