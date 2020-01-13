@@ -251,7 +251,7 @@ export default async ({ aquarius, settings, analytics }) => {
         user === message.author &&
         !aquarius.permissions.isBotOwner(message.author)
       ) {
-        message.channel.send(`You cannot take ${name} to yourself!`);
+        message.channel.send(`You cannot take ${name} from yourself!`);
         return;
       }
 
