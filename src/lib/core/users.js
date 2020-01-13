@@ -42,20 +42,3 @@ export function getNickname(guild, user) {
 
   return member.user.username;
 }
-
-/**
- * Checks to see if a User has a Role in a Guild
- * @param {Guild} guild - The Guild to check the User in
- * @param {User} user - The User to check
- * @param {string} roleName - The name of the role to check for
- * @returns {boolean} Whether the User has the role or not
- */
-export function hasRole(guild, user, roleName) {
-  const member = guild.member(user);
-
-  if (!member) {
-    return false;
-  }
-
-  return member.roles.exists('name', roleName);
-}

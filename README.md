@@ -14,7 +14,23 @@ Aquarius is a general purpose [Discord](https://discordapp.com/) chat bot. If yo
 
 ---
 
-## Usage
+## Overview
+
+TODO
+
+## Commands
+
+TODO
+
+## Plugins
+
+TODO
+
+## Community
+
+TODO
+
+## Additional Resources
 
 For help using Aquarius, visit https://aquarius.sh/docs.
 
