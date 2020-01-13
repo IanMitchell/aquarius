@@ -70,7 +70,7 @@ async function getShowPoster(name) {
     };
 
     const seriesResponse = await fetch(
-      `${TVDB_URL}/search/series?name=${name}`,
+      `${TVDB_URL}/search/series?name=${encodeURIComponent(name)}`,
       {
         headers,
       }
