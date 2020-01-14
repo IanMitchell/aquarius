@@ -1,4 +1,4 @@
-import Discord, { MessageMentions } from 'discord.js';
+import Discord from 'discord.js';
 import { MENTION } from '@aquarius/regex';
 import { getMentionType, MENTION_TYPES } from '@aquarius/regex/src/regex';
 
@@ -36,9 +36,9 @@ export function getLink(message) {
  * Unfortunately discord.js doesn't order mentions by order as they appear in
  * the message but by Snowflake ID instead. Sometimes it's important to get
  * the mentions in order - this helper function will do that.
- * @param {Discord.message} message
+ * @param {Discord.Message} message
  * @param {boolean} [repeats=false] - Include repeated mentions
- * @returns {MessageMentions[]} Ordered list of Mentions
+ * @returns {Discord.MessageMentions[]} Ordered list of Mentions
  */
 export function getOrderedMentions(message, repeats = false) {
   const mentions = Array.from(
