@@ -3,6 +3,7 @@ import dedent from 'dedent-js';
 import { MENTION } from '@aquarius/regex';
 import { humanize } from '../../lib/helpers/lists';
 import { getNickname } from '../../lib/core/users';
+import { getOrderedMentions } from '../../lib/helpers/messages';
 
 const log = debug('Ignore');
 
@@ -28,7 +29,8 @@ export default async ({ aquarius, analytics }) => {
     async message => {
       if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
         if (message.mentions.users.size > 0) {
-          const user = message.mentions.users.last();
+          const mentions = getOrderedMentions(message);
+          const user = mentions[mentions.length - 1];
           log(`Adding ${user.username} to ${message.guild.name}'s ignore list`);
 
           aquarius.guildManager.get(message.guild.id).ignoreUser(user.id);
@@ -47,7 +49,8 @@ export default async ({ aquarius, analytics }) => {
     async message => {
       if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
         if (message.mentions.users.size > 0) {
-          const user = message.mentions.users.last();
+          const mentions = getOrderedMentions(message);
+          const user = mentions[mentions.length - 1];
           log(`Removing ${user.name} from ${message.guild.name}'s ignore list`);
 
           aquarius.guildManager.get(message.guild.id).unignoreUser(user.id);

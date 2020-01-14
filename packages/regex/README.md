@@ -15,6 +15,27 @@ Regex helpers for matching with Discord message structures.
 - ANIMATED_EMOJI
 - BRACKET (matches [[Card]] syntax)
 
+## Available Helpers
+
+This package also includes some additional helpers when working with mentions. If you're trying to determine what kind of mention a references is, you can call `getMentionType` with the message to return the type of mention. The options are defined in the `MENTION_TYPES` enum.
+
+For instance, given a list of mentions you might use the following to map them to actual objects:
+
+```javascript
+mentions.map(mention => {
+  switch (getMentionType(mention[0])) {
+    case MENTION_TYPES.USER:
+      return message.guild.members.get(mention.groups.id);
+    case MENTION_TYPES.CHANNEL:
+      return message.guild.channels.get(mention.groups.id);
+    case MENTION_TYPES.ROLE:
+      return message.guild.roles.get(mention.groups.id);
+    default:
+      return null;
+  }
+});
+```
+
 ## Combining Patterns
 
 Say you want to match a message that looks like this -

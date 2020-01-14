@@ -2,6 +2,7 @@ import debug from 'debug';
 import { formatDistance } from 'date-fns';
 import { MENTION_USER } from '@aquarius/regex';
 import { getNickname } from '../../lib/core/users';
+import { getOrderedMentions } from '../../lib/helpers/messages';
 
 const log = debug('Seen');
 
@@ -19,7 +20,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     new RegExp(`^seen ${MENTION_USER.source}$`, 'i'),
     async message => {
-      const user = message.mentions.users.first();
+      const [user] = getOrderedMentions(message);
       log(`Request for ${user.username}`);
 
       if (user.presence.status !== 'offline') {
