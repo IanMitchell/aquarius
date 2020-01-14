@@ -14,6 +14,7 @@ jobs:
       - name: Lint
         run: |
           yarn install
+          yarn run pretest
           yarn run lint
   Test:
     runs-on: ubuntu-latest
