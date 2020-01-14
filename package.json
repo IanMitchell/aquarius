@@ -20,9 +20,11 @@
   "scripts": {
     "start": "cross-env DEBUG=*,-engine*,-babel*,-send,-ref*,-express* node -r dotenv/config -r esm index.js",
     "build": "node scripts/install-keyfile",
+    "build:workspaces": "yarn workspaces run build",
     "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect-brk=9229 -r dotenv/config -r esm index.js",
+    "prelint": "yarn run build:workspaces",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
-    "pretest": "yarn workspaces run build",
+    "pretest": "yarn run build:workspaces",
     "test": "jest"
   },
   "esm": {

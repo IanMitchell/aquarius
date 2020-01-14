@@ -16,5 +16,5 @@
     "regex",
     "node"
   ],
-  "main": "regex.js"
+  "main": "lib/regex.js"
 }
