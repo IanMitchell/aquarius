@@ -1,6 +1,5 @@
 import Discord from 'discord.js';
-import { MENTION } from '@aquarius/regex';
-import { getMentionType, MENTION_TYPES } from '@aquarius/regex/src/regex';
+import { MENTION, MENTION_TYPES, getMentionType } from '@aquarius/regex';
 
 /**
  * Check whether a message is a one-to-one direct message or not.
