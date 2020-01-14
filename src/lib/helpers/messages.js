@@ -39,7 +39,7 @@ export function getLink(message) {
  * @param {boolean} [repeats=false] - Include repeated mentions
  * @returns {Discord.MessageMentions[]} Ordered list of Mentions
  */
-export function getOrderedMentions(message, repeats = false) {
+export function getOrderedMentions(message, repeats = true) {
   const mentions = Array.from(
     message.content.matchAll(new RegExp(MENTION, 'g'))
   )

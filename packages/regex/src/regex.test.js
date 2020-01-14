@@ -9,18 +9,28 @@ import {
   CUSTOM_EMOJI,
   ANIMATED_EMOJI,
   BRACKET,
+  MENTION_TYPES,
+  getMentionType,
 } from './regex';
+
+const MENTIONS = {
+  ROLE: '<@&481159087929688076>',
+  CHANNEL: '<#356522910569201665>',
+  USER_NICKNAME: '<@!356528540742582282>',
+  USER_ID: '<@356528540742582282>',
+  USER: '<@103635479097769984>',
+};
 
 const MESSAGES = {
   bracket: 'My favorite MTG card is [[Jace Beleren]] and I am not sorry',
   animatedEmoji: 'This is an <a:eyesshaking:588234282468769814> Animated Emoji',
   customEmoji: 'This is a <:fbslightsmile:340934564807573505> Custom Emoji',
   emoji: '',
-  mentionRole: 'Mention <@&481159087929688076> Role',
-  mentionChannel: 'Mention <#356522910569201665> Channel',
-  mentionUserNickname: 'Mention <@!356528540742582282> User Nickname',
-  mentionUserId: 'Mention <@356528540742582282> User ID',
-  mentionUser: 'Mention <@103635479097769984> User No Nickname',
+  mentionRole: `Mention ${MENTIONS.ROLE} Role`,
+  mentionChannel: `Mention ${MENTIONS.CHANNEL} Channel`,
+  mentionUserNickname: `Mention ${MENTIONS.USER_NICKNAME} User Nickname`,
+  mentionUserId: `Mention ${MENTIONS.USER_ID} User ID`,
+  mentionUser: `Mention ${MENTIONS.USER} User No Nickname`,
 };
 
 function getAllMessagesExcept(...messages) {
@@ -170,5 +180,28 @@ describe('BRACKET', () => {
   test('Captures Name', () => {
     const match = MESSAGES.bracket.match(BRACKET);
     expect(match.groups.name).toBe('Jace Beleren');
+  });
+});
+
+describe('MENTION_TYPES', () => {
+  test('Has unique values', () => {
+    const uniques = new Set(Object.values(MENTION_TYPES));
+    expect(uniques.size).toBe(Object.keys(MENTION_TYPES).length);
+  });
+});
+
+describe('getMentionType', () => {
+  test('Identifies user mentions', () => {
+    expect(getMentionType(MENTIONS.USER)).toBe(MENTION_TYPES.USER);
+    expect(getMentionType(MENTIONS.USER_ID)).toBe(MENTION_TYPES.USER);
+    expect(getMentionType(MENTIONS.USER_NICKNAME)).toBe(MENTION_TYPES.USER);
+  });
+
+  test('Identifies channel mentions', () => {
+    expect(getMentionType(MENTIONS.CHANNEL)).toBe(MENTION_TYPES.CHANNEL);
+  });
+
+  test('Identifies role mentions', () => {
+    expect(getMentionType(MENTIONS.ROLE)).toBe(MENTION_TYPES.ROLE);
   });
 });
