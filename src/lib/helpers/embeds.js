@@ -73,14 +73,3 @@ export async function guildEmbed(guild, ...fields) {
 
   return embed;
 }
-
-/**
- * Generates a RichEmbed of information for the specified User
- * @param {User} user - The User to get data from
- * @param {...EmbedField} fields - A list of RichEmbed fields to add
- * @returns {RichEmbed} the RichEmbed for the User
- */
-// export function userEmbed(user, ...fields) {
-//   // TODO: Implement
-//   return user.name;
-// }
