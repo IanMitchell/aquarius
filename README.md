@@ -30,7 +30,9 @@ TODO
 
 ## Community
 
-TODO
+Aquarius development happens on the [Company Inc](http://companyinc.company) Discord Server - it's an active and diverse community that has far-ranging tastes. If you'd like to ask questions about Aquarius, learn more about programming, or have an idea for a new command come talk to us!
+
+[Join our Discord Server!](http://discord.companyinc.company)
 
 ## Additional Resources
 
