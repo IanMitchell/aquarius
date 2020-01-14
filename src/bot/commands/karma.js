@@ -1,7 +1,7 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { formatDistance } from 'date-fns';
-import { MENTION_USER } from '../../lib/helpers/regex';
+import { MENTION_USER } from '@aquarius/regex';
 import database from '../../lib/database/database';
 import Sentry from '../../lib/errors/sentry';
 import { getNickname } from '../../lib/core/users';

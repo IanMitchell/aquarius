@@ -14,6 +14,7 @@ jest.mock('../../../aquarius.js', () => ({
 
 describe('botLink', () => {
   test('Creates Link with Permissions', () => {
+    process.env.CLIENT_ID = '356528540742582282';
     expect(botLink()).toMatchInlineSnapshot(
       `"https://discordapp.com/oauth2/authorize?client_id=356528540742582282&scope=bot&permissions=1543892032"`
     );
@@ -25,10 +26,6 @@ describe('botLink', () => {
 });
 
 describe('getHost', () => {
-  test('Uses localhost in development', () => {
-    expect(getHost()).toMatchInlineSnapshot(`"http://localhost:3000"`);
-  });
-
   test('Uses config host in Prod', () => {
     const env = process.env.NODE_ENV;
     process.env.NODE_ENV = 'production';
@@ -42,7 +39,7 @@ describe('getHost', () => {
 describe('getVanityBotLink', () => {
   test('Creates link', () => {
     expect(getVanityBotLink()).toMatchInlineSnapshot(
-      `"http://localhost:3000/link"`
+      `"https://aquarius.sh/link"`
     );
   });
 });
@@ -57,6 +54,6 @@ describe('getGitHubLink', () => {
 
 describe('getDocsLink', () => {
   test('Creates link', () => {
-    expect(getDocsLink()).toMatchInlineSnapshot(`"http://localhost:3000/docs"`);
+    expect(getDocsLink()).toMatchInlineSnapshot(`"https://aquarius.sh/docs"`);
   });
 });

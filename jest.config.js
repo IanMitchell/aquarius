@@ -10,6 +10,7 @@ module.exports = {
   testEnvironment: 'node',
   verbose: true,
   testLocationInResults: true,
+  testPathIgnorePatterns: ['<rootDir>/packages/regex/src/regex.test.js'],
   setupFilesAfterEnv: ['./jest.setup.js'],
   reporters,
 };

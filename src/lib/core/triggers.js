@@ -1,4 +1,4 @@
-import * as regex from '../helpers/regex';
+import * as regex from '@aquarius/regex';
 import aquarius from '../../aquarius';
 import { isBot } from '../helpers/messages';
 

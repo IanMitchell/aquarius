@@ -9,7 +9,7 @@ import {
   CUSTOM_EMOJI,
   ANIMATED_EMOJI,
   BRACKET,
-} from '../regex';
+} from './regex';
 
 const MESSAGES = {
   bracket: 'My favorite MTG card is [[Jace Beleren]] and I am not sorry',

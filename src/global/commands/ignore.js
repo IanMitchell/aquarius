@@ -1,6 +1,6 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { MENTION } from '../../lib/helpers/regex';
+import { MENTION } from '@aquarius/regex';
 import { humanize } from '../../lib/helpers/lists';
 import { getNickname } from '../../lib/core/users';
 
