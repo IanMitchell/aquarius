@@ -181,10 +181,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@google-cloud/firestore@^3.3.4":
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/@google-cloud/firestore/-/firestore-3.3.4.tgz#9c5650b9329fa514c32c2e6678ec31c1cba01563"
-  integrity sha512-Omn0887f/icgX/To0Vk2cQgpBr0nbP+QIkNJs4tPKQolRCI5p7QoggnGOU1TPZ/0frtxoLIByqIT4t2l8WO1ow==
+"@google-cloud/firestore@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/firestore/-/firestore-3.4.0.tgz#42eed3a4d778a9d0586009e86662277650a37dc7"
+  integrity sha512-AARTA8r7uHfe35LZmpl/Zh774wLrEnOqyhzNIxIuJ2nR+U+OOjyWa7suVFlLl4cKJpnK2zOnRugHeyjE0BRUZg==
   dependencies:
     deep-equal "^2.0.0"
     functional-red-black-tree "^1.0.1"
