@@ -34,7 +34,7 @@
   "dependencies": {
     "@aquarius/regex": "^1.0.0",
     "@google-cloud/firestore": "^3.3.4",
-    "@sentry/node": "5.9.0",
+    "@sentry/node": "5.11.1",
     "alphavantage": "^2.0.0",
     "chalk": "^3.0.0",
     "cross-env": "^6.0.3",
