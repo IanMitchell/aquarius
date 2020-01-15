@@ -1,5 +1,6 @@
 import express from 'express';
 import debug from 'debug';
+import { Constants } from 'discord.js';
 import aquarius from '../src/aquarius';
 import createShield from './shields';
 import { botLink } from '../src/lib/helpers/links';
