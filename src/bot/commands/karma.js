@@ -1,8 +1,7 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { formatDistance } from 'date-fns';
-import { MENTION_USER } from '@aquarius/regex';
-import database from '../../lib/database/database';
+import { MENTION_USER } from '../../lib/helpers/regex';
 import Sentry from '../../lib/errors/sentry';
 import { getNickname } from '../../lib/core/users';
 import { getOrderedMentions } from '../../lib/helpers/messages';
@@ -168,13 +167,13 @@ export default async ({ aquarius, settings, analytics }) => {
       log(`${message.author.username} gave karma to ${user.username}`);
 
       try {
-        const giverList = await database.karma
+        const giverList = await aquarius.database.karma
           .where('userId', '==', message.author.id)
           .where('guildId', '==', message.guild.id)
           .get();
 
         if (giverList.empty) {
-          database.karma.add({
+          aquarius.database.karma.add({
             userId: message.author.id,
             guildId: message.guild.id,
             lastUsage: Date.now(),
@@ -198,7 +197,7 @@ export default async ({ aquarius, settings, analytics }) => {
           giverDoc.ref.set({ lastUsage: Date.now() }, { merge: true });
         }
 
-        const receiverList = await database.karma
+        const receiverList = await aquarius.database.karma
           .where('userId', '==', user.id)
           .where('guildId', '==', message.guild.id)
           .get();
@@ -206,7 +205,7 @@ export default async ({ aquarius, settings, analytics }) => {
         let karma = 1;
 
         if (receiverList.empty) {
-          database.karma.add({
+          aquarius.database.karma.add({
             userId: user.id,
             guildId: message.guild.id,
             lastUsage: Date.now(),
@@ -259,13 +258,13 @@ export default async ({ aquarius, settings, analytics }) => {
       log(`${message.author.username} took karma from ${user.username}`);
 
       try {
-        const giverList = await database.karma
+        const giverList = await aquarius.database.karma
           .where('userId', '==', message.author.id)
           .where('guildId', '==', message.guild.id)
           .get();
 
         if (giverList.empty) {
-          database.karma.add({
+          aquarius.database.karma.add({
             userId: message.author.id,
             guildId: message.guild.id,
             lastUsage: Date.now(),
@@ -289,7 +288,7 @@ export default async ({ aquarius, settings, analytics }) => {
           giverDoc.ref.set({ lastUsage: Date.now() }, { merge: true });
         }
 
-        const receiverList = await database.karma
+        const receiverList = await aquarius.database.karma
           .where('userId', '==', user.id)
           .where('guildId', '==', message.guild.id)
           .get();
@@ -297,7 +296,7 @@ export default async ({ aquarius, settings, analytics }) => {
         let karma = -1;
 
         if (receiverList.empty) {
-          database.karma.add({
+          aquarius.database.karma.add({
             userId: user.id,
             guildId: message.guild.id,
             lastUsage: Date.now(),
