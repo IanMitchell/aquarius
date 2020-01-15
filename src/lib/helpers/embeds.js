@@ -37,10 +37,12 @@ export async function guildEmbed(guild, ...fields) {
     }
   });
 
-  let color = null;
+  let color = 0x333333;
 
   try {
-    color = await getIconColor(guild.iconURL);
+    if (guild.iconURL) {
+      color = await getIconColor(guild.iconURL);
+    }
   } catch (error) {
     log(error);
     Sentry.captureException(error);
