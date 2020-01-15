@@ -77,7 +77,7 @@
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jest": "^23.0.4",
-    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "jest": "^24.9.0",
     "jest-discord": "^0.1.0",
     "jest-environment-discord": "^0.1.0",
