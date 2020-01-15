@@ -17,7 +17,7 @@ app.get('/', (request, response) => {
   });
 });
 
-app.get('/shield', (request, response) => {
+app.get('/shield/guilds', (request, response) => {
   if (aquarius.status !== Constants.Status.READY) {
     return response.json({
       schemaVersion: 1,
@@ -33,6 +33,27 @@ app.get('/shield', (request, response) => {
     schemaVersion: 1,
     message: 'Guilds',
     label: aquarius.guilds.array().length.toLocaleString(),
+    color: 'green',
+    style: 'for-the-badge',
+  });
+});
+
+app.get('/shield/commands', (request, response) => {
+  if (aquarius.status !== Constants.Status.READY) {
+    return response.json({
+      schemaVersion: 1,
+      message: 'Commands',
+      label: 'Error',
+      color: 'red',
+      style: 'for-the-badge',
+      isError: true,
+    });
+  }
+
+  return response.json({
+    schemaVersion: 1,
+    message: 'Commands',
+    label: aquarius.commandList.size,
     color: 'green',
     style: 'for-the-badge',
   });
