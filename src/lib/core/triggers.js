@@ -1,5 +1,5 @@
-import aquarius from '../..';
-import * as regex from '../helpers/regex';
+import * as regex from '@aquarius/regex';
+import aquarius from '../../aquarius';
 import { isBot } from '../helpers/messages';
 
 /** @typedef {import('discord.js').Message} Message */

@@ -1,10 +1,11 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { formatDistance } from 'date-fns';
-import database from '../../lib/database';
+import { MENTION_USER } from '@aquarius/regex';
+import database from '../../lib/database/database';
 import Sentry from '../../lib/errors/sentry';
-import { MENTION_USER } from '../../lib/helpers/regex';
 import { getNickname } from '../../lib/core/users';
+import { getOrderedMentions } from '../../lib/helpers/messages';
 
 const log = debug('Karma');
 
@@ -113,7 +114,7 @@ export default async ({ aquarius, settings, analytics }) => {
       return aquarius.triggers.messageTriggered(message, regex);
     },
     async message => {
-      const user = message.mentions.users.first();
+      const [user] = getOrderedMentions(message);
 
       if (user === undefined) {
         return;
@@ -147,7 +148,7 @@ export default async ({ aquarius, settings, analytics }) => {
       return message.content.match(regex);
     },
     async message => {
-      const user = message.mentions.users.first();
+      const [user] = getOrderedMentions(message);
 
       if (!user) {
         return;
@@ -238,7 +239,7 @@ export default async ({ aquarius, settings, analytics }) => {
       return message.content.match(regex);
     },
     async message => {
-      const user = message.mentions.users.first();
+      const [user] = getOrderedMentions(message);
 
       if (!user) {
         return;

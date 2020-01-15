@@ -5,7 +5,7 @@ import { getResourceUsage } from '../src/lib/metrics/resources';
 import { getTotalGuildCount } from '../src/lib/metrics/guilds';
 import { ONE_MINUTE } from '../src/lib/helpers/times';
 import { getTotalUserCount } from '../src/lib/metrics/users';
-import aquarius from '../src';
+import aquarius from '../src/aquarius';
 
 // TODO: Generate and store metrics via a cron type system
 

@@ -1,3 +1,4 @@
+import pluralize from 'pluralize';
 import {
   differenceInYears,
   subYears,
@@ -13,7 +14,6 @@ import {
   subMinutes,
   differenceInSeconds,
 } from 'date-fns';
-import { pluralize } from './strings';
 
 /**
  * Takes a Date and creates a standard date string from it
@@ -28,6 +28,12 @@ export function getStandardDate(date) {
   });
 }
 
+/**
+ * Converts the difference between dates into an exact string representation
+ * @param {Date} start - Start date
+ * @param {Date} end - End date
+ * @returns {string} The exact time difference
+ */
 export function getExactTimeInterval(start, end) {
   const units = [];
   let startDate = start;

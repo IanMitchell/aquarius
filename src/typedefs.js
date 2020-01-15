@@ -1,9 +1,9 @@
 // Custom types for VS Code Intellisense
 
 /**
- * @typedef {import('./index').Aquarius} Aquarius
+ * @typedef {import('./aquarius').Aquarius} Aquarius
  * @typedef {import('./lib/commands/settings').default} Settings
- * @typedef {import{'./lib/analytics/commands'}.default} Analytics
+ * @typedef {import('./lib/commands/analytics').default} Analytics
  */
 
 /**
@@ -17,6 +17,11 @@
  * @property {Aquarius} aquarius - reference to the Aquarius Client
  * @property {Settings} settings - modify settings for the command
  * @property {Analytics} analytics - track events for the command
+ */
+
+/**
+ * Callback function invoked for messages that pass a given RegExp pattern
+ * @typedef {( message: Message, match: RegExpMatchArray )} CommandHandler
  */
 
 /**

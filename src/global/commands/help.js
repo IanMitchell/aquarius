@@ -115,10 +115,10 @@ export default async ({ aquarius, analytics }) => {
 
     const embed = helpMessage(aquarius, info, message.guild);
 
-    embed.addField('Enabled Commands', humanize(commandList));
+    embed.addField('Enabled Commands', humanize(commandList.sort()));
 
     if (disabledCommands.length > 0) {
-      embed.addField('Disabled Commands', humanize(disabledCommands));
+      embed.addField('Disabled Commands', humanize(disabledCommands.sort()));
     }
 
     message.channel.send(embed);

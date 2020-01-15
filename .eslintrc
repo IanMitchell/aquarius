@@ -1,5 +1,6 @@
 {
   "env": {
+    "node": true,
     "jest/globals": true
   },
   "extends": [

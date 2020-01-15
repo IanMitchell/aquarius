@@ -1,5 +1,5 @@
 import debug from 'debug';
-import database from '../database';
+import database from '../database/database';
 import Sentry from '../errors/sentry';
 import { serializeMap, deserializeMap } from '../database/serialization';
 import { TEN_MINUTES } from '../helpers/times';
@@ -148,7 +148,12 @@ export default class GuildSettings {
     return this.commandConfig.get(name) || new Map();
   }
 
-  // TODO: Document
+  /**
+   * Sets and persists command settings for a command
+   * @param {string} name - Command name to set a config for
+   * @param {Object} config - Command config to persist
+   * @param {boolean} [save=true] - Whether to persist changes in the database
+   */
   setCommandSettings(name, config, save = true) {
     this.commandConfig.set(name, config);
 

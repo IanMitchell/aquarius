@@ -37,10 +37,12 @@ export async function guildEmbed(guild, ...fields) {
     }
   });
 
-  let color = null;
+  let color = 0x333333;
 
   try {
-    color = await getIconColor(guild.iconURL);
+    if (guild.iconURL) {
+      color = await getIconColor(guild.iconURL);
+    }
   } catch (error) {
     log(error);
     Sentry.captureException(error);
@@ -73,14 +75,3 @@ export async function guildEmbed(guild, ...fields) {
 
   return embed;
 }
-
-/**
- * Generates a RichEmbed of information for the specified User
- * @param {User} user - The User to get data from
- * @param {...EmbedField} fields - A list of RichEmbed fields to add
- * @returns {RichEmbed} the RichEmbed for the User
- */
-// export function userEmbed(user, ...fields) {
-//   // TODO: Implement
-//   return user.name;
-// }

@@ -1,8 +1,8 @@
 import debug from 'debug';
 import { formatDistance } from 'date-fns';
+import { MENTION_USER } from '@aquarius/regex';
 import { getNickname } from '../../lib/core/users';
-import database from '../../lib/database';
-import { MENTION_USER } from '../../lib/helpers/regex';
+import { getOrderedMentions } from '../../lib/helpers/messages';
 
 const log = debug('Seen');
 
@@ -12,10 +12,6 @@ export const info = {
   usage: '```@Aquarius seen <@User>```',
 };
 
-async function updateLastSeen(user) {
-  return database.lastSeen.doc(user.id).set({ lastSeen: Date.now() });
-}
-
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   // Presence change event triggers once per guild
@@ -24,13 +20,13 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     new RegExp(`^seen ${MENTION_USER.source}$`, 'i'),
     async message => {
-      const user = message.mentions.users.first();
+      const [user] = getOrderedMentions(message);
       log(`Request for ${user.username}`);
 
       if (user.presence.status !== 'offline') {
         message.channel.send("They're online right now!");
       } else {
-        const lastSeen = await database.lastSeen.doc(user.id).get();
+        const lastSeen = await aquarius.database.lastSeen.doc(user.id).get();
 
         if (!lastSeen.exists) {
           message.channel.send(
@@ -57,7 +53,10 @@ export default async ({ aquarius, analytics }) => {
     ) {
       statusDebounce.add(newMember.user.id);
       log(`${getNickname(newMember.guild, newMember)} signed off`);
-      await updateLastSeen(newMember.user);
+
+      await aquarius.database.lastSeen
+        .doc(newMember.user.id)
+        .set({ lastSeen: Date.now() });
 
       setTimeout(() => statusDebounce.delete(newMember.user.id), 500);
     }
