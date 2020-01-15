@@ -1,8 +1,9 @@
 import express from 'express';
 import debug from 'debug';
-import { Constants } from 'discord.js';
 import aquarius from '../src/aquarius';
+import createShield from './shields';
 import { botLink } from '../src/lib/helpers/links';
+import { getTotalUserCount } from '../src/lib/metrics/users';
 // import { getMetricHandler } from './metrics';
 
 const log = debug('Server');
@@ -18,45 +19,29 @@ app.get('/', (request, response) => {
 });
 
 app.get('/shield/guilds', (request, response) => {
-  if (aquarius.status !== Constants.Status.READY) {
-    return response.json({
-      schemaVersion: 1,
-      message: 'Guilds',
-      label: 'Error',
-      color: 'red',
-      style: 'for-the-badge',
-      isError: true,
-    });
-  }
+  response.json(
+    createShield(
+      aquarius,
+      'Guilds',
+      aquarius.guilds.array().length.toLocaleString()
+    )
+  );
+});
 
-  return response.json({
-    schemaVersion: 1,
-    message: 'Guilds',
-    label: aquarius.guilds.array().length.toLocaleString(),
-    color: 'green',
-    style: 'for-the-badge',
-  });
+app.get('/shield/users', (request, response) => {
+  response.json(
+    createShield(aquarius, 'Users', getTotalUserCount().toLocaleString())
+  );
 });
 
 app.get('/shield/commands', (request, response) => {
-  if (aquarius.status !== Constants.Status.READY) {
-    return response.json({
-      schemaVersion: 1,
-      message: 'Commands',
-      label: 'Error',
-      color: 'red',
-      style: 'for-the-badge',
-      isError: true,
-    });
-  }
-
-  return response.json({
-    schemaVersion: 1,
-    message: 'Commands',
-    label: aquarius.commandList.size.toLocaleString(),
-    color: 'green',
-    style: 'for-the-badge',
-  });
+  return response.json(
+    createShield(
+      aquarius,
+      'Commands',
+      aquarius.commandList.size.toLocaleString()
+    )
+  );
 });
 
 app.get('/link', (request, response) => {

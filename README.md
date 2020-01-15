@@ -5,6 +5,7 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/endpoint?url=https://aquarius.sh/shield/users">
   <img src="https://img.shields.io/endpoint?url=https://aquarius.sh/shield/guilds">
   <img src="https://img.shields.io/endpoint?url=https://aquarius.sh/shield/commands">
 </p>
