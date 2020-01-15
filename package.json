@@ -38,7 +38,7 @@
     "alphavantage": "^2.0.0",
     "chalk": "^3.0.0",
     "cross-env": "^6.0.3",
-    "date-fns": "^2.7.0",
+    "date-fns": "^2.9.0",
     "debug": "^4.1.1",
     "dedent-js": "^1.0.1",
     "discord.js": "^11.5.0",
