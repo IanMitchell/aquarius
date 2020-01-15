@@ -49,7 +49,7 @@
     "form-data": "^3.0.0",
     "js-yaml": "^3.10.0",
     "node-fetch": "^2.3.0",
-    "node-vibrant": "^3.0.0",
+    "node-vibrant": "^3.1.5",
     "pluralize": "^8.0.0",
     "pretty-bytes": "^5.0.0",
     "rgb-hex": "^3.0.0",
