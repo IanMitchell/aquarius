@@ -53,7 +53,7 @@ app.get('/shield/commands', (request, response) => {
   return response.json({
     schemaVersion: 1,
     message: 'Commands',
-    label: aquarius.commandList.size,
+    label: aquarius.commandList.size.toLocaleString(),
     color: 'green',
     style: 'for-the-badge',
   });
