@@ -1,5 +1,6 @@
 import express from 'express';
 import debug from 'debug';
+import cors from 'cors';
 import { Constants } from 'discord.js';
 import aquarius from '../src/aquarius';
 import createShield from './shields';
@@ -9,6 +10,8 @@ import { getTotalUserCount } from '../src/lib/metrics/users';
 
 const log = debug('Server');
 const app = express();
+
+app.use(cors());
 
 // const metricHandler = getMetricHandler();
 
