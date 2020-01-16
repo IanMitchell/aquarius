@@ -76,7 +76,7 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-import": "^2.20.0",
-    "eslint-plugin-jest": "^23.0.4",
+    "eslint-plugin-jest": "^23.6.0",
     "eslint-plugin-prettier": "^3.1.2",
     "jest": "^24.9.0",
     "jest-discord": "^0.1.0",
