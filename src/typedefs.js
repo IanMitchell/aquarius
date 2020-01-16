@@ -4,6 +4,7 @@
  * @typedef {import('./aquarius').Aquarius} Aquarius
  * @typedef {import('./lib/commands/settings').default} Settings
  * @typedef {import('./lib/commands/analytics').default} Analytics
+ * @typedef {import('discord.js').Message} Message
  */
 
 /**

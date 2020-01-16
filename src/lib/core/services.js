@@ -3,7 +3,7 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
 import Firestore from '@google-cloud/firestore';
-import database from '../database';
+import database from '../database/database';
 
 const log = debug('Services');
 
