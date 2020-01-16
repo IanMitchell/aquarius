@@ -74,7 +74,9 @@ export function bracketTrigger(message) {
     return false;
   }
 
-  const matchList = Array.from(message.content.trim().matchAll(regex.BRACKET));
+  const matchList = Array.from(
+    message.content.trim().matchAll(new RegExp(regex.BRACKET, 'g'))
+  );
 
   if (matchList.length > 0) {
     return matchList;

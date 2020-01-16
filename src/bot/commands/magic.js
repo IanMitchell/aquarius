@@ -27,12 +27,16 @@ export default async ({ aquarius, analytics }) => {
     info,
     message => aquarius.triggers.bracketTrigger(message),
     async (message, cardList) => {
-      log(`Retrieving entries for: ${cardList.join(', ')}`);
+      log(
+        `Retrieving entries for: ${cardList
+          .map(match => match.groups.name)
+          .join(', ')}`
+      );
 
       aquarius.loading.start(message.channel);
       try {
         const responses = await Promise.all(
-          cardList.map(card => getCard(card))
+          cardList.map(card => getCard(card.groups.name))
         );
         const images = responses.reduce((list, json) => {
           if (json && !json.status) {
