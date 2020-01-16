@@ -1,11 +1,9 @@
-import aquarius from '../..';
+import aquarius from '../../aquarius';
 // import { ONE_WEEK, getDateAgo } from '../helpers/times';
 
 // TODO: Document
 export function getTotalUserCount() {
-  return aquarius.guilds
-    .array()
-    .reduce((val, guild) => val + guild.memberCount, 0);
+  return aquarius.guilds.reduce((count, guild) => count + guild.memberCount, 0);
 }
 
 // TODO: Document

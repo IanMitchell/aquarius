@@ -1,16 +1,20 @@
-import 'now-env';
 import debug from 'debug';
-import Raven from 'raven';
 import timber from 'timber';
+import Sentry from './src/lib/errors/sentry';
 
 const log = debug('Host');
 
 async function initialize() {
-  log('Loading Bot');
-  await import('./src');
+  try {
+    log('Loading Bot');
+    await import('./src/aquarius.js');
 
-  log('Starting Server');
-  await import('./web');
+    log('Starting Server');
+    await import('./web/server.js');
+  } catch (error) {
+    log(error);
+    Sentry.captureException(error);
+  }
 }
 
 if (process.env.TIMBER_KEY && process.env.NODE_ENV !== 'development') {
@@ -19,11 +23,4 @@ if (process.env.TIMBER_KEY && process.env.NODE_ENV !== 'development') {
   log('Timber Activated');
 }
 
-if (process.env.SENTRY) {
-  Raven.config(process.env.SENTRY).install();
-  log('Sentry Activated');
-
-  Raven.context(initialize);
-} else {
-  initialize();
-}
+initialize();

@@ -98,9 +98,7 @@ export default async ({ aquarius, settings, analytics }) => {
 
     if (isSame(message, getSize(message.guild))) {
       log(
-        `Sending '${message.content}' to ${message.guild.name}#${
-          message.channel.name
-        }`
+        `Sending '${message.content}' to ${message.guild.name}#${message.channel.name}`
       );
       messageStack.get(message.guild.id).set(message.channel.id, []);
       message.channel.send(message.content);

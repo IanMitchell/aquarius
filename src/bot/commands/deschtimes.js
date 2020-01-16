@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 import FormData from 'form-data';
 import { RichEmbed, Permissions } from 'discord.js';
 import formatDistance from 'date-fns/formatDistance';
+import Sentry from '../../lib/errors/sentry';
 import { getBotOwner } from '../../lib/core/users';
 
 const log = debug('Deschtimes');
@@ -69,7 +70,7 @@ async function getShowPoster(name) {
     };
 
     const seriesResponse = await fetch(
-      `${TVDB_URL}/search/series?name=${name}`,
+      `${TVDB_URL}/search/series?name=${encodeURIComponent(name)}`,
       {
         headers,
       }
@@ -102,6 +103,7 @@ async function getShowPoster(name) {
     return url;
   } catch (error) {
     log(error);
+    Sentry.captureException(error);
   }
 
   return null;
@@ -150,7 +152,7 @@ async function createShowEmbed(show) {
   } else if (airDate > Date.now()) {
     embed.addField(
       'Airs',
-      formatDistance(new Date(), airDate, { addSuffix: true })
+      formatDistance(airDate, new Date(), { addSuffix: true })
     );
   } else {
     embed.addField(
@@ -206,6 +208,8 @@ export default async ({ aquarius, analytics }) => {
       analytics.trackUsage('blame', message);
     } catch (error) {
       log(error);
+      Sentry.captureException(error);
+
       const owner = await getBotOwner();
       message.channel.send(
         `Sorry, there was a problem. ${owner} might be able to help!`
@@ -272,6 +276,8 @@ export default async ({ aquarius, analytics }) => {
         analytics.trackUsage('status', message);
       } catch (error) {
         log(error);
+        Sentry.captureException(error);
+
         const owner = await getBotOwner();
         message.channel.send(
           `Sorry, there was a problem. ${owner} might be able to help!`
@@ -305,6 +311,8 @@ export default async ({ aquarius, analytics }) => {
       analytics.trackUsage('release', message);
     } catch (error) {
       log(error);
+      Sentry.captureException(error);
+
       const owner = await getBotOwner();
       message.channel.send(
         `Sorry, there was a problem. ${owner} might be able to help!`
@@ -321,9 +329,7 @@ export default async ({ aquarius, analytics }) => {
     try {
       aquarius.loading.start(message.channel);
 
-      const uri = `${SHOWTIMES.SERVER}/shows.json?platform=discord&channel=${
-        message.guild.id
-      }`;
+      const uri = `${SHOWTIMES.SERVER}/shows.json?platform=discord&channel=${message.guild.id}`;
 
       const response = await fetch(uri);
       const data = await response.json();
@@ -355,6 +361,8 @@ export default async ({ aquarius, analytics }) => {
       analytics.trackUsage('airing', message);
     } catch (error) {
       log(error);
+      Sentry.captureException(error);
+
       const owner = await getBotOwner();
       message.channel.send(
         `Sorry, there was a problem. ${owner} might be able to help!`

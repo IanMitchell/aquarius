@@ -23,14 +23,10 @@ async function loadServiceFiles() {
       if (file.endsWith('.yml')) {
         log(`Loading ${file}`);
 
-        try {
-          const filePath = path.join(serviceDirectory, file);
-          const { name, steps } = yaml.safeLoad(fs.readFileSync(filePath));
+        const filePath = path.join(serviceDirectory, file);
+        const { name, steps } = yaml.safeLoad(fs.readFileSync(filePath));
 
-          SERVICE_LIST.set(name.toLowerCase(), { name, steps });
-        } catch (error) {
-          throw error;
-        }
+        SERVICE_LIST.set(name.toLowerCase(), { name, steps });
       }
     });
   });

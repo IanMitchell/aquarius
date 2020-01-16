@@ -36,7 +36,7 @@ const responses = [
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^8ball .+$/i, async message => {
     log('Generating response');
-    message.channel.send(randomValue(responses));
+    message.channel.send(`🎱 | ${randomValue(responses)}`);
 
     analytics.trackUsage('8ball', message);
   });

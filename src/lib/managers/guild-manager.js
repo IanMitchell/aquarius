@@ -1,5 +1,5 @@
 import debug from 'debug';
-import aquarius from '../..';
+import aquarius from '../../aquarius';
 import GuildSettings from '../settings/guild-settings';
 
 const log = debug('Guild Manager');

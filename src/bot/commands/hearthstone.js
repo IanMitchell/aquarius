@@ -1,6 +1,7 @@
 import debug from 'debug';
 import fetch from 'node-fetch';
 import { Permissions } from 'discord.js';
+import Sentry from '../../lib/errors/sentry';
 
 const log = debug('Hearthstone');
 
@@ -30,12 +31,16 @@ export default async ({ aquarius, analytics }) => {
     info,
     message => aquarius.triggers.bracketTrigger(message),
     async (message, cardList) => {
-      log(`Retrieving entries for: ${cardList.join(', ')}`);
+      log(
+        `Retrieving entries for: ${cardList
+          .map(match => match.groups.name)
+          .join(', ')}`
+      );
 
       aquarius.loading.start(message.channel);
       try {
         const responses = await Promise.all(
-          cardList.map(card => getCard(card))
+          cardList.map(card => getCard(card.groups.name))
         );
         const images = responses.reduce((list, json) => {
           if (json && !json.error) {
@@ -64,6 +69,7 @@ export default async ({ aquarius, analytics }) => {
         }
       } catch (error) {
         log(error);
+        Sentry.captureException(error);
       }
 
       aquarius.loading.stop(message.channel);

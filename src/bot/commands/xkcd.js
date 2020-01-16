@@ -2,6 +2,7 @@ import debug from 'debug';
 import dedent from 'dedent-js';
 import { RichEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
+import Sentry from '../../lib/errors/sentry';
 
 const log = debug('xkcd');
 
@@ -67,8 +68,10 @@ export default async ({ aquarius, analytics }) => {
       const embed = createEmbedFromJson(postJson);
 
       message.channel.send(embed);
-    } catch (err) {
-      log(err);
+    } catch (error) {
+      log(error);
+      Sentry.captureException(error);
+
       message.channel.send('Sorry, there was a problem loading the comic.');
     }
 
@@ -119,8 +122,10 @@ export default async ({ aquarius, analytics }) => {
         const embed = createEmbedFromJson(postJson);
         message.channel.send(embed);
       }
-    } catch (err) {
-      log(err);
+    } catch (error) {
+      log(error);
+      Sentry.captureException(error);
+
       message.channel.send('Sorry, there was a problem loading the comic.');
     }
 
@@ -153,8 +158,10 @@ export default async ({ aquarius, analytics }) => {
       const embed = createEmbedFromJson(postJson);
 
       message.channel.send(embed);
-    } catch (err) {
-      log(err);
+    } catch (error) {
+      log(error);
+      Sentry.captureException(error);
+
       message.channel.send('Sorry, there was a problem loading the comic.');
     }
 

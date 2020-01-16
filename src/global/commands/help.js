@@ -115,10 +115,10 @@ export default async ({ aquarius, analytics }) => {
 
     const embed = helpMessage(aquarius, info, message.guild);
 
-    embed.addField('Enabled Commands', humanize(commandList));
+    embed.addField('Enabled Commands', humanize(commandList.sort()));
 
     if (disabledCommands.length > 0) {
-      embed.addField('Disabled Commands', humanize(disabledCommands));
+      embed.addField('Disabled Commands', humanize(disabledCommands.sort()));
     }
 
     message.channel.send(embed);
@@ -128,9 +128,7 @@ export default async ({ aquarius, analytics }) => {
   // Handle help for specific command
   aquarius.onCommand(/^help (?<command>.+)$/i, async (message, { groups }) => {
     log(
-      `Help request for ${groups.command} in "${message.guild.name}#${
-        message.channel.name
-      }"`
+      `Help request for ${groups.command} in "${message.guild.name}#${message.channel.name}"`
     );
     const help = aquarius.help.get(groups.command);
 

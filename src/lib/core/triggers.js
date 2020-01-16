@@ -1,5 +1,5 @@
-import aquarius from '../..';
 import * as regex from '../helpers/regex';
+import aquarius from '../../aquarius';
 import { isBot } from '../helpers/messages';
 
 /** @typedef {import('discord.js').Message} Message */
@@ -74,16 +74,9 @@ export function bracketTrigger(message) {
     return false;
   }
 
-  const matchList = [];
-  let match = null;
-
-  do {
-    match = regex.BRACKET.exec(message.content.trim());
-
-    if (match) {
-      matchList.push(match.groups.name);
-    }
-  } while (match !== null);
+  const matchList = Array.from(
+    message.content.trim().matchAll(new RegExp(regex.BRACKET, 'g'))
+  );
 
   if (matchList.length > 0) {
     return matchList;

@@ -2,6 +2,7 @@ import debug from 'debug';
 import { RichEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import { DOMParser } from 'xmldom';
+import Sentry from '../../lib/errors/sentry';
 import { capitalize } from '../../lib/helpers/strings';
 
 const log = debug('Define');
@@ -37,6 +38,14 @@ function getPronunciation(dom) {
   return dom.getElementsByTagName('pr')[0].textContent;
 }
 
+function isWord(dom) {
+  if (dom.getElementsByTagName('suggestion').length > 0) {
+    return false;
+  }
+
+  return true;
+}
+
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^define (?<word>.+)$/i, async (message, { groups }) => {
@@ -64,18 +73,30 @@ export default async ({ aquarius, analytics }) => {
       const parser = new DOMParser();
       const dom = parser.parseFromString(xml, 'text/xml');
 
-      const embed = new RichEmbed()
-        .setTitle(capitalize(dom.getElementsByTagName('ew')[0].textContent))
-        .setColor(0x0074d9)
-        .setFooter('Definitions provided by Merriam Webster')
-        .addField('Definition', getDefinition(dom))
-        .addField('Plural', getPlural(dom))
-        .addField('Pronunciation', getPronunciation(dom));
+      if (isWord(dom)) {
+        const embed = new RichEmbed()
+          .setTitle(capitalize(dom.getElementsByTagName('ew')[0].textContent))
+          .setColor(0x0074d9)
+          .setFooter('Definitions provided by Merriam Webster')
+          .addField('Definition', getDefinition(dom))
+          .addField('Plural', getPlural(dom))
+          .addField('Pronunciation', getPronunciation(dom));
 
-      message.channel.send(embed);
+        message.channel.send(embed);
+      } else {
+        const words = Array.from(dom.getElementsByTagName('suggestion'))
+          .map(element => element.textContent)
+          .join(', ');
+
+        message.channel.send(
+          `Sorry, that isn't a word I'm familiar with. Did you mean any of these? \n\n${words}`
+        );
+      }
+
       analytics.trackUsage('define', message);
-    } catch (err) {
-      log(err);
+    } catch (error) {
+      log(error);
+      Sentry.captureException(error);
     }
 
     aquarius.loading.stop(message.channel);

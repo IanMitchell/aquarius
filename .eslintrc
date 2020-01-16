@@ -1,5 +1,6 @@
 {
   "env": {
+    "node": true,
     "jest/globals": true
   },
   "extends": [
@@ -8,10 +9,9 @@
     "plugin:prettier/recommended"
   ],
   "parser": "babel-eslint",
-  "plugins": [
-    "jest"
-  ],
+  "plugins": ["jest"],
   "rules": {
+    "no-alert": 0,
     "class-methods-use-this": 0,
     "arrow-parens": [
       0,

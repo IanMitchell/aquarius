@@ -2,7 +2,9 @@ import debug from 'debug';
 import dedent from 'dedent-js';
 import { formatDistance } from 'date-fns';
 import { MENTION_USER } from '../../lib/helpers/regex';
+import Sentry from '../../lib/errors/sentry';
 import { getNickname } from '../../lib/core/users';
+import { getOrderedMentions } from '../../lib/helpers/messages';
 
 const log = debug('Karma');
 
@@ -111,7 +113,7 @@ export default async ({ aquarius, settings, analytics }) => {
       return aquarius.triggers.messageTriggered(message, regex);
     },
     async message => {
-      const user = message.mentions.users.first();
+      const [user] = getOrderedMentions(message);
 
       if (user === undefined) {
         return;
@@ -145,7 +147,7 @@ export default async ({ aquarius, settings, analytics }) => {
       return message.content.match(regex);
     },
     async message => {
-      const user = message.mentions.users.first();
+      const [user] = getOrderedMentions(message);
 
       if (!user) {
         return;
@@ -223,6 +225,7 @@ export default async ({ aquarius, settings, analytics }) => {
         analytics.trackUsage('increase', message);
       } catch (error) {
         log(error);
+        Sentry.captureException(error);
       }
     }
   );
@@ -235,7 +238,7 @@ export default async ({ aquarius, settings, analytics }) => {
       return message.content.match(regex);
     },
     async message => {
-      const user = message.mentions.users.first();
+      const [user] = getOrderedMentions(message);
 
       if (!user) {
         return;
@@ -248,7 +251,7 @@ export default async ({ aquarius, settings, analytics }) => {
         user === message.author &&
         !aquarius.permissions.isBotOwner(message.author)
       ) {
-        message.channel.send(`You cannot take ${name} to yourself!`);
+        message.channel.send(`You cannot take ${name} from yourself!`);
         return;
       }
 
@@ -313,6 +316,7 @@ export default async ({ aquarius, settings, analytics }) => {
         analytics.trackUsage('decrease', message);
       } catch (error) {
         log(error);
+        Sentry.captureException(error);
       }
     }
   );
