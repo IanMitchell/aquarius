@@ -50,6 +50,7 @@
     "js-yaml": "^3.10.0",
     "node-fetch": "^2.3.0",
     "node-vibrant": "^3.1.5",
+    "parse-color": "^1.0.0",
     "pluralize": "^8.0.0",
     "pretty-bytes": "^5.0.0",
     "rgb-hex": "^3.0.0",
