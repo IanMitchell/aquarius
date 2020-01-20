@@ -1,6 +1,7 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import pluralize from 'pluralize';
+import Sentry from '../../lib/errors/sentry';
 import { MUTE_DURATION } from '../../lib/settings/guild-settings';
 
 const log = debug('Quiet');
@@ -35,6 +36,8 @@ export default async ({ aquarius, analytics }) => {
   // The one case we need to break out of our APIs, since
   // they don't trigger when a guild is in a muted state
   aquarius.on('message', async message => {
+    Sentry.configureMessageScope(message);
+
     if (
       aquarius.triggers.messageTriggered(message, /^quiet (?:stop|end)$/i) &&
       aquarius.permissions.isGuildAdmin(message.guild, message.author)

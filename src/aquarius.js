@@ -10,9 +10,9 @@ import * as permissions from './lib/core/permissions';
 import * as services from './lib/core/services';
 import * as triggers from './lib/core/triggers';
 import database from './lib/database/database';
-import DirectMessageManager from './lib/managers/direct-message';
+import DirectMessageManager from './lib/managers/direct-message-manager';
 import GuildManager from './lib/managers/guild-manager';
-import EmojiManager from './lib/managers/emojis';
+import EmojiManager from './lib/managers/emoji-manager';
 import { isDirectMessage, isBot } from './lib/helpers/messages';
 import TriggerMap from './lib/settings/trigger-map';
 import CommandConfig from './lib/settings/command-config';
@@ -67,13 +67,13 @@ export class Aquarius extends Discord.Client {
 
     /**
      * Interface for sliding into a User's DMs
-     * @type { typeof import('./lib/managers/direct-message') }
+     * @type { typeof import('./lib/managers/direct-message-manager') }
      */
     this.directMessages = new DirectMessageManager();
 
     /**
      * A list of custom emoji for usage in messages.
-     * @type { typeof import('./lib/managers/emojis') }
+     * @type { typeof import('./lib/managers/emoji-manager') }
      */
     this.emojiList = new EmojiManager();
 
@@ -147,6 +147,7 @@ export class Aquarius extends Discord.Client {
    * @todo Make this method private
    */
   initialize() {
+    this.services.load();
     this.guildManager.initialize();
     this.emojiList.initialize();
     setupWeeklyGuildLoop();
@@ -396,6 +397,8 @@ export class Aquarius extends Discord.Client {
    */
   onDirectMessage(regex, handler) {
     this.on('message', message => {
+      Sentry.configureMessageScope(message);
+
       if (message.channel.type === 'dm') {
         if (isBot(message.author)) {
           return;
@@ -419,9 +422,11 @@ export class Aquarius extends Discord.Client {
    * `match` will be set to `true`
    */
   onMessage(info, handler) {
-    this.on('message', message =>
-      this.handleMessage(message, info, handler, () => true)
-    );
+    this.on('message', message => {
+      Sentry.configureMessageScope(message);
+
+      this.handleMessage(message, info, handler, () => true);
+    });
   }
 
   /**
@@ -440,14 +445,16 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onCommand(regex, handler) {
-    this.on('message', message =>
+    this.on('message', message => {
+      Sentry.configureMessageScope(message);
+
       this.handleCommand(
         message,
         regex,
         handler,
         this.triggers.messageTriggered
-      )
-    );
+      );
+    });
   }
 
   /**
@@ -464,9 +471,11 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onTrigger(regex, handler) {
-    this.on('message', message =>
-      this.handleCommand(message, regex, handler, this.triggers.customTrigger)
-    );
+    this.on('message', message => {
+      Sentry.configureMessageScope(message);
+
+      this.handleCommand(message, regex, handler, this.triggers.customTrigger);
+    });
   }
 
   /**
@@ -482,9 +491,10 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onDynamicTrigger(commandInfo, matchFn, handler) {
-    this.on('message', message =>
-      this.handleMessage(message, commandInfo, handler, matchFn)
-    );
+    this.on('message', message => {
+      Sentry.configureMessageScope(message);
+      this.handleMessage(message, commandInfo, handler, matchFn);
+    });
   }
 }
 
