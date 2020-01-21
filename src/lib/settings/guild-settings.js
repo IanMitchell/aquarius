@@ -1,4 +1,5 @@
 import debug from 'debug';
+import aquarius from '../../aquarius';
 import database from '../database/database';
 import Sentry from '../errors/sentry';
 import { serializeMap, deserializeMap } from '../database/serialization';
@@ -42,27 +43,13 @@ export default class GuildSettings {
      */
     this.ignoredUsers = new Set();
 
-    // TODO: Move the below to `config.yaml`
     /**
      * Commands that are active on a guild.
      * The items listed below are the default commands
      * available when Aquarius joins a server
      * @type {Set}
      */
-    this.enabledCommands = new Set([
-      '8ball',
-      'choose',
-      'dadjoke',
-      'fizzbuzz',
-      'games',
-      'karma',
-      'order',
-      'quotes',
-      'reply',
-      'seen',
-      'slots',
-      'weather',
-    ]);
+    this.enabledCommands = new Set(aquarius.config.defaultCommands);
 
     /**
      * Command configuration options per guild

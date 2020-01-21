@@ -97,16 +97,20 @@ export default async ({ aquarius, analytics }) => {
       return;
     }
 
-    const commandList = uniqueValues([
-      ...aquarius.getGlobalCommandNames(false),
-      ...aquarius.guildManager.get(message.guild.id).enabledCommands,
-    ]);
+    const globalList = aquarius.getGlobalCommandNames(false);
+
+    const commandList = Array.from(
+      setDifference(
+        new Set(aquarius.guildManager.get(message.guild.id).enabledCommands),
+        new Set(globalList)
+      )
+    );
 
     const disabledCommands = Array.from(
       setDifference(
         new Set(
           Array.from(aquarius.commandList.entries())
-            .filter(([, value]) => !value.hidden)
+            .filter(([, value]) => !value.hidden && !value.global)
             .map(([key]) => key)
         ),
         new Set(commandList)
@@ -120,6 +124,8 @@ export default async ({ aquarius, analytics }) => {
     if (disabledCommands.length > 0) {
       embed.addField('Disabled Commands', humanize(disabledCommands.sort()));
     }
+
+    embed.addField('Global Commands', humanize(globalList.sort()));
 
     message.channel.send(embed);
     analytics.trackUsage('list', message);
