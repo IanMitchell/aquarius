@@ -51,7 +51,6 @@ jobs:
           TIMBER_KEY: ${{ secrets.TIMBER_KEY }}
           SHOWTIMES_SERVER: ${{ secrets.SHOWTIMES_SERVER }}
           SHOWTIMES_KEY: ${{ secrets.SHOWTIMES_KEY }}
-          TVDB_API_KEY: ${{ secrets.TVDB_API_KEY }}
           GITHUB_API_TOKEN: ${{ secrets.GITHUB_API_TOKEN }}
           DARK_SKY_API_KEY: ${{ secrets.DARK_SKY_API_KEY }}
           MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}
