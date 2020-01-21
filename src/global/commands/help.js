@@ -2,7 +2,7 @@ import debug from 'debug';
 import dedent from 'dedent-js';
 import { RichEmbed, Permissions } from 'discord.js';
 import { getNickname } from '../../lib/core/users';
-import { humanize, uniqueValues, setDifference } from '../../lib/helpers/lists';
+import { humanize, setDifference } from '../../lib/helpers/lists';
 import { capitalize } from '../../lib/helpers/strings';
 import { getHost, getGitHubLink } from '../../lib/helpers/links';
 import { getPermissionName } from '../../lib/core/permissions';
