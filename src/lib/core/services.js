@@ -9,9 +9,7 @@ const log = debug('Services');
 
 const SERVICE_LIST = new Map();
 
-// TODO: Document
-
-async function loadServiceFiles() {
+export async function load() {
   const serviceDirectory = path.join(__dirname, '../../../data/services');
 
   fs.readdir(serviceDirectory, (err, files) => {
@@ -32,42 +30,57 @@ async function loadServiceFiles() {
   });
 }
 
+// TODO: Document
 export function getServiceNames() {
   // eslint-disable-next-line no-unused-vars
   return Array.from(SERVICE_LIST.entries()).map(([key, value]) => value.name);
 }
 
-export function hasService(name) {
-  return SERVICE_LIST.has(name);
+// TODO: Document
+export function getServices() {
+  return SERVICE_LIST;
 }
 
-export function getServiceInformation(name) {
-  if (SERVICE_LIST.has(name)) {
-    return SERVICE_LIST.get(name);
-  }
+// TODO: Document
+export async function keys(user) {
+  const serviceList = await database.services.doc(user.id).get();
 
-  throw new Error('Unknown Service'); // TODO: Check Error
-}
-
-export async function getServiceKeysForUser(user) {
-  const list = await database.services.doc(user.id).get();
-
-  if (!list.exists) {
+  if (!serviceList.exists) {
     return [];
   }
 
-  return Object.keys(list.data());
+  return Object.keys(serviceList.data());
 }
 
-export async function getServiceListForUser(user) {
+// TODO: Document
+export async function list(user) {
   log(`Retrieving service list for ${user.username}`);
 
-  const keys = await getServiceKeysForUser(user);
-  return keys.map(key => SERVICE_LIST.get(key).name);
+  const serviceList = getServices();
+  const serviceKeys = await keys(user);
+
+  return serviceKeys.map(key => serviceList.get(key).name);
 }
 
-export async function getServiceForUser(user, serviceName) {
-  log(`Retrieving ${serviceName} for ${user.username}`);
+// TODO: Document
+export async function has(user, service) {
+  log(`Checking ${user.username} for ${service}`);
+
+  // TODO: Can we optimize this query?
+  const serviceList = await database.services.doc(user.id).get();
+
+  if (!serviceList.exists) {
+    return false;
+  }
+
+  const serviceData = serviceList.data();
+
+  return service.toLowerCase() in serviceData;
+}
+
+// TODO: Document
+export async function get(user, service) {
+  log(`Retrieving ${service} for ${user.username}`);
 
   const serviceList = await database.services.doc(user.id).get();
 
@@ -75,31 +88,28 @@ export async function getServiceForUser(user, serviceName) {
     return null;
   }
 
-  const service = serviceList.data();
+  const serviceData = serviceList.data();
 
-  return service[serviceName];
+  return serviceData[service.toLowerCase()];
 }
 
-export async function setServiceInformationForUser(user, name, fields) {
-  log(`Setting ${name} for ${user.username}`);
+// TODO: Document
+export function set(user, service, fields) {
+  log(`Setting ${service} for ${user.username}`);
 
   return database.services.doc(user.id).set(
     {
-      [name]: fields,
+      [service.toLowerCase()]: fields,
     },
     { merge: true }
   );
 }
 
-export async function removeServiceForUser(user, serviceName) {
-  log(`Removing ${serviceName} for user ${user.username}`);
+// TODO: Document
+export function remove(user, service) {
+  log(`Removing ${service} for user ${user.username}`);
 
   return database.services.doc(user.id).update({
-    [serviceName]: Firestore.FieldValue.delete(),
+    [service.toLowerCase()]: Firestore.FieldValue.delete(),
   });
 }
-
-// eslint-disable-next-line func-names
-(function() {
-  loadServiceFiles();
-})();

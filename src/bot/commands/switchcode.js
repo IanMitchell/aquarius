@@ -11,13 +11,21 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^switchcode$/i, async message => {
-    log(`Switch code request from ${message.author.usernamebjfhbt}`);
-    // TODO: Check to see if there is a friend code registered for the author
-    // If there is, send it to channel
-    // If there isn't, let them know and explain how to create it
-    message.channel.send(
-      `${aquarius.emojiList.get('nintendoswitch')} | 1234-1234-1234-1234`
-    );
+    log(`Switch code request from ${message.author.username}`);
+
+    if (!(await aquarius.services.has(message.author, 'Nintendo Switch'))) {
+      message.channel.send(
+        "It doesn't look like you've linked your Nintendo Switch code with me yet! Send me a DM saying `link` to get started."
+      );
+    } else {
+      const code = await aquarius.services.get(
+        message.author,
+        'Nintendo Switch'
+      );
+      message.channel.send(
+        `${aquarius.emojiList.get('nintendoswitch')} | ${code['Friend Code']}`
+      );
+    }
     analytics.trackUsage('switchcode', message);
   });
 };
