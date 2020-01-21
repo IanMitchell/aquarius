@@ -2,6 +2,7 @@ import debug from 'debug';
 import parseColor from 'parse-color';
 import dedent from 'dedent-js';
 import { RichEmbed } from 'discord.js';
+import { getEmbedColorFromHex } from '../../lib/helpers/colors';
 
 const log = debug('Color');
 
@@ -50,7 +51,7 @@ export default async ({ aquarius, analytics }) => {
         .setThumbnail(
           `http://singlecolorimage.com/get/${color.hex.substring(1)}/350x350`
         )
-        .setColor(parseInt(color.hex.substring(1), 16))
+        .setColor(getEmbedColorFromHex(color.hex))
         .addField('Keyword', color.keyword || 'N/A', true)
         .addField('Hex', color.hex, true)
         .addField('CMYK', color.cmyk.join(', '), true)

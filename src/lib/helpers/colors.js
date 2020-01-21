@@ -27,5 +27,17 @@ export async function getIconColor(icon) {
 }
 
 export function getEmbedColorFromHex(hex) {
-  return parseInt(hex.replace('#', ''), 16);
+  let color = hex;
+
+  if (color.startsWith('#')) {
+    color = color.hex.substring(1);
+  }
+
+  if (color.length === 3) {
+    color = Array.from(color)
+      .map(value => `${value}${value}`)
+      .join('');
+  }
+
+  return parseInt(color, 16);
 }
