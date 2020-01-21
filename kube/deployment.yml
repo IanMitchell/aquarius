@@ -65,11 +65,6 @@ spec:
                 secretKeyRef:
                   name: aquarius-secrets
                   key: SHOWTIMES_KEY
-            - name: TVDB_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: aquarius-secrets
-                  key: TVDB_API_KEY
             - name: GITHUB_API_TOKEN
               valueFrom:
                 secretKeyRef:

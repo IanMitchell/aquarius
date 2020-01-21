@@ -25,3 +25,7 @@ export async function getIconColor(icon) {
   const hex = rgbHex(...getColorFromPalette(palette).getRgb());
   return parseInt(hex, 16);
 }
+
+export function getEmbedColorFromHex(hex) {
+  return parseInt(hex.replace('#', ''), 16);
+}

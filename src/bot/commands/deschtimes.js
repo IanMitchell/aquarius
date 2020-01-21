@@ -6,6 +6,7 @@ import { RichEmbed, Permissions } from 'discord.js';
 import formatDistance from 'date-fns/formatDistance';
 import Sentry from '../../lib/errors/sentry';
 import { getBotOwner } from '../../lib/core/users';
+import { getEmbedColorFromHex } from '../../lib/helpers/colors';
 
 const log = debug('Deschtimes');
 
@@ -28,105 +29,73 @@ export const info = {
   `,
 };
 
-const TVDB_URL = 'https://api.thetvdb.com';
 const SHOWTIMES = {
   SERVER: process.env.SHOWTIMES_SERVER,
   KEY: process.env.SHOWTIMES_KEY,
 };
 const POSTER_CACHE = new Map();
 
-async function connectToTVDB() {
-  const response = await fetch(`${TVDB_URL}/login`, {
+async function getPosterInfo(name) {
+  if (POSTER_CACHE.has(name)) {
+    return POSTER_CACHE.get(name);
+  }
+
+  const response = await fetch('https://graphql.anilist.co', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Accept: 'application/json',
     },
     body: JSON.stringify({
-      apikey: process.env.TVDB_API_KEY,
+      query: `
+      query ($search: String) {
+        Media(search: $search, format_in: [TV, TV_SHORT, OVA, ONA, MOVIE]) {
+          coverImage {
+            extraLarge
+            color
+          }
+        }
+      }
+      `,
+      variables: {
+        search: name,
+      },
     }),
   });
 
   const json = await response.json();
 
-  if (!json.token) {
-    throw new Error('Could not connect to TVDB API');
-  }
-
-  return json.token;
-}
-
-async function getShowPoster(name) {
-  if (POSTER_CACHE.has(name)) {
-    return POSTER_CACHE.get(name);
-  }
-
-  try {
-    // TODO: Can we cache this?
-    const token = await connectToTVDB();
-
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+  if (
+    json &&
+    json.data &&
+    json.data.Media &&
+    json.data.Media.coverImage &&
+    json.data.Media.coverImage.extraLarge
+  ) {
+    const embedInfo = {
+      thumbnail: json.data.Media.coverImage.extraLarge,
+      color: json.data.Media.coverImage.color,
     };
 
-    const seriesResponse = await fetch(
-      `${TVDB_URL}/search/series?name=${encodeURIComponent(name)}`,
-      {
-        headers,
-      }
-    );
-    const seriesJson = await seriesResponse.json();
-
-    if (!seriesJson.data) {
-      return null;
-    }
-
-    // TODO: We should add support to set this in Showtimes so we can skip
-    // a network call
-    const { id } = seriesJson.data[0];
-
-    const response = await fetch(
-      `${TVDB_URL}/series/${id}/images/query?keyType=poster`,
-      {
-        headers,
-      }
-    );
-    const json = await response.json();
-
-    const results = json.data.sort(
-      (a, b) => a.ratingsInfo.average < b.ratingsInfo.average
-    );
-
-    const url = `https://thetvdb.com/banners/${results[0].fileName}`;
-
-    POSTER_CACHE.set(name, url);
-    return url;
-  } catch (error) {
-    log(error);
-    Sentry.captureException(error);
+    POSTER_CACHE.set(name, embedInfo);
+    return embedInfo;
   }
 
   return null;
 }
 
-async function createShowEmbed(show) {
+async function createShowEmbed(show, posterInfo) {
   const owner = await getBotOwner();
-  const thumbnail = await getShowPoster(show.tvdb_name || show.name);
 
-  // TODO: Change width and height?
-  const embed = new RichEmbed({
-    title: `${show.name} #${show.episode}`,
-    color: 0x008000,
-    footer: {
-      icon_url: owner.avatarURL,
-      text: 'Brought to you by Deschtimes™',
-    },
-    thumbnail: {
-      url: thumbnail,
-      width: 200,
-      height: 295,
-    },
-  });
+  const embed = new RichEmbed()
+    .setTitle(`${show.name} #${show.episode}`)
+    .setColor(0x008000)
+    .setFooter('Brought to you by Deschtimes™', owner.avatarURL);
+
+  if (posterInfo) {
+    embed.setColor(getEmbedColorFromHex(posterInfo.color));
+    embed.setThumbnail(posterInfo.thumbnail);
+  }
 
   const positions = new Map();
 
@@ -203,7 +172,9 @@ export default async ({ aquarius, analytics }) => {
         return;
       }
 
-      const embed = await createShowEmbed(data);
+      const posterInfo = await getPosterInfo(data.name);
+      const embed = await createShowEmbed(data, posterInfo);
+
       message.channel.send(embed);
       analytics.trackUsage('blame', message);
     } catch (error) {
@@ -267,11 +238,14 @@ export default async ({ aquarius, analytics }) => {
           message.guild.id,
           groups.show.trim()
         );
+
         if (showData.message) {
           return;
         }
 
-        const embed = await createShowEmbed(showData);
+        const posterInfo = await getPosterInfo(showData.name);
+        const embed = await createShowEmbed(showData, posterInfo);
+
         message.channel.send(embed);
         analytics.trackUsage('status', message);
       } catch (error) {

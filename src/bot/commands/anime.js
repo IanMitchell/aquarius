@@ -6,6 +6,7 @@ import downsize from 'downsize';
 import { RichEmbed, Permissions } from 'discord.js';
 import { formatDistance } from 'date-fns';
 import Sentry from '../../lib/errors/sentry';
+import { getEmbedColorFromHex } from '../../lib/helpers/colors';
 
 const log = debug('Anime');
 
@@ -81,7 +82,7 @@ function createAnimeEmbed(data) {
   });
 
   if (show.coverImage && show.coverImage.color) {
-    embed.setColor(parseInt(show.coverImage.color.replace('#', ''), 16));
+    embed.setColor(getEmbedColorFromHex(show.coverImage.color));
   }
 
   if (show.nextAiringEpisode) {
