@@ -2191,6 +2191,11 @@ diff-sequences@^24.9.0:
   resolved "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-24.9.0.tgz#5715d6244e2aa65f48bba0bc972db0b0b11e95b5"
   integrity sha512-Dj6Wk3tWyTE+Fo1rW8v0Xhwk80um6yFYKbuAxc9c3EZxIHFDYwbi34Uk42u1CdnIiVorvt4RmlSDjIPyzGC2ew==
 
+discord.js-minesweeper@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/discord.js-minesweeper/-/discord.js-minesweeper-1.0.5.tgz#9ffcf170843b64da9ac5241245fc2ae1102dc3c2"
+  integrity sha512-1aKwIH4rsb1UBDmZ31cAX1FI6TKENZuNIKhhB9vQHSHMEirIf45g/gC/OhmeYiO/IimvNmzesK3eDaWXRjyKxA==
+
 discord.js@^11.4.2, discord.js@^11.5.0:
   version "11.5.1"
   resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-11.5.1.tgz#910fb9f6410328581093e044cafb661783a4d9e8"

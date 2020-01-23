@@ -1,11 +1,11 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { RichEmbed, Permissions } from 'discord.js';
+import { Permissions, RichEmbed } from 'discord.js';
+import { getPermissionName } from '../../lib/core/permissions';
 import { getNickname } from '../../lib/core/users';
+import { getGitHubLink, getHost } from '../../lib/helpers/links';
 import { humanize, setDifference } from '../../lib/helpers/lists';
 import { capitalize } from '../../lib/helpers/strings';
-import { getHost, getGitHubLink } from '../../lib/helpers/links';
-import { getPermissionName } from '../../lib/core/permissions';
 
 const log = debug('Help');
 
@@ -16,7 +16,8 @@ const EMOJI = {
 
 export const info = {
   name: 'help',
-  description: 'Provides information on how to use a command.',
+  description:
+    'Provides information on how to use a command. Need support? See `.support`. Want to invite me to your server? See `.invite`.',
   permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: dedent`
     **View General Help**
