@@ -2,7 +2,10 @@ import * as Sentry from '@sentry/node';
 
 export default (() => {
   if (process.env.NODE_ENV === 'production') {
-    Sentry.init({ dsn: process.env.SENTRY });
+    Sentry.init({
+      dsn: process.env.SENTRY,
+      release: process.env.GIT_HASH,
+    });
   }
 
   return {
