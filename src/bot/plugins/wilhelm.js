@@ -51,7 +51,7 @@ async function playClip(channel, target, analytics) {
         dispatcher.on('end', () => {
           log('Leaving channel');
           clearTimeout(inactivityCheck);
-          connection.disconnect();
+          setTimeout(() => connection.disconnect(), 3);
         });
 
         dispatcher.on('error', log);
