@@ -44,7 +44,7 @@ export class Aquarius extends Discord.Client {
     // We have more listeners than normal - each command registers one to
     // several on average, so we hit the warning frequently. Small bumps
     // ensure no actual leaks (as opposed to setting the limit to a billion)
-    this.setMaxListeners(60);
+    this.setMaxListeners(65);
 
     // Setup internal data structures
 
