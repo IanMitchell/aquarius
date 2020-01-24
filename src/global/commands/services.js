@@ -1,11 +1,10 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { RichEmbed } from 'discord.js';
+import Sentry from '../../lib/errors/sentry';
 import { helpMessage } from './help';
 
 const log = debug('Services');
-
-// TODO: Tie into DM Manager
 
 export const info = {
   name: 'services',
@@ -24,9 +23,6 @@ export const info = {
   \`\`\`services view <name>\`\`\`
   `,
 };
-
-// DM Timeout
-const LINK_RESPONSE_PERIOD = 1000 * 60 * 5;
 
 function* getServiceLinkInformation(services) {
   const accountInformation = {
@@ -63,9 +59,6 @@ function* getServiceLinkInformation(services) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius }) => {
-  // One link request at a time per person
-  const activeRequests = new Set();
-
   // Gently guide people trying to link accounts in a guild channel
   aquarius.onCommand(/^services$/i, async message => {
     message.channel.send(
@@ -153,76 +146,46 @@ export default async ({ aquarius }) => {
 
   // Guide users through linking accounts in DM
   aquarius.onDirectMessage(/services add/i, async message => {
-    if (message.channel.type === 'dm') {
-      if (activeRequests.has(message.author.id)) {
-        return;
+    log(`Add request by ${message.author.username}`);
+
+    try {
+      const link = getServiceLinkInformation(aquarius.services);
+      let prompt = link.next();
+
+      while (!prompt.done) {
+        // eslint-disable-next-line no-await-in-loop
+        const value = await aquarius.directMessages.prompt(prompt.value);
+        prompt = link.next(value.cleanContent);
       }
 
-      log(`Add request by ${message.author.username}`);
-      activeRequests.add(message.author.id);
+      const fields = {};
+      prompt.value.fields.forEach(field => {
+        fields[field.name] = field.value;
+      });
 
-      // Begin service name prompt
-      const link = getServiceLinkInformation(aquarius.services);
-      const initialPrompt = link.next();
-
-      message.channel.send(initialPrompt.value);
-
-      // Wait for response
-      const collector = message.channel.createMessageCollector(
-        msg => !msg.author.bot,
-        { time: LINK_RESPONSE_PERIOD }
+      await aquarius.services.setLink(
+        message.author,
+        prompt.value.name,
+        fields
       );
 
-      // Response handler
-      collector.on('collect', async msg => {
-        // Handle exist requests
-        if (msg.cleanContent === 'stop') {
-          collector.stop('manual');
-          return;
-        }
-
-        const prompt = link.next(msg.cleanContent);
-        log(prompt);
-
-        if (!prompt.done) {
-          msg.channel.send(prompt.value);
-        } else {
-          log(prompt);
-
-          const fields = {};
-          prompt.value.fields.forEach(field => {
-            fields[field.name] = field.value;
-          });
-
-          await aquarius.services.setLink(
-            message.author,
-            prompt.value.name,
-            fields
-          );
-
-          message.channel.send(`Added ${prompt.value.name}!`);
-          collector.stop('linked');
-        }
-      });
-
-      // We've stopped listening for new responses
-      collector.on('end', (msgs, reason) => {
-        log(`Ending Collector for ${message.author.username} (${reason})`);
-
-        // Send a message based on why we stopped listening
-        if (reason === 'manual') {
-          message.channel.send(
-            'Ok! If you want to add a service later just DM me `services add`!'
-          );
-        } else if (reason !== 'linked') {
-          message.channel.send(
-            "I haven't heard from you in a bit, so I'm going to stop listening. If you want to try again later please send `services add`!"
-          );
-        }
-
-        // Remove active request
-        activeRequests.delete(message.author.id);
-      });
+      message.channel.send(`Added ${prompt.value.name}!`);
+    } catch (reason) {
+      if (reason === 'manual') {
+        message.channel.send(
+          'Ok! If you want to add a service later just DM me `services add`!'
+        );
+      } else if (reason === 'time') {
+        message.channel.send(
+          "I haven't heard from you in a bit, so I'm going to stop listening. If you want to try again later please send `services add`!"
+        );
+      } else {
+        Sentry.captureException(reason);
+        log(reason);
+        message.channel.send(
+          'Sorry, something went wrong. Please try again later!'
+        );
+      }
     }
   });
 };
