@@ -4,22 +4,22 @@ import Discord from 'discord.js';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
-import Sentry from './lib/errors/sentry';
+import Analytics from './lib/commands/analytics';
+import Settings from './lib/commands/settings';
 import * as loading from './lib/core/loading';
 import * as permissions from './lib/core/permissions';
-import * as services from './lib/core/services';
 import * as triggers from './lib/core/triggers';
 import database from './lib/database/database';
-import DirectMessageManager from './lib/managers/direct-message-manager';
-import GuildManager from './lib/managers/guild-manager';
-import EmojiManager from './lib/managers/emoji-manager';
-import { isDirectMessage, isBot } from './lib/helpers/messages';
-import TriggerMap from './lib/settings/trigger-map';
-import CommandConfig from './lib/settings/command-config';
-import Settings from './lib/commands/settings';
-import Analytics from './lib/commands/analytics';
-import { setupWeeklyGuildLoop } from './lib/metrics/guilds';
 import { fixPartialReactionEvents } from './lib/discord/library-fixes';
+import Sentry from './lib/errors/sentry';
+import { isBot, isDirectMessage } from './lib/helpers/messages';
+import DirectMessageManager from './lib/managers/direct-message-manager';
+import EmojiManager from './lib/managers/emoji-manager';
+import GuildManager from './lib/managers/guild-manager';
+import ServiceManager from './lib/managers/service-manager';
+import { setupWeeklyGuildLoop } from './lib/metrics/guilds';
+import CommandConfig from './lib/settings/command-config';
+import TriggerMap from './lib/settings/trigger-map';
 
 const log = debug('Aquarius');
 const errorLog = debug('Aquarius:Error');
@@ -112,9 +112,9 @@ export class Aquarius extends Discord.Client {
 
     /**
      * TODO: document
-     * @type { typeof import('./lib/core/services') }
+     * @type { typeof import('./lib/managers/service-manager') }
      */
-    this.services = services;
+    this.services = new ServiceManager();
 
     /**
      * Triggers of stuff
