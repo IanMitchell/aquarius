@@ -1,5 +1,9 @@
 import * as Sentry from '@sentry/node';
 
+/**
+ * @typedef { import('discord.js').Message } Message
+ */
+
 export default (() => {
   if (process.env.NODE_ENV === 'production') {
     Sentry.init({
@@ -10,10 +14,15 @@ export default (() => {
 
   return {
     ...Sentry,
+
+    /**
+     * Adds context to Sentry for better error handling.
+     * @param {Message} message - Message to configure scope with
+     */
     configureMessageScope: message => {
       Sentry.configureScope(scope => {
-        const { username, id } = message.author;
-        scope.setUser({ username, id });
+        const { tag, id } = message.author;
+        scope.setUser({ username: tag, id });
 
         if (message.guild) {
           scope.setExtra('Guild ID', message.guild.id);
@@ -22,6 +31,7 @@ export default (() => {
           scope.setExtra('Channel Type', 'DM');
         }
 
+        scope.setExtra('Message', message.content);
         scope.setExtra('Message ID', message.id);
       });
     },
