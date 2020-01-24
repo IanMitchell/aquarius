@@ -1,6 +1,6 @@
 import debug from 'debug';
 import timber from 'timber';
-import Sentry from './src/lib/errors/sentry';
+import Sentry from './src/lib/analytics/sentry';
 
 const log = debug('Host');
 

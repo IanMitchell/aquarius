@@ -1,7 +1,7 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { RichEmbed } from 'discord.js';
-import Sentry from '../../lib/errors/sentry';
+import Sentry from '../../lib/analytics/sentry';
 import { helpMessage } from './help';
 
 const log = debug('Services');

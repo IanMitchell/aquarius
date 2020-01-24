@@ -1,10 +1,10 @@
+import alphaVantageAPI from 'alphavantage';
+import { parse } from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { parse } from 'date-fns';
-import { RichEmbed, Permissions } from 'discord.js';
+import { Permissions, RichEmbed } from 'discord.js';
 import fetch from 'node-fetch';
-import alphaVantageAPI from 'alphavantage';
-import Sentry from '../../lib/errors/sentry';
+import Sentry from '../../lib/analytics/sentry';
 import { getIconColor } from '../../lib/helpers/colors';
 
 const log = debug('stocks');

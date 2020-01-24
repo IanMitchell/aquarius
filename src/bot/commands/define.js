@@ -1,8 +1,8 @@
 import debug from 'debug';
-import { RichEmbed, Permissions } from 'discord.js';
+import { Permissions, RichEmbed } from 'discord.js';
 import fetch from 'node-fetch';
 import { DOMParser } from 'xmldom';
-import Sentry from '../../lib/errors/sentry';
+import Sentry from '../../lib/analytics/sentry';
 import { capitalize } from '../../lib/helpers/strings';
 
 const log = debug('Define');

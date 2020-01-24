@@ -1,7 +1,7 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
 import fetch from 'node-fetch';
-import Sentry from '../../lib/errors/sentry';
+import Sentry from '../../lib/analytics/sentry';
 
 const log = debug('Strawpoll');
 

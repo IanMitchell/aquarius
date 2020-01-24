@@ -1,6 +1,6 @@
-import fetch from 'node-fetch';
 import debug from 'debug';
-import Sentry from '../../lib/errors/sentry';
+import fetch from 'node-fetch';
+import Sentry from '../../lib/analytics/sentry';
 
 const log = debug('DadJoke');
 

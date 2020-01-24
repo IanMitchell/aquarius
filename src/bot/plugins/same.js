@@ -1,5 +1,5 @@
 import debug from 'debug';
-import Sentry from '../../lib/errors/sentry';
+import Sentry from '../../lib/analytics/sentry';
 
 const log = debug('Same');
 

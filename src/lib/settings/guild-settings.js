@@ -1,8 +1,8 @@
 import debug from 'debug';
 import aquarius from '../../aquarius';
+import Sentry from '../analytics/sentry';
 import database from '../database/database';
-import Sentry from '../errors/sentry';
-import { serializeMap, deserializeMap } from '../database/serialization';
+import { deserializeMap, serializeMap } from '../database/serialization';
 import { TEN_MINUTES } from '../helpers/times';
 
 const log = debug('Guild Setting');
