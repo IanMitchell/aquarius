@@ -187,7 +187,7 @@ export class Aquarius extends Discord.Client {
   /**
    * Loads each JavaScript file in a given directory
    * @param {string} directory - directory to load `.js` files from
-   * @param {boolean=false} globalFile - whether to treat the file as global
+   * @param {boolean} [globalFile=false] - whether to treat the file as global
    * @todo Make this method private
    */
   loadDirectory(directory, globalFile = false) {
