@@ -147,7 +147,6 @@ export class Aquarius extends Discord.Client {
    * @todo Make this method private
    */
   initialize() {
-    this.services.load();
     this.guildManager.initialize();
     this.emojiList.initialize();
     setupWeeklyGuildLoop();

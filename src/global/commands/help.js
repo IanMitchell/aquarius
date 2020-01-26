@@ -29,13 +29,17 @@ export const info = {
 };
 
 export function helpMessage(aquarius, commandInfo, guild) {
-  const enabled = aquarius.guildManager
-    .get(guild.id)
-    .isCommandEnabled(commandInfo.name);
+  let enabled = false;
+
+  if (guild) {
+    enabled = aquarius.guildManager
+      .get(guild.id)
+      .isCommandEnabled(commandInfo.name);
+  }
 
   const settings = aquarius.commandConfigs.get(commandInfo.name).hasSettings();
 
-  const nickname = getNickname(guild, aquarius.user);
+  const nickname = guild ? getNickname(guild, aquarius.user) : 'Aquarius';
 
   const embed = new RichEmbed({
     author: {

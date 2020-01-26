@@ -11,6 +11,8 @@ const log = debug('ServiceManager');
 
 export default class ServiceManager {
   constructor() {
+    this.services = new Map();
+
     const serviceDirectory = path.join(__dirname, '../../../data/services');
 
     fs.readdir(serviceDirectory, (err, files) => {
@@ -62,7 +64,9 @@ export default class ServiceManager {
     log(`Retrieving service list for ${user.username}`);
 
     const keys = await this.getKeysForUser(user);
-    return keys.map(key => this.services.get(key).name);
+    return keys
+      .map(key => this.services.has(key) && this.services.get(key).name)
+      .filter(Boolean);
   }
 
   async getLink(user, service) {
@@ -76,7 +80,7 @@ export default class ServiceManager {
 
     const services = serviceList.data();
 
-    return services[service];
+    return services[service.toLowerCase()];
   }
 
   async setLink(user, name, fields) {
@@ -84,7 +88,7 @@ export default class ServiceManager {
 
     return database.services.doc(user.id).set(
       {
-        [name]: fields,
+        [name.toLowerCase()]: fields,
       },
       { merge: true }
     );
@@ -94,7 +98,7 @@ export default class ServiceManager {
     log(`Removing ${serviceName} for user ${user.username}`);
 
     return database.services.doc(user.id).update({
-      [serviceName]: Firestore.FieldValue.delete(),
+      [serviceName.toLowerCase()]: Firestore.FieldValue.delete(),
     });
   }
 }

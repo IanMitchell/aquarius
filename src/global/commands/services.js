@@ -6,6 +6,8 @@ import { helpMessage } from './help';
 
 const log = debug('Services');
 
+// TODO: Add Analytics
+
 export const info = {
   name: 'services',
   description: 'Link accounts and profiles with me for easy lookup and API use',
@@ -34,7 +36,7 @@ function* getServiceLinkInformation(services) {
   let input = yield dedent`
     Hello! There are several services you can to:
 
-    ${services.getServiceNames().join(', ')}
+    ${services.getNames().join(', ')}
 
     Which would you link to setup? (You can reply \`stop\` at any time to quit)
   `;
@@ -67,7 +69,7 @@ export default async ({ aquarius }) => {
   });
 
   aquarius.onDirectMessage(/^services$/i, async message => {
-    message.channel.send(helpMessage(info));
+    message.channel.send(helpMessage(aquarius, info));
   });
 
   aquarius.onDirectMessage(/^services list$/i, async message => {
@@ -144,6 +146,8 @@ export default async ({ aquarius }) => {
     }
   );
 
+  // TODO: Allow for name input to jump into a service
+
   // Guide users through linking accounts in DM
   aquarius.onDirectMessage(/services add/i, async message => {
     log(`Add request by ${message.author.username}`);
@@ -154,7 +158,10 @@ export default async ({ aquarius }) => {
 
       while (!prompt.done) {
         // eslint-disable-next-line no-await-in-loop
-        const value = await aquarius.directMessages.prompt(prompt.value);
+        const value = await aquarius.directMessages.prompt(
+          message.author,
+          prompt.value
+        );
         prompt = link.next(value.cleanContent);
       }
 
