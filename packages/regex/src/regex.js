@@ -70,7 +70,7 @@ export const MENTION_TYPES = {
 /**
  * Determines what kind of mention it is based on the markup of the Snowflake ID
  * @param {string} mention - The mention to check. Must be the formatted block, not an ID.
- * @returns {MENTION_TYPES|null} The type of mention
+ * @returns {?MENTION_TYPES} The type of mention
  */
 export function getMentionType(mention) {
   if (MENTION_USER.test(mention)) {

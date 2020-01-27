@@ -72,7 +72,7 @@ export default class ServiceManager {
   /**
    * Get information about a supported Service
    * @param {string} name - Name of the service to retrieve information for
-   * @returns {ServiceConfiguration} Information about the Service
+   * @returns {?ServiceConfiguration} Information about the Service
    */
   getInformation(name) {
     if (this.services.has(name)) {
@@ -116,7 +116,7 @@ export default class ServiceManager {
    * Get information about a Service link
    * @param {User} user - User to retrieve link for
    * @param {string} service - Service name to retrieve
-   * @returns {Object.<string, string>} Field name and User Input in a Key/Value structure
+   * @returns {?Object.<string, string>} Field name and User Input in a Key/Value structure
    */
   async getLink(user, service) {
     log(`Retrieving ${service} for ${user.username}`);
