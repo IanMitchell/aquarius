@@ -60,15 +60,14 @@ export default async ({ aquarius, analytics }) => {
   );
 
   aquarius.onCommand(
-    /^minesweeper custom (?<count>\d{0,2})$/i,
+    /^minesweeper custom (?<count>\d{1,2})$/i,
     async (message, { groups }) => {
-      log('Generating custom game with groups.count bombs');
-      const count = Math.min(groups.count, 24);
+      log(`Generating custom game with ${groups.count} bombs`);
 
       const minesweeper = new Minesweeper({
         rows: 7,
         columns: 7,
-        mines: count,
+        mines: Math.min(groups.count, 24),
         revealFirstCell: true,
       });
 
