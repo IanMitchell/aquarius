@@ -36,7 +36,7 @@ export default class DirectMessageManager {
         );
 
         collector.on('collect', msg => {
-          if (msg.cleanContent === 'stop') {
+          if (msg.cleanContent.toLowerCase() === 'stop') {
             log(`Stopping collector for ${user.username}`);
             return collector.stop('manual');
           }
