@@ -55,7 +55,7 @@ export default async ({ aquarius, analytics }) => {
 
       message.channel.send(minesweeper.start());
 
-      analytics.trackUsage('minesweeper', message);
+      analytics.trackUsage(groups.difficulty, message);
     }
   );
 
@@ -74,7 +74,7 @@ export default async ({ aquarius, analytics }) => {
 
       message.channel.send(minesweeper.start());
 
-      analytics.trackUsage('minesweeper custom', message);
+      analytics.trackUsage('custom', message);
     }
   );
 };
