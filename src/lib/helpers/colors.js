@@ -26,11 +26,16 @@ export async function getIconColor(icon) {
   return parseInt(hex, 16);
 }
 
+/**
+ * Converts a hex string into a RichEmbed supported Base 16 number
+ * @param {string} hex - Hexcode to convert into RichEmbed format
+ * @returns {number} Base 16 color representation
+ */
 export function getEmbedColorFromHex(hex) {
   let color = hex;
 
   if (color.startsWith('#')) {
-    color = color.hex.substring(1);
+    color = color.substring(1);
   }
 
   if (color.length === 3) {
