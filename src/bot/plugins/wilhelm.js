@@ -17,6 +17,7 @@ export const info = {
   name: 'Wilhelm',
   description:
     'Will occassionaly Wilhelm Scream at a specific user (Sorry Shaun)',
+  disabled: true,
 };
 
 function getRandomInterval() {

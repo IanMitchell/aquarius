@@ -30,7 +30,6 @@ function* getServiceLinkInformation(services) {
     fields: [],
   };
 
-  log('Beginning prompt');
   let input = yield dedent`
     Hello! There are several services you can to:
 
@@ -41,7 +40,6 @@ function* getServiceLinkInformation(services) {
 
     Which would you link to setup? (You can reply \`stop\` at any time to quit)
   `;
-  log(input);
 
   while (!services.has(input.toLowerCase())) {
     log(`Could not find account ${input}`);
@@ -50,7 +48,7 @@ function* getServiceLinkInformation(services) {
 
   accountInformation.name = input.toLowerCase();
 
-  log('Prompting for steps');
+  log(`Prompting for ${input.toLowerCase()}`);
   for (const step of services.getInformation(input.toLowerCase()).steps) {
     const value = yield step.instructions;
     accountInformation.fields.push({ name: step.field, value });
@@ -64,6 +62,7 @@ function* getServiceLinkInformation(services) {
 export default async ({ aquarius, analytics }) => {
   // Gently guide people trying to link accounts in a guild channel
   aquarius.onCommand(/^services$/i, async message => {
+    log('Service request in guild channel');
     message.channel.send(
       'To add a service, please send me `services add` via direct message'
     );
@@ -71,11 +70,13 @@ export default async ({ aquarius, analytics }) => {
   });
 
   aquarius.onDirectMessage(/^services$/i, async message => {
+    log('Service help request in DM');
     message.channel.send(helpMessage(aquarius, info));
     analytics.trackUsage('dm help', message);
   });
 
   aquarius.onDirectMessage(/^services list$/i, async message => {
+    log(`Listing services for ${message.author.username}`);
     const services = await aquarius.services.getLinks(message.author);
 
     if (services.length < 1) {
@@ -91,6 +92,7 @@ export default async ({ aquarius, analytics }) => {
     /^services view (?<service>.+)$/i,
     async (message, { groups }) => {
       const serviceKey = groups.service.toLowerCase();
+      log(`Viewing ${serviceKey} for ${message.author.username}`);
 
       if (!aquarius.services.has(serviceKey)) {
         message.channel.send("Sorry but I don't know that service name");
@@ -132,6 +134,7 @@ export default async ({ aquarius, analytics }) => {
     /^services remove (?<service>.+)$/i,
     async (message, { groups }) => {
       const serviceKey = groups.service.toLowerCase();
+      log(`Removing ${serviceKey} for ${message.author.username}`);
 
       if (!aquarius.services.has(serviceKey)) {
         message.channel.send("Sorry but I don't know that service name");
@@ -156,7 +159,7 @@ export default async ({ aquarius, analytics }) => {
 
   // Guide users through linking accounts in DM
   aquarius.onDirectMessage(/services add/i, async message => {
-    log(`Add request by ${message.author.username}`);
+    log(`Adding service to ${message.author.username}`);
 
     try {
       const link = getServiceLinkInformation(aquarius.services);
