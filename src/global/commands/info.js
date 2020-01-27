@@ -1,11 +1,12 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
+import { Permissions, RichEmbed } from 'discord.js';
 import pluralize from 'pluralize';
-import { RichEmbed, Permissions } from 'discord.js';
 import pkg from '../../../package.json';
-import { getVanityBotLink, getGitHubLink } from '../../lib/helpers/links';
-import { getResourceUsage } from '../../lib/metrics/resources';
+import { getNickname } from '../../lib/core/users';
+import { getGitHubLink, getVanityBotLink } from '../../lib/helpers/links';
 import { getTotalGuildCount } from '../../lib/metrics/guilds';
+import { getResourceUsage } from '../../lib/metrics/resources';
 import { getTotalUserCount } from '../../lib/metrics/users';
 
 const log = debug('Info');
@@ -50,6 +51,8 @@ export default async ({ aquarius, analytics }) => {
 
     const metrics = await getResourceUsage();
 
+    const nickname = getNickname(message.guild, aquarius.user);
+
     const embed = new RichEmbed()
       .setTitle('Aquarius')
       .setColor(0x008000)
@@ -77,7 +80,20 @@ export default async ({ aquarius, analytics }) => {
       `,
         true
       )
-      .addField('Need Help?', 'Type `@Aquarius help`')
+      .addField(
+        'Need Help?',
+        'Type `@Aquarius help`'.replace(/Aquarius/, nickname)
+      )
+      .addField(
+        'Need Support?',
+        'Type `@Aquarius support`'.replace(/Aquarius/, nickname),
+        true
+      )
+      .addField(
+        'Want to add me to your server?',
+        'Type `@Aquarius invite`'.replace(/Aquarius/, nickname),
+        true
+      )
       .setFooter(`Version: ${pkg.version} | Server Donations: $IanMitchel1`);
 
     message.channel.send(embed);

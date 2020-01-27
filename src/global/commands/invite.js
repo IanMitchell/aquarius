@@ -5,7 +5,7 @@ const log = debug('Invite');
 
 export const info = {
   name: 'invite',
-  description: 'Get a link to invite the bot to your server',
+  description: 'Get a link to add me to your server',
   usage: '```@Aquarius invite```',
 };
 

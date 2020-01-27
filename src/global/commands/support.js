@@ -4,7 +4,7 @@ const log = debug('Support');
 
 export const info = {
   name: 'support',
-  description: 'Get a link to the official bot server',
+  description: 'Get an invite to the official bot server',
   usage: '```@Aquarius support```',
 };
 
