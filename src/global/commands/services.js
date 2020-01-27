@@ -79,7 +79,7 @@ export default async ({ aquarius, analytics }) => {
     log(`Listing services for ${message.author.username}`);
     const services = await aquarius.services.getLinks(message.author);
 
-    if (services.length < 1) {
+    if (!services.length) {
       message.channel.send("You haven't added any services!");
       return;
     }
