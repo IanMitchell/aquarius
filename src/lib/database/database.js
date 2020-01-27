@@ -9,6 +9,9 @@ function isValidCollectionName(name) {
   return typeof name === 'string' && name;
 }
 
+/**
+ * @type {Firestore}
+ */
 const database = (() => {
   log('Connecting to Firebase...');
 

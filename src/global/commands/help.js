@@ -39,7 +39,7 @@ export function helpMessage(aquarius, commandInfo, guild) {
 
   const settings = aquarius.commandConfigs.get(commandInfo.name).hasSettings();
 
-  const nickname = guild ? getNickname(guild, aquarius.user) : 'Aquarius';
+  const nickname = getNickname(guild, aquarius.user);
 
   const embed = new RichEmbed({
     author: {

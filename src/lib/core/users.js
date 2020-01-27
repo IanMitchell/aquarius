@@ -30,6 +30,10 @@ export async function getBotOwner() {
  * @returns {string} The User's Nickname or Username if not set
  */
 export function getNickname(guild, user) {
+  if (!guild) {
+    return user.username;
+  }
+
   let member = user;
 
   if (!(member instanceof GuildMember)) {

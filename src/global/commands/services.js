@@ -6,8 +6,6 @@ import { helpMessage } from './help';
 
 const log = debug('Services');
 
-// TODO: Add Analytics
-
 export const info = {
   name: 'services',
   description: 'Link accounts and profiles with me for easy lookup and API use',
@@ -60,16 +58,18 @@ function* getServiceLinkInformation(services) {
 }
 
 /** @type {import('../../typedefs').Command} */
-export default async ({ aquarius }) => {
+export default async ({ aquarius, analytics }) => {
   // Gently guide people trying to link accounts in a guild channel
   aquarius.onCommand(/^services$/i, async message => {
     message.channel.send(
       'To add a service, please send me `services add` via direct message'
     );
+    analytics.trackUsage('channel', message);
   });
 
   aquarius.onDirectMessage(/^services$/i, async message => {
     message.channel.send(helpMessage(aquarius, info));
+    analytics.trackUsage('dm help', message);
   });
 
   aquarius.onDirectMessage(/^services list$/i, async message => {
@@ -81,6 +81,7 @@ export default async ({ aquarius }) => {
     }
 
     message.channel.send(`You've added these services: ${services.join(', ')}`);
+    analytics.trackUsage('list', message);
   });
 
   aquarius.onDirectMessage(
@@ -120,6 +121,7 @@ export default async ({ aquarius }) => {
       );
 
       message.channel.send(embed);
+      analytics.trackUsage('view', message);
     }
   );
 
@@ -143,6 +145,7 @@ export default async ({ aquarius }) => {
       await aquarius.services.removeLink(message.author, serviceKey);
 
       message.channel.send('Service removed!');
+      analytics.trackUsage('remove', analytics);
     }
   );
 
@@ -177,15 +180,18 @@ export default async ({ aquarius }) => {
       );
 
       message.channel.send(`Added ${prompt.value.name}!`);
+      analytics.trackUsage('add', message);
     } catch (reason) {
       if (reason === 'manual') {
         message.channel.send(
           'Ok! If you want to add a service later just DM me `services add`!'
         );
+        analytics.trackUsage('add abort', message, { reason });
       } else if (reason === 'time') {
         message.channel.send(
           "I haven't heard from you in a bit, so I'm going to stop listening. If you want to try again later please send `services add`!"
         );
+        analytics.trackUsage('add timeout', message, { reason });
       } else {
         Sentry.captureException(reason);
         log(reason);
