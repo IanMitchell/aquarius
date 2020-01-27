@@ -44,6 +44,10 @@ Aquarius development happens on the [Company Inc](http://companyinc.company) Dis
 
 [Join our Discord Server!](http://discord.companyinc.company)
 
+## Announcements
+
+Very rarely we'll announce new features or planned downtime in the Discord server linked above. You can [follow to the announcement channel](https://support.discordapp.com/hc/en-us/articles/360028384531-Channel-Following-FAQ) to receive these notifications.
+
 ## Development
 
 For help with local development of the bot, check the [Getting Started Wiki Page](/wiki/Getting-Started).

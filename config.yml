@@ -4,3 +4,18 @@ blacklist: []
 home:
   guild: '91318657375825920'
   channel: '176846258218991616'
+defaultCommands:
+  - 8ball
+  - choose
+  - dadjoke
+  - fizzbuzz
+  - games
+  - karma
+  - order
+  - reply
+  - same
+  - seen
+  - slots
+  - stocks
+  - twitchmote
+  - weather

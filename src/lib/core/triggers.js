@@ -1,6 +1,6 @@
-import * as regex from '../helpers/regex';
 import aquarius from '../../aquarius';
 import { isBot } from '../helpers/messages';
+import * as regex from '../helpers/regex';
 
 /** @typedef {import('discord.js').Message} Message */
 
@@ -23,7 +23,7 @@ export function botMention() {
 /**
  * Check to see if a message starts with an Aquarius mention
  * @param {Message} message - the message to check
- * @returns {Array|null} the regex match array or null if no match
+ * @returns {?RegExpMatchArray} the regex match array or null if no match
  */
 export function botMentionTrigger(message) {
   return message.content.trim().match(new RegExp(`^${botMention().source}`));
@@ -51,7 +51,7 @@ export function exclamationTrigger(message) {
  * Checks to see if a non-bot message matches a trigger
  * @param {Message} message - the message to check
  * @param {RegExp} trigger - the custom trigger to check against
- * @returns {boolean|Array|null} False if a bot sends the message or
+ * @returns {boolean|?RegExpMatchArray} False if a bot sends the message or
  * Array/Null regex match group
  */
 export function customTrigger(message, trigger) {
@@ -66,8 +66,9 @@ export function customTrigger(message, trigger) {
  * Get a list of card-style matches in a non-bot message
  * (the [[Double Brackets]] syntax)
  * @param {Message} message - the message to check
- * @returns {boolean|Array|null} False if the message is from a bot or
+ * @returns {boolean|?Array} False if the message is from a bot or
  * an Array of string matches or null if none exist
+ * @todo TODO: Update return type when typescript supports it
  */
 export function bracketTrigger(message) {
   if (isBot(message.author)) {
@@ -90,7 +91,7 @@ export function bracketTrigger(message) {
  * examining various patterns to key off of.
  * @param {Message} message - the message to check
  * @param {RegExp} trigger - the custom trigger to check against
- * @returns {boolean|Array|null} False if no match or a bot sends the message
+ * @returns {boolean|?RegExpMatchArray} False if no match or a bot sends the message
  * or an Array or null from a RegExp match group
  */
 export function messageTriggered(message, trigger) {

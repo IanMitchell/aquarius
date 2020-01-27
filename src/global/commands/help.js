@@ -1,11 +1,11 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { RichEmbed, Permissions } from 'discord.js';
-import { getNickname } from '../../lib/core/users';
-import { humanize, uniqueValues, setDifference } from '../../lib/helpers/lists';
-import { capitalize } from '../../lib/helpers/strings';
-import { getHost, getGitHubLink } from '../../lib/helpers/links';
+import { Permissions, RichEmbed } from 'discord.js';
 import { getPermissionName } from '../../lib/core/permissions';
+import { getNickname } from '../../lib/core/users';
+import { getGitHubLink, getHost } from '../../lib/helpers/links';
+import { humanize, setDifference } from '../../lib/helpers/lists';
+import { capitalize } from '../../lib/helpers/strings';
 
 const log = debug('Help');
 
@@ -16,7 +16,8 @@ const EMOJI = {
 
 export const info = {
   name: 'help',
-  description: 'Provides information on how to use a command.',
+  description:
+    'Provides information on how to use a command. Need support? See `.support`. Want to invite me to your server? See `.invite`.',
   permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: dedent`
     **View General Help**
@@ -28,9 +29,13 @@ export const info = {
 };
 
 export function helpMessage(aquarius, commandInfo, guild) {
-  const enabled = aquarius.guildManager
-    .get(guild.id)
-    .isCommandEnabled(commandInfo.name);
+  let enabled = false;
+
+  if (guild) {
+    enabled = aquarius.guildManager
+      .get(guild.id)
+      .isCommandEnabled(commandInfo.name);
+  }
 
   const settings = aquarius.commandConfigs.get(commandInfo.name).hasSettings();
 
@@ -97,16 +102,20 @@ export default async ({ aquarius, analytics }) => {
       return;
     }
 
-    const commandList = uniqueValues([
-      ...aquarius.getGlobalCommandNames(false),
-      ...aquarius.guildManager.get(message.guild.id).enabledCommands,
-    ]);
+    const globalList = aquarius.getGlobalCommandNames(false);
+
+    const commandList = Array.from(
+      setDifference(
+        new Set(aquarius.guildManager.get(message.guild.id).enabledCommands),
+        new Set(globalList)
+      )
+    );
 
     const disabledCommands = Array.from(
       setDifference(
         new Set(
           Array.from(aquarius.commandList.entries())
-            .filter(([, value]) => !value.hidden)
+            .filter(([, value]) => !value.hidden && !value.global)
             .map(([key]) => key)
         ),
         new Set(commandList)
@@ -120,6 +129,8 @@ export default async ({ aquarius, analytics }) => {
     if (disabledCommands.length > 0) {
       embed.addField('Disabled Commands', humanize(disabledCommands.sort()));
     }
+
+    embed.addField('Global Commands', humanize(globalList.sort()));
 
     message.channel.send(embed);
     analytics.trackUsage('list', message);

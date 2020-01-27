@@ -4,12 +4,22 @@ import { FIVE_MINUTES } from '../helpers/times';
 const log = debug('DirectMessageManager');
 
 /**
+ * @typedef {import('discord.js').User} User
+ */
+
+const STATUS = {
+  PENDING: 'PENDING',
+  FULFILLED: 'FULFILLED',
+};
+
+/**
  * Manages Direct Message commands to a user via a queue
  */
 export default class DirectMessageManager {
   constructor() {
     this.defaultMaxResponseTime = FIVE_MINUTES;
     this.userQueue = new Map();
+    this.status = new Map();
   }
 
   /**
@@ -26,6 +36,8 @@ export default class DirectMessageManager {
     }
 
     const promise = new Promise((resolve, reject) => {
+      this.status.set(user.id, STATUS.PENDING);
+
       task = () => {
         log(`Prompting ${user.username}`);
         user.send(str);
@@ -36,7 +48,7 @@ export default class DirectMessageManager {
         );
 
         collector.on('collect', msg => {
-          if (msg.cleanContent === 'stop') {
+          if (msg.cleanContent.toLowerCase() === 'stop') {
             log(`Stopping collector for ${user.username}`);
             return collector.stop('manual');
           }
@@ -45,6 +57,8 @@ export default class DirectMessageManager {
         });
 
         collector.on('end', (msgs, reason) => {
+          this.status.set(user.id, STATUS.FULFILLED);
+
           if (reason === 'manual' || reason === 'time') {
             log(`Rejecting for ${user.username} due to ${reason}`);
             reject(reason);
@@ -62,5 +76,18 @@ export default class DirectMessageManager {
       .catch(task);
     this.userQueue.set(user.id, promise);
     return promise;
+  }
+
+  /**
+   * Check to see if a user has an active prompt
+   * @param {User} user - The User to check the status of
+   * @returns {boolean} Whether there is an active prompt or not
+   */
+  isActive(user) {
+    if (this.status.has(user.id)) {
+      return this.status.get(user.id) === STATUS.PENDING;
+    }
+
+    return false;
   }
 }

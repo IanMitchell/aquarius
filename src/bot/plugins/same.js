@@ -1,4 +1,5 @@
 import debug from 'debug';
+import Sentry from '../../lib/analytics/sentry';
 
 const log = debug('Same');
 
@@ -83,6 +84,8 @@ export default async ({ aquarius, settings, analytics }) => {
 
   // We want to track bot messages for this too, otherwise it looks weird
   aquarius.on('message', async message => {
+    Sentry.configureMessageScope(message);
+
     if (message.content === '' || !message.guild) {
       return;
     }

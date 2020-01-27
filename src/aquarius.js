@@ -4,22 +4,22 @@ import Discord from 'discord.js';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
-import Sentry from './lib/errors/sentry';
+import Sentry from './lib/analytics/sentry';
+import Analytics from './lib/commands/analytics';
+import Settings from './lib/commands/settings';
 import * as loading from './lib/core/loading';
 import * as permissions from './lib/core/permissions';
-import * as services from './lib/core/services';
 import * as triggers from './lib/core/triggers';
 import database from './lib/database/database';
-import DirectMessageManager from './lib/managers/direct-message';
-import GuildManager from './lib/managers/guild-manager';
-import EmojiManager from './lib/managers/emojis';
-import { isDirectMessage, isBot } from './lib/helpers/messages';
-import TriggerMap from './lib/settings/trigger-map';
-import CommandConfig from './lib/settings/command-config';
-import Settings from './lib/commands/settings';
-import Analytics from './lib/commands/analytics';
-import { setupWeeklyGuildLoop } from './lib/metrics/guilds';
 import { fixPartialReactionEvents } from './lib/discord/library-fixes';
+import { isBot, isDirectMessage } from './lib/helpers/messages';
+import DirectMessageManager from './lib/managers/direct-message-manager';
+import EmojiManager from './lib/managers/emoji-manager';
+import GuildManager from './lib/managers/guild-manager';
+import ServiceManager from './lib/managers/service-manager';
+import { setupWeeklyGuildLoop } from './lib/metrics/guilds';
+import CommandConfig from './lib/settings/command-config';
+import TriggerMap from './lib/settings/trigger-map';
 
 const log = debug('Aquarius');
 const errorLog = debug('Aquarius:Error');
@@ -44,7 +44,7 @@ export class Aquarius extends Discord.Client {
     // We have more listeners than normal - each command registers one to
     // several on average, so we hit the warning frequently. Small bumps
     // ensure no actual leaks (as opposed to setting the limit to a billion)
-    this.setMaxListeners(60);
+    this.setMaxListeners(65);
 
     // Setup internal data structures
 
@@ -67,13 +67,13 @@ export class Aquarius extends Discord.Client {
 
     /**
      * Interface for sliding into a User's DMs
-     * @type { typeof import('./lib/managers/direct-message') }
+     * @type { typeof import('./lib/managers/direct-message-manager') }
      */
     this.directMessages = new DirectMessageManager();
 
     /**
      * A list of custom emoji for usage in messages.
-     * @type { typeof import('./lib/managers/emojis') }
+     * @type { typeof import('./lib/managers/emoji-manager') }
      */
     this.emojiList = new EmojiManager();
 
@@ -112,9 +112,9 @@ export class Aquarius extends Discord.Client {
 
     /**
      * TODO: document
-     * @type { typeof import('./lib/core/services') }
+     * @type { typeof import('./lib/managers/service-manager') }
      */
-    this.services = services;
+    this.services = new ServiceManager();
 
     /**
      * Triggers of stuff
@@ -186,7 +186,7 @@ export class Aquarius extends Discord.Client {
   /**
    * Loads each JavaScript file in a given directory
    * @param {string} directory - directory to load `.js` files from
-   * @param {boolean=false} globalFile - whether to treat the file as global
+   * @param {boolean} [globalFile=false] - whether to treat the file as global
    * @todo Make this method private
    */
   loadDirectory(directory, globalFile = false) {
@@ -396,6 +396,8 @@ export class Aquarius extends Discord.Client {
    */
   onDirectMessage(regex, handler) {
     this.on('message', message => {
+      Sentry.configureMessageScope(message);
+
       if (message.channel.type === 'dm') {
         if (isBot(message.author)) {
           return;
@@ -404,6 +406,16 @@ export class Aquarius extends Discord.Client {
         const match = this.triggers.customTrigger(message, regex);
 
         if (match) {
+          if (this.directMessages.isActive(message.author)) {
+            log(
+              `Ignoring Message due to inflight request: ${message.cleanContent}`
+            );
+            message.channel.send(
+              "_(It looks like you might be trying to use a command - I can't do two at once! You can stop the current command by sending `Stop`)_"
+            );
+            return;
+          }
+
           handler(message, match);
         }
       }
@@ -419,9 +431,11 @@ export class Aquarius extends Discord.Client {
    * `match` will be set to `true`
    */
   onMessage(info, handler) {
-    this.on('message', message =>
-      this.handleMessage(message, info, handler, () => true)
-    );
+    this.on('message', message => {
+      Sentry.configureMessageScope(message);
+
+      this.handleMessage(message, info, handler, () => true);
+    });
   }
 
   /**
@@ -440,14 +454,16 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onCommand(regex, handler) {
-    this.on('message', message =>
+    this.on('message', message => {
+      Sentry.configureMessageScope(message);
+
       this.handleCommand(
         message,
         regex,
         handler,
         this.triggers.messageTriggered
-      )
-    );
+      );
+    });
   }
 
   /**
@@ -464,9 +480,11 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onTrigger(regex, handler) {
-    this.on('message', message =>
-      this.handleCommand(message, regex, handler, this.triggers.customTrigger)
-    );
+    this.on('message', message => {
+      Sentry.configureMessageScope(message);
+
+      this.handleCommand(message, regex, handler, this.triggers.customTrigger);
+    });
   }
 
   /**
@@ -482,9 +500,10 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onDynamicTrigger(commandInfo, matchFn, handler) {
-    this.on('message', message =>
-      this.handleMessage(message, commandInfo, handler, matchFn)
-    );
+    this.on('message', message => {
+      Sentry.configureMessageScope(message);
+      this.handleMessage(message, commandInfo, handler, matchFn);
+    });
   }
 }
 

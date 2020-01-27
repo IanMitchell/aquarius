@@ -1,7 +1,7 @@
-import path from 'path';
-import debug from 'debug';
 import Firestore from '@google-cloud/firestore';
-import Sentry from '../errors/sentry';
+import debug from 'debug';
+import path from 'path';
+import Sentry from '../analytics/sentry';
 
 const log = debug('Database');
 
@@ -9,6 +9,9 @@ function isValidCollectionName(name) {
   return typeof name === 'string' && name;
 }
 
+/**
+ * @type {Firestore}
+ */
 const database = (() => {
   log('Connecting to Firebase...');
 

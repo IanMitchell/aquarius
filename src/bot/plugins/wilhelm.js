@@ -1,5 +1,7 @@
-import path from 'path';
 import debug from 'debug';
+import path from 'path';
+import Sentry from '../../lib/analytics/sentry';
+import { FIVE_MINUTES, ONE_HOUR, ONE_MINUTE } from '../../lib/helpers/times';
 
 const log = debug('Wilhelm');
 
@@ -8,10 +10,13 @@ const WILHELM_SCREAM = path.join(
   '../../../data/wilhelm/WilhelmScreap.mp3'
 );
 
-// TODO: Write Info, test, analytics, enable
-// May require discord.js v12: https://github.com/discordjs/discord.js/issues/2820
+const INTERVALS = new Map();
+
+// May require discord.js v12:
+// https://github.com/discordjs/discord.js/issues/2820
+// https://github.com/discordjs/discord.js/issues/3362
 export const info = {
-  name: 'Wilhelm',
+  name: 'wilhelm',
   description:
     'Will occassionaly Wilhelm Scream at a specific user (Sorry Shaun)',
   disabled: true,
@@ -23,18 +28,17 @@ function getRandomInterval() {
   const max = 180;
 
   const target = Math.round(Math.random() * (max - min)) + min;
-  return 1000 * 60 * target;
+  return ONE_MINUTE * target;
 }
 
-async function playClip(channel, target) {
+async function playClip(channel, target, analytics) {
   let dispatcher = null;
 
   const connection = await channel.join();
 
   log('Waiting for activity');
 
-  // Disconnect after 5m of inactivity
-  const inactivityCheck = setTimeout(connection.disconnect, 1000 * 60 * 5);
+  const inactivityCheck = setTimeout(connection.disconnect, FIVE_MINUTES);
 
   connection.on('speaking', (user, speaking) => {
     if (user.id === target && speaking && dispatcher === null) {
@@ -42,46 +46,74 @@ async function playClip(channel, target) {
       try {
         dispatcher = connection.playFile(WILHELM_SCREAM);
 
+        analytics.track('wilhelm', 'scream', 'play', {
+          guildId: channel.guild.id,
+          userId: user.id,
+        });
+
         dispatcher.on('end', () => {
           log('Leaving channel');
           clearTimeout(inactivityCheck);
-          connection.disconnect();
+          setTimeout(() => connection.disconnect(), 3);
         });
 
         dispatcher.on('error', log);
       } catch (error) {
+        Sentry.captureException(error);
         log(error);
       }
     }
   });
 }
 
-function voiceCheck(aquarius, settings) {
+function voiceCheck(guild, target, analytics) {
   log('Checking for users');
-  aquarius.guilds.forEach(guild => {
-    if (aquarius.guildManager.get(guild.id).isCommandEnabled('wilhelm')) {
+
+  guild.channels
+    .filter(channel => channel.type === 'voice')
+    .forEach(channel => {
+      if (channel.members.some(member => member.user.id === target)) {
+        playClip(channel, target, analytics);
+      }
+    });
+
+  INTERVALS.set(
+    guild.id,
+    setTimeout(() => voiceCheck(guild, target, analytics), getRandomInterval())
+  );
+}
+
+function createLoop(aquarius, settings, analytics) {
+  log('Creating checks');
+
+  aquarius.guilds.array().forEach(guild => {
+    if (INTERVALS.has(guild.id)) {
+      return;
+    }
+
+    if (aquarius.guildManager.get(guild.id).isCommandEnabled(info.name)) {
       const target = settings.get(guild.id, 'target');
 
       if (target === null) {
         return;
       }
 
-      guild.channels.findAll('type', 'voice').forEach(channel => {
-        if (channel.members.some(member => member.user.id === target)) {
-          playClip(channel, target);
-        }
-      });
+      INTERVALS.set(
+        guild.id,
+        setTimeout(
+          () => voiceCheck(guild, target, analytics),
+          getRandomInterval()
+        )
+      );
     }
   });
-
-  setTimeout(() => voiceCheck(aquarius, settings), getRandomInterval());
 }
 
 /** @type {import('../../typedefs').Command} */
-export default async ({ aquarius, settings }) => {
+export default async ({ aquarius, settings, analytics }) => {
   settings.register('target', 'User ID to Target', null);
 
-  aquarius.on('ready', () => {
-    setTimeout(() => voiceCheck(aquarius, settings), getRandomInterval());
-  });
+  aquarius.on('ready', () =>
+    setInterval(() => createLoop(aquarius, settings, analytics), ONE_HOUR)
+  );
 };

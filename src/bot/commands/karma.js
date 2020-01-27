@@ -1,10 +1,10 @@
+import { formatDistance } from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { formatDistance } from 'date-fns';
-import { MENTION_USER } from '../../lib/helpers/regex';
-import Sentry from '../../lib/errors/sentry';
+import Sentry from '../../lib/analytics/sentry';
 import { getNickname } from '../../lib/core/users';
 import { getOrderedMentions } from '../../lib/helpers/messages';
+import { MENTION_USER } from '../../lib/helpers/regex';
 
 const log = debug('Karma');
 

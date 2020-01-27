@@ -1,10 +1,10 @@
+import formatDistance from 'date-fns/formatDistance';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import fetch from 'node-fetch';
+import { Permissions, RichEmbed } from 'discord.js';
 import FormData from 'form-data';
-import { RichEmbed, Permissions } from 'discord.js';
-import formatDistance from 'date-fns/formatDistance';
-import Sentry from '../../lib/errors/sentry';
+import fetch from 'node-fetch';
+import Sentry from '../../lib/analytics/sentry';
 import { getBotOwner } from '../../lib/core/users';
 import { getEmbedColorFromHex } from '../../lib/helpers/colors';
 

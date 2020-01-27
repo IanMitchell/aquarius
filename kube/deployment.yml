@@ -95,5 +95,10 @@ spec:
                 secretKeyRef:
                   name: aquarius-secrets
                   key: ALPHA_VANTAGE_KEY
+            - name: GIT_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: GIT_HASH
       imagePullSecrets:
           - name: dockerhub

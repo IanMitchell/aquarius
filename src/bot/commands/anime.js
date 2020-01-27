@@ -1,11 +1,11 @@
-import debug from 'debug';
-import fetch from 'node-fetch';
-import dedent from 'dedent-js';
-import Turndown from 'turndown';
-import downsize from 'downsize';
-import { RichEmbed, Permissions } from 'discord.js';
 import { formatDistance } from 'date-fns';
-import Sentry from '../../lib/errors/sentry';
+import debug from 'debug';
+import dedent from 'dedent-js';
+import { Permissions, RichEmbed } from 'discord.js';
+import downsize from 'downsize';
+import fetch from 'node-fetch';
+import Turndown from 'turndown';
+import Sentry from '../../lib/analytics/sentry';
 import { getEmbedColorFromHex } from '../../lib/helpers/colors';
 
 const log = debug('Anime');

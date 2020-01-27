@@ -1,7 +1,7 @@
 import debug from 'debug';
-import fetch from 'node-fetch';
 import { Permissions } from 'discord.js';
-import Sentry from '../../lib/errors/sentry';
+import fetch from 'node-fetch';
+import Sentry from '../../lib/analytics/sentry';
 
 const log = debug('Hearthstone');
 
