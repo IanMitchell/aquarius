@@ -12,9 +12,11 @@ const WILHELM_SCREAM = path.join(
 
 const INTERVALS = new Map();
 
-// May require discord.js v12: https://github.com/discordjs/discord.js/issues/2820
+// May require discord.js v12:
+// https://github.com/discordjs/discord.js/issues/2820
+// https://github.com/discordjs/discord.js/issues/3362
 export const info = {
-  name: 'Wilhelm',
+  name: 'wilhelm',
   description:
     'Will occassionaly Wilhelm Scream at a specific user (Sorry Shaun)',
   disabled: true,
@@ -67,11 +69,13 @@ async function playClip(channel, target, analytics) {
 function voiceCheck(guild, target, analytics) {
   log('Checking for users');
 
-  guild.channels.findAll('type', 'voice').forEach(channel => {
-    if (channel.members.some(member => member.user.id === target)) {
-      playClip(channel, target, analytics);
-    }
-  });
+  guild.channels
+    .filter(channel => channel.type === 'voice')
+    .forEach(channel => {
+      if (channel.members.some(member => member.user.id === target)) {
+        playClip(channel, target, analytics);
+      }
+    });
 
   INTERVALS.set(
     guild.id,
@@ -80,12 +84,14 @@ function voiceCheck(guild, target, analytics) {
 }
 
 function createLoop(aquarius, settings, analytics) {
-  aquarius.guilds.forEach(guild => {
+  log('Creating checks');
+
+  aquarius.guilds.array().forEach(guild => {
     if (INTERVALS.has(guild.id)) {
       return;
     }
 
-    if (aquarius.guildManager.get(guild.id).isCommandEnabled('wilhelm')) {
+    if (aquarius.guildManager.get(guild.id).isCommandEnabled(info.name)) {
       const target = settings.get(guild.id, 'target');
 
       if (target === null) {
