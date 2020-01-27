@@ -10,7 +10,7 @@ export const info = {
   usage: dedent`
   **Classic Game**
   \`\`\`@Aquarius minesweeper (beginner|intermediate|expert)\`\`\`
-  **Custom Game (24 max)**
+  **Custom Game (24 mines max)**
   \`\`\`@Aquarius minesweeper custom <mines>\`\`\`
   `,
 };
