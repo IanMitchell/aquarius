@@ -16,7 +16,7 @@ export const info = {
     To create a poll where a user can vote for multiple items:
     \`\`\`@Aquarius strawpoll multiple <title> | <options>;...\`\`\`
 
-    Polls can have between 2 and 30 options. Use a semicolon as a delimter.
+    Polls can have between 2 and 30 options. Use a semicolon as a delimiter (to use a semicolon in a poll option you can escape it with a backslash).
 
     Example:
     \`\`\`@Aquarius strawpoll My Poll | first option; second option; this is a third choice!\`\`\`
@@ -29,7 +29,10 @@ export default async ({ aquarius, analytics }) => {
     /^strawpoll(?: (?<multiple>multiple))? (?<title>.*) \| (?<input>.*)$/i,
     async (message, { groups }) => {
       log('Creating strawpoll');
-      const options = groups.input.split(';').map(value => value.trim());
+      const options = groups.input
+        .split(/(?<!\\);/)
+        .map(value => value.trim().replace(/\\;/g, ';'))
+        .filter(Boolean);
 
       if (options.length < 2 || options.length > 30) {
         message.channel.send(
