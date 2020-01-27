@@ -55,7 +55,10 @@ export default async ({ aquarius, analytics }) => {
 
       message.channel.send(minesweeper.start());
 
-      analytics.trackUsage(groups.difficulty, message);
+      analytics.trackUsage(
+        groups.difficulty ? groups.difficulty : 'default',
+        message
+      );
     }
   );
 
