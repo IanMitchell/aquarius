@@ -406,6 +406,16 @@ export class Aquarius extends Discord.Client {
         const match = this.triggers.customTrigger(message, regex);
 
         if (match) {
+          if (this.directMessages.isActive(message.author)) {
+            log(
+              `Ignoring Message due to inflight request: ${message.cleanContent}`
+            );
+            message.channel.send(
+              "_(It looks like you might be trying to use a command - I can't do two at once! You can stop the current command by sending `Stop`)_"
+            );
+            return;
+          }
+
           handler(message, match);
         }
       }
