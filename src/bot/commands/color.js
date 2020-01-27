@@ -1,7 +1,7 @@
 import debug from 'debug';
-import parseColor from 'parse-color';
 import dedent from 'dedent-js';
 import { RichEmbed } from 'discord.js';
+import parseColor from 'parse-color';
 import { getEmbedColorFromHex } from '../../lib/helpers/colors';
 
 const log = debug('Color');
@@ -41,11 +41,6 @@ export default async ({ aquarius, analytics }) => {
         "Sorry, I wasn't able to parse that color! I only can lookup colors formatted as a `#0A0A0A` hex, a `rebeccapurple` keyword, in `hsl(50, 210, 50)` hsl format, or in `rgba(15,53,242,30%)` rgba format."
       );
     } else {
-      log(
-        `http://www.thecolorapi.com/id?format=svg&named=false&hex=${color.hex.substring(
-          1
-        )}`
-      );
       const embed = new RichEmbed()
         .setTitle(groups.name)
         .setThumbnail(
