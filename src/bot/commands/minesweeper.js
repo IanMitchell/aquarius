@@ -35,9 +35,9 @@ const DIFFICULTIES = {
     mines: 10,
   },
   expert: {
-    rows: 8,
-    columns: 15,
-    expert: 25,
+    rows: 15,
+    columns: 8,
+    mines: 25,
   },
 };
 
