@@ -48,12 +48,18 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       log('Generating game');
 
+      const difficulty = 'beginner' || groups.difficulty;
+      const { rows, columns, mines } = DIFFICULTIES[difficulty];
+
       const minesweeper = new Minesweeper({
-        ...DIFFICULTIES[groups.difficulty],
+        rows,
+        columns,
+        mines,
         revealFirstCell: true,
       });
 
-      message.channel.send(minesweeper.start());
+      const game = minesweeper.start();
+      message.channel.send(`**${columns}x${rows} (${mines} Mines)**\n${game}`);
 
       analytics.trackUsage(
         groups.difficulty ? groups.difficulty : 'default',
@@ -67,14 +73,17 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       log(`Generating custom game with ${groups.count} bombs`);
 
+      const mines = Math.min(groups.count, 24);
+
       const minesweeper = new Minesweeper({
         rows: 7,
         columns: 7,
-        mines: Math.min(groups.count, 24),
+        mines,
         revealFirstCell: true,
       });
 
-      message.channel.send(minesweeper.start());
+      const game = minesweeper.start();
+      message.channel.send(`**7x7 (${mines} Mines)**\n${game}`);
 
       analytics.trackUsage('custom', message);
     }
