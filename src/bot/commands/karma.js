@@ -122,7 +122,7 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      log(`Karma lookup for ${user.username}`);
+      log(`Karma lookup for ${getNickname(message.guild, user)}`);
 
       const name = settings.get(message.guild.id, 'name');
 
@@ -167,7 +167,12 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      log(`${message.author.username} gave karma to ${user.username}`);
+      log(
+        `${message.author.username} gave karma to ${getNickname(
+          message.guild,
+          user
+        )}`
+      );
 
       try {
         const giverList = await aquarius.database.karma
@@ -258,7 +263,12 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      log(`${message.author.username} took karma from ${user.username}`);
+      log(
+        `${message.author.username} took karma from ${getNickname(
+          message.guild,
+          user
+        )}`
+      );
 
       try {
         const giverList = await aquarius.database.karma
