@@ -1,13 +1,13 @@
 import debug from 'debug';
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
-import xml from 'xmldom';
+import xmldom from 'xmldom';
 import Sentry from '../../lib/analytics/sentry';
 import { capitalize } from '../../lib/helpers/strings';
 
 // CJS / ESM compatibility
 const { Permissions, RichEmbed } = Discord;
-const { DOMParser } = xml;
+const { DOMParser } = xmldom;
 
 const log = debug('Define');
 const API = 'http://www.dictionaryapi.com/api/v1/references/collegiate/xml';
