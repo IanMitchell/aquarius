@@ -2,7 +2,6 @@ import debug from 'debug';
 
 const log = debug('Donate');
 
-// TODO: Enable
 export const info = {
   name: 'donate',
   description: 'Displays donation information',

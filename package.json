@@ -14,22 +14,19 @@
     "url": "http://ianmitchell.io"
   },
   "license": "MIT",
+  "type": "module",
   "engines": {
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "cross-env DEBUG=*,-engine*,-babel*,-send,-ref*,-express* node -r dotenv/config -r esm index.js",
+    "start": "cross-env DEBUG=*,-engine*,-babel*,-send,-ref*,-express* node -r dotenv/config --es-module-specifier-resolution=node index.js",
     "build": "node scripts/install-keyfile",
     "build:workspaces": "yarn workspaces run build",
-    "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect-brk=9229 -r dotenv/config -r esm index.js",
+    "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect-brk=9229 -r dotenv/config --es-module-specifier-resolution=node index.js",
     "prelint": "yarn run build:workspaces",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
     "pretest": "yarn run build:workspaces",
     "test": "jest"
-  },
-  "esm": {
-    "mode": "auto",
-    "cjs": true
   },
   "dependencies": {
     "@aquarius/regex": "^1.0.0",
@@ -46,7 +43,6 @@
     "discord.js-minesweeper": "^1.0.5",
     "dotenv": "^8.2.0",
     "downsize": "^0.0.8",
-    "esm": "^3.1.1",
     "express": "^4.17.1",
     "form-data": "^3.0.0",
     "js-yaml": "^3.10.0",

@@ -1,5 +1,8 @@
-import { Constants } from 'discord.js';
 import debug from 'debug';
+import Discord from 'discord.js';
+
+// CJS / ESM compatibility
+const { Constants } = Discord;
 
 const log = debug('Broadcast');
 

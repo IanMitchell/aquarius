@@ -1,6 +1,10 @@
-import { isZalgo } from 'unzalgo';
 import debug from 'debug';
-import { Permissions } from 'discord.js';
+import Discord from 'discord.js';
+import Zalgo from 'unzalgo';
+
+// CJS / ESM compatibility
+const { Permissions } = Discord;
+const { isZalgo } = Zalgo;
 
 const log = debug('Zalgo');
 

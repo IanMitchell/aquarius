@@ -4,6 +4,7 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
 import database from '../database/database';
+import { getDirname } from '../helpers/files';
 
 const log = debug('ServiceManager');
 
@@ -29,7 +30,10 @@ export default class ServiceManager {
      */
     this.services = new Map();
 
-    const serviceDirectory = path.join(__dirname, '../../../data/services');
+    const serviceDirectory = path.join(
+      getDirname(import.meta.url),
+      '../../../data/services'
+    );
 
     fs.readdir(serviceDirectory, (err, files) => {
       if (err) {

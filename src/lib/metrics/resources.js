@@ -1,7 +1,10 @@
+import dateFns from 'date-fns';
 import os from 'os';
 import prettyBytes from 'pretty-bytes';
-import { formatDistance } from 'date-fns';
 import aquarius from '../../aquarius';
+
+// CJS / ESM compatibility
+const { formatDistance } = dateFns;
 
 function getStats() {
   let totalIdle = 0;

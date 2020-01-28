@@ -1,12 +1,12 @@
 // import debug from 'debug';
-import { Permissions } from 'discord.js';
+// import { Permissions } from 'discord.js';
 
 // const log = debug('Autorole');
 
 export const info = {
   name: 'autorole',
   description: 'Allows members to sign up for roles via message reactions.',
-  permissions: [Permissions.FLAGS.ADD_REACTIONS],
+  // permissions: [Permissions.FLAGS.ADD_REACTIONS],
   disabled: true,
 };
 

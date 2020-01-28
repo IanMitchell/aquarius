@@ -1,9 +1,12 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { RichEmbed } from 'discord.js';
+import Discord from 'discord.js';
 import Sentry from '../analytics/sentry';
 import { getIconColor } from './colors';
 import { getStandardDate } from './dates';
+
+// CJS / ESM compatibility
+const { RichEmbed } = Discord;
 
 const log = debug('Embeds');
 

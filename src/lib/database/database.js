@@ -2,6 +2,7 @@ import Firestore from '@google-cloud/firestore';
 import debug from 'debug';
 import path from 'path';
 import Sentry from '../analytics/sentry';
+import { getDirname } from '../helpers/files';
 
 const log = debug('Database');
 
@@ -19,7 +20,7 @@ const database = (() => {
     const firestore = new Firestore({
       projectId: process.env.FIREBASE_PROJECT,
       keyFilename: path.join(
-        __dirname,
+        getDirname(import.meta.url),
         `../../../${process.env.FIREBASE_KEYFILE}`
       ),
     });

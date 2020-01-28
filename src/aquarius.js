@@ -12,6 +12,7 @@ import * as permissions from './lib/core/permissions';
 import * as triggers from './lib/core/triggers';
 import database from './lib/database/database';
 import { fixPartialReactionEvents } from './lib/discord/library-fixes';
+import { getDirname } from './lib/helpers/files';
 import { isBot, isDirectMessage } from './lib/helpers/messages';
 import DirectMessageManager from './lib/managers/direct-message-manager';
 import EmojiManager from './lib/managers/emoji-manager';
@@ -44,7 +45,7 @@ export class Aquarius extends Discord.Client {
     // We have more listeners than normal - each command registers one to
     // several on average, so we hit the warning frequently. Small bumps
     // ensure no actual leaks (as opposed to setting the limit to a billion)
-    this.setMaxListeners(65);
+    this.setMaxListeners(70);
 
     // Setup internal data structures
 
@@ -157,7 +158,7 @@ export class Aquarius extends Discord.Client {
    * @todo Make this method private
    */
   loadConfig() {
-    const configPath = path.join(__dirname, '../config.yml');
+    const configPath = path.join(getDirname(import.meta.url), '../config.yml');
     return Object.freeze(yaml.safeLoad(fs.readFileSync(configPath)));
   }
 
@@ -167,9 +168,15 @@ export class Aquarius extends Discord.Client {
    */
   loadGlobals() {
     log('Loading Global Commands...');
-    this.loadDirectory(path.join(__dirname, 'global/commands'), true);
+    this.loadDirectory(
+      path.join(getDirname(import.meta.url), 'global/commands'),
+      true
+    );
     log('Loading Global Plugins...');
-    this.loadDirectory(path.join(__dirname, 'global/plugins'), true);
+    this.loadDirectory(
+      path.join(getDirname(import.meta.url), 'global/plugins'),
+      true
+    );
   }
 
   /**
@@ -178,9 +185,9 @@ export class Aquarius extends Discord.Client {
    */
   loadCommands() {
     log('Loading Bot Commands...');
-    this.loadDirectory(path.join(__dirname, 'bot/commands'));
+    this.loadDirectory(path.join(getDirname(import.meta.url), 'bot/commands'));
     log('Loading Bot Plugins...');
-    this.loadDirectory(path.join(__dirname, 'bot/plugins'));
+    this.loadDirectory(path.join(getDirname(import.meta.url), 'bot/plugins'));
   }
 
   /**

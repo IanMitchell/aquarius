@@ -1,10 +1,13 @@
-import { formatDistance } from 'date-fns';
+import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import Sentry from '../../lib/analytics/sentry';
 import { getNickname } from '../../lib/core/users';
 import { getOrderedMentions } from '../../lib/helpers/messages';
 import { MENTION_USER } from '../../lib/helpers/regex';
+
+// CJS / ESM compatibility
+const { formatDistance } = dateFns;
 
 const log = debug('Karma');
 

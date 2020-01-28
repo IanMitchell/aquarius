@@ -1,12 +1,16 @@
-import { formatDistance } from 'date-fns';
+import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { Permissions, RichEmbed } from 'discord.js';
+import Discord from 'discord.js';
 import downsize from 'downsize';
 import fetch from 'node-fetch';
 import Turndown from 'turndown';
 import Sentry from '../../lib/analytics/sentry';
 import { getEmbedColorFromHex } from '../../lib/helpers/colors';
+
+// CJS / ESM compatibility
+const { formatDistance } = dateFns;
+const { Permissions, RichEmbed } = Discord;
 
 const log = debug('Anime');
 

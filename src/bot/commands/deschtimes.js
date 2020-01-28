@@ -1,12 +1,15 @@
 import formatDistance from 'date-fns/formatDistance';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { Permissions, RichEmbed } from 'discord.js';
+import Discord from 'discord.js';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
 import Sentry from '../../lib/analytics/sentry';
 import { getBotOwner } from '../../lib/core/users';
 import { getEmbedColorFromHex } from '../../lib/helpers/colors';
+
+// CJS / ESM compatibility
+const { Permissions, RichEmbed } = Discord;
 
 const log = debug('Deschtimes');
 

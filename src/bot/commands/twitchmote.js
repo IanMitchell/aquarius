@@ -1,8 +1,11 @@
 import debug from 'debug';
-import { Permissions } from 'discord.js';
+import Discord from 'discord.js';
 import fetch from 'node-fetch';
 import Sentry from '../../lib/analytics/sentry';
 import { ONE_HOUR } from '../../lib/helpers/times';
+
+// CJS / ESM compatibility
+const { Permissions } = Discord;
 
 const log = debug('Twitchmote');
 

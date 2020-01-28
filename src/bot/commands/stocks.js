@@ -1,11 +1,15 @@
 import alphaVantageAPI from 'alphavantage';
-import { parse } from 'date-fns';
+import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { Permissions, RichEmbed } from 'discord.js';
+import Discord from 'discord.js';
 import fetch from 'node-fetch';
 import Sentry from '../../lib/analytics/sentry';
 import { getIconColor } from '../../lib/helpers/colors';
+
+// CJS / ESM compatibility
+const { parse } = dateFns;
+const { Permissions, RichEmbed } = Discord;
 
 const log = debug('stocks');
 

@@ -1,5 +1,8 @@
+import dateFns from 'date-fns';
 import pluralize from 'pluralize';
-import {
+
+// CJS / ESM compatibility
+const {
   differenceInYears,
   subYears,
   differenceInMonths,
@@ -13,7 +16,7 @@ import {
   differenceInMinutes,
   subMinutes,
   differenceInSeconds,
-} from 'date-fns';
+} = dateFns;
 
 /**
  * Takes a Date and creates a standard date string from it

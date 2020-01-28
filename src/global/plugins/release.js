@@ -1,10 +1,13 @@
 import debug from 'debug';
+import Discord from 'discord.js';
 import fetch from 'node-fetch';
-import { Permissions, RichEmbed } from 'discord.js';
 import pkg from '../../../package.json';
-import { isBot } from '../../lib/helpers/messages';
-import { getDocsLink } from '../../lib/helpers/links';
 import { getIconColor } from '../../lib/helpers/colors';
+import { getDocsLink } from '../../lib/helpers/links';
+import { isBot } from '../../lib/helpers/messages';
+
+// CJS / ESM compatibility
+const { Permissions, RichEmbed } = Discord;
 
 const log = debug('Release');
 const GITHUB_API = 'https://api.github.com/repos';
