@@ -26,7 +26,7 @@ export default async ({ aquarius, analytics }) => {
       message.channel.send(
         `${aquarius.emojiList.get('nintendoswitch')} | ${
           service['Friend Code']
-        }`
+        } _(${message.author})_`
       );
     }
     analytics.trackUsage('switchcode', message);
