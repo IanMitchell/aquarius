@@ -1,9 +1,9 @@
-import alphaVantageAPI from 'alphavantage';
 import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
+import alphaVantageAPI from '../../../patches/alphavantage.cjs';
 import Sentry from '../../lib/analytics/sentry';
 import { getIconColor } from '../../lib/helpers/colors';
 
@@ -11,7 +11,7 @@ import { getIconColor } from '../../lib/helpers/colors';
 const { parse } = dateFns;
 const { Permissions, RichEmbed } = Discord;
 
-const log = debug('stocks');
+const log = debug('Stocks');
 
 export const info = {
   name: 'stocks',

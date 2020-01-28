@@ -1,4 +1,4 @@
-import * as Vibrant from 'node-vibrant';
+import Vibrant from 'node-vibrant';
 import rgbHex from 'rgb-hex';
 
 function getColorFromPalette(palette) {

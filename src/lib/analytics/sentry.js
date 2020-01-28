@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/node';
+import Sentry from '@sentry/node';
 
 /**
  * @typedef { import('discord.js').Message } Message
