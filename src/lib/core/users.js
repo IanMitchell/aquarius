@@ -1,5 +1,8 @@
-import { GuildMember } from 'discord.js';
+import Discord from 'discord.js';
 import aquarius from '../../aquarius';
+
+// CJS / ESM compatibility
+const { GuildMember } = Discord;
 
 /**
  * @typedef {import('discord.js').User} User

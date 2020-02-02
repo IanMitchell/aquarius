@@ -1,7 +1,10 @@
 import debug from 'debug';
-import { Permissions, RichEmbed } from 'discord.js';
+import Discord from 'discord.js';
 import { getNickname } from '../../lib/core/users';
 import { getLink } from '../../lib/helpers/messages';
+
+// CJS / ESM compatibility
+const { Permissions, RichEmbed } = Discord;
 
 const log = debug('Starred');
 

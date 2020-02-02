@@ -1,10 +1,13 @@
-import { formatDistance } from 'date-fns';
+import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import Sentry from '../../lib/analytics/sentry';
 import { getNickname } from '../../lib/core/users';
 import { getOrderedMentions } from '../../lib/helpers/messages';
 import { MENTION_USER } from '../../lib/helpers/regex';
+
+// CJS / ESM compatibility
+const { formatDistance } = dateFns;
 
 const log = debug('Karma');
 
@@ -119,7 +122,7 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      log(`Karma lookup for ${user.username}`);
+      log(`Karma lookup for ${getNickname(message.guild, user)}`);
 
       const name = settings.get(message.guild.id, 'name');
 
@@ -164,7 +167,12 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      log(`${message.author.username} gave karma to ${user.username}`);
+      log(
+        `${message.author.username} gave karma to ${getNickname(
+          message.guild,
+          user
+        )}`
+      );
 
       try {
         const giverList = await aquarius.database.karma
@@ -255,7 +263,12 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      log(`${message.author.username} took karma from ${user.username}`);
+      log(
+        `${message.author.username} took karma from ${getNickname(
+          message.guild,
+          user
+        )}`
+      );
 
       try {
         const giverList = await aquarius.database.karma

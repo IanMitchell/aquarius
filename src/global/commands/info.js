@@ -1,6 +1,6 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { Permissions, RichEmbed } from 'discord.js';
+import Discord from 'discord.js';
 import pluralize from 'pluralize';
 import pkg from '../../../package.json';
 import { getNickname } from '../../lib/core/users';
@@ -8,6 +8,9 @@ import { getGitHubLink, getVanityBotLink } from '../../lib/helpers/links';
 import { getTotalGuildCount } from '../../lib/metrics/guilds';
 import { getResourceUsage } from '../../lib/metrics/resources';
 import { getTotalUserCount } from '../../lib/metrics/users';
+
+// CJS / ESM compatibility
+const { Permissions, RichEmbed } = Discord;
 
 const log = debug('Info');
 

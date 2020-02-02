@@ -1,6 +1,9 @@
 import debug from 'debug';
-import { Permissions } from 'discord.js';
+import Discord from 'discord.js';
 import Sentry from '../../lib/analytics/sentry';
+
+// CJS / ESM compatibility
+const { Permissions } = Discord;
 
 const log = debug('Nickname');
 

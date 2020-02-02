@@ -1,19 +1,5 @@
+import dateFns from 'date-fns';
 import pluralize from 'pluralize';
-import {
-  differenceInYears,
-  subYears,
-  differenceInMonths,
-  subMonths,
-  differenceInWeeks,
-  subWeeks,
-  differenceInDays,
-  subDays,
-  differenceInHours,
-  subHours,
-  differenceInMinutes,
-  subMinutes,
-  differenceInSeconds,
-} from 'date-fns';
 
 /**
  * Takes a Date and creates a standard date string from it
@@ -35,6 +21,23 @@ export function getStandardDate(date) {
  * @returns {string} The exact time difference
  */
 export function getExactTimeInterval(start, end) {
+  // CJS / ESM compatibility
+  const {
+    differenceInYears,
+    subYears,
+    differenceInMonths,
+    subMonths,
+    differenceInWeeks,
+    subWeeks,
+    differenceInDays,
+    subDays,
+    differenceInHours,
+    subHours,
+    differenceInMinutes,
+    subMinutes,
+    differenceInSeconds,
+  } = dateFns;
+
   const units = [];
   let startDate = start;
   let endDate = end;

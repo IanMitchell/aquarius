@@ -1,7 +1,10 @@
+import Discord from 'discord.js';
 import pluralize from 'pluralize';
-import { Permissions } from 'discord.js';
 import aquarius from '../../aquarius';
 import { humanize } from '../helpers/lists';
+
+// CJS / ESM compatibility
+const { Permissions } = Discord;
 
 /**
  * @typedef {import('discord.js').User} User

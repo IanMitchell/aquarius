@@ -1,8 +1,11 @@
+import dateFns from 'date-fns';
 import debug from 'debug';
-import { formatDistance } from 'date-fns';
-import { MENTION_USER } from '../../lib/helpers/regex';
 import { getNickname } from '../../lib/core/users';
 import { getOrderedMentions } from '../../lib/helpers/messages';
+import { MENTION_USER } from '../../lib/helpers/regex';
+
+// CJS / ESM compatibility
+const { formatDistance } = dateFns;
 
 const log = debug('Seen');
 

@@ -1,5 +1,8 @@
 import debug from 'debug';
-import { Permissions } from 'discord.js';
+import Discord from 'discord.js';
+
+// CJS / ESM compatibility
+const { Permissions } = Discord;
 
 const log = debug('Nice');
 

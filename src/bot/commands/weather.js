@@ -1,9 +1,13 @@
-import debug from 'debug';
-import fetch from 'node-fetch';
-import dedent from 'dedent-js';
 import chalk from 'chalk';
-import { format } from 'date-fns';
-import { Permissions, RichEmbed } from 'discord.js';
+import dateFns from 'date-fns';
+import debug from 'debug';
+import dedent from 'dedent-js';
+import Discord from 'discord.js';
+import fetch from 'node-fetch';
+
+// CJS / ESM compatibility
+const { format } = dateFns;
+const { Permissions, RichEmbed } = Discord;
 
 const log = debug('Weather');
 

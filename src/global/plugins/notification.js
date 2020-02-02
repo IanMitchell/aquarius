@@ -1,6 +1,9 @@
 import debug from 'debug';
-import { Permissions } from 'discord.js';
+import Discord from 'discord.js';
 import { guildEmbed } from '../../lib/helpers/embeds';
+
+// CJS / ESM compatibility
+const { Permissions } = Discord;
 
 const log = debug('Notification');
 

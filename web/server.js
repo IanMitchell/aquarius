@@ -1,12 +1,15 @@
-import express from 'express';
-import debug from 'debug';
 import cors from 'cors';
-import { Constants } from 'discord.js';
+import debug from 'debug';
+import Discord from 'discord.js';
+import express from 'express';
 import aquarius from '../src/aquarius';
-import createShield from './shields';
 import { botLink } from '../src/lib/helpers/links';
 import { getTotalUserCount } from '../src/lib/metrics/users';
+import createShield from './shields';
 // import { getMetricHandler } from './metrics';
+
+// CJS / ESM compatibility
+const { Constants } = Discord;
 
 const log = debug('Server');
 const app = express();

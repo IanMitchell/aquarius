@@ -1,7 +1,10 @@
+import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { formatDistance } from 'date-fns';
 import { randomValue } from '../../lib/helpers/lists';
+
+// CJS / ESM compatibility
+const { formatDistance } = dateFns;
 
 const log = debug('Quotes');
 

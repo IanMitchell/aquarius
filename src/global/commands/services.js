@@ -1,8 +1,11 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { RichEmbed } from 'discord.js';
+import Discord from 'discord.js';
 import Sentry from '../../lib/analytics/sentry';
 import { helpMessage } from './help';
+
+// CJS / ESM compatibility
+const { RichEmbed } = Discord;
 
 const log = debug('Services');
 

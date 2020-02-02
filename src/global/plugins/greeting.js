@@ -1,8 +1,11 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { Permissions } from 'discord.js';
-import { getDocsLink } from '../../lib/helpers/links';
+import Discord from 'discord.js';
 import { getBotOwner } from '../../lib/core/users';
+import { getDocsLink } from '../../lib/helpers/links';
+
+// CJS / ESM compatibility
+const { Permissions } = Discord;
 
 const log = debug('Greeting');
 
