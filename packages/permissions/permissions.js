@@ -1,7 +1,4 @@
 import Discord from 'discord.js';
-import pluralize from 'pluralize';
-import aquarius from '../../aquarius';
-import { humanize } from '../helpers/lists';
 
 // CJS / ESM compatibility
 const { Permissions } = Discord;
@@ -44,46 +41,34 @@ const PERMISSION_NAMES = new Map([
 ]);
 
 /**
- * Checks to see if a User is a bot owner
+ * Checks to see if a User is a bot admin
  * @param {User} user - user to check
- * @returns {boolean} Whether the user is the bot owner
+ * @param {string[]} [admins=[]] - List of admin User IDs for the bot. Defaults to `process.env.ADMINS`
+ * @returns {boolean} Whether the user is the bot admin
  */
-export function isBotOwner(user) {
-  return user.id === aquarius.config.owner;
+export function isBotAdmin(user, admins = process.env.ADMINS || []) {
+  return admins.includes(user.id);
 }
 
 /**
- * Checks to see if a User is a Guild Admin or the Bot Owner
+ * Checks to see if a User is a Guild Admin
  * @param {Guild} guild - Guild to check admin status in
  * @param {User} user - User to check admin status for
+ * @param {boolean} [includeBotAdmins=false] - Include the bot admins as Guild Admins
  * @returns {boolean} Whether the user is a Guild Admin
  */
-export function isGuildAdmin(guild, user) {
+export function isGuildAdmin(guild, user, includeBotAdmins = false) {
   const member = guild.member(user);
 
   if (!member) {
     return false;
   }
 
-  if (isBotOwner(user)) {
+  if (includeBotAdmins && isBotAdmin(user)) {
     return true;
   }
 
   return member.hasPermission(Permissions.FLAGS.ADMINISTRATOR);
-}
-
-/**
- * Checks to see if non-Admin Users are ignored in a Guild
- * @param {Guild} guild - Guild to check ignore status in
- * @param {User} user - User to check ignore status for
- * @returns {boolean} Whether the user is ignored
- */
-export function isUserIgnored(guild, user) {
-  if (isGuildAdmin(guild, user)) {
-    return false;
-  }
-
-  return aquarius.guildManager.get(guild.id).isUserIgnored(user.id);
 }
 
 /**
@@ -121,16 +106,4 @@ export function check(guild, ...permissions) {
     valid: missingPermissions.size === 0,
     missing: Array.from(missingPermissions),
   };
-}
-
-/**
- * Tages a list of permission flags and generates a message requesting
- * the permissions be granted
- * @param {number[]} permissions - array of permission flags
- * @returns {string} Request message for the given permission flags
- */
-export function getRequestMessage(permissions) {
-  return `I need the ${humanize(
-    permissions.map(getPermissionName).sort()
-  )} ${pluralize('permission', permissions.length)} in order to do that!`;
 }

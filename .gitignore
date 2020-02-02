@@ -5,7 +5,7 @@ node_modules
 coverage
 
 # Workspace Package Builds
-packages/**/lib/
+# packages/**/lib/
 
 # Environment
 .env

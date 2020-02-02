@@ -1,5 +1,5 @@
+import { getMentionType, MENTION, MENTION_TYPES } from '@aquarius/regex';
 import Discord from 'discord.js';
-import { MENTION, MENTION_TYPES, getMentionType } from './regex';
 
 /**
  * Check whether a message is a one-to-one direct message or not.
@@ -8,16 +8,6 @@ import { MENTION, MENTION_TYPES, getMentionType } from './regex';
  */
 export function isDirectMessage(message) {
   return message.channel instanceof Discord.DMChannel;
-}
-
-/**
- * Checks to see if a user is a bot.
- * **In Test Environments, Will Always Be False**
- * @param {Discord.User} user - user to check
- * @returns {boolean} whether the user is a bot in non-test environments
- */
-export function isBot(user) {
-  return user.bot;
 }
 
 /**

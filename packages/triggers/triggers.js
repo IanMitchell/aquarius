@@ -1,23 +1,14 @@
-import aquarius from '../../aquarius';
-import { isBot } from '../helpers/messages';
-import * as regex from '../helpers/regex';
+import { isBot } from '@aquarius/messages';
+import * as regex from '@aquarius/regex';
 
 /** @typedef {import('discord.js').Message} Message */
-
-/**
- * Get Aquarius's username
- * @returns {string} Aquarius's Username
- */
-export function botString() {
-  return aquarius.user.toString();
-}
 
 /**
  * Get Aquarius's mention regex
  * @returns {RegExp} Aquarius's mention regex
  */
-export function botMention() {
-  return new RegExp(`<@!?${aquarius.user.id}>`);
+export function botMention(id = process.env.BOT_ID) {
+  return new RegExp(`<@!?${id}>`);
 }
 
 /**
@@ -25,8 +16,8 @@ export function botMention() {
  * @param {Message} message - the message to check
  * @returns {?RegExpMatchArray} the regex match array or null if no match
  */
-export function botMentionTrigger(message) {
-  return message.content.trim().match(new RegExp(`^${botMention().source}`));
+export function botMentionTrigger(message, id = process.env.BOT_ID) {
+  return message.content.trim().match(new RegExp(`^${botMention(id).source}`));
 }
 
 /**
@@ -68,7 +59,7 @@ export function customTrigger(message, trigger) {
  * @param {Message} message - the message to check
  * @returns {boolean|?Array} False if the message is from a bot or
  * an Array of string matches or null if none exist
- * @todo TODO: Update return type when typescript supports it
+ * @todo TODO: Update return type to the regex matchAll type when typescript adds it
  */
 export function bracketTrigger(message) {
   if (isBot(message.author)) {
@@ -91,17 +82,17 @@ export function bracketTrigger(message) {
  * examining various patterns to key off of.
  * @param {Message} message - the message to check
  * @param {RegExp} trigger - the custom trigger to check against
- * @returns {boolean|?RegExpMatchArray} False if no match or a bot sends the message
- * or an Array or null from a RegExp match group
+ * @returns {boolean|?RegExpMatchArray} False if no match or a bot sends the
+ * message or an Array or null from a RegExp match group
  */
-export function messageTriggered(message, trigger) {
+export function messageTriggered(message, trigger, id = process.env.BOT_ID) {
   // We don't respond to other bots. The "Shaun Boley" check
   if (isBot(message.author)) {
     return false;
   }
 
   // @aquarius trigger [message]
-  if (botMentionTrigger(message)) {
+  if (botMentionTrigger(message, id)) {
     return message.content
       .trim()
       .replace(new RegExp(`^${regex.MENTION_USER.source} `), '')
