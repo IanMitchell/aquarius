@@ -16,7 +16,7 @@
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=13.5.0"
   },
   "scripts": {
     "start": "cross-env DEBUG=*,-engine*,-babel*,-send,-ref*,-express* node -r dotenv/config --es-module-specifier-resolution=node index.js",
