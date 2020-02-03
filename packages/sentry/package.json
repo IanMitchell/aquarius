@@ -1,0 +1,22 @@
+{
+  "name": "@aquarius/sentry",
+  "version": "1.0.0",
+  "description": "Sentry helper methods for Discord",
+  "author": "Ian Mitchell <ian.mitchel1@live.com>",
+  "homepage": "https://github.com/ianmitchell/aquarius",
+  "repository": "ianmitchell/aquarius",
+  "license": "MIT",
+  "keywords": [
+    "discord",
+    "discord.js",
+    "bot",
+    "node",
+    "aquarius",
+    "sentry"
+  ],
+  "main": "./sentry.js",
+  "type": "module",
+  "peerDependencies": {
+    "@sentry/node": "5.11.1"
+  }
+}

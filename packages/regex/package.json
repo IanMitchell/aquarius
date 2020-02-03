@@ -6,15 +6,13 @@
   "homepage": "https://github.com/ianmitchell/aquarius",
   "repository": "ianmitchell/aquarius",
   "license": "MIT",
-  "scripts": {
-    "build": "babel src --out-dir lib --copy-files"
-  },
   "keywords": [
     "discord",
     "discord.js",
     "bot",
-    "regex",
-    "node"
+    "node",
+    "aquarius"
   ],
-  "main": "lib/regex.js"
+  "main": "./regex.js",
+  "type": "module"
 }

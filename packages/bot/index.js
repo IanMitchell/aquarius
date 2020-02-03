@@ -1,6 +1,6 @@
+import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import timber from 'timber';
-import Sentry from './src/lib/analytics/sentry';
 
 const log = debug('Host');
 
