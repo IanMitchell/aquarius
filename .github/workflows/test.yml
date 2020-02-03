@@ -7,10 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Use Node.js 11.x
+      - name: Use Node.js 13.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 13.7
       - name: Lint
         run: |
           yarn install
@@ -20,10 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Use Node.js 11.x
+      - name: Use Node.js 13.x
         uses: actions/setup-node@v1
         with:
-          node-version: 11.x
+          node-version: 13.7
       - name: Jest
         run: |
           yarn install

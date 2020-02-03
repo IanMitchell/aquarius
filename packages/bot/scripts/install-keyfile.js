@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-const fs = require('fs');
+import fs from 'fs';
 
 fs.writeFile(
   process.env.FIREBASE_KEYFILE,
