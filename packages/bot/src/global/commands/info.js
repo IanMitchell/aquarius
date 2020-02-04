@@ -1,9 +1,9 @@
+import { getNickname } from '@aquarius/users';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import Discord from 'discord.js';
 import pluralize from 'pluralize';
 import pkg from '../../../package.json';
-import { getNickname } from '../../lib/core/users';
 import { getGitHubLink, getVanityBotLink } from '../../lib/helpers/links';
 import { getTotalGuildCount } from '../../lib/metrics/guilds';
 import { getResourceUsage } from '../../lib/metrics/resources';

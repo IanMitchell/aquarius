@@ -1,7 +1,7 @@
+import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import Discord from 'discord.js';
-import Sentry from '../../lib/analytics/sentry';
 import { helpMessage } from './help';
 
 // CJS / ESM compatibility

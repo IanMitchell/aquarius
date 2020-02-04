@@ -27,7 +27,7 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@aquarius/testing": "^0.0.1",
+    "@aquarius/testing": "workspace:*",
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.4",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",

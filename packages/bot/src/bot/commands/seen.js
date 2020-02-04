@@ -1,8 +1,8 @@
+import { getOrderedMentions } from '@aquarius/messages';
+import { MENTION_USER } from '@aquarius/regex';
+import { getNickname } from '@aquarius/users';
 import dateFns from 'date-fns';
 import debug from 'debug';
-import { getNickname } from '../../lib/core/users';
-import { getOrderedMentions } from '../../lib/helpers/messages';
-import { MENTION_USER } from '../../lib/helpers/regex';
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;

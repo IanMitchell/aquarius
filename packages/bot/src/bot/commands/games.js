@@ -1,5 +1,5 @@
+import { isBot } from '@aquarius/messages';
 import debug from 'debug';
-import { isBot } from '../../lib/helpers/messages';
 
 const log = debug('Games');
 

@@ -1,7 +1,7 @@
+import Sentry from '@aquarius/sentry';
 import Firestore from '@google-cloud/firestore';
 import debug from 'debug';
 import path from 'path';
-import Sentry from '../analytics/sentry';
 import { getDirname } from '../helpers/files';
 
 const log = debug('Database');

@@ -1,6 +1,6 @@
+import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import path from 'path';
-import Sentry from '../../lib/analytics/sentry';
 import { getDirname } from '../../lib/helpers/files';
 import { FIVE_MINUTES, ONE_HOUR, ONE_MINUTE } from '../../lib/helpers/times';
 

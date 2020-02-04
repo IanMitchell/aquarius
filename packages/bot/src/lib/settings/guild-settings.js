@@ -1,6 +1,6 @@
+import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import aquarius from '../../aquarius';
-import Sentry from '../analytics/sentry';
 import database from '../database/database';
 import { deserializeMap, serializeMap } from '../database/serialization';
 import { TEN_MINUTES } from '../helpers/times';

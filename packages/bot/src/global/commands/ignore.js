@@ -1,9 +1,9 @@
+import { getOrderedMentions } from '@aquarius/messages';
+import { MENTION } from '@aquarius/regex';
+import { getNickname } from '@aquarius/users';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { MENTION } from '../../lib/helpers/regex';
 import { humanize } from '../../lib/helpers/lists';
-import { getNickname } from '../../lib/core/users';
-import { getOrderedMentions } from '../../lib/helpers/messages';
 
 const log = debug('Ignore');
 

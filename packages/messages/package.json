@@ -16,7 +16,9 @@
   "main": "./messages.js",
   "type": "module",
   "peerDependencies": {
-    "@aquarius/regex": "*",
     "discord.js": "^11.5.0"
+  },
+  "dependencies": {
+    "@aquarius/regex": "workspace:*"
   }
 }

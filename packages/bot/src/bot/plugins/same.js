@@ -1,5 +1,5 @@
+import Sentry from '@aquarius/sentry';
 import debug from 'debug';
-import Sentry from '../../lib/analytics/sentry';
 
 const log = debug('Same');
 

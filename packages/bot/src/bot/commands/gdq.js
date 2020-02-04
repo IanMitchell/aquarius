@@ -1,6 +1,6 @@
+import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import fetch from 'node-fetch';
-import Sentry from '../../lib/analytics/sentry';
 
 const log = debug('GDQ');
 

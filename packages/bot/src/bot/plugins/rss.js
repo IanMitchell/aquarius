@@ -1,7 +1,7 @@
+import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import Parser from 'rss-parser';
-import Sentry from '../../lib/analytics/sentry';
 import { FIVE_MINUTES } from '../../lib/helpers/times';
 
 const log = debug('RSS');

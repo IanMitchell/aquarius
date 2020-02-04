@@ -1,6 +1,6 @@
+import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import Discord from 'discord.js';
-import Sentry from '../../lib/analytics/sentry';
 
 // CJS / ESM compatibility
 const { Permissions } = Discord;

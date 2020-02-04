@@ -20,7 +20,7 @@
     "jest": ">=22.0.0"
   },
   "dependencies": {
-    "jest-discord": "file:../jest-discord",
+    "jest-discord": "workspace:*",
     "jest-environment-node": "^25.1.0"
   }
 }

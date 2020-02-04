@@ -1,8 +1,8 @@
+import { getPermissionName } from '@aquarius/permissions';
+import { getNickname } from '@aquarius/users';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import Discord from 'discord.js';
-import { getPermissionName } from '../../lib/core/permissions';
-import { getNickname } from '../../lib/core/users';
 import { getGitHubLink, getHost } from '../../lib/helpers/links';
 import { humanize, setDifference } from '../../lib/helpers/lists';
 import { capitalize } from '../../lib/helpers/strings';

@@ -1,6 +1,6 @@
+import { getNickname } from '@aquarius/users';
 import debug from 'debug';
 import Discord from 'discord.js';
-import { getNickname } from '../../lib/core/users';
 import { getLink } from '../../lib/helpers/messages';
 
 // CJS / ESM compatibility

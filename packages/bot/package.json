@@ -25,8 +25,13 @@
     "test": "jest"
   },
   "dependencies": {
-    "@aquarius/regex": "file:../regex",
-    "@aquarius/sentry": "file:../sentry",
+    "@aquarius/regex": "workspace:*",
+    "@aquarius/sentry": "workspace:*",
+    "@aquarius/discordjs-fixes": "workspace:*",
+    "@aquarius/loading": "workspace:*",
+    "@aquarius/messages": "workspace:*",
+    "@aquarius/permissions": "workspace:*",
+    "@aquarius/triggers": "workspace:*",
     "@google-cloud/firestore": "^3.4.1",
     "@sentry/node": "5.11.1",
     "alphavantage": "^2.0.0",

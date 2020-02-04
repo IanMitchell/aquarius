@@ -1,10 +1,10 @@
+import { isBot } from '@aquarius/messages';
 import debug from 'debug';
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
 import pkg from '../../../package.json';
 import { getIconColor } from '../../lib/helpers/colors';
 import { getDocsLink } from '../../lib/helpers/links';
-import { isBot } from '../../lib/helpers/messages';
 
 // CJS / ESM compatibility
 const { Permissions, RichEmbed } = Discord;

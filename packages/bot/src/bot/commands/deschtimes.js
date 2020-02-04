@@ -1,10 +1,10 @@
+import Sentry from '@aquarius/sentry';
 import formatDistance from 'date-fns/formatDistance';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import Discord from 'discord.js';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
-import Sentry from '../../lib/analytics/sentry';
 import { getBotOwner } from '../../lib/core/users';
 import { getEmbedColorFromHex } from '../../lib/helpers/colors';
 

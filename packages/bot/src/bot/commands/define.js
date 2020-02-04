@@ -1,8 +1,8 @@
+import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
 import xmldom from 'xmldom';
-import Sentry from '../../lib/analytics/sentry';
 import { capitalize } from '../../lib/helpers/strings';
 
 // CJS / ESM compatibility

@@ -1,8 +1,8 @@
+import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
-import Sentry from '../../lib/analytics/sentry';
 
 // CJS / ESM compatibility
 const { Permissions, RichEmbed } = Discord;
