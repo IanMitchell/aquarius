@@ -1,7 +1,7 @@
+import { getLink } from '@aquarius/messages';
 import { getNickname } from '@aquarius/users';
 import debug from 'debug';
 import Discord from 'discord.js';
-import { getLink } from '../../lib/helpers/messages';
 
 // CJS / ESM compatibility
 const { Permissions, RichEmbed } = Discord;

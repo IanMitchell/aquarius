@@ -19,6 +19,6 @@
     "discord.js": "^11.5.0"
   },
   "dependencies": {
-    "@aquarius/regex": "workspace:*"
+    "@aquarius/regex": "file:../regex"
   }
 }

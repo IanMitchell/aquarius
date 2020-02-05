@@ -16,7 +16,7 @@
   "main": "./triggers.js",
   "type": "module",
   "dependencies": {
-    "@aquarius/messages": "workspace:*",
-    "@aquarius/regex": "workspace:*"
+    "@aquarius/messages": "file:../messages",
+    "@aquarius/regex": "file:../regex"
   }
 }

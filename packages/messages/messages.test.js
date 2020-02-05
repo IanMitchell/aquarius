@@ -1,17 +1,13 @@
-import {
-  getMockDMChannel,
-  getMockGroupDMChannel,
-  getMockMessage,
-} from '@aquarius/testing';
+import Discord from 'discord.js';
 import { getLink, isDirectMessage } from './messages';
+
+const { TextChannel, GroupDMChannel, DMChannel, Message } = Discord;
 
 describe('isDirectMessage', () => {
   test('Only matches DM Channels', () => {
-    expect(isDirectMessage(getMockMessage())).toBe(false);
-    expect(isDirectMessage(getMockMessage(getMockGroupDMChannel()))).toBe(
-      false
-    );
-    expect(isDirectMessage(getMockMessage(getMockDMChannel()))).toBe(true);
+    expect(isDirectMessage(new Message(new TextChannel()))).toBe(false);
+    expect(isDirectMessage(new Message(new GroupDMChannel()))).toBe(false);
+    expect(isDirectMessage(new Message(new DMChannel()))).toBe(true);
   });
 });
 
