@@ -11,13 +11,6 @@ jest.mock('../../../aquarius.js', () => ({
   },
 }));
 
-const guild = {
-  member: jest.fn().mockImplementation(user => user),
-  me: {
-    hasPermission: jest.fn().mockReturnValue(false),
-  },
-};
-
 describe('isBotOwner', () => {
   test('Checks against config owner id', () => {
     expect(isBotOwner({ id: 1 })).toBe(false);

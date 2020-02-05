@@ -1,4 +1,4 @@
-import { getMatchers, getHandlers } from '@aquarius/testing';
+import { getHandlers, getMatchers } from '@aquarius/testing';
 import command from '../ping';
 
 describe('Triggers', () => {

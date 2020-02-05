@@ -38,7 +38,8 @@
     "@aquarius/sentry": "file:packages/sentry",
     "@aquarius/testing": "file:packages/testing",
     "@aquarius/triggers": "file:packages/triggers",
-    "@aquarius/users": "file:packages/users"
+    "@aquarius/users": "file:packages/users",
+    "@aquarius/progress-bar": "file:packages/progress-bar"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
