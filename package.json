@@ -26,7 +26,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "aquarius": "file:packages/bot",
+    "aquarius": "file:packages/aquarius",
     "aquarius-dashboard": "file:packages/dashboard",
     "@aquarius/discordjs-fixes": "file:packages/discordjs-fixes",
     "jest-discord": "file:packages/jest-discord",

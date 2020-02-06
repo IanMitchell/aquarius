@@ -1,3 +1,4 @@
+import { startLoading, stopLoading } from '@aquarius/loading';
 import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import Discord from 'discord.js';
@@ -66,7 +67,7 @@ export default async ({ aquarius, analytics }) => {
       return;
     }
 
-    aquarius.loading.start(message.channel);
+    startLoading(message.channel);
 
     try {
       log(`Querying for '${groups.word}'`);
@@ -103,6 +104,6 @@ export default async ({ aquarius, analytics }) => {
       Sentry.captureException(error);
     }
 
-    aquarius.loading.stop(message.channel);
+    stopLoading(message.channel);
   });
 };

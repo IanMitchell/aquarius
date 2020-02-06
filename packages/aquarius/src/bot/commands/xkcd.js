@@ -1,3 +1,4 @@
+import { startLoading, stopLoading } from '@aquarius/loading';
 import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import dedent from 'dedent-js';
@@ -64,7 +65,7 @@ export default async ({ aquarius, analytics }) => {
       return;
     }
 
-    aquarius.loading.start(message.channel);
+    startLoading(message.channel);
 
     try {
       const postJson = await getLatestPostJson();
@@ -78,7 +79,7 @@ export default async ({ aquarius, analytics }) => {
       message.channel.send('Sorry, there was a problem loading the comic.');
     }
 
-    aquarius.loading.stop(message.channel);
+    stopLoading(message.channel);
 
     analytics.trackUsage('latest', message);
   });
@@ -99,7 +100,7 @@ export default async ({ aquarius, analytics }) => {
       return;
     }
 
-    aquarius.loading.start(message.channel);
+    startLoading(message.channel);
 
     try {
       const latestPostJson = await getLatestPostJson();
@@ -133,7 +134,7 @@ export default async ({ aquarius, analytics }) => {
     }
 
     analytics.trackUsage('random', message);
-    aquarius.loading.stop(message.channel);
+    stopLoading(message.channel);
   });
 
   aquarius.onCommand(/^xkcd (?<id>\d+)$/i, async (message, { groups }) => {
@@ -152,7 +153,7 @@ export default async ({ aquarius, analytics }) => {
       return;
     }
 
-    aquarius.loading.start(message.channel);
+    startLoading(message.channel);
 
     try {
       const id = parseInt(groups.id, 10);
@@ -169,6 +170,6 @@ export default async ({ aquarius, analytics }) => {
     }
 
     analytics.trackUsage('target', message);
-    aquarius.loading.stop(message.channel);
+    stopLoading(message.channel);
   });
 };

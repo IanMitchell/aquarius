@@ -1,3 +1,4 @@
+import { startLoading, stopLoading } from '@aquarius/loading';
 import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import Discord from 'discord.js';
@@ -6,25 +7,21 @@ import fetch from 'node-fetch';
 // CJS / ESM compatibility
 const { Permissions } = Discord;
 
-const log = debug('Hearthstone');
+const log = debug('Magic');
 
 export const info = {
-  name: 'hearthstone',
-  description: 'Posts images for linked Hearthstone cards.',
+  name: 'magic',
+  description: 'Posts images for linked Magic: the Gathering cards.',
   permissions: [Permissions.FLAGS.ATTACH_FILES],
-  usage: "```It was funny when Sintolol milled [[Shudderwock]] wasn't it?```",
-  disabled: true, // For some reason the API links to images that 404. This needs to be fixed
+  usage:
+    "```The only good planeswalker is [[Jace Beleren]] and that's final```",
 };
 
-const API = 'https://omgvamp-hearthstone-v1.p.mashape.com';
+const API = 'https://api.scryfall.com';
 
 async function getCard(name) {
-  const response = await fetch(`${API}/cards/${name}?collectible=1`, {
-    headers: {
-      'X-Mashape-Key': process.env.HEARTHSTONE_KEY,
-    },
-  });
-
+  // TODO: Switch to URL params
+  const response = await fetch(`${API}/cards/search?q=${name}`);
   return response.json();
 }
 
@@ -40,15 +37,15 @@ export default async ({ aquarius, analytics }) => {
           .join(', ')}`
       );
 
-      aquarius.loading.start(message.channel);
+      startLoading(message.channel);
       try {
         const responses = await Promise.all(
           cardList.map(card => getCard(card.groups.name))
         );
         const images = responses.reduce((list, json) => {
-          if (json && !json.error) {
-            const [entry] = json;
-            list.push(entry.img);
+          if (json && !json.status) {
+            const [entry] = json.data;
+            list.push(entry.image_uris.png);
           }
 
           return list;
@@ -65,17 +62,24 @@ export default async ({ aquarius, analytics }) => {
             message.channel.send(
               aquarius.permissions.getRequestMessage(check.missing)
             );
-          } else {
-            message.channel.send({ files: images });
-            analytics.trackUsage('card link', message);
+            return;
           }
+
+          message.channel.send({
+            files: images.map(image => {
+              const link = new URL(image);
+              return `${link.origin}${link.pathname}`;
+            }),
+          });
+
+          analytics.trackUsage('card link', message);
         }
       } catch (error) {
         log(error);
         Sentry.captureException(error);
       }
 
-      aquarius.loading.stop(message.channel);
+      stopLoading(message.channel);
     }
   );
 };

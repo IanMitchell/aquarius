@@ -1,3 +1,4 @@
+import { startLoading, stopLoading } from '@aquarius/loading';
 import { getNickname } from '@aquarius/users';
 import debug from 'debug';
 import dedent from 'dedent-js';
@@ -39,7 +40,7 @@ export default async ({ aquarius, analytics }) => {
       return;
     }
 
-    aquarius.loading.start(message.channel);
+    startLoading(message.channel);
 
     const guilds = getTotalGuildCount();
     const channels = aquarius.channels.reduce((value, channel) => {
@@ -101,7 +102,7 @@ export default async ({ aquarius, analytics }) => {
 
     message.channel.send(embed);
 
-    aquarius.loading.stop(message.channel);
+    stopLoading(message.channel);
 
     analytics.trackUsage('info', message);
   });

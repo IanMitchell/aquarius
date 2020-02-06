@@ -1,3 +1,4 @@
+import { startLoading, stopLoading } from '@aquarius/loading';
 import Sentry from '@aquarius/sentry';
 import formatDistance from 'date-fns/formatDistance';
 import debug from 'debug';
@@ -165,7 +166,7 @@ export default async ({ aquarius, analytics }) => {
     }
 
     try {
-      aquarius.loading.start(message.channel);
+      startLoading(message.channel);
 
       const data = await getShowData(message.guild.id, groups.show.trim());
 
@@ -189,7 +190,7 @@ export default async ({ aquarius, analytics }) => {
         `Sorry, there was a problem. ${owner} might be able to help!`
       );
     } finally {
-      aquarius.loading.stop(message.channel);
+      stopLoading(message.channel);
     }
   });
 
@@ -212,7 +213,7 @@ export default async ({ aquarius, analytics }) => {
       }
 
       try {
-        aquarius.loading.start(message.channel);
+        startLoading(message.channel);
 
         const body = new FormData();
         body.append('username', message.author.id);
@@ -260,7 +261,7 @@ export default async ({ aquarius, analytics }) => {
           `Sorry, there was a problem. ${owner} might be able to help!`
         );
       } finally {
-        aquarius.loading.stop(message.channel);
+        stopLoading(message.channel);
       }
     }
   );
@@ -269,7 +270,7 @@ export default async ({ aquarius, analytics }) => {
     log(`Marking ${groups.show} as done`);
 
     try {
-      aquarius.loading.start(message.channel);
+      startLoading(message.channel);
 
       const body = new FormData();
       body.append('platform', 'discord');
@@ -295,7 +296,7 @@ export default async ({ aquarius, analytics }) => {
         `Sorry, there was a problem. ${owner} might be able to help!`
       );
     } finally {
-      aquarius.loading.stop(message.channel);
+      stopLoading(message.channel);
     }
   });
 
@@ -304,7 +305,7 @@ export default async ({ aquarius, analytics }) => {
     log('Airing request');
 
     try {
-      aquarius.loading.start(message.channel);
+      startLoading(message.channel);
 
       const uri = `${SHOWTIMES.SERVER}/shows.json?platform=discord&channel=${message.guild.id}`;
 
@@ -345,7 +346,7 @@ export default async ({ aquarius, analytics }) => {
         `Sorry, there was a problem. ${owner} might be able to help!`
       );
     } finally {
-      aquarius.loading.stop(message.channel);
+      stopLoading(message.channel);
     }
   });
 };

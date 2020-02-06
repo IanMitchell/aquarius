@@ -4,7 +4,7 @@
  * Indicates Aquarius is loading something by using the Typing indicator
  * @param {TextChannel} channel - The Text Channel to start the typing indicator
  */
-export function start(channel) {
+export function startLoading(channel) {
   return channel.startTyping();
 }
 
@@ -12,7 +12,7 @@ export function start(channel) {
  * Indicates Aquarius has finished loading something by using the Typing indicator
  * @param {TextChannel} channel - The Text Channel to stop the typing indicator
  */
-export function stop(channel) {
+export function stopLoading(channel) {
   return channel.stopTyping();
 }
 

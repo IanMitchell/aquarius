@@ -1,3 +1,4 @@
+import { startLoading, stopLoading } from '@aquarius/loading';
 import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import fetch from 'node-fetch';
@@ -14,7 +15,7 @@ export const info = {
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^dadjoke$/i, async message => {
     log('Sending dadjoke');
-    aquarius.loading.start(message.channel);
+    startLoading(message.channel);
 
     try {
       const response = await fetch('https://icanhazdadjoke.com/', {
@@ -34,7 +35,7 @@ export default async ({ aquarius, analytics }) => {
       message.channel.send("Sorry, I wasn't able to get a dad joke!");
     }
 
-    aquarius.loading.stop(message.channel);
+    stopLoading(message.channel);
     analytics.trackUsage('dadjoke', message);
   });
 };

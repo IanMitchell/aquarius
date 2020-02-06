@@ -1,4 +1,4 @@
-import { start, stop } from './loading';
+import { startLoading, stopLoading } from './loading';
 
 const channel = {
   startTyping: jest.fn(),
@@ -7,7 +7,7 @@ const channel = {
 
 describe('start', () => {
   test('sends typing activity to channel', () => {
-    start(channel);
+    startLoading(channel);
     expect(channel.startTyping).toHaveBeenCalled();
     expect(channel.stopTyping).not.toHaveBeenCalled();
   });
@@ -15,7 +15,7 @@ describe('start', () => {
 
 describe('stop', () => {
   test('sends stop typing activity to channel', () => {
-    stop(channel);
+    stopLoading(channel);
     expect(channel.startTyping).not.toHaveBeenCalled();
     expect(channel.stopTyping).toHaveBeenCalled();
   });

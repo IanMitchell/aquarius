@@ -1,5 +1,6 @@
-import fetch from 'node-fetch';
+import { startLoading, stopLoading } from '@aquarius/loading';
 import debug from 'debug';
+import fetch from 'node-fetch';
 
 const log = debug('Cat');
 
@@ -14,7 +15,7 @@ export const info = {
 export default async ({ aquarius }) => {
   aquarius.onCommand(/^cat$/i, async message => {
     log('Image request');
-    aquarius.loading.start(message.channel);
+    startLoading(message.channel);
 
     try {
       // TODO: Switch to thecatapi? This one takes forever and times out
@@ -32,6 +33,6 @@ export default async ({ aquarius }) => {
       message.channel.send("Sorry, I wasn't able to get an image!");
     }
 
-    aquarius.loading.stop(message.channel);
+    stopLoading(message.channel);
   });
 };

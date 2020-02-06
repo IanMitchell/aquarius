@@ -1,5 +1,4 @@
 import { fixPartialReactionEvents } from '@aquarius/discordjs-fixes';
-import * as loading from '@aquarius/loading';
 import { isBot, isDirectMessage } from '@aquarius/messages';
 import Sentry from '@aquarius/sentry';
 import * as triggers from '@aquarius/triggers';
@@ -104,12 +103,6 @@ export class Aquarius extends Discord.Client {
      * @type { typeof import('./lib/core/permissions') }
      */
     this.permissions = permissions;
-
-    /**
-     * Control the loading indicators
-     * @type { typeof import('./lib/core/loading') }
-     */
-    this.loading = loading;
 
     /**
      * TODO: document

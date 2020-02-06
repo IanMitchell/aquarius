@@ -1,3 +1,4 @@
+import { startLoading, stopLoading } from '@aquarius/loading';
 import Sentry from '@aquarius/sentry';
 import dateFns from 'date-fns';
 import debug from 'debug';
@@ -171,7 +172,7 @@ export default async ({ aquarius, analytics }) => {
       }
 
       try {
-        aquarius.loading.start(message.channel);
+        startLoading(message.channel);
 
         const [profileDataResponse, priceData] = await Promise.all([
           fetch(
@@ -200,7 +201,7 @@ export default async ({ aquarius, analytics }) => {
         );
       }
 
-      aquarius.loading.stop(message.channel);
+      stopLoading(message.channel);
       analytics.trackUsage('info', message);
     }
   );
@@ -224,7 +225,7 @@ export default async ({ aquarius, analytics }) => {
       }
 
       try {
-        aquarius.loading.start(message.channel);
+        startLoading(message.channel);
 
         const response = await fetch(
           `https://financialmodelingprep.com/api/v3/company/rating/${groups.sign}`
@@ -267,7 +268,7 @@ export default async ({ aquarius, analytics }) => {
         );
       }
 
-      aquarius.loading.stop(message.channel);
+      stopLoading(message.channel);
       analytics.trackUsage('rating', message);
     }
   );
@@ -294,7 +295,7 @@ export default async ({ aquarius, analytics }) => {
     }
 
     try {
-      aquarius.loading.start(message.channel);
+      startLoading(message.channel);
 
       const response = await fetch(
         'https://financialmodelingprep.com/api/v3/majors-indexes'
@@ -329,7 +330,7 @@ export default async ({ aquarius, analytics }) => {
       );
     }
 
-    aquarius.loading.stop(message.channel);
+    stopLoading(message.channel);
     analytics.trackUsage('indexes', message);
   });
 
@@ -354,7 +355,7 @@ export default async ({ aquarius, analytics }) => {
       }
 
       try {
-        aquarius.loading.start(message.channel);
+        startLoading(message.channel);
 
         const data = normalize(await ALPHA_VANTAGE.performance.sector());
 
@@ -384,7 +385,7 @@ export default async ({ aquarius, analytics }) => {
         );
       }
 
-      aquarius.loading.stop(message.channel);
+      stopLoading(message.channel);
       analytics.trackUsage('sectors', message);
     }
   );

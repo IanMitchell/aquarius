@@ -1,3 +1,4 @@
+import { startLoading, stopLoading } from '@aquarius/loading';
 import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import fetch from 'node-fetch';
@@ -14,7 +15,7 @@ export const info = {
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^gdq$/i, async message => {
     log('Getting message');
-    aquarius.loading.start(message.channel);
+    startLoading(message.channel);
 
     try {
       const response = await fetch('http://taskinoz.com/gdq/api');
@@ -29,7 +30,7 @@ export default async ({ aquarius, analytics }) => {
       );
     }
 
-    aquarius.loading.stop(message.channel);
+    stopLoading(message.channel);
     analytics.trackUsage('gdq', message);
   });
 };
