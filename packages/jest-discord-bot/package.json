@@ -13,7 +13,7 @@
     "testing",
     "node"
   ],
-  "main": "expect.js",
+  "main": "lib/index.js",
   "peerDependencies": {
     "discord.js": "^11.4.2",
     "jest": ">=22.0.0"

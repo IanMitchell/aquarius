@@ -23,6 +23,7 @@
     "build": "node scripts/install-keyfile",
     "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect-brk=9229 -r dotenv/config --es-module-specifier-resolution=node index.js",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
+    "pretest": "pectin",
     "test": "jest"
   },
   "dependencies": {
@@ -64,6 +65,7 @@
     "jest-discord": "^0.1.0",
     "jest-environment-discord": "^0.1.0",
     "jest-github-actions-reporter": "^1.0.2",
+    "pectin": "3.6.1",
     "prettier": "^1.19.1",
     "regenerator-runtime": "^0.13.1"
   }
