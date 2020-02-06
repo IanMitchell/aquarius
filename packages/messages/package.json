@@ -15,6 +15,9 @@
   ],
   "main": "./messages.js",
   "type": "module",
+  "rollup": {
+    "skip": true
+  },
   "peerDependencies": {
     "discord.js": "^11.5.0"
   },

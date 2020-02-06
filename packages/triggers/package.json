@@ -15,6 +15,9 @@
   ],
   "main": "./triggers.js",
   "type": "module",
+  "rollup": {
+    "skip": true
+  },
   "dependencies": {
     "@aquarius/messages": "file:../messages",
     "@aquarius/regex": "file:../regex"

@@ -14,5 +14,8 @@
     "aquarius"
   ],
   "main": "./progress-bar.js",
-  "type": "module"
+  "type": "module",
+  "rollup": {
+    "skip": true
+  }
 }

@@ -5,9 +5,9 @@ const { TextChannel, GroupDMChannel, DMChannel, Message } = Discord;
 
 describe('isDirectMessage', () => {
   test('Only matches DM Channels', () => {
-    expect(isDirectMessage(new Message(new TextChannel()))).toBe(false);
-    expect(isDirectMessage(new Message(new GroupDMChannel()))).toBe(false);
-    expect(isDirectMessage(new Message(new DMChannel()))).toBe(true);
+    expect(isDirectMessage(new Message(new TextChannel({})))).toBe(false);
+    expect(isDirectMessage(new Message(new GroupDMChannel({})))).toBe(false);
+    expect(isDirectMessage(new Message(new DMChannel({})))).toBe(true);
   });
 });
 

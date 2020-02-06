@@ -13,6 +13,9 @@ coverage
 # Logs
 *.log
 
+# Builds
+*/**/lib
+
 # System
 .DS_Store
 

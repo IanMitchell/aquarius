@@ -8,18 +8,18 @@ import Discord from 'discord.js';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
-import Analytics from './lib/commands/analytics';
-import Settings from './lib/commands/settings';
-import * as permissions from './lib/core/permissions';
-import database from './lib/database/database';
-import { getDirname } from './lib/helpers/files';
-import DirectMessageManager from './lib/managers/direct-message-manager';
-import EmojiManager from './lib/managers/emoji-manager';
-import GuildManager from './lib/managers/guild-manager';
-import ServiceManager from './lib/managers/service-manager';
-import { setupWeeklyGuildLoop } from './lib/metrics/guilds';
-import CommandConfig from './lib/settings/command-config';
-import TriggerMap from './lib/settings/trigger-map';
+import Analytics from './core/commands/analytics';
+import Settings from './core/commands/settings';
+import database from './core/database/database';
+import { getDirname } from './core/helpers/files';
+import * as permissions from './core/helpers/permissions';
+import DirectMessageManager from './core/managers/direct-message-manager';
+import EmojiManager from './core/managers/emoji-manager';
+import GuildManager from './core/managers/guild-manager';
+import ServiceManager from './core/managers/service-manager';
+import { setupWeeklyGuildLoop } from './core/metrics/guilds';
+import CommandConfig from './core/settings/command-config';
+import TriggerMap from './core/settings/trigger-map';
 
 const log = debug('Aquarius');
 const errorLog = debug('Aquarius:Error');
@@ -55,7 +55,7 @@ export class Aquarius extends Discord.Client {
 
     /**
      * Manages the Guilds for which Aquarius is a member
-     * @type { typeof import('./lib/managers/guild-manager') }
+     * @type { typeof import('./core/managers/guild-manager') }
      */
     this.guildManager = new GuildManager();
 
@@ -67,13 +67,13 @@ export class Aquarius extends Discord.Client {
 
     /**
      * Interface for sliding into a User's DMs
-     * @type { typeof import('./lib/managers/direct-message-manager') }
+     * @type { typeof import('./core/managers/direct-message-manager') }
      */
     this.directMessages = new DirectMessageManager();
 
     /**
      * A list of custom emoji for usage in messages.
-     * @type { typeof import('./lib/managers/emoji-manager') }
+     * @type { typeof import('./core/managers/emoji-manager') }
      */
     this.emojiList = new EmojiManager();
 
@@ -91,7 +91,7 @@ export class Aquarius extends Discord.Client {
 
     /**
      * Associates RegExp triggers with the Command that registered them
-     * @type { typeof import('./lib/settings/trigger-map') }
+     * @type { typeof import('./core/settings/trigger-map') }
      */
     this.triggerMap = new TriggerMap();
 
@@ -100,19 +100,19 @@ export class Aquarius extends Discord.Client {
     /**
      * A collection of helper functions to use when dealing with Discord
      * Permissions
-     * @type { typeof import('./lib/core/permissions') }
+     * @type { typeof import('./core/helpers/permissions') }
      */
     this.permissions = permissions;
 
     /**
      * TODO: document
-     * @type { typeof import('./lib/managers/service-manager') }
+     * @type { typeof import('./core/managers/service-manager') }
      */
     this.services = new ServiceManager();
 
     /**
      * Triggers of stuff
-     * @type { typeof import('./lib/core/triggers') }
+     * @type { typeof import('./core/core/triggers') }
      */
     this.triggers = triggers;
 

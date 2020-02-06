@@ -24,6 +24,9 @@
     "pretest": "yarn run build:workspaces",
     "test": "jest"
   },
+  "rollup": {
+    "skip": true
+  },
   "dependencies": {
     "@aquarius/regex": "file:../regex",
     "@aquarius/sentry": "file:../sentry",
