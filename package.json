@@ -35,7 +35,7 @@
     "alphavantage": "^2.0.0",
     "chalk": "^3.0.0",
     "cors": "^2.8.5",
-    "cross-env": "^7.0.1",
+    "cross-env": "^7.0.2",
     "date-fns": "^2.10.0",
     "debug": "^4.1.1",
     "dedent-js": "^1.0.1",
