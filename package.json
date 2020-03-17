@@ -36,7 +36,7 @@
     "chalk": "^3.0.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
-    "date-fns": "^2.10.0",
+    "date-fns": "^2.11.0",
     "debug": "^4.1.1",
     "dedent-js": "^1.0.1",
     "discord.js": "^11.5.0",
