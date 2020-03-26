@@ -28,6 +28,6 @@
   },
   "dependencies": {
     "jest-discord": "file:../jest-discord",
-    "jest-environment-node": "^25.1.0"
+    "jest-environment-node": "^25.2.1"
   }
 }
