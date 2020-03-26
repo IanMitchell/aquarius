@@ -251,6 +251,11 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@discordjs/collection@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@discordjs/collection/-/collection-0.1.5.tgz#1781c620b4c88d619bd0373a1548e5a6025e3d3a"
+  integrity sha512-CU1q0UXQUpFNzNB7gufgoisDHP7n+T3tkqTsp3MNUkVJ5+hS3BCvME8uCXAUFlz+6T2FbTCu75A+yQ7HMKqRKw==
+
 "@google-cloud/firestore@^3.7.1":
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/@google-cloud/firestore/-/firestore-3.7.1.tgz#477706ddb9ca4324087cff6b23c32b75808c28bd"
@@ -442,16 +447,6 @@
     write-file-atomic "^3.0.0"
 
 "@jest/types@^25.1.0", "@jest/types@^25.2.1":
-  version "25.2.1"
-  resolved "https://registry.yarnpkg.com/@jest/types/-/types-25.2.1.tgz#692c8950d4c21fc6b4cfd141c3470b735c5bffca"
-  integrity sha512-WuGFGJ3Rrycg+5ZwQTWKjr21M9psANPAWYD28K42hSeUzhv1H591VXIoq0tjs00mydhNOgVOkKSpzRS3CrOYFw==
-  dependencies:
-    "@types/istanbul-lib-coverage" "^2.0.0"
-    "@types/istanbul-reports" "^1.1.1"
-    "@types/yargs" "^15.0.0"
-    chalk "^3.0.0"
-
-"@jest/types@^25.2.1":
   version "25.2.1"
   resolved "https://registry.yarnpkg.com/@jest/types/-/types-25.2.1.tgz#692c8950d4c21fc6b4cfd141c3470b735c5bffca"
   integrity sha512-WuGFGJ3Rrycg+5ZwQTWKjr21M9psANPAWYD28K42hSeUzhv1H591VXIoq0tjs00mydhNOgVOkKSpzRS3CrOYFw==
@@ -1110,11 +1105,6 @@ async-each@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/async-each/-/async-each-1.0.3.tgz#b727dbf87d7651602f06f4d4ac387f47d91b0cbf"
   integrity sha512-z/WhQ5FPySLdvREByI2vZiTWwCnF0moMJ1hK9YQwDTHKh6I7/uSckMetoRGb5UBZPC1z0jlw+n/XCgjeH7y1AQ==
-
-async-limiter@~1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.1.tgz#dd379e94f0db8310b08291f9d64c3209766617fd"
-  integrity sha512-csOlWGAcRFJaI6m+F2WKdnMKr4HhdhFVBk0H/QbJFMCr+uO2kwohwXQPxw/9OCxp05r5ghVBFSyioixx3gfkNQ==
 
 async@~1.0.0:
   version "1.0.0"
@@ -2366,16 +2356,19 @@ discord.js-minesweeper@^1.0.5:
   resolved "https://registry.yarnpkg.com/discord.js-minesweeper/-/discord.js-minesweeper-1.0.5.tgz#9ffcf170843b64da9ac5241245fc2ae1102dc3c2"
   integrity sha512-1aKwIH4rsb1UBDmZ31cAX1FI6TKENZuNIKhhB9vQHSHMEirIf45g/gC/OhmeYiO/IimvNmzesK3eDaWXRjyKxA==
 
-discord.js@^11.4.2, discord.js@^11.5.0:
-  version "11.5.1"
-  resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-11.5.1.tgz#910fb9f6410328581093e044cafb661783a4d9e8"
-  integrity sha512-tGhV5xaZXE3Z+4uXJb3hYM6gQ1NmnSxp9PClcsSAYFVRzH6AJH74040mO3afPDMWEAlj8XsoPXXTJHTxesqcGw==
+discord.js@^12.0.2:
+  version "12.0.2"
+  resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-12.0.2.tgz#c4d68f1363d7fc05ed71a42dba6b930966ed8602"
+  integrity sha512-iZiEA4Y61gqq/EjFfLXnkRK9pLapnax/vTVDUhs/mAhyqozAy0GOlk/MZI9rSa1iIoKTWRq6P9CRKhLNT2wUnA==
   dependencies:
-    long "^4.0.0"
-    prism-media "^0.0.3"
-    snekfetch "^3.6.4"
-    tweetnacl "^1.0.0"
-    ws "^6.0.0"
+    "@discordjs/collection" "^0.1.5"
+    abort-controller "^3.0.0"
+    form-data "^3.0.0"
+    node-fetch "^2.6.0"
+    prism-media "^1.2.0"
+    setimmediate "^1.0.5"
+    tweetnacl "^1.0.3"
+    ws "^7.2.1"
 
 doctrine@1.5.0:
   version "1.5.0"
@@ -4046,7 +4039,7 @@ jest-diff@^25.1.0, jest-diff@^25.2.1:
 "jest-discord@file:packages/jest-discord":
   version "0.1.0"
   dependencies:
-    discord.js "^11.4.2"
+    discord.js "^12.0.2"
     jest-matcher-utils "^25.2.1"
 
 jest-docblock@^25.1.0:
@@ -5513,10 +5506,10 @@ pretty-format@^25.1.0, pretty-format@^25.2.1:
     ansi-styles "^4.0.0"
     react-is "^16.12.0"
 
-prism-media@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/prism-media/-/prism-media-0.0.3.tgz#8842d4fae804f099d3b48a9a38e3c2bab6f4855b"
-  integrity sha512-c9KkNifSMU/iXT8FFTaBwBMr+rdVcN+H/uNv1o+CuFeTThNZNTOrQ+RgXA1yL/DeLk098duAeRPP3QNPNbhxYQ==
+prism-media@^1.2.0:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/prism-media/-/prism-media-1.2.1.tgz#168f323712bcaacb1d70ae613bf9d9dc44cf43d4"
+  integrity sha512-R3EbKwJiYlTvGwcG1DpUt+06DsxOGS5W4AMEHT7oVOjG93MjpdhGX1whHyjnqknylLMupKAsKMEXcTNRbPe6Vw==
 
 private@^0.1.6:
   version "0.1.8"
@@ -6099,6 +6092,11 @@ set-value@^2.0.0, set-value@^2.0.1:
     is-plain-object "^2.0.3"
     split-string "^3.0.1"
 
+setimmediate@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/setimmediate/-/setimmediate-1.0.5.tgz#290cbb232e306942d7d7ea9b83732ab7856f8285"
+  integrity sha1-KQy7Iy4waULX1+qbg3Mqt4VvgoU=
+
 setprototypeof@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.1.tgz#7e95acb24aa92f5885e0abef5ba131330d4ae683"
@@ -6199,11 +6197,6 @@ snapdragon@^0.8.1:
     source-map "^0.5.6"
     source-map-resolve "^0.5.0"
     use "^3.1.0"
-
-snekfetch@^3.6.4:
-  version "3.6.4"
-  resolved "https://registry.yarnpkg.com/snekfetch/-/snekfetch-3.6.4.tgz#d13e80a616d892f3d38daae4289f4d258a645120"
-  integrity sha512-NjxjITIj04Ffqid5lqr7XdgwM7X61c/Dns073Ly170bPQHLm6jkmelye/eglS++1nfTWktpP6Y2bFXjdPlQqdw==
 
 source-map-resolve@^0.5.0:
   version "0.5.2"
@@ -6738,10 +6731,10 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
-tweetnacl@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.1.tgz#2594d42da73cd036bd0d2a54683dd35a6b55ca17"
-  integrity sha512-kcoMoKTPYnoeS50tzoqjPY3Uv9axeuuFAZY9M/9zFnhoVvRfxz9K29IMPD7jGmt2c8SW7i3gT9WqDl2+nV7p4A==
+tweetnacl@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
+  integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
 type-check@~0.3.2:
   version "0.3.2"
@@ -7095,19 +7088,7 @@ write@1.0.3:
   dependencies:
     mkdirp "^0.5.1"
 
-ws@^6.0.0:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-6.2.1.tgz#442fdf0a47ed64f59b6a5d8ff130f4748ed524fb"
-  integrity sha512-GIyAXC2cB7LjvpgMt9EKS2ldqr0MTrORaleiOno6TweZ6r3TKtoFQWay/2PceJ3RuBasOHzXNn5Lrw1X0bEjqA==
-  dependencies:
-    async-limiter "~1.0.0"
-
-ws@^7.0.0:
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-7.2.1.tgz#03ed52423cd744084b2cf42ed197c8b65a936b8e"
-  integrity sha512-sucePNSafamSKoOqoNfBd8V0StlkzJKL2ZAhGQinCfNQ+oacw+Pk7lcdAElecBF2VkLNZRiIb5Oi1Q5lVUVt2A==
-
-ws@^7.2.1:
+ws@^7.0.0, ws@^7.2.1:
   version "7.2.3"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.2.3.tgz#a5411e1fb04d5ed0efee76d26d5c46d830c39b46"
   integrity sha512-HTDl9G9hbkNDk98naoR/cHDws7+EyYMOdL1BmjsZXRUjf7d+MficC4B7HLUPlSiho0vg+CWKrGIt/VJBd1xunQ==
