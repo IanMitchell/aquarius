@@ -28,7 +28,7 @@
     "jest": ">=22.0.0"
   },
   "dependencies": {
-    "discord.js": "^11.4.2",
+    "discord.js": "^12.1.0",
     "jest-matcher-utils": "^25.2.1"
   }
 }
