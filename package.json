@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@aquarius/regex": "^1.0.0",
-    "@google-cloud/firestore": "^3.7.2",
+    "@google-cloud/firestore": "^3.7.3",
     "@sentry/node": "5.15.4",
     "alphavantage": "^2.0.0",
     "chalk": "^3.0.0",
