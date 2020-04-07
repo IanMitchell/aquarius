@@ -33,7 +33,7 @@
     "@google-cloud/firestore": "^3.7.2",
     "@sentry/node": "5.15.4",
     "alphavantage": "^2.0.0",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "date-fns": "^2.11.1",
