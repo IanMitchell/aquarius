@@ -1,11 +1,11 @@
 import { startLoading, stopLoading } from '@aquarius/loading';
 import Sentry from '@aquarius/sentry';
+import alphaVantageAPI from 'alphavantage';
 import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
-import alphaVantageAPI from '../../../patches/alphavantage.cjs';
 import { getIconColor } from '../../lib/helpers/colors';
 
 // CJS / ESM compatibility
