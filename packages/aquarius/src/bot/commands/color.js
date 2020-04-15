@@ -2,7 +2,7 @@ import debug from 'debug';
 import dedent from 'dedent-js';
 import Discord from 'discord.js';
 import parseColor from 'parse-color';
-import { getEmbedColorFromHex } from '../../lib/helpers/colors';
+import { getEmbedColorFromHex } from '../../core/helpers/colors';
 
 // CJS / ESM compatibility
 const { RichEmbed } = Discord;

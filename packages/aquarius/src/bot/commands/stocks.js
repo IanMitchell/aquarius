@@ -6,7 +6,7 @@ import debug from 'debug';
 import dedent from 'dedent-js';
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
-import { getIconColor } from '../../lib/helpers/colors';
+import { getIconColor } from '../../core/helpers/colors';
 
 // CJS / ESM compatibility
 const { parse } = dateFns;

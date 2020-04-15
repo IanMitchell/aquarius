@@ -6,8 +6,8 @@ import dedent from 'dedent-js';
 import Discord from 'discord.js';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
-import { getBotOwner } from '../../lib/core/users';
-import { getEmbedColorFromHex } from '../../lib/helpers/colors';
+import { getEmbedColorFromHex } from '../../core/helpers/colors';
+import { getBotOwner } from '../../core/helpers/users';
 
 // CJS / ESM compatibility
 const { Permissions, RichEmbed } = Discord;

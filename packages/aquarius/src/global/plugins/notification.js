@@ -1,6 +1,6 @@
 import debug from 'debug';
 import Discord from 'discord.js';
-import { guildEmbed } from '../../lib/helpers/embeds';
+import { guildEmbed } from '../../core/helpers/embeds';
 
 // CJS / ESM compatibility
 const { Permissions } = Discord;

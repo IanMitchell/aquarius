@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { humanize, shuffle } from '../../lib/helpers/lists';
+import { humanize, shuffle } from '../../core/helpers/lists';
 
 const log = debug('Order');
 

@@ -3,7 +3,7 @@ import { MENTION } from '@aquarius/regex';
 import { getNickname } from '@aquarius/users';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { humanize } from '../../lib/helpers/lists';
+import { humanize } from '../../core/helpers/lists';
 
 const log = debug('Ignore');
 

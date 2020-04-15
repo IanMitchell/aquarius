@@ -2,7 +2,7 @@ import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
-import { ONE_HOUR } from '../../lib/helpers/times';
+import { ONE_HOUR } from '../../core/helpers/times';
 
 // CJS / ESM compatibility
 const { Permissions } = Discord;

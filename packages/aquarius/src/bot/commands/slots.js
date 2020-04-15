@@ -1,6 +1,6 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { randomValue } from '../../lib/helpers/lists';
+import { randomValue } from '../../core/helpers/lists';
 
 const log = debug('Slots');
 

@@ -7,7 +7,7 @@ import Discord from 'discord.js';
 import downsize from 'downsize';
 import fetch from 'node-fetch';
 import Turndown from 'turndown';
-import { getEmbedColorFromHex } from '../../lib/helpers/colors';
+import { getEmbedColorFromHex } from '../../core/helpers/colors';
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;

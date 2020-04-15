@@ -5,10 +5,10 @@ import dedent from 'dedent-js';
 import Discord from 'discord.js';
 import pluralize from 'pluralize';
 import pkg from '../../../package.json';
-import { getGitHubLink, getVanityBotLink } from '../../lib/helpers/links';
-import { getTotalGuildCount } from '../../lib/metrics/guilds';
-import { getResourceUsage } from '../../lib/metrics/resources';
-import { getTotalUserCount } from '../../lib/metrics/users';
+import { getGitHubLink, getVanityBotLink } from '../../core/helpers/links';
+import { getTotalGuildCount } from '../../core/metrics/guilds';
+import { getResourceUsage } from '../../core/metrics/resources';
+import { getTotalUserCount } from '../../core/metrics/users';
 
 // CJS / ESM compatibility
 const { Permissions, RichEmbed } = Discord;

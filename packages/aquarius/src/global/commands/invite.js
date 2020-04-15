@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { getVanityBotLink } from '../../lib/helpers/links';
+import { getVanityBotLink } from '../../core/helpers/links';
 
 const log = debug('Invite');
 

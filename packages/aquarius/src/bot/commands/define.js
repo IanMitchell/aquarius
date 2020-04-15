@@ -4,7 +4,7 @@ import debug from 'debug';
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
 import xmldom from 'xmldom';
-import { capitalize } from '../../lib/helpers/strings';
+import { capitalize } from '../../core/helpers/strings';
 
 // CJS / ESM compatibility
 const { Permissions, RichEmbed } = Discord;

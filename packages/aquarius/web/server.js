@@ -3,8 +3,8 @@ import debug from 'debug';
 import Discord from 'discord.js';
 import express from 'express';
 import aquarius from '../src/aquarius';
-import { botLink } from '../src/lib/helpers/links';
-import { getTotalUserCount } from '../src/lib/metrics/users';
+import { botLink } from '../src/core/helpers/links';
+import { getTotalUserCount } from '../src/core/metrics/users';
 import createShield from './shields';
 // import { getMetricHandler } from './metrics';
 

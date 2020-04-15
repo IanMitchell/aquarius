@@ -2,7 +2,7 @@ import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import pluralize from 'pluralize';
-import { MUTE_DURATION } from '../../lib/settings/guild-settings';
+import { MUTE_DURATION } from '../../core/settings/guild-settings';
 
 const log = debug('Quiet');
 

@@ -1,7 +1,7 @@
 import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { randomValue } from '../../lib/helpers/lists';
+import { randomValue } from '../../core/helpers/lists';
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;

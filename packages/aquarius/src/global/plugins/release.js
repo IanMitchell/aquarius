@@ -3,8 +3,8 @@ import debug from 'debug';
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
 import pkg from '../../../package.json';
-import { getIconColor } from '../../lib/helpers/colors';
-import { getDocsLink } from '../../lib/helpers/links';
+import { getIconColor } from '../../core/helpers/colors';
+import { getDocsLink } from '../../core/helpers/links';
 
 // CJS / ESM compatibility
 const { Permissions, RichEmbed } = Discord;

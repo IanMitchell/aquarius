@@ -1,8 +1,8 @@
 import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import path from 'path';
-import { getDirname } from '../../lib/helpers/files';
-import { FIVE_MINUTES, ONE_HOUR, ONE_MINUTE } from '../../lib/helpers/times';
+import { getDirname } from '../../core/helpers/files';
+import { FIVE_MINUTES, ONE_HOUR, ONE_MINUTE } from '../../core/helpers/times';
 
 const log = debug('Wilhelm');
 

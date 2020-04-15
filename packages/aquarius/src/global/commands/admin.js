@@ -2,7 +2,7 @@ import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import pluralize from 'pluralize';
-import { humanize } from '../../lib/helpers/lists';
+import { humanize } from '../../core/helpers/lists';
 
 const log = debug('Admin');
 

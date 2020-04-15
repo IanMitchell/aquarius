@@ -3,9 +3,9 @@ import { getNickname } from '@aquarius/users';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import Discord from 'discord.js';
-import { getGitHubLink, getHost } from '../../lib/helpers/links';
-import { humanize, setDifference } from '../../lib/helpers/lists';
-import { capitalize } from '../../lib/helpers/strings';
+import { getGitHubLink, getHost } from '../../core/helpers/links';
+import { humanize, setDifference } from '../../core/helpers/lists';
+import { capitalize } from '../../core/helpers/strings';
 
 // CJS / ESM compatibility
 const { Permissions, RichEmbed } = Discord;
