@@ -44,7 +44,7 @@ function getRange(lowerBound, upperBound) {
 function getChoices(input, delimiter) {
   const choices = [];
 
-  input.split(delimiter).forEach(choice => {
+  input.split(delimiter).forEach((choice) => {
     const value = choice.trim();
 
     if (value) {

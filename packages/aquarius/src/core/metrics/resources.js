@@ -10,7 +10,7 @@ function getStats() {
   let totalIdle = 0;
   let total = 0;
 
-  os.cpus().forEach(cpu => {
+  os.cpus().forEach((cpu) => {
     // eslint-disable-next-line object-curly-newline
     const { user, nice, sys, irq, idle } = cpu.times;
 
@@ -27,7 +27,7 @@ function getStats() {
 function getUsage() {
   const initial = getStats();
 
-  return new Promise(resolve =>
+  return new Promise((resolve) =>
     setTimeout(() => {
       const final = getStats();
 

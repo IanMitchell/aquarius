@@ -30,7 +30,7 @@ export default async ({ aquarius, settings, analytics }) => {
     'true'
   );
 
-  const getAmount = guild => {
+  const getAmount = (guild) => {
     let val = parseInt(settings.get(guild.id, 'amount'), 10);
 
     if (Number.isNaN(val)) {
@@ -40,7 +40,7 @@ export default async ({ aquarius, settings, analytics }) => {
     return Math.max(1, val);
   };
 
-  aquarius.on('messageReactionAdd', async messageReaction => {
+  aquarius.on('messageReactionAdd', async (messageReaction) => {
     const { message } = messageReaction;
     const { guild } = message;
 
@@ -65,7 +65,7 @@ export default async ({ aquarius, settings, analytics }) => {
       }
 
       const channel = guild.channels.find(
-        chan => chan.name === settings.get(guild.id, 'channel')
+        (chan) => chan.name === settings.get(guild.id, 'channel')
       );
 
       if (!channel) {
@@ -76,7 +76,7 @@ export default async ({ aquarius, settings, analytics }) => {
           limit: 100,
         });
 
-        if (!previousMessages.some(msg => msg.content === errorMsg)) {
+        if (!previousMessages.some((msg) => msg.content === errorMsg)) {
           message.channel.send(errorMsg);
         }
 
@@ -85,10 +85,10 @@ export default async ({ aquarius, settings, analytics }) => {
       }
 
       const previousMessages = await channel.fetchMessages({ limit: 100 });
-      const posted = previousMessages.some(msg =>
-        msg.embeds.some(embed =>
+      const posted = previousMessages.some((msg) =>
+        msg.embeds.some((embed) =>
           embed.fields.some(
-            field =>
+            (field) =>
               field.name === 'Source' &&
               field.value === `[#${message.channel.name}](${getLink(message)})`
           )

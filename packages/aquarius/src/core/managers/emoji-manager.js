@@ -1,5 +1,5 @@
-import debug from 'debug';
 import chalk from 'chalk';
+import debug from 'debug';
 import aquarius from '../../aquarius';
 import { TEN_MINUTES } from '../helpers/times';
 
@@ -40,8 +40,8 @@ export default class EmojiManager extends Map {
     }
 
     homeGuild.emojis
-      .filter(emoji => emoji.name.startsWith('aquarius'))
+      .filter((emoji) => emoji.name.startsWith('aquarius'))
       .array()
-      .forEach(emoji => this.set(emoji.name.replace(/aquarius_/, ''), emoji));
+      .forEach((emoji) => this.set(emoji.name.replace(/aquarius_/, ''), emoji));
   }
 }

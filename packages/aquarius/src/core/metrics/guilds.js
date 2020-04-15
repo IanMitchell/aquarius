@@ -14,13 +14,13 @@ export async function saveSnapshots() {
   const batch = aquarius.database.batch();
 
   // TODO: Make this in groups of 500 max
-  aquarius.guilds.forEach(guild => {
+  aquarius.guilds.forEach((guild) => {
     const ref = aquarius.database.guildSnapshots.doc();
 
     batch.set(ref, {
       channels: guild.channels.size,
       users: guild.memberCount,
-      bots: guild.members.filter(member => member.user.bot).size,
+      bots: guild.members.filter((member) => member.user.bot).size,
       date: Date.now(),
       guildId: guild.id,
       name: guild.name,

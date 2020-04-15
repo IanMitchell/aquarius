@@ -49,7 +49,7 @@ async function getPostJsonById(id) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^xkcd$/i, async message => {
+  aquarius.onCommand(/^xkcd$/i, async (message) => {
     log('Retrieving latest comic');
 
     const check = aquarius.permissions.check(
@@ -84,7 +84,7 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('latest', message);
   });
 
-  aquarius.onCommand(/^xkcd random$/i, async message => {
+  aquarius.onCommand(/^xkcd random$/i, async (message) => {
     log('Retrieving random comic');
 
     const check = aquarius.permissions.check(

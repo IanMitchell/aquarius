@@ -24,7 +24,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^info/i, async message => {
+  aquarius.onCommand(/^info/i, async (message) => {
     log(`Request in ${message.guild.name}`);
 
     const check = aquarius.permissions.check(

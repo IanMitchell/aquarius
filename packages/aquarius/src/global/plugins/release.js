@@ -46,23 +46,23 @@ export default async ({ aquarius, analytics }) => {
         color: await getIconColor(aquarius.user.avatarURL),
       });
 
-      json.forEach(async release => {
+      json.forEach(async (release) => {
         if (release.id > previousVersion.value) {
           message.addField(release.name, release.body);
         }
       });
 
-      aquarius.guilds.array().forEach(guild => {
+      aquarius.guilds.array().forEach((guild) => {
         log(`Alerting ${guild.name}`);
         guild.members
-          .filter(member => {
+          .filter((member) => {
             return (
-              (member.hasPermission(Permissions.FLAGS.ADMINISTRATOR) &&
-              !isBot(member.user))
+              member.hasPermission(Permissions.FLAGS.ADMINISTRATOR) &&
+              !isBot(member.user)
             );
           })
           .array()
-          .forEach(async member => {
+          .forEach(async (member) => {
             try {
               member.send(message);
             } catch (error) {
@@ -73,12 +73,9 @@ export default async ({ aquarius, analytics }) => {
 
       analytics.trackUsage('release', null, { release: json[0].id });
 
-      aquarius.database
-        .collection('settings')
-        .doc('LAST_RELEASE_ID')
-        .set({
-          value: json[0].id,
-        });
+      aquarius.database.collection('settings').doc('LAST_RELEASE_ID').set({
+        value: json[0].id,
+      });
     }
   });
 };

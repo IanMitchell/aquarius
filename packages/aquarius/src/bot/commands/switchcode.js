@@ -10,7 +10,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^switchcode$/i, async message => {
+  aquarius.onCommand(/^switchcode$/i, async (message) => {
     log(`Switch code request from ${message.author.username}`);
 
     const service = await aquarius.services.getLink(

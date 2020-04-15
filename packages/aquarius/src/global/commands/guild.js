@@ -26,7 +26,7 @@ function formatGuild(guild, idx) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^(?:server|guild)$/i, async message => {
+  aquarius.onCommand(/^(?:server|guild)$/i, async (message) => {
     log(`Info for ${message.guild.name}`);
 
     const check = aquarius.permissions.check(
@@ -55,7 +55,7 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('stats', message);
   });
 
-  aquarius.onCommand(/(server|guild) list/i, async message => {
+  aquarius.onCommand(/(server|guild) list/i, async (message) => {
     if (aquarius.permissions.isBotOwner(message.author)) {
       log('List Requested');
       const guilds = aquarius.guilds.array();
@@ -90,7 +90,7 @@ export default async ({ aquarius, analytics }) => {
         }
 
         const guild = aquarius.guilds.find(
-          server => server.name === groups.name
+          (server) => server.name === groups.name
         );
 
         if (guild) {

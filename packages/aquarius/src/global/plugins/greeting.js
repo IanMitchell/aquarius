@@ -33,16 +33,16 @@ async function getWelcomeMessage(guild) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.on('guildCreate', async guild => {
+  aquarius.on('guildCreate', async (guild) => {
     const message = await getWelcomeMessage(guild);
     const count = { success: 0, failure: 0 };
 
     log('Sending message');
 
     guild.members
-      .filter(member => member.hasPermission(Permissions.FLAGS.ADMINISTRATOR))
+      .filter((member) => member.hasPermission(Permissions.FLAGS.ADMINISTRATOR))
       .array()
-      .forEach(async member => {
+      .forEach(async (member) => {
         try {
           await member.send(message);
           count.success += 1;

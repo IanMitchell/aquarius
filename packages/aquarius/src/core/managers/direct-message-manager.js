@@ -43,11 +43,11 @@ export default class DirectMessageManager {
         user.send(str);
 
         const collector = user.dmChannel.createMessageCollector(
-          msg => !msg.author.bot,
+          (msg) => !msg.author.bot,
           { time: this.defaultMaxResponseTime }
         );
 
-        collector.on('collect', msg => {
+        collector.on('collect', (msg) => {
           if (msg.cleanContent.toLowerCase() === 'stop') {
             log(`Stopping collector for ${user.username}`);
             return collector.stop('manual');
@@ -70,10 +70,7 @@ export default class DirectMessageManager {
       };
     });
 
-    this.userQueue
-      .get(user.id)
-      .then(task)
-      .catch(task);
+    this.userQueue.get(user.id).then(task).catch(task);
     this.userQueue.set(user.id, promise);
     return promise;
   }

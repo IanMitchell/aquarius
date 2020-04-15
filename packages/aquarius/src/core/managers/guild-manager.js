@@ -17,7 +17,7 @@ export default class GuildManager extends Map {
 
     this.loadSettings();
 
-    aquarius.on('guildCreate', guild => {
+    aquarius.on('guildCreate', (guild) => {
       this.addGuild(guild.id);
     });
   }
@@ -48,6 +48,6 @@ export default class GuildManager extends Map {
    * For each Guild Aquarius is in add the Guild to the list
    */
   loadSettings() {
-    aquarius.guilds.array().forEach(guild => this.addGuild(guild.id));
+    aquarius.guilds.array().forEach((guild) => this.addGuild(guild.id));
   }
 }

@@ -26,7 +26,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.on('ready', () => {
     log('Loading Responses');
 
-    aquarius.guilds.map(async guild => {
+    aquarius.guilds.map(async (guild) => {
       // This loop will be run twice - the first is the 'real' time, and the
       // second is the trigger map generation. We only want to have this run
       // on the real initialization.
@@ -44,14 +44,14 @@ export default async ({ aquarius, analytics }) => {
         return;
       }
 
-      recordList.docs.forEach(record => {
+      recordList.docs.forEach((record) => {
         const reply = record.data();
         RESPONSES.get(reply.guildId).set(reply.trigger, reply.response);
       });
     });
   });
 
-  aquarius.onMessage(info, async message => {
+  aquarius.onMessage(info, async (message) => {
     const { id } = message.guild;
     const content = message.cleanContent.trim().toLowerCase();
 
@@ -63,7 +63,7 @@ export default async ({ aquarius, analytics }) => {
     }
   });
 
-  aquarius.onCommand(/^reply list$/i, async message => {
+  aquarius.onCommand(/^reply list$/i, async (message) => {
     log('Listing replies');
 
     if (

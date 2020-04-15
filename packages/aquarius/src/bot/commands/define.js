@@ -23,7 +23,7 @@ export const info = {
 function getDefinition(dom) {
   const list = dom.getElementsByTagName('def')[0];
   return Array.from(list.getElementsByTagName('dt'))
-    .map(el => `${el.textContent}\n`)
+    .map((el) => `${el.textContent}\n`)
     .join('');
 }
 
@@ -32,7 +32,7 @@ function getPlural(dom) {
 
   if (list.length > 0) {
     return Array.from(list[0].getElementsByTagName('if'))
-      .map(el => `**${el.textContent}**`)
+      .map((el) => `**${el.textContent}**`)
       .join(' _or_ ');
   }
 
@@ -90,7 +90,7 @@ export default async ({ aquarius, analytics }) => {
         message.channel.send(embed);
       } else {
         const words = Array.from(dom.getElementsByTagName('suggestion'))
-          .map(element => element.textContent)
+          .map((element) => element.textContent)
           .join(', ');
 
         message.channel.send(

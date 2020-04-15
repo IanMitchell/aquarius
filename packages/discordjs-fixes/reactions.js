@@ -9,7 +9,7 @@ const PARTIAL_EVENTS = {
 
 export function fixPartialReactionEvents(client, v12 = false) {
   // See: https://gist.github.com/Danktuary/27b3cef7ef6c42e2d3f5aff4779db8ba
-  client.on('raw', async event => {
+  client.on('raw', async (event) => {
     // `event.t` is the raw event name
     if (!Object.prototype.hasOwnProperty.call(PARTIAL_EVENTS, event.t)) return;
 

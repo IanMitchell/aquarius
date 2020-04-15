@@ -24,7 +24,7 @@ export default async ({ aquarius, analytics }) => {
   const minutes = MUTE_DURATION / (1000 * 60);
   const duration = `${minutes} ${pluralize('minute', minutes)}`;
 
-  aquarius.onCommand(/^quiet$/i, async message => {
+  aquarius.onCommand(/^quiet$/i, async (message) => {
     if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
       log(`Quiet request in ${message.guild.name}`);
       aquarius.guildManager.get(message.guild.id).muteGuild();
@@ -35,7 +35,7 @@ export default async ({ aquarius, analytics }) => {
 
   // The one case we need to break out of our APIs, since
   // they don't trigger when a guild is in a muted state
-  aquarius.on('message', async message => {
+  aquarius.on('message', async (message) => {
     Sentry.configureMessageScope(message);
 
     if (

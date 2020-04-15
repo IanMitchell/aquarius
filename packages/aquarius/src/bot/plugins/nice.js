@@ -14,7 +14,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onMessage(info, async message => {
+  aquarius.onMessage(info, async (message) => {
     if (message.cleanContent.includes('69')) {
       log(`69 in ${message.guild.name}`);
 

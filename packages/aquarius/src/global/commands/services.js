@@ -64,7 +64,7 @@ function* getServiceLinkInformation(services) {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   // Gently guide people trying to link accounts in a guild channel
-  aquarius.onCommand(/^services$/i, async message => {
+  aquarius.onCommand(/^services$/i, async (message) => {
     log('Service request in guild channel');
     message.channel.send(
       'To add a service, please send me `services add` via direct message'
@@ -72,13 +72,13 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('channel', message);
   });
 
-  aquarius.onDirectMessage(/^services$/i, async message => {
+  aquarius.onDirectMessage(/^services$/i, async (message) => {
     log('Service help request in DM');
     message.channel.send(helpMessage(aquarius, info));
     analytics.trackUsage('dm help', message);
   });
 
-  aquarius.onDirectMessage(/^services list$/i, async message => {
+  aquarius.onDirectMessage(/^services list$/i, async (message) => {
     log(`Listing services for ${message.author.username}`);
     const services = await aquarius.services.getLinks(message.author);
 
@@ -161,7 +161,7 @@ export default async ({ aquarius, analytics }) => {
   // TODO: Allow for name input to jump into a service
 
   // Guide users through linking accounts in DM
-  aquarius.onDirectMessage(/services add/i, async message => {
+  aquarius.onDirectMessage(/services add/i, async (message) => {
     log(`Adding service to ${message.author.username}`);
 
     try {
@@ -178,7 +178,7 @@ export default async ({ aquarius, analytics }) => {
       }
 
       const fields = {};
-      prompt.value.fields.forEach(field => {
+      prompt.value.fields.forEach((field) => {
         fields[field.name] = field.value;
       });
 

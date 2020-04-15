@@ -32,7 +32,7 @@ async function getTwitchEmoteList() {
 
     const json = await response.json();
 
-    json.emotes.forEach(emoji => EMOTES.set(emoji.code, getUrl(emoji.id)));
+    json.emotes.forEach((emoji) => EMOTES.set(emoji.code, getUrl(emoji.id)));
   } catch (error) {
     log(`Error syncing Twitch Emotes`);
     Sentry.captureException(error);

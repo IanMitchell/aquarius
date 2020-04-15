@@ -33,7 +33,7 @@ export function getOrderedMentions(message, repeats = true) {
   const mentions = Array.from(
     message.content.matchAll(new RegExp(MENTION, 'g'))
   )
-    .map(mention => {
+    .map((mention) => {
       switch (getMentionType(mention[0])) {
         case MENTION_TYPES.USER:
           return message.guild.members.get(mention.groups.id);

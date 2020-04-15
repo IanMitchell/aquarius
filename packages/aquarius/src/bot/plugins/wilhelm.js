@@ -71,9 +71,9 @@ function voiceCheck(guild, target, analytics) {
   log('Checking for users');
 
   guild.channels
-    .filter(channel => channel.type === 'voice')
-    .forEach(channel => {
-      if (channel.members.some(member => member.user.id === target)) {
+    .filter((channel) => channel.type === 'voice')
+    .forEach((channel) => {
+      if (channel.members.some((member) => member.user.id === target)) {
         playClip(channel, target, analytics);
       }
     });
@@ -87,7 +87,7 @@ function voiceCheck(guild, target, analytics) {
 function createLoop(aquarius, settings, analytics) {
   log('Creating checks');
 
-  aquarius.guilds.array().forEach(guild => {
+  aquarius.guilds.array().forEach((guild) => {
     if (INTERVALS.has(guild.id)) {
       return;
     }

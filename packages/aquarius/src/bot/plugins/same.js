@@ -19,8 +19,8 @@ function pushMessage(message, stackSize) {
     const channelMap = new Map();
 
     message.guild.channels
-      .filter(chan => chan.type === 'text')
-      .forEach(chan => channelMap.set(chan.id, []));
+      .filter((chan) => chan.type === 'text')
+      .forEach((chan) => channelMap.set(chan.id, []));
 
     messageStack.set(guild.id, channelMap);
   }
@@ -29,17 +29,11 @@ function pushMessage(message, stackSize) {
     messageStack.get(guild.id).set(channel.id, []);
   }
 
-  messageStack
-    .get(guild.id)
-    .get(channel.id)
-    .push(message.content);
+  messageStack.get(guild.id).get(channel.id).push(message.content);
 
   // Only track last couple messages
   if (messageStack.get(guild.id).get(channel.id).length > stackSize) {
-    messageStack
-      .get(guild.id)
-      .get(channel.id)
-      .shift();
+    messageStack.get(guild.id).get(channel.id).shift();
   }
 }
 
@@ -72,7 +66,7 @@ export default async ({ aquarius, settings, analytics }) => {
     MESSAGE_STACK_SIZE
   );
 
-  const getSize = guild => {
+  const getSize = (guild) => {
     let val = parseInt(settings.get(guild.id, 'size'), 10);
 
     if (Number.isNaN(val)) {
@@ -83,7 +77,7 @@ export default async ({ aquarius, settings, analytics }) => {
   };
 
   // We want to track bot messages for this too, otherwise it looks weird
-  aquarius.on('message', async message => {
+  aquarius.on('message', async (message) => {
     Sentry.configureMessageScope(message);
 
     if (message.content === '' || !message.guild) {
@@ -94,7 +88,7 @@ export default async ({ aquarius, settings, analytics }) => {
     pushMessage(message, size);
   });
 
-  aquarius.onMessage(info, async message => {
+  aquarius.onMessage(info, async (message) => {
     if (message.content === '' || !message.guild) {
       return;
     }

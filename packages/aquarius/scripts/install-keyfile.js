@@ -5,7 +5,7 @@ import fs from 'fs';
 fs.writeFile(
   process.env.FIREBASE_KEYFILE,
   process.env.FIREBASE_KEYFILE_CONTENTS,
-  error => {
+  (error) => {
     if (error) {
       console.error('ERROR: Could not write to keyfile', error);
       process.exit(1);

@@ -40,7 +40,7 @@ export default class ServiceManager {
         throw err;
       }
 
-      files.forEach(async file => {
+      files.forEach(async (file) => {
         if (file.endsWith('.yml')) {
           log(`Loading ${file}`);
 
@@ -112,7 +112,7 @@ export default class ServiceManager {
 
     const keys = await this.getKeysForUser(user);
     return keys
-      .map(key => this.services.has(key) && this.services.get(key).name)
+      .map((key) => this.services.has(key) && this.services.get(key).name)
       .filter(Boolean);
   }
 

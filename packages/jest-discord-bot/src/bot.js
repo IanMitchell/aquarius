@@ -17,7 +17,7 @@ export default class TestBot extends Discord.Client {
   }
 
   login() {
-    super.login(this.token).catch(err => {
+    super.login(this.token).catch((err) => {
       // eslint-disable-next-line no-console
       console.error(err);
       process.exit(1);
@@ -25,15 +25,15 @@ export default class TestBot extends Discord.Client {
   }
 
   prompt(channel, message, timeout = this.defaultTimeout) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       channel.send(message).then(() => {
         channel
-          .awaitMessages(msg => msg, {
+          .awaitMessages((msg) => msg, {
             max: 1,
             time: timeout * 1000,
             errors: ['time'],
           })
-          .then(msgs => resolve(msgs.first()));
+          .then((msgs) => resolve(msgs.first()));
       });
     });
   }

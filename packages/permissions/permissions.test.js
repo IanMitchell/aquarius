@@ -2,7 +2,7 @@ import { Permissions } from 'discord.js';
 import { isGuildAdmin } from './permissions';
 
 const guild = {
-  member: jest.fn().mockImplementation(user => user),
+  member: jest.fn().mockImplementation((user) => user),
   me: {
     hasPermission: jest.fn().mockReturnValue(false),
   },

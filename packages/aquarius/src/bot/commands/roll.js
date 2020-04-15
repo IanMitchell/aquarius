@@ -53,7 +53,7 @@ export default async ({ aquarius, analytics }) => {
     if (values.length > 0) {
       log(`Rolling ${roll}`);
 
-      const sequences = values.map(match => {
+      const sequences = values.map((match) => {
         const { sign, dieCount, dieType, type, modifier } = match.groups;
 
         const emoji =
@@ -89,7 +89,7 @@ export default async ({ aquarius, analytics }) => {
 
           return val + getSequenceSum(sequence);
         }, 0)}** | ${sequences
-        .map(sequence => getSequenceDescription(sequence))
+        .map((sequence) => getSequenceDescription(sequence))
         .join(' ')}
       `);
     } else {

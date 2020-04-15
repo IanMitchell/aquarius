@@ -37,7 +37,7 @@ export const info = {
 async function getGuildTarget(aquarius, message) {
   let target = 0;
 
-  const guilds = aquarius.guilds.filter(guild =>
+  const guilds = aquarius.guilds.filter((guild) =>
     aquarius.permissions.isGuildAdmin(guild, message.author)
   );
 
@@ -54,7 +54,7 @@ async function getGuildTarget(aquarius, message) {
       );
       target = msg.cleanContent;
 
-      if (!guilds.some(guild => guild.id === target)) {
+      if (!guilds.some((guild) => guild.id === target)) {
         message.channel.send("You aren't an admin in that server!");
         return 0;
       }
@@ -148,12 +148,7 @@ export default async ({ aquarius, analytics }) => {
         return;
       }
 
-      if (
-        !aquarius.commandConfigs
-          .get(command)
-          .keys()
-          .includes(setting)
-      ) {
+      if (!aquarius.commandConfigs.get(command).keys().includes(setting)) {
         log(`Invalid setting name: ${setting}`);
         channel.send(
           `It doesn't look like ${command} has a setting called "${setting}"`
@@ -197,12 +192,7 @@ export default async ({ aquarius, analytics }) => {
         return;
       }
 
-      if (
-        !aquarius.commandConfigs
-          .get(command)
-          .keys()
-          .includes(setting)
-      ) {
+      if (!aquarius.commandConfigs.get(command).keys().includes(setting)) {
         log(`Invalid setting name: ${setting}`);
         channel.send(
           `It doesn't look like ${command} has a setting called "${setting}"`
@@ -230,7 +220,7 @@ export default async ({ aquarius, analytics }) => {
         const commandsWithSettings = [];
         const unknownCommands = [];
 
-        groups.commands.split(' ').forEach(command => {
+        groups.commands.split(' ').forEach((command) => {
           const name = command.toLowerCase();
 
           if (aquarius.commandList.has(name)) {
@@ -286,7 +276,7 @@ export default async ({ aquarius, analytics }) => {
         const unknownCommands = [];
         const globalCommands = [];
 
-        groups.commands.split(' ').forEach(command => {
+        groups.commands.split(' ').forEach((command) => {
           const name = command.toLowerCase();
 
           if (aquarius.commandList.has(name)) {

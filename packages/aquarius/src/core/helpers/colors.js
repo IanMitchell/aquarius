@@ -11,7 +11,7 @@ function getColorFromPalette(palette) {
     'DarkMuted',
   ];
 
-  const swatch = swatches.find(name => palette[name]);
+  const swatch = swatches.find((name) => palette[name]);
   return palette[swatch];
 }
 
@@ -40,7 +40,7 @@ export function getEmbedColorFromHex(hex) {
 
   if (color.length === 3) {
     color = Array.from(color)
-      .map(value => `${value}${value}`)
+      .map((value) => `${value}${value}`)
       .join('');
   }
 

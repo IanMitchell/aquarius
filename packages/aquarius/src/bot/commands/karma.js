@@ -47,7 +47,7 @@ export default async ({ aquarius, settings, analytics }) => {
     COOLDOWN.DEFAULT
   );
 
-  const getCooldown = guild => {
+  const getCooldown = (guild) => {
     let val = parseInt(settings.get(guild.id, 'cooldown'), 10);
 
     if (Number.isNaN(val)) {
@@ -60,12 +60,12 @@ export default async ({ aquarius, settings, analytics }) => {
   // Leaderboard Trigger
   aquarius.onDynamicTrigger(
     info,
-    message => {
+    (message) => {
       const name = settings.get(message.guild.id, 'name');
       const regex = new RegExp(`^(?:karma|${name}) leaderboard$`, 'i');
       return aquarius.triggers.messageTriggered(message, regex);
     },
-    async message => {
+    async (message) => {
       log('Leaderboard requested');
 
       const name = settings.get(message.guild.id, 'name');
@@ -107,7 +107,7 @@ export default async ({ aquarius, settings, analytics }) => {
   // Lookup Trigger
   aquarius.onDynamicTrigger(
     info,
-    message => {
+    (message) => {
       const name = settings.get(message.guild.id, 'name');
       const regex = new RegExp(
         `^(?:karma|${name}) ${MENTION_USER.source}$`,
@@ -115,7 +115,7 @@ export default async ({ aquarius, settings, analytics }) => {
       );
       return aquarius.triggers.messageTriggered(message, regex);
     },
-    async message => {
+    async (message) => {
       const [user] = getOrderedMentions(message);
 
       if (user === undefined) {
@@ -145,11 +145,11 @@ export default async ({ aquarius, settings, analytics }) => {
   // Increase
   aquarius.onDynamicTrigger(
     info,
-    message => {
+    (message) => {
       const regex = new RegExp(`^${MENTION_USER.source} ?\\+\\+.*$`, 'i');
       return message.content.match(regex);
     },
-    async message => {
+    async (message) => {
       const [user] = getOrderedMentions(message);
 
       if (!user) {
@@ -241,11 +241,11 @@ export default async ({ aquarius, settings, analytics }) => {
   // Decrease
   aquarius.onDynamicTrigger(
     info,
-    message => {
+    (message) => {
       const regex = new RegExp(`^${MENTION_USER.source} ?--.*$`, 'i');
       return message.content.match(regex);
     },
-    async message => {
+    async (message) => {
       const [user] = getOrderedMentions(message);
 
       if (!user) {

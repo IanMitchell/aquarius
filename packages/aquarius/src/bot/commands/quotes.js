@@ -36,7 +36,7 @@ function getQuoteMessage(quote) {
 export default async ({ aquarius, analytics }) => {
   // TODO: Add a `.quotes find phrase` command
 
-  aquarius.onCommand(/^quotes random$/, async message => {
+  aquarius.onCommand(/^quotes random$/, async (message) => {
     log('Getting random quote');
 
     const quoteList = await aquarius.database.quotes

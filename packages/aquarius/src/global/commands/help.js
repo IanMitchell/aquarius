@@ -65,7 +65,7 @@ export function helpMessage(aquarius, commandInfo, guild) {
   if (commandInfo.permissions) {
     embed.addField(
       'Permissions',
-      commandInfo.permissions.map(permission => {
+      commandInfo.permissions.map((permission) => {
         if (guild.me.hasPermission(permission)) {
           return `${EMOJI.VALID} ${getPermissionName(permission)}`;
         }
@@ -89,7 +89,7 @@ export function helpMessage(aquarius, commandInfo, guild) {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   // Handle generic help
-  aquarius.onCommand(/^help$/i, async message => {
+  aquarius.onCommand(/^help$/i, async (message) => {
     log(`Help request in "${message.guild.name}#${message.channel.name}"`);
 
     const check = aquarius.permissions.check(

@@ -26,7 +26,7 @@ export async function guildEmbed(guild, ...fields) {
   const date = getStandardDate(guild.createdAt);
 
   const activeMembers = guild.members.filter(
-    member => member.presence.status === 'online'
+    (member) => member.presence.status === 'online'
   );
 
   const channelTypes = {
@@ -34,7 +34,7 @@ export async function guildEmbed(guild, ...fields) {
     voice: 0,
   };
 
-  guild.channels.array().forEach(channel => {
+  guild.channels.array().forEach((channel) => {
     if (channel.type) {
       channelTypes[channel.type] += 1;
     }

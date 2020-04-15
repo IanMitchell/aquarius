@@ -65,5 +65,5 @@ export function shuffle(array) {
  * @returns {Set} Set containing the difference
  */
 export function setDifference(setA, setB) {
-  return new Set(Array.from(setA).filter(x => !setB.has(x)));
+  return new Set(Array.from(setA).filter((x) => !setB.has(x)));
 }

@@ -103,7 +103,7 @@ async function createShowEmbed(show, posterInfo) {
 
   const positions = new Map();
 
-  show.status.forEach(staff => {
+  show.status.forEach((staff) => {
     // Pending takes precedence
     if (staff.finished && !positions.has(staff.acronym)) {
       positions.set(staff.acronym, `~~${staff.acronym}~~`);
@@ -301,7 +301,7 @@ export default async ({ aquarius, analytics }) => {
   });
 
   // TODO: Deprecate and move into `.anime airing <show>`
-  aquarius.onCommand(/^airing$/i, async message => {
+  aquarius.onCommand(/^airing$/i, async (message) => {
     log('Airing request');
 
     try {

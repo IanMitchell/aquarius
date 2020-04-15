@@ -13,7 +13,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^dadjoke$/i, async message => {
+  aquarius.onCommand(/^dadjoke$/i, async (message) => {
     log('Sending dadjoke');
     startLoading(message.channel);
 

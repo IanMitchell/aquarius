@@ -19,8 +19,8 @@ export default (() => {
      * Adds context to Sentry for better error handling.
      * @param {Message} message - Message to configure scope with
      */
-    configureMessageScope: message => {
-      Sentry.configureScope(scope => {
+    configureMessageScope: (message) => {
+      Sentry.configureScope((scope) => {
         const { tag, id } = message.author;
         scope.setUser({ username: tag, id });
 

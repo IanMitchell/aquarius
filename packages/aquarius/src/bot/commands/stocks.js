@@ -241,7 +241,7 @@ export default async ({ aquarius, analytics }) => {
             title: `$${data.symbol} Rating: ${data.rating.recommendation}`,
           });
 
-          Object.keys(data.ratingDetails).forEach(ratingName => {
+          Object.keys(data.ratingDetails).forEach((ratingName) => {
             const rating = data.ratingDetails[ratingName];
 
             embed.addField(
@@ -278,7 +278,7 @@ export default async ({ aquarius, analytics }) => {
   //   //https://financialmodelingprep.com/api/v3/historical-price-full/AAPL?serietype=line
   // );
 
-  aquarius.onCommand(/^stocks indexes$/, async message => {
+  aquarius.onCommand(/^stocks indexes$/, async (message) => {
     log('Looking up indexes');
 
     const check = aquarius.permissions.check(
@@ -309,7 +309,7 @@ export default async ({ aquarius, analytics }) => {
         },
       });
 
-      data.majorIndexesList.forEach(index => {
+      data.majorIndexesList.forEach((index) => {
         embed.addField(
           `**${index.indexName}**`,
           `${getCurrencyString(index.price)} (${getCurrencyString(
@@ -371,7 +371,7 @@ export default async ({ aquarius, analytics }) => {
           },
         });
 
-        Object.keys(data[time]).forEach(sector => {
+        Object.keys(data[time]).forEach((sector) => {
           embed.addField(`**${sector}**`, data[time][sector], true);
         });
 

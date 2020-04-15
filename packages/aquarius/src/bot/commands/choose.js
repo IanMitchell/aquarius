@@ -16,7 +16,7 @@ const RANGE_REGEX = /^(?<lowerBound>-?\d+(?<lowerBoundDecimal>\.\d+)?)-(?<upperB
 function getChoices(input, delimiter) {
   const choices = [];
 
-  input.split(delimiter).forEach(choice => {
+  input.split(delimiter).forEach((choice) => {
     const value = choice.trim();
 
     if (value) {

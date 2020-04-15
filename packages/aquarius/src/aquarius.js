@@ -130,7 +130,7 @@ export class Aquarius extends Discord.Client {
     this.loadCommands();
 
     this.on('ready', this.initialize);
-    this.on('error', error => {
+    this.on('error', (error) => {
       errorLog(error);
       Sentry.captureException(error);
     });
@@ -195,7 +195,7 @@ export class Aquarius extends Discord.Client {
         throw err;
       }
 
-      files.forEach(file => this.loadFile(directory, file, globalFile));
+      files.forEach((file) => this.loadFile(directory, file, globalFile));
     });
   }
 
@@ -395,7 +395,7 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Handler function for matching messages
    */
   onDirectMessage(regex, handler) {
-    this.on('message', message => {
+    this.on('message', (message) => {
       Sentry.configureMessageScope(message);
 
       if (message.channel.type === 'dm') {
@@ -431,7 +431,7 @@ export class Aquarius extends Discord.Client {
    * `match` will be set to `true`
    */
   onMessage(info, handler) {
-    this.on('message', message => {
+    this.on('message', (message) => {
       Sentry.configureMessageScope(message);
 
       this.handleMessage(message, info, handler, () => true);
@@ -454,7 +454,7 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onCommand(regex, handler) {
-    this.on('message', message => {
+    this.on('message', (message) => {
       Sentry.configureMessageScope(message);
 
       this.handleCommand(
@@ -480,7 +480,7 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onTrigger(regex, handler) {
-    this.on('message', message => {
+    this.on('message', (message) => {
       Sentry.configureMessageScope(message);
 
       this.handleCommand(message, regex, handler, this.triggers.customTrigger);
@@ -500,7 +500,7 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onDynamicTrigger(commandInfo, matchFn, handler) {
-    this.on('message', message => {
+    this.on('message', (message) => {
       Sentry.configureMessageScope(message);
       this.handleMessage(message, commandInfo, handler, matchFn);
     });

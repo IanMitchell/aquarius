@@ -143,7 +143,7 @@ function getWeatherEmbed(location, data) {
   data.daily.data
     .slice(1)
     .slice(0, -1)
-    .forEach(day => {
+    .forEach((day) => {
       let str = `High: ${formatTemperature(
         day.temperatureHigh
       )} (${formatTemperature(getCelsius(day.temperatureHigh), 'C')})

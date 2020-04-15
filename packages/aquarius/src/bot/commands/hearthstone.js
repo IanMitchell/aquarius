@@ -33,18 +33,18 @@ async function getCard(name) {
 export default async ({ aquarius, analytics }) => {
   aquarius.onDynamicTrigger(
     info,
-    message => aquarius.triggers.bracketTrigger(message),
+    (message) => aquarius.triggers.bracketTrigger(message),
     async (message, cardList) => {
       log(
         `Retrieving entries for: ${cardList
-          .map(match => match.groups.name)
+          .map((match) => match.groups.name)
           .join(', ')}`
       );
 
       startLoading(message.channel);
       try {
         const responses = await Promise.all(
-          cardList.map(card => getCard(card.groups.name))
+          cardList.map((card) => getCard(card.groups.name))
         );
         const images = responses.reduce((list, json) => {
           if (json && !json.error) {

@@ -96,7 +96,7 @@ export function getPermissionName(permission) {
 export function check(guild, ...permissions) {
   const missingPermissions = new Set();
 
-  permissions.forEach(permission => {
+  permissions.forEach((permission) => {
     if (!guild.me.hasPermission(permission)) {
       missingPermissions.add(permission);
     }

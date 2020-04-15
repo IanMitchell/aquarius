@@ -32,7 +32,7 @@ export default async ({ aquarius, analytics }) => {
       log('Creating strawpoll');
       const options = groups.input
         .split(/(?<!\\);/)
-        .map(value => value.trim().replace(/\\;/g, ';'))
+        .map((value) => value.trim().replace(/\\;/g, ';'))
         .filter(Boolean);
 
       if (options.length < 2 || options.length > 30) {

@@ -58,7 +58,7 @@ export default class GuildSettings {
     this.commandConfig = new Map();
 
     // Setup datastructure (overridden by loadSettings)
-    Array.from(this.enabledCommands).forEach(name => {
+    Array.from(this.enabledCommands).forEach((name) => {
       this.commandConfig.set(name, new Map());
     });
 

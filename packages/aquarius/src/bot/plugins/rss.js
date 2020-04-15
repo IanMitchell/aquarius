@@ -25,7 +25,9 @@ const parser = new Parser({
 async function checkForPastContent(channel, content, limit = MESSAGE_LIMIT) {
   try {
     const messages = await channel.fetchMessages({ limit });
-    return messages.array().some(message => message.content.includes(content));
+    return messages
+      .array()
+      .some((message) => message.content.includes(content));
   } catch (error) {
     log(error);
     Sentry.captureException(error);
@@ -36,7 +38,7 @@ async function checkForPastContent(channel, content, limit = MESSAGE_LIMIT) {
 }
 
 async function checkForUpdates(guild, url, name, analytics) {
-  const channel = guild.channels.find(c => c.name === name);
+  const channel = guild.channels.find((c) => c.name === name);
 
   if (!url || !channel) {
     log(`RSS command not properly configured in ${guild.name}`);
@@ -54,7 +56,7 @@ async function checkForUpdates(guild, url, name, analytics) {
   try {
     const feed = await parser.parseURL(url);
 
-    feed.items.reverse().forEach(async entry => {
+    feed.items.reverse().forEach(async (entry) => {
       const posted = await checkForPastContent(channel, entry.link);
 
       if (!posted) {
@@ -85,7 +87,7 @@ async function checkForUpdates(guild, url, name, analytics) {
 }
 
 function loop(aquarius, settings, analytics) {
-  aquarius.guilds.forEach(guild => {
+  aquarius.guilds.forEach((guild) => {
     if (aquarius.guildManager.get(guild.id).isCommandEnabled(info.name)) {
       log(`Checking feed for ${guild.name}`);
       const url = settings.get(guild.id, 'url');

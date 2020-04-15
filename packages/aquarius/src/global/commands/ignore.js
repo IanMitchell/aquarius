@@ -26,7 +26,7 @@ export const info = {
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     new RegExp(`^ignore add ${MENTION.source}`, 'i'),
-    async message => {
+    async (message) => {
       if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
         if (message.mentions.users.size > 0) {
           const mentions = getOrderedMentions(message);
@@ -46,7 +46,7 @@ export default async ({ aquarius, analytics }) => {
 
   aquarius.onCommand(
     new RegExp(`^ignore remove ${MENTION.source}`, 'i'),
-    async message => {
+    async (message) => {
       if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
         if (message.mentions.users.size > 0) {
           const mentions = getOrderedMentions(message);
@@ -66,10 +66,10 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
-  aquarius.onCommand(/^ignore list$/i, async message => {
+  aquarius.onCommand(/^ignore list$/i, async (message) => {
     log(`Generating list for ${message.guild.name}`);
     const ids = aquarius.guildManager.get(message.guild.id).ignoredUsers;
-    const list = Array.from(ids).map(userId =>
+    const list = Array.from(ids).map((userId) =>
       getNickname(message.guild, userId)
     );
 

@@ -22,7 +22,7 @@ export default async ({ aquarius, analytics }) => {
 
   aquarius.onCommand(
     new RegExp(`^seen ${MENTION_USER.source}$`, 'i'),
-    async message => {
+    async (message) => {
       const [user] = getOrderedMentions(message);
       log(`Request for ${user.username}`);
 

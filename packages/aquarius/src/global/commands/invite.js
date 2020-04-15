@@ -11,7 +11,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^invite/i, async message => {
+  aquarius.onCommand(/^invite/i, async (message) => {
     log(`Invite request in ${message.guild.name}`);
 
     message.channel.send(getVanityBotLink());

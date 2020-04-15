@@ -16,7 +16,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.on('guildCreate', async guild => {
+  aquarius.on('guildCreate', async (guild) => {
     log(`Joined Server ${guild.name} (${guild.memberCount} members)`);
     const channel = aquarius.channels.get(aquarius.config.home.channel);
     const check = aquarius.permissions.check(
@@ -40,7 +40,7 @@ export default async ({ aquarius, analytics }) => {
     });
   });
 
-  aquarius.on('guildDelete', async guild => {
+  aquarius.on('guildDelete', async (guild) => {
     log(`Left Server ${guild.name} (${guild.memberCount} members)`);
     const channel = aquarius.channels.get(aquarius.config.home.channel);
     const check = aquarius.permissions.check(

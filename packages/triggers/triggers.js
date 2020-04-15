@@ -101,10 +101,7 @@ export function messageTriggered(message, trigger, id = process.env.BOT_ID) {
 
   // .trigger [message] OR !trigger [message]
   if (dotTrigger(message, trigger) || exclamationTrigger(message, trigger)) {
-    return message.content
-      .trim()
-      .substr(1)
-      .match(trigger);
+    return message.content.trim().substr(1).match(trigger);
   }
 
   return false;
