@@ -9,7 +9,7 @@
 //   messageTriggered,
 // } from '../triggers';
 
-jest.mock('../../../aquarius.js', () => ({}));
+// jest.mock('../../../aquarius.js', () => ({}));
 
 describe('botString', () => {
   test.todo('Returns the client user string');

@@ -31,6 +31,7 @@
     "aquarius-dashboard": "file:packages/dashboard",
     "@aquarius/discordjs-fixes": "file:packages/discordjs-fixes",
     "jest-discord": "file:packages/jest-discord",
+    "jest-discord-bot": "file:packages/jest-discord-bot",
     "jest-environment-discord": "file:packages/jest-environment-discord",
     "@aquarius/loading": "file:packages/loading",
     "@aquarius/messages": "file:packages/messages",
