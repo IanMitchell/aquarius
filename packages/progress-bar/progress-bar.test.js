@@ -9,7 +9,7 @@ test('Progress is 100%', () => {
 });
 
 test('Custom character counts', () => {
-  expect(createProgressBar(0.2, 20)).toEqual('[▰▰▰▰▱▱▱▱▱▱▱▱▱▱▱]');
+  expect(createProgressBar(0.2, 20)).toEqual('[▰▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱]');
 });
 
 test('Percentage rounding', () => {
@@ -21,5 +21,5 @@ test('Greater than 1', () => {
 });
 
 test('Works with fixed width spaces', () => {
-  expect(createProgressBar(0.2, 20, ' ')).toEqual('[▰▰▰▰▰▰▰▰▰▰▰▰        ]');
+  expect(createProgressBar(0.2, 20, ' ')).toEqual('[▰▰▰▰                ]');
 });
