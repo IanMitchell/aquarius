@@ -65,6 +65,7 @@ export default async ({ aquarius, analytics }) => {
     }
   });
 
+  // TODO: Broken
   aquarius.onCommand(
     /(?:server|guild) info (?<name>.+)/i,
     async (message, { groups }) => {

@@ -1,1 +1,1 @@
-require('jest-discord');
+require('jest-discord/expect');
