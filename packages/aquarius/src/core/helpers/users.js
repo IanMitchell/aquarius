@@ -11,7 +11,7 @@ import aquarius from '../../aquarius';
  * @return {Guild[]} Array of Guilds
  */
 export function getOwnedGuilds(user) {
-  return aquarius.guilds.filter((guild) => guild.owner === user).array();
+  return aquarius.guilds.cache.filter((guild) => guild.owner === user).array();
 }
 
 /**

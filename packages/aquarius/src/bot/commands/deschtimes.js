@@ -1,4 +1,5 @@
 import { startLoading, stopLoading } from '@aquarius/loading';
+import { checkBotPermissions } from '@aquarius/permissions';
 import Sentry from '@aquarius/sentry';
 import formatDistance from 'date-fns/formatDistance';
 import debug from 'debug';
@@ -152,10 +153,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^blame (?<show>.+)$/i, async (message, { groups }) => {
     log(`Blame request for ${groups.show}`);
 
-    const check = aquarius.permissions.check(
-      message.guild,
-      ...info.permissions
-    );
+    const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
       log('Invalid permissions');
@@ -199,10 +197,7 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       log(`Status update for ${groups.show}`);
 
-      const check = aquarius.permissions.check(
-        message.guild,
-        ...info.permissions
-      );
+      const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
         log('Invalid permissions');

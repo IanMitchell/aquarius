@@ -1,3 +1,4 @@
+import { checkBotPermissions } from '@aquarius/permissions';
 import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import Discord from 'discord.js';
@@ -20,10 +21,7 @@ export default async ({ aquarius, analytics }) => {
     /^nick(?:name)? (?<nickname>.*)/i,
     async (message, { groups }) => {
       if (message.member.hasPermission(Permissions.FLAGS.MANAGE_NICKNAMES)) {
-        const check = aquarius.permissions.check(
-          message.guild,
-          ...info.permissions
-        );
+        const check = checkBotPermissions(message.guild, ...info.permissions);
 
         if (!check.valid) {
           log('Invalid permissions');

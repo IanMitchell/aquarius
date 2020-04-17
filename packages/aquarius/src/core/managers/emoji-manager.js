@@ -28,7 +28,7 @@ export default class EmojiManager extends Map {
   getList() {
     log('Refreshing emoji list');
 
-    const homeGuild = aquarius.guilds.get(aquarius.config.home.guild);
+    const homeGuild = aquarius.guilds.cache.get(aquarius.config.home.guild);
 
     if (!homeGuild) {
       log(
@@ -39,7 +39,7 @@ export default class EmojiManager extends Map {
       return;
     }
 
-    homeGuild.emojis
+    homeGuild.emojis.cache
       .filter((emoji) => emoji.name.startsWith('aquarius'))
       .array()
       .forEach((emoji) => this.set(emoji.name.replace(/aquarius_/, ''), emoji));

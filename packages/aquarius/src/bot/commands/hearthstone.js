@@ -1,4 +1,5 @@
 import { startLoading, stopLoading } from '@aquarius/loading';
+import { checkBotPermissions } from '@aquarius/permissions';
 import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import Discord from 'discord.js';
@@ -56,10 +57,7 @@ export default async ({ aquarius, analytics }) => {
         }, []);
 
         if (images.length > 0) {
-          const check = aquarius.permissions.check(
-            message.guild,
-            ...info.permissions
-          );
+          const check = checkBotPermissions(message.guild, ...info.permissions);
 
           if (!check.valid) {
             log('Invalid permissions');

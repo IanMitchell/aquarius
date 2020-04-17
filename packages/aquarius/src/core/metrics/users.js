@@ -3,7 +3,10 @@ import aquarius from '../../aquarius';
 
 // TODO: Document
 export function getTotalUserCount() {
-  return aquarius.guilds.reduce((count, guild) => count + guild.memberCount, 0);
+  return aquarius.guilds.cache.reduce(
+    (count, guild) => count + guild.memberCount,
+    0
+  );
 }
 
 // TODO: Document

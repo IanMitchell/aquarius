@@ -47,6 +47,6 @@ export function isBot(user) {
 
 export function isStreaming(presence) {
   return presence.activities.some(
-    (activity) => activity.type === Constants.ActivityType.STREAMING
+    (activity) => activity.type === Constants.ActivityTypes.STREAMING
   );
 }

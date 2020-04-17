@@ -18,7 +18,7 @@ function pushMessage(message, stackSize) {
     log(`Creating entry for ${guild.name}`);
     const channelMap = new Map();
 
-    message.guild.channels
+    message.guild.channels.cache
       .filter((chan) => chan.type === 'text')
       .forEach((chan) => channelMap.set(chan.id, []));
 

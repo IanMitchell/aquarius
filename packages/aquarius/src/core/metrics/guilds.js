@@ -1,3 +1,4 @@
+import { isGuildAdmin } from '@aquarius/permissions';
 import dateFns from 'date-fns';
 import debug from 'debug';
 import aquarius from '../../aquarius';
@@ -14,21 +15,21 @@ export async function saveSnapshots() {
   const batch = aquarius.database.batch();
 
   // TODO: Make this in groups of 500 max
-  aquarius.guilds.forEach((guild) => {
+  aquarius.guilds.cache.forEach((guild) => {
     const ref = aquarius.database.guildSnapshots.doc();
 
     batch.set(ref, {
-      channels: guild.channels.size,
+      channels: guild.channels.cache.size,
       users: guild.memberCount,
-      bots: guild.members.filter((member) => member.user.bot).size,
+      bots: guild.members.cache.filter((member) => member.user.bot).size,
       date: Date.now(),
       guildId: guild.id,
       name: guild.name,
-      icon: guild.iconURL,
+      icon: guild.iconURL(),
       ownerId: guild.ownerID,
       vip: !!guild.splash,
       verified: guild.verified,
-      admin: aquarius.permissions.isGuildAdmin(guild, guild.me),
+      admin: isGuildAdmin(guild, guild.me),
     });
   });
 
@@ -98,5 +99,5 @@ export async function setupWeeklyGuildLoop() {
 }
 
 export function getTotalGuildCount() {
-  return aquarius.guilds.size;
+  return aquarius.guilds.cache.size;
 }

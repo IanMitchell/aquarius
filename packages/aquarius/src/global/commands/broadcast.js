@@ -80,7 +80,14 @@ export default async ({ aquarius, analytics }) => {
     }
 
     // No game change means we don't update
-    if (!(oldPresence.activities && newPresence.activities)) {
+    if (
+      !(
+        oldPresence &&
+        oldPresence.activities &&
+        newPresence &&
+        newPresence.activities
+      )
+    ) {
       return;
     }
 

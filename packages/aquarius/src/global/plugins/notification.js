@@ -1,3 +1,4 @@
+import { checkBotPermissions } from '@aquarius/permissions';
 import debug from 'debug';
 import Discord from 'discord.js';
 import { guildEmbed } from '../../core/helpers/embeds';
@@ -19,10 +20,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.on('guildCreate', async (guild) => {
     log(`Joined Server ${guild.name} (${guild.memberCount} members)`);
     const channel = aquarius.channels.get(aquarius.config.home.channel);
-    const check = aquarius.permissions.check(
-      channel.guild,
-      ...info.permissions
-    );
+    const check = checkBotPermissions(channel.guild, ...info.permissions);
 
     if (!check.valid) {
       log('Invalid permissions');
@@ -43,10 +41,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.on('guildDelete', async (guild) => {
     log(`Left Server ${guild.name} (${guild.memberCount} members)`);
     const channel = aquarius.channels.get(aquarius.config.home.channel);
-    const check = aquarius.permissions.check(
-      channel.guild,
-      ...info.permissions
-    );
+    const check = checkBotPermissions(channel.guild, ...info.permissions);
 
     if (!check.valid) {
       log('Invalid permissions');

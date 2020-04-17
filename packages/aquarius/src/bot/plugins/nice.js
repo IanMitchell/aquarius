@@ -1,3 +1,4 @@
+import { checkBotPermissions } from '@aquarius/permissions';
 import debug from 'debug';
 import Discord from 'discord.js';
 
@@ -18,10 +19,7 @@ export default async ({ aquarius, analytics }) => {
     if (message.cleanContent.includes('69')) {
       log(`69 in ${message.guild.name}`);
 
-      const check = aquarius.permissions.check(
-        message.guild,
-        ...info.permissions
-      );
+      const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (check.valid) {
         await message.react('👌');

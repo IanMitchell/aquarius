@@ -93,7 +93,7 @@ export function getPermissionName(permission) {
  * @returns {boolean} check.valid - Whether the bot has all the permission flags granted
  * @returns {number[]} check.missing - Missing permission flags
  */
-export function check(guild, ...permissions) {
+export function checkBotPermissions(guild, ...permissions) {
   const missingPermissions = new Set();
 
   permissions.forEach((permission) => {

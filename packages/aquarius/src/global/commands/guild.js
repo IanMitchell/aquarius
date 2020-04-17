@@ -1,3 +1,4 @@
+import { checkBotPermissions } from '@aquarius/permissions';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import Discord from 'discord.js';
@@ -29,10 +30,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^(?:server|guild)$/i, async (message) => {
     log(`Info for ${message.guild.name}`);
 
-    const check = aquarius.permissions.check(
-      message.guild,
-      ...info.permissions
-    );
+    const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
       log('Invalid permissions');
@@ -58,7 +56,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/(server|guild) list/i, async (message) => {
     if (aquarius.permissions.isBotOwner(message.author)) {
       log('List Requested');
-      const guilds = aquarius.guilds.array();
+      const guilds = aquarius.guilds.cache.array();
 
       message.channel.send(dedent`
       **I'm in ${guilds.length} ${pluralize('Server', guilds.length)}**
@@ -76,10 +74,7 @@ export default async ({ aquarius, analytics }) => {
       if (aquarius.permissions.isBotOwner(message.author)) {
         log(`Specific request for ${groups.name}`);
 
-        const check = aquarius.permissions.check(
-          message.guild,
-          ...info.permissions
-        );
+        const check = checkBotPermissions(message.guild, ...info.permissions);
 
         if (!check.valid) {
           log('Invalid permissions');

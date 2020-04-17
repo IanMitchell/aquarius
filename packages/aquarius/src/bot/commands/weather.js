@@ -1,3 +1,4 @@
+import { checkBotPermissions } from '@aquarius/permissions';
 import chalk from 'chalk';
 import dateFns from 'date-fns';
 import debug from 'debug';
@@ -176,10 +177,7 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       log(`Weather request for ${groups.input}`);
 
-      const check = aquarius.permissions.check(
-        message.guild,
-        ...info.permissions
-      );
+      const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
         log('Invalid permissions');

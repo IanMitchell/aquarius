@@ -1,4 +1,5 @@
 import { startLoading, stopLoading } from '@aquarius/loading';
+import { checkBotPermissions } from '@aquarius/permissions';
 import { getNickname } from '@aquarius/users';
 import debug from 'debug';
 import dedent from 'dedent-js';
@@ -27,10 +28,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^info/i, async (message) => {
     log(`Request in ${message.guild.name}`);
 
-    const check = aquarius.permissions.check(
-      message.guild,
-      ...info.permissions
-    );
+    const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
       log('Invalid permissions');
@@ -43,7 +41,7 @@ export default async ({ aquarius, analytics }) => {
     startLoading(message.channel);
 
     const guilds = getTotalGuildCount();
-    const channels = aquarius.channels.reduce((value, channel) => {
+    const channels = aquarius.channels.cache.reduce((value, channel) => {
       if (channel.type === 'text' || channel.type === 'voice') {
         return value + 1;
       }

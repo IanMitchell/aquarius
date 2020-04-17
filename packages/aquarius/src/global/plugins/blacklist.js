@@ -12,7 +12,7 @@ export const info = {
 export default async ({ aquarius, analytics }) => {
   const checkBlacklist = async () => {
     log('Checking Guild Blacklist');
-    aquarius.guilds.array().forEach((guild) => {
+    aquarius.guilds.cache.array().forEach((guild) => {
       if (aquarius.config.blacklist.includes(guild.id)) {
         log(`Leaving ${guild.name}`);
         guild.leave();

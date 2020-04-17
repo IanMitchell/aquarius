@@ -39,7 +39,7 @@ export default async ({ aquarius, analytics }) => {
 
     log('Sending message');
 
-    guild.members
+    guild.members.cache
       .filter((member) => member.hasPermission(Permissions.FLAGS.ADMINISTRATOR))
       .array()
       .forEach(async (member) => {

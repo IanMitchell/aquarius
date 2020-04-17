@@ -1,4 +1,5 @@
 import { startLoading, stopLoading } from '@aquarius/loading';
+import { checkBotPermissions } from '@aquarius/permissions';
 import Sentry from '@aquarius/sentry';
 import alphaVantageAPI from 'alphavantage';
 import dateFns from 'date-fns';
@@ -158,10 +159,7 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       log(`Looking up ${groups.sign}`);
 
-      const check = aquarius.permissions.check(
-        message.guild,
-        ...info.permissions
-      );
+      const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
         log('Invalid permissions');
@@ -211,10 +209,7 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       log(`Looking up rating for ${groups.sign}`);
 
-      const check = aquarius.permissions.check(
-        message.guild,
-        ...info.permissions
-      );
+      const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
         log('Invalid permissions');
@@ -281,10 +276,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^stocks indexes$/, async (message) => {
     log('Looking up indexes');
 
-    const check = aquarius.permissions.check(
-      message.guild,
-      ...info.permissions
-    );
+    const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
       log('Invalid permissions');
@@ -341,10 +333,7 @@ export default async ({ aquarius, analytics }) => {
 
       log(`Looking up sectors for ${time}`);
 
-      const check = aquarius.permissions.check(
-        message.guild,
-        ...info.permissions
-      );
+      const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
         log('Invalid permissions');

@@ -52,9 +52,9 @@ export default async ({ aquarius, analytics }) => {
         }
       });
 
-      aquarius.guilds.array().forEach((guild) => {
+      aquarius.guilds.cache.array().forEach((guild) => {
         log(`Alerting ${guild.name}`);
-        guild.members
+        guild.members.cache
           .filter((member) => {
             return (
               member.hasPermission(Permissions.FLAGS.ADMINISTRATOR) &&

@@ -1,9 +1,10 @@
 {
   "name": "aquarius",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A highly configurable Discord chatbot",
   "main": "index.js",
   "repository": "ianmitchell/aquarius",
+  "private": true,
   "author": {
     "name": "Ian Mitchell",
     "email": "ian.mitchel1@live.com",

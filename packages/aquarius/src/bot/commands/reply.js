@@ -26,7 +26,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.on('ready', () => {
     log('Loading Responses');
 
-    aquarius.guilds.map(async (guild) => {
+    aquarius.guilds.cache.map(async (guild) => {
       // This loop will be run twice - the first is the 'real' time, and the
       // second is the trigger map generation. We only want to have this run
       // on the real initialization.

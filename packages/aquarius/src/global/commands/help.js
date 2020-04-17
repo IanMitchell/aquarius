@@ -1,4 +1,4 @@
-import { getPermissionName } from '@aquarius/permissions';
+import { checkBotPermissions, getPermissionName } from '@aquarius/permissions';
 import { getNickname } from '@aquarius/users';
 import debug from 'debug';
 import dedent from 'dedent-js';
@@ -92,10 +92,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^help$/i, async (message) => {
     log(`Help request in "${message.guild.name}#${message.channel.name}"`);
 
-    const check = aquarius.permissions.check(
-      message.guild,
-      ...info.permissions
-    );
+    const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
       log('Invalid permissions');
@@ -147,10 +144,7 @@ export default async ({ aquarius, analytics }) => {
     const help = aquarius.help.get(groups.command);
 
     if (help) {
-      const check = aquarius.permissions.check(
-        message.guild,
-        ...info.permissions
-      );
+      const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
         log('Invalid permissions');

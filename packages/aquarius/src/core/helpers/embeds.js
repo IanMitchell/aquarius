@@ -34,7 +34,7 @@ export async function guildEmbed(guild, ...fields) {
     voice: 0,
   };
 
-  guild.channels.array().forEach((channel) => {
+  guild.channels.cache.array().forEach((channel) => {
     if (channel.type) {
       channelTypes[channel.type] += 1;
     }
@@ -43,8 +43,8 @@ export async function guildEmbed(guild, ...fields) {
   let color = 0x333333;
 
   try {
-    if (guild.iconURL) {
-      color = await getIconColor(guild.iconURL);
+    if (guild.iconURL()) {
+      color = await getIconColor(guild.iconURL());
     }
   } catch (error) {
     log(error);
@@ -53,7 +53,7 @@ export async function guildEmbed(guild, ...fields) {
 
   const embed = new MessageEmbed()
     .setTitle(guild.name)
-    .setThumbnail(guild.iconURL)
+    .setThumbnail(guild.iconURL())
     .setDescription(`Created on ${date} by ${guild.owner.displayName}`)
     .setColor(color)
     .addField(

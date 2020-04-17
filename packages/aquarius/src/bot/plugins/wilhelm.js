@@ -87,7 +87,7 @@ function voiceCheck(guild, target, analytics) {
 function createLoop(aquarius, settings, analytics) {
   log('Creating checks');
 
-  aquarius.guilds.array().forEach((guild) => {
+  aquarius.guilds.cache.array().forEach((guild) => {
     if (INTERVALS.has(guild.id)) {
       return;
     }

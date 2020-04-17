@@ -1,4 +1,5 @@
 import { startLoading, stopLoading } from '@aquarius/loading';
+import { checkBotPermissions } from '@aquarius/permissions';
 import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import Discord from 'discord.js';
@@ -54,10 +55,7 @@ function isWord(dom) {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^define (?<word>.+)$/i, async (message, { groups }) => {
-    const check = aquarius.permissions.check(
-      message.guild,
-      ...info.permissions
-    );
+    const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
       log('Invalid permissions');

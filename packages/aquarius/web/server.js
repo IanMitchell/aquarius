@@ -30,7 +30,7 @@ app.get('/shield/guilds', (request, response) => {
     createShield(
       aquarius,
       'Guilds',
-      aquarius.guilds.array().length.toLocaleString()
+      aquarius.guilds.cache.array().length.toLocaleString()
     )
   );
 });
