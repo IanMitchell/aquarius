@@ -3,16 +3,13 @@ import { checkBotPermissions } from '@aquarius/permissions';
 import { getNickname } from '@aquarius/users';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import Discord from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import pluralize from 'pluralize';
 import pkg from '../../../package.json';
 import { getGitHubLink, getVanityBotLink } from '../../core/helpers/links';
 import { getTotalGuildCount } from '../../core/metrics/guilds';
 import { getResourceUsage } from '../../core/metrics/resources';
 import { getTotalUserCount } from '../../core/metrics/users';
-
-// CJS / ESM compatibility
-const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Info');
 

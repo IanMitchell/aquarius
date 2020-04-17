@@ -1,7 +1,5 @@
-import Discord from 'discord.js';
+import { DMChannel, GroupDMChannel, Message, TextChannel } from 'discord.js';
 import { getLink, isDirectMessage } from './messages';
-
-const { TextChannel, GroupDMChannel, DMChannel, Message } = Discord;
 
 describe('isDirectMessage', () => {
   test('Only matches DM Channels', () => {

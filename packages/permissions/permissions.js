@@ -1,7 +1,4 @@
-import Discord from 'discord.js';
-
-// CJS / ESM compatibility
-const { Permissions } = Discord;
+import { Permissions } from 'discord.js';
 
 /**
  * @typedef {import('discord.js').User} User

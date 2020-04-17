@@ -1,9 +1,6 @@
 import { checkBotPermissions } from '@aquarius/permissions';
 import debug from 'debug';
-import Discord from 'discord.js';
-
-// CJS / ESM compatibility
-const { Permissions } = Discord;
+import { Permissions } from 'discord.js';
 
 const log = debug('Hashtag');
 

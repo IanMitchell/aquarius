@@ -2,11 +2,8 @@ import { startLoading, stopLoading } from '@aquarius/loading';
 import { checkBotPermissions } from '@aquarius/permissions';
 import Sentry from '@aquarius/sentry';
 import debug from 'debug';
-import Discord from 'discord.js';
+import { Permissions } from 'discord.js';
 import fetch from 'node-fetch';
-
-// CJS / ESM compatibility
-const { Permissions } = Discord;
 
 const log = debug('Magic');
 

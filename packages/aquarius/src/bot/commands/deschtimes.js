@@ -4,14 +4,11 @@ import Sentry from '@aquarius/sentry';
 import formatDistance from 'date-fns/formatDistance';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import Discord from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
 import { getEmbedColorFromHex } from '../../core/helpers/colors';
 import { getBotOwner } from '../../core/helpers/users';
-
-// CJS / ESM compatibility
-const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Deschtimes');
 

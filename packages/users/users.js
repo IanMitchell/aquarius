@@ -1,7 +1,4 @@
-import Discord from 'discord.js';
-
-// CJS / ESM compatibility
-const { GuildMember, Constants } = Discord;
+import { Constants, GuildMember } from 'discord.js';
 
 /**
  * @typedef {import('discord.js').User} User

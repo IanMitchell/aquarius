@@ -2,13 +2,10 @@ import { checkBotPermissions, getPermissionName } from '@aquarius/permissions';
 import { getNickname } from '@aquarius/users';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import Discord from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { getGitHubLink, getHost } from '../../core/helpers/links';
 import { humanize, setDifference } from '../../core/helpers/lists';
 import { capitalize } from '../../core/helpers/strings';
-
-// CJS / ESM compatibility
-const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Help');
 

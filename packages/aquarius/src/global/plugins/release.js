@@ -1,13 +1,10 @@
 import { isBot } from '@aquarius/users';
 import debug from 'debug';
-import Discord from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import pkg from '../../../package.json';
 import { getIconColor } from '../../core/helpers/colors';
 import { getDocsLink } from '../../core/helpers/links';
-
-// CJS / ESM compatibility
-const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Release');
 const GITHUB_API = 'https://api.github.com/repos';

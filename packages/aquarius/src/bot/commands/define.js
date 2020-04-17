@@ -2,13 +2,12 @@ import { startLoading, stopLoading } from '@aquarius/loading';
 import { checkBotPermissions } from '@aquarius/permissions';
 import Sentry from '@aquarius/sentry';
 import debug from 'debug';
-import Discord from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import xmldom from 'xmldom';
 import { capitalize } from '../../core/helpers/strings';
 
 // CJS / ESM compatibility
-const { Permissions, MessageEmbed } = Discord;
 const { DOMParser } = xmldom;
 
 const log = debug('Define');

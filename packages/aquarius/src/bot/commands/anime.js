@@ -4,7 +4,7 @@ import Sentry from '@aquarius/sentry';
 import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import Discord from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import downsize from 'downsize';
 import fetch from 'node-fetch';
 import Turndown from 'turndown';
@@ -12,7 +12,6 @@ import { getEmbedColorFromHex } from '../../core/helpers/colors';
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;
-const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Anime');
 

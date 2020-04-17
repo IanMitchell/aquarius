@@ -1,9 +1,6 @@
 import { isStreaming } from '@aquarius/users';
 import debug from 'debug';
-import Discord from 'discord.js';
-
-// CJS / ESM compatibility
-const { Constants } = Discord;
+import { Constants } from 'discord.js';
 
 const log = debug('Broadcast');
 

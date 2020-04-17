@@ -1,7 +1,4 @@
-import Discord from 'discord.js';
-
-// CJS / ESM compatibility
-const { Constants } = Discord;
+import { Constants } from 'discord.js';
 
 export default function createShield(aquarius, message, label) {
   if (aquarius.status !== Constants.Status.READY) {

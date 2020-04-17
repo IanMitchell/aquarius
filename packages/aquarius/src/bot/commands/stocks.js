@@ -5,13 +5,12 @@ import alphaVantageAPI from 'alphavantage';
 import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import Discord from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import { getIconColor } from '../../core/helpers/colors';
 
 // CJS / ESM compatibility
 const { parse } = dateFns;
-const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Stocks');
 

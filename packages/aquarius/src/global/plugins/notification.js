@@ -1,10 +1,7 @@
 import { checkBotPermissions } from '@aquarius/permissions';
 import debug from 'debug';
-import Discord from 'discord.js';
+import { Permissions } from 'discord.js';
 import { guildEmbed } from '../../core/helpers/embeds';
-
-// CJS / ESM compatibility
-const { Permissions } = Discord;
 
 const log = debug('Notification');
 

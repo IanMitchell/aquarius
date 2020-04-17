@@ -1,10 +1,7 @@
 import { getLink } from '@aquarius/messages';
 import { getNickname } from '@aquarius/users';
 import debug from 'debug';
-import Discord from 'discord.js';
-
-// CJS / ESM compatibility
-const { Permissions, MessageEmbed } = Discord;
+import { MessageEmbed, Permissions } from 'discord.js';
 
 const log = debug('Starred');
 
