@@ -1,3 +1,4 @@
+import { isStreaming } from '@aquarius/users';
 import debug from 'debug';
 import Discord from 'discord.js';
 
@@ -45,9 +46,9 @@ async function setBroadcastMessage(aquarius, message = null) {
   }
 }
 
-function setStreaming(aquarius, game) {
-  aquarius.user.setActivity(game.name, {
-    url: game.url,
+function setStreaming(aquarius, activity) {
+  aquarius.user.setActivity(activity.name, {
+    url: activity.url,
     type: Constants.ActivityTypes.STREAMING,
   });
 }
@@ -73,18 +74,18 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
-  aquarius.on('presenceUpdate', async (oldUser, newUser) => {
-    if (newUser.id !== aquarius.config.owner) {
+  aquarius.on('presenceUpdate', async (oldPresence, newPresence) => {
+    if (newPresence.user.id !== aquarius.config.owner) {
       return;
     }
 
     // No game change means we don't update
-    if (!(oldUser.presence.game && newUser.presence.game)) {
+    if (!(oldPresence.activities && newPresence.activities)) {
       return;
     }
 
     // User signs off, end a stream
-    if (newUser.presence.status === 'offline') {
+    if (newPresence.status === 'offline') {
       log('Ending Stream Broadcast');
 
       setBroadcastMessage(aquarius);
@@ -93,28 +94,28 @@ export default async ({ aquarius, analytics }) => {
 
     // User signs on while streaming, broadcast it
     if (
-      oldUser.presence.status === 'offline' &&
-      newUser.presence.status !== 'offline' &&
-      newUser.presence.game.streaming
+      oldPresence.status === 'offline' &&
+      newPresence.status !== 'offline' &&
+      isStreaming(newPresence)
     ) {
       log('Broadcasting Stream');
 
-      setStreaming(aquarius, newUser.presence.game);
+      setStreaming(aquarius, newPresence.game);
       analytics.trackUsage('broadcast twitch');
       return;
     }
 
     // If owner starts streaming, advertise it.
-    if (!oldUser.presence.game.streaming && newUser.presence.game.streaming) {
+    if (!isStreaming(oldPresence) && isStreaming(newPresence)) {
       log('Broadcasting Stream');
 
-      setStreaming(aquarius, newUser.presence.game);
+      setStreaming(aquarius, newPresence.game);
       analytics.trackUsage('broadcast twitch');
       return;
     }
 
     // If a user stops streaming, also stop.
-    if (oldUser.presence.game.streaming && !newUser.presence.game.streaming) {
+    if (isStreaming(oldPresence) && !isStreaming(newPresence)) {
       log('Ending Stream Broadcast');
 
       setBroadcastMessage(aquarius);

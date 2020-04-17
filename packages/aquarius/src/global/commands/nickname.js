@@ -33,7 +33,7 @@ export default async ({ aquarius, analytics }) => {
           return;
         }
 
-        const member = await message.guild.fetchMember(aquarius.user);
+        const member = await message.guild.members.fetch(aquarius.user);
 
         try {
           log(

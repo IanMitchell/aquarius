@@ -10,7 +10,7 @@ import { getEmbedColorFromHex } from '../../core/helpers/colors';
 import { getBotOwner } from '../../core/helpers/users';
 
 // CJS / ESM compatibility
-const { Permissions, RichEmbed } = Discord;
+const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Deschtimes');
 
@@ -91,7 +91,7 @@ async function getPosterInfo(name) {
 async function createShowEmbed(show, posterInfo) {
   const owner = await getBotOwner();
 
-  const embed = new RichEmbed()
+  const embed = new MessageEmbed()
     .setTitle(`${show.name} #${show.episode}`)
     .setColor(0x008000)
     .setFooter('Brought to you by Deschtimes™', owner.avatarURL);

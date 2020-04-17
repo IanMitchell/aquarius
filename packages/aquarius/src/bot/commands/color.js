@@ -5,7 +5,7 @@ import parseColor from 'parse-color';
 import { getEmbedColorFromHex } from '../../core/helpers/colors';
 
 // CJS / ESM compatibility
-const { RichEmbed } = Discord;
+const { MessageEmbed } = Discord;
 
 const log = debug('Color');
 
@@ -44,7 +44,7 @@ export default async ({ aquarius, analytics }) => {
         "Sorry, I wasn't able to parse that color! I only can lookup colors formatted as a `#0A0A0A` hex, a `rebeccapurple` keyword, in `hsl(50, 210, 50)` hsl format, or in `rgba(15,53,242,30%)` rgba format."
       );
     } else {
-      const embed = new RichEmbed()
+      const embed = new MessageEmbed()
         .setTitle(groups.name)
         .setThumbnail(
           `http://singlecolorimage.com/get/${color.hex.substring(1)}/350x350`

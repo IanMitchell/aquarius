@@ -7,7 +7,7 @@ import fetch from 'node-fetch';
 
 // CJS / ESM compatibility
 const { format } = dateFns;
-const { Permissions, RichEmbed } = Discord;
+const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Weather');
 
@@ -105,7 +105,7 @@ async function getDarkSkyForecast(longitude, latitude) {
 }
 
 function getWeatherEmbed(location, data) {
-  const embed = new RichEmbed({
+  const embed = new MessageEmbed({
     title: `Weather Forecast for ${location}`,
     description: dedent`
       ${data.daily.data[0].summary} Currently ${formatTemperature(

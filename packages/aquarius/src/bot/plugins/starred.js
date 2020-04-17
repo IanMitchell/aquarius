@@ -4,7 +4,7 @@ import debug from 'debug';
 import Discord from 'discord.js';
 
 // CJS / ESM compatibility
-const { Permissions, RichEmbed } = Discord;
+const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Starred');
 
@@ -54,7 +54,7 @@ export default async ({ aquarius, settings, analytics }) => {
       if (
         onlyPublic &&
         !message.channel
-          .permissionsFor(guild.defaultRole)
+          .permissionsFor(guild.roles.everyone)
           .has(Permissions.FLAGS.VIEW_CHANNEL)
       ) {
         return;
@@ -99,7 +99,7 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      const embed = new RichEmbed()
+      const embed = new MessageEmbed()
         .setAuthor(getNickname(guild, message.author), message.author.avatarURL)
         .setColor('GOLD')
         .setURL(getLink(message))

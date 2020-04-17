@@ -10,7 +10,7 @@ import { getIconColor } from '../../core/helpers/colors';
 
 // CJS / ESM compatibility
 const { parse } = dateFns;
-const { Permissions, RichEmbed } = Discord;
+const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Stocks');
 
@@ -94,7 +94,7 @@ async function getStockEmbed(profileData, priceData) {
       : ':chart_with_downwards_trend:'
   } Change**`;
 
-  const embed = new RichEmbed({
+  const embed = new MessageEmbed({
     title: profileData.symbol,
     description: profileData.profile.description,
     thumbnail: {
@@ -237,7 +237,7 @@ export default async ({ aquarius, analytics }) => {
             "I wasn't able to find data for that stock sign"
           );
         } else {
-          const embed = new RichEmbed({
+          const embed = new MessageEmbed({
             title: `$${data.symbol} Rating: ${data.rating.recommendation}`,
           });
 
@@ -302,7 +302,7 @@ export default async ({ aquarius, analytics }) => {
       );
       const data = await response.json();
 
-      const embed = new RichEmbed({
+      const embed = new MessageEmbed({
         title: 'Major Stock Indexes',
         footer: {
           text: 'Data provided by Financial Modeling Prep',
@@ -359,7 +359,7 @@ export default async ({ aquarius, analytics }) => {
 
         const data = normalize(await ALPHA_VANTAGE.performance.sector());
 
-        const embed = new RichEmbed({
+        const embed = new MessageEmbed({
           title: `${data.meta.information} (${time} view)`,
           timestamp: parse(
             data.meta.updated.replace(/ET /, ''),

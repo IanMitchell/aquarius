@@ -1,8 +1,8 @@
+import { MessageEmbed } from 'discord.js';
 import { matcherHint, printReceived } from 'jest-matcher-utils';
-import { RichEmbed } from 'discord.js';
 
 export default function toBeEmbed(received) {
-  const pass = received instanceof RichEmbed;
+  const pass = received instanceof MessageEmbed;
 
   const message = () =>
     `${matcherHint('.toBeEmbed', undefined, '', {

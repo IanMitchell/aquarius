@@ -5,7 +5,7 @@ import Discord from 'discord.js';
 import { helpMessage } from './help';
 
 // CJS / ESM compatibility
-const { RichEmbed } = Discord;
+const { MessageEmbed } = Discord;
 
 const log = debug('Services');
 
@@ -115,7 +115,7 @@ export default async ({ aquarius, analytics }) => {
 
       const service = aquarius.services.getInformation(serviceKey);
 
-      const embed = new RichEmbed({
+      const embed = new MessageEmbed({
         title: service.name,
       });
 

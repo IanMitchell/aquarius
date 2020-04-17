@@ -8,7 +8,7 @@ import { humanize, setDifference } from '../../core/helpers/lists';
 import { capitalize } from '../../core/helpers/strings';
 
 // CJS / ESM compatibility
-const { Permissions, RichEmbed } = Discord;
+const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Help');
 
@@ -44,10 +44,10 @@ export function helpMessage(aquarius, commandInfo, guild) {
 
   const nickname = getNickname(guild, aquarius.user);
 
-  const embed = new RichEmbed({
+  const embed = new MessageEmbed({
     author: {
       name: 'Aquarius',
-      icon_url: aquarius.user.avatarURL,
+      icon_url: aquarius.user.avatarURL(),
       url: getHost(),
     },
     title: capitalize(commandInfo.name),

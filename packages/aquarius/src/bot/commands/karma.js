@@ -83,7 +83,7 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      // TODO: Convert into RichEmbed
+      // TODO: Convert into MessageEmbed
       const entries = list.docs.reduce((val, row, idx) => {
         const data = row.data();
         const nickname = getNickname(

@@ -6,21 +6,21 @@ import { getIconColor } from './colors';
 import { getStandardDate } from './dates';
 
 // CJS / ESM compatibility
-const { RichEmbed } = Discord;
+const { MessageEmbed } = Discord;
 
 const log = debug('Embeds');
 
 /**
  * @typedef {import('discord.js').Guild} Guild
- * @typedef {import('discord.js').RichEmbed} RichEmbed
+ * @typedef {import('discord.js').MessageEmbed} MessageEmbed
  * @typedef {import('../../typedefs').EmbedField} EmbedField
  */
 
 /**
- * Generates a RichEmbed of information for the specified Guild
+ * Generates a MessageEmbed of information for the specified Guild
  * @param {Guild} guild - The Guild to get data from
- * @param {...EmbedField} fields - A list of RichEmbed fields to add
- * @returns {RichEmbed} the RichEmbed for the Guild
+ * @param {...EmbedField} fields - A list of MessageEmbed fields to add
+ * @returns {MessageEmbed} the MessageEmbed for the Guild
  */
 export async function guildEmbed(guild, ...fields) {
   const date = getStandardDate(guild.createdAt);
@@ -51,7 +51,7 @@ export async function guildEmbed(guild, ...fields) {
     Sentry.captureException(error);
   }
 
-  const embed = new RichEmbed()
+  const embed = new MessageEmbed()
     .setTitle(guild.name)
     .setThumbnail(guild.iconURL)
     .setDescription(`Created on ${date} by ${guild.owner.displayName}`)

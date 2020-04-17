@@ -49,19 +49,19 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
-  aquarius.on('presenceUpdate', async (oldMember, newMember) => {
+  aquarius.on('presenceUpdate', async (oldPresence, newPresence) => {
     if (
-      newMember.presence.status === 'offline' &&
-      !statusDebounce.has(newMember.user.id)
+      newPresence.status === 'offline' &&
+      !statusDebounce.has(newPresence.user.id)
     ) {
-      statusDebounce.add(newMember.user.id);
-      log(`${getNickname(newMember.guild, newMember)} signed off`);
+      statusDebounce.add(newPresence.user.id);
+      log(`${getNickname(newPresence.guild, newPresence.user)} signed off`);
 
       await aquarius.database.lastSeen
-        .doc(newMember.user.id)
+        .doc(newPresence.user.id)
         .set({ lastSeen: Date.now() });
 
-      setTimeout(() => statusDebounce.delete(newMember.user.id), 500);
+      setTimeout(() => statusDebounce.delete(newPresence.user.id), 500);
     }
   });
 };

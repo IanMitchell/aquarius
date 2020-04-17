@@ -78,7 +78,7 @@ export default async ({ aquarius, analytics }) => {
       }
 
       try {
-        const emote = await message.guild.createEmoji(
+        const emote = await message.guild.emojis.create(
           EMOTES.get(groups.name),
           groups.name
         );

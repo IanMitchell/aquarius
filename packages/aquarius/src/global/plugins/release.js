@@ -7,7 +7,7 @@ import { getIconColor } from '../../core/helpers/colors';
 import { getDocsLink } from '../../core/helpers/links';
 
 // CJS / ESM compatibility
-const { Permissions, RichEmbed } = Discord;
+const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Release');
 const GITHUB_API = 'https://api.github.com/repos';
@@ -38,12 +38,12 @@ export default async ({ aquarius, analytics }) => {
     if (json && json.length && json[0].id > previousVersion.value) {
       log('New version detected');
 
-      const message = new RichEmbed({
+      const message = new MessageEmbed({
         title: 'New Release!',
         description:
           'A new version of Aquarius has been released! The changelog is below:',
         url: getDocsLink(),
-        color: await getIconColor(aquarius.user.avatarURL),
+        color: await getIconColor(aquarius.user.avatarURL()),
       });
 
       json.forEach(async (release) => {

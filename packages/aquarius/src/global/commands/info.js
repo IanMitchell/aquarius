@@ -11,7 +11,7 @@ import { getResourceUsage } from '../../core/metrics/resources';
 import { getTotalUserCount } from '../../core/metrics/users';
 
 // CJS / ESM compatibility
-const { Permissions, RichEmbed } = Discord;
+const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Info');
 
@@ -57,14 +57,14 @@ export default async ({ aquarius, analytics }) => {
 
     const nickname = getNickname(message.guild, aquarius.user);
 
-    const embed = new RichEmbed()
+    const embed = new MessageEmbed()
       .setTitle('Aquarius')
       .setColor(0x008000)
       .setURL(getGitHubLink())
       .setDescription(
         `You can add me to your server by clicking this link: ${getVanityBotLink()}`
       )
-      .setThumbnail(aquarius.user.displayAvatarURL)
+      .setThumbnail(aquarius.user.displayAvatarURL())
       .addField('Developer', 'Desch#3091')
       .addField(
         'Stats',

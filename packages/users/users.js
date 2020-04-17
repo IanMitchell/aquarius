@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 
 // CJS / ESM compatibility
-const { GuildMember } = Discord;
+const { GuildMember, Constants } = Discord;
 
 /**
  * @typedef {import('discord.js').User} User
@@ -43,4 +43,10 @@ export function isBot(user) {
   }
 
   return user.bot;
+}
+
+export function isStreaming(presence) {
+  return presence.activities.some(
+    (activity) => activity.type === Constants.ActivityType.STREAMING
+  );
 }

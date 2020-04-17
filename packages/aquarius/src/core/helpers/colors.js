@@ -27,8 +27,8 @@ export async function getIconColor(icon) {
 }
 
 /**
- * Converts a hex string into a RichEmbed supported Base 16 number
- * @param {string} hex - Hexcode to convert into RichEmbed format
+ * Converts a hex string into a MessageEmbed supported Base 16 number
+ * @param {string} hex - Hexcode to convert into MessageEmbed format
  * @returns {number} Base 16 color representation
  */
 export function getEmbedColorFromHex(hex) {

@@ -11,7 +11,7 @@ import { getEmbedColorFromHex } from '../../core/helpers/colors';
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;
-const { Permissions, RichEmbed } = Discord;
+const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('Anime');
 
@@ -63,7 +63,7 @@ function createAnimeEmbed(data) {
   const show = data.data.sfw || data.data.nsfw;
   const { title } = show;
 
-  const embed = new RichEmbed({
+  const embed = new MessageEmbed({
     title: title.english ? title.english : title.romaji,
     url: `https://anilist.co/anime/${show.id}`,
     footer: {

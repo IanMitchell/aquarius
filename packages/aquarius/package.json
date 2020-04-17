@@ -45,7 +45,7 @@
     "date-fns": "^2.9.0",
     "debug": "^4.1.1",
     "dedent-js": "^1.0.1",
-    "discord.js": "^11.5.0",
+    "discord.js": "^12.0.0",
     "discord.js-minesweeper": "^1.0.5",
     "dotenv": "^8.2.0",
     "downsize": "^0.0.8",

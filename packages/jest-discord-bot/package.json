@@ -15,7 +15,7 @@
   ],
   "main": "lib/index.js",
   "peerDependencies": {
-    "discord.js": "^11.4.2",
+    "discord.js": "^12.0.0",
     "jest": ">=22.0.0"
   }
 }

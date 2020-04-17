@@ -6,7 +6,7 @@ import Discord from 'discord.js';
 import fetch from 'node-fetch';
 
 // CJS / ESM compatibility
-const { Permissions, RichEmbed } = Discord;
+const { Permissions, MessageEmbed } = Discord;
 
 const log = debug('xkcd');
 
@@ -27,7 +27,7 @@ export const info = {
 };
 
 function createEmbedFromJson(postJson) {
-  const embed = new RichEmbed()
+  const embed = new MessageEmbed()
     .setTitle(postJson.safe_title)
     .setColor(0x96a8c8)
     .setFooter(postJson.alt)

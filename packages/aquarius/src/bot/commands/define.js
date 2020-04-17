@@ -7,7 +7,7 @@ import xmldom from 'xmldom';
 import { capitalize } from '../../core/helpers/strings';
 
 // CJS / ESM compatibility
-const { Permissions, RichEmbed } = Discord;
+const { Permissions, MessageEmbed } = Discord;
 const { DOMParser } = xmldom;
 
 const log = debug('Define');
@@ -79,7 +79,7 @@ export default async ({ aquarius, analytics }) => {
       const dom = parser.parseFromString(xml, 'text/xml');
 
       if (isWord(dom)) {
-        const embed = new RichEmbed()
+        const embed = new MessageEmbed()
           .setTitle(capitalize(dom.getElementsByTagName('ew')[0].textContent))
           .setColor(0x0074d9)
           .setFooter('Definitions provided by Merriam Webster')
