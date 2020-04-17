@@ -19,9 +19,8 @@
     "node": ">=13.5.0"
   },
   "scripts": {
-    "start": "cross-env DEBUG=*,-engine*,-babel*,-send,-ref*,-express* node -r dotenv/config --es-module-specifier-resolution=node index.js",
-    "build": "node scripts/install-keyfile",
-    "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect-brk=9229 -r dotenv/config --es-module-specifier-resolution=node index.js",
+    "start": "lerna run --scope aquarius start --stream --no-prefix",
+    "debug": "lerna run --scope aquarius debug --stream --no-prefix",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
     "pretest": "pectin",
     "test": "jest"

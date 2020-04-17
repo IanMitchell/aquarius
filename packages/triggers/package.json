@@ -19,7 +19,7 @@
     "skip": true
   },
   "dependencies": {
-    "@aquarius/messages": "file:../messages",
+    "@aquarius/users": "file:../users",
     "@aquarius/regex": "file:../regex"
   }
 }
