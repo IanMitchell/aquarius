@@ -13,9 +13,9 @@ jobs:
           node-version: 13.7
       - name: Lint
         run: |
-          yarn install
-          yarn run pretest
-          yarn run lint
+          npm install
+          npm run pretest
+          npm run lint
   Test:
     runs-on: ubuntu-latest
     steps:
@@ -26,5 +26,5 @@ jobs:
           node-version: 13.7
       - name: Jest
         run: |
-          yarn install
-          yarn test
+          npm install
+          npm test
