@@ -7,6 +7,11 @@ spec:
   selector:
     matchLabels:
       app: aquarius
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
   template:
     metadata:
       labels:
