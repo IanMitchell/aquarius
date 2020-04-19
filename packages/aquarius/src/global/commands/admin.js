@@ -1,3 +1,4 @@
+import { isGuildAdmin } from '@aquarius/permissions';
 import Sentry from '@aquarius/sentry';
 import debug from 'debug';
 import dedent from 'dedent-js';
@@ -37,8 +38,8 @@ export const info = {
 async function getGuildTarget(aquarius, message) {
   let target = 0;
 
-  const guilds = aquarius.guilds.filter((guild) =>
-    aquarius.permissions.isGuildAdmin(guild, message.author)
+  const guilds = aquarius.guilds.cache.filter((guild) =>
+    isGuildAdmin(guild, message.author)
   );
 
   if (guilds.size === 0) {
@@ -210,7 +211,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /commands (add|enable) (?<commands>.+)/i,
     async (message, { groups }) => {
-      if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
+      if (isGuildAdmin(message.guild, message.author)) {
         log(
           `Add ${groups.commands} in ${message.guild.name} by ${message.author.username}`
         );
@@ -266,7 +267,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /commands (remove|disable) (?<commands>.+)/i,
     async (message, { groups }) => {
-      if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
+      if (isGuildAdmin(message.guild, message.author)) {
         log(
           `Remove ${groups.commands} in ${message.guild.name} by ${message.author.username}`
         );

@@ -1,4 +1,6 @@
+import { isGuildAdmin } from '@aquarius/permissions';
 import Sentry from '@aquarius/sentry';
+import { messageTriggered } from '@aquarius/triggers';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import pluralize from 'pluralize';
@@ -25,7 +27,7 @@ export default async ({ aquarius, analytics }) => {
   const duration = `${minutes} ${pluralize('minute', minutes)}`;
 
   aquarius.onCommand(/^quiet$/i, async (message) => {
-    if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
+    if (isGuildAdmin(message.guild, message.author)) {
       log(`Quiet request in ${message.guild.name}`);
       aquarius.guildManager.get(message.guild.id).muteGuild();
       message.channel.send(`Muting myself for ${duration}!`);
@@ -39,8 +41,8 @@ export default async ({ aquarius, analytics }) => {
     Sentry.configureMessageScope(message);
 
     if (
-      aquarius.triggers.messageTriggered(message, /^quiet (?:stop|end)$/i) &&
-      aquarius.permissions.isGuildAdmin(message.guild, message.author)
+      messageTriggered(message, /^quiet (?:stop|end)$/i) &&
+      isGuildAdmin(message.guild, message.author)
     ) {
       log(`Quiet end request in ${message.guild.name}`);
       aquarius.guildManager.get(message.guild.id).unMuteGuild();

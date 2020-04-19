@@ -1,4 +1,4 @@
-import { checkBotPermissions } from '@aquarius/permissions';
+import { checkBotPermissions, isGuildAdmin } from '@aquarius/permissions';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { Permissions } from 'discord.js';
@@ -38,7 +38,7 @@ export default async ({ aquarius, analytics }) => {
     }
 
     const { guild } = message;
-    const admin = aquarius.permissions.isGuildAdmin(guild, guild.me);
+    const admin = isGuildAdmin(guild, guild.me);
 
     const embed = await guildEmbed(guild, {
       title: 'Aquarius',

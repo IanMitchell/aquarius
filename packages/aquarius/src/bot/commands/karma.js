@@ -1,6 +1,7 @@
 import { getOrderedMentions } from '@aquarius/messages';
 import { MENTION_USER } from '@aquarius/regex';
 import Sentry from '@aquarius/sentry';
+import { messageTriggered } from '@aquarius/triggers';
 import { getNickname } from '@aquarius/users';
 import dateFns from 'date-fns';
 import debug from 'debug';
@@ -63,7 +64,7 @@ export default async ({ aquarius, settings, analytics }) => {
     (message) => {
       const name = settings.get(message.guild.id, 'name');
       const regex = new RegExp(`^(?:karma|${name}) leaderboard$`, 'i');
-      return aquarius.triggers.messageTriggered(message, regex);
+      return messageTriggered(message, regex);
     },
     async (message) => {
       log('Leaderboard requested');
@@ -84,19 +85,19 @@ export default async ({ aquarius, settings, analytics }) => {
       }
 
       // TODO: Convert into MessageEmbed
-      const entries = list.docs.reduce((val, row, idx) => {
-        const data = row.data();
-        const nickname = getNickname(
-          message.guild,
-          aquarius.users.fetch(data.userId)
-        );
-        return `${val} ${idx + 1}. ${nickname} - ${data.karma} ${name}\n`;
-      }, '');
+      const entries = await Promise.all(
+        list.docs.map(async (row, idx) => {
+          const data = row.data();
+          const user = await aquarius.users.fetch(data.userId);
+          const nickname = getNickname(message.guild, user);
+          return `${idx + 1}. ${nickname} - ${data.karma} ${name}`;
+        })
+      );
 
       const str = dedent`
         **${name} Leaderboard**
 
-        ${entries}
+        ${entries.join('\n')}
       `;
 
       message.channel.send(str);
@@ -113,10 +114,10 @@ export default async ({ aquarius, settings, analytics }) => {
         `^(?:karma|${name}) ${MENTION_USER.source}$`,
         'i'
       );
-      return aquarius.triggers.messageTriggered(message, regex);
+      return messageTriggered(message, regex);
     },
     async (message) => {
-      const [user] = getOrderedMentions(message);
+      const [user] = await getOrderedMentions(message);
 
       if (user === undefined) {
         return;
@@ -150,7 +151,7 @@ export default async ({ aquarius, settings, analytics }) => {
       return message.content.match(regex);
     },
     async (message) => {
-      const [user] = getOrderedMentions(message);
+      const [user] = await getOrderedMentions(message);
 
       if (!user) {
         return;
@@ -246,7 +247,7 @@ export default async ({ aquarius, settings, analytics }) => {
       return message.content.match(regex);
     },
     async (message) => {
-      const [user] = getOrderedMentions(message);
+      const [user] = await getOrderedMentions(message);
 
       if (!user) {
         return;

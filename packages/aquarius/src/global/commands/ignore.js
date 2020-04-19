@@ -1,4 +1,5 @@
 import { getOrderedMentions } from '@aquarius/messages';
+import { isGuildAdmin } from '@aquarius/permissions';
 import { MENTION } from '@aquarius/regex';
 import { getNickname } from '@aquarius/users';
 import debug from 'debug';
@@ -27,9 +28,9 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     new RegExp(`^ignore add ${MENTION.source}`, 'i'),
     async (message) => {
-      if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
+      if (isGuildAdmin(message.guild, message.author)) {
         if (message.mentions.users.size > 0) {
-          const mentions = getOrderedMentions(message);
+          const mentions = await getOrderedMentions(message);
           const user = mentions[mentions.length - 1];
           log(`Adding ${user.username} to ${message.guild.name}'s ignore list`);
 
@@ -47,9 +48,9 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     new RegExp(`^ignore remove ${MENTION.source}`, 'i'),
     async (message) => {
-      if (aquarius.permissions.isGuildAdmin(message.guild, message.author)) {
+      if (isGuildAdmin(message.guild, message.author)) {
         if (message.mentions.users.size > 0) {
-          const mentions = getOrderedMentions(message);
+          const mentions = await getOrderedMentions(message);
           const user = mentions[mentions.length - 1];
           log(`Removing ${user.name} from ${message.guild.name}'s ignore list`);
 

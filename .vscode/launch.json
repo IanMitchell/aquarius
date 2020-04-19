@@ -9,7 +9,7 @@
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "yarn",
+      "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "debug"],
       "protocol": "inspector",
       "port": 9229

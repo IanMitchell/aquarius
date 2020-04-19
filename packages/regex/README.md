@@ -22,14 +22,14 @@ This package also includes some additional helpers when working with mentions. I
 For instance, given a list of mentions you might use the following to map them to actual objects:
 
 ```javascript
-mentions.map(mention => {
+mentions.map((mention) => {
   switch (getMentionType(mention[0])) {
     case MENTION_TYPES.USER:
-      return message.guild.members.get(mention.groups.id);
+      return message.guild.members.fetch(mention.groups.id);
     case MENTION_TYPES.CHANNEL:
-      return message.guild.channels.get(mention.groups.id);
+      return message.guild.channels.cache.get(mention.groups.id);
     case MENTION_TYPES.ROLE:
-      return message.guild.roles.get(mention.groups.id);
+      return message.guild.roles.fetch(mention.groups.id);
     default:
       return null;
   }

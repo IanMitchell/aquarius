@@ -1,6 +1,7 @@
 import { startLoading, stopLoading } from '@aquarius/loading';
 import { checkBotPermissions } from '@aquarius/permissions';
 import Sentry from '@aquarius/sentry';
+import { bracketTrigger } from '@aquarius/triggers';
 import debug from 'debug';
 import { Permissions } from 'discord.js';
 import fetch from 'node-fetch';
@@ -27,7 +28,7 @@ async function getCard(name) {
 export default async ({ aquarius, analytics }) => {
   aquarius.onDynamicTrigger(
     info,
-    (message) => aquarius.triggers.bracketTrigger(message),
+    (message) => bracketTrigger(message),
     async (message, cardList) => {
       log(
         `Retrieving entries for: ${cardList

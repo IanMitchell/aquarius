@@ -29,23 +29,23 @@ export function getLink(message) {
  * @param {boolean} [repeats=false] - Include repeated mentions
  * @returns {Discord.MessageMentions[]} Ordered list of Mentions
  */
-export function getOrderedMentions(message, repeats = true) {
-  const mentions = Array.from(
-    message.content.matchAll(new RegExp(MENTION, 'g'))
-  )
-    .map((mention) => {
-      switch (getMentionType(mention[0])) {
-        case MENTION_TYPES.USER:
-          return message.guild.members.get(mention.groups.id);
-        case MENTION_TYPES.CHANNEL:
-          return message.guild.channels.get(mention.groups.id);
-        case MENTION_TYPES.ROLE:
-          return message.guild.roles.get(mention.groups.id);
-        default:
-          return null;
+export async function getOrderedMentions(message, repeats = true) {
+  const mentions = await Promise.all(
+    Array.from(message.content.matchAll(new RegExp(MENTION, 'g'))).map(
+      (mention) => {
+        switch (getMentionType(mention[0])) {
+          case MENTION_TYPES.USER:
+            return message.guild.members.fetch(mention.groups.id);
+          case MENTION_TYPES.CHANNEL:
+            return message.guild.channels.cache.get(mention.groups.id);
+          case MENTION_TYPES.ROLE:
+            return message.guild.roles.fetch(mention.groups.id);
+          default:
+            return null;
+        }
       }
-    })
-    .filter(Boolean);
+    )
+  ).then((values) => values.filter(Boolean));
 
   if (repeats) {
     return mentions;

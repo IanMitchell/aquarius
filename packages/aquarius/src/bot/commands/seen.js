@@ -23,7 +23,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     new RegExp(`^seen ${MENTION_USER.source}$`, 'i'),
     async (message) => {
-      const [user] = getOrderedMentions(message);
+      const [user] = await getOrderedMentions(message);
       log(`Request for ${user.username}`);
 
       if (user.presence.status !== 'offline') {
