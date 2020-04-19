@@ -28,7 +28,7 @@ export default class EmojiManager extends Map {
   getList() {
     log('Refreshing emoji list');
 
-    const homeGuild = aquarius.guilds.fetch(aquarius.config.home.guild);
+    const homeGuild = aquarius.guilds.cache.get(aquarius.config.home.guild);
 
     if (!homeGuild) {
       log(

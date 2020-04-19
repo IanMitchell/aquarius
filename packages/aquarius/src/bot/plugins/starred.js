@@ -69,7 +69,7 @@ export default async ({ aquarius, settings, analytics }) => {
         const errorMsg =
           "Hey! Unfortunately I can't find a channel to post starred messages to. Please have an admin DM me with `set starred channel <name>` to fix this!";
 
-        const previousMessages = await message.channel.fetchMessages({
+        const previousMessages = await message.channel.messages.fetch({
           limit: 100,
         });
 
@@ -81,7 +81,7 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      const previousMessages = await channel.fetchMessages({ limit: 100 });
+      const previousMessages = await channel.messages.fetch({ limit: 100 });
       const posted = previousMessages.some((msg) =>
         msg.embeds.some((embed) =>
           embed.fields.some(
