@@ -56,11 +56,4 @@ module.exports = {
       },
     ],
   },
-  // For some reason the rule above isn't working, so we'll override for now
-  overrides: [
-    {
-      files: '**/*.test.js',
-      rules: { 'import/no-extraneous-dependencies': 'off' },
-    },
-  ],
 };
