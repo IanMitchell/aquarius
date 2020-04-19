@@ -13,7 +13,7 @@ jobs:
           node-version: 13.7
       - name: Lint
         run: |
-          npm install
+          npx lerna bootstrap --hoist
           npm run pretest
           npm run lint
   Test:
@@ -26,5 +26,5 @@ jobs:
           node-version: 13.7
       - name: Jest
         run: |
-          npm install
+          npx lerna bootstrap --hoist
           npm test
