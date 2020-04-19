@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 
 import fs from 'fs';
+import path from 'path';
 
 fs.writeFile(
-  process.env.FIREBASE_KEYFILE,
+  path.join('packages/aquarius', process.env.FIREBASE_KEYFILE),
   process.env.FIREBASE_KEYFILE_CONTENTS,
   (error) => {
     if (error) {
