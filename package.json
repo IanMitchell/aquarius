@@ -37,10 +37,7 @@
     "@aquarius/triggers": "file:packages/triggers",
     "@aquarius/users": "file:packages/users",
     "aquarius": "file:packages/aquarius",
-    "aquarius-dashboard": "file:packages/dashboard",
-    "jest-discord": "file:packages/jest-discord",
-    "jest-discord-bot": "file:packages/jest-discord-bot",
-    "jest-environment-discord": "file:packages/jest-environment-discord"
+    "aquarius-dashboard": "file:packages/dashboard"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -54,6 +51,9 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-replace-object-assign": "^2.0.0",
     "discord.js": "^12.2.0",
+    "jest-discord": "file:packages/jest-discord",
+    "jest-environment-discord": "file:packages/jest-environment-discord",
+    "jest-discord-bot": "file:packages/jest-discord-bot",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-config-prettier": "^6.10.1",
