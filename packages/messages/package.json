@@ -1,6 +1,6 @@
 {
   "name": "@aquarius/messages",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Message helper methods for Discord",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",
   "homepage": "https://github.com/ianmitchell/aquarius",
