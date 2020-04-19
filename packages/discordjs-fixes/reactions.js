@@ -14,7 +14,7 @@ export function fixPartialReactionEvents(client, v12 = false) {
     if (!Object.prototype.hasOwnProperty.call(PARTIAL_EVENTS, event.t)) return;
 
     const { d: data } = event;
-    const user = client.users.get(data.user_id);
+    const user = client.users.fetch(data.user_id);
     const channel =
       client.channels.get(data.channel_id) || (await user.createDM());
 

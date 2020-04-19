@@ -88,7 +88,7 @@ export default async ({ aquarius, settings, analytics }) => {
         const data = row.data();
         const nickname = getNickname(
           message.guild,
-          aquarius.users.get(data.userId)
+          aquarius.users.fetch(data.userId)
         );
         return `${val} ${idx + 1}. ${nickname} - ${data.karma} ${name}\n`;
       }, '');
