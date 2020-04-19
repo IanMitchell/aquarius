@@ -4,11 +4,12 @@
   "description": "A Jest plugin for testing discord.js bots",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",
   "homepage": "https://github.com/ianmitchell/jest-discord",
-  "repository": "ianmitchell/jest-discord",
-  "license": "MIT",
-  "scripts": {
-    "build": "babel src --out-dir lib --copy-files"
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/ianmitchell/aquarius.git",
+    "directory": "packages/jest-discord"
   },
+  "license": "MIT",
   "keywords": [
     "discord",
     "bot",
@@ -16,19 +17,12 @@
     "testing",
     "node"
   ],
-  "main": "lib/index.js",
-  "files": [
-    "lib",
-    "expect.js"
-  ],
-  "engines": {
-    "node": ">=10.0.0"
-  },
+  "main": "lib/expect.js",
   "peerDependencies": {
+    "discord.js": "^12.0.0",
     "jest": ">=22.0.0"
   },
   "dependencies": {
-    "discord.js": "^11.4.2",
-    "jest-matcher-utils": "^25.2.7"
+    "jest-matcher-utils": "^25.1.0"
   }
 }

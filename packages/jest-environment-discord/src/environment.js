@@ -18,7 +18,7 @@ export default class DiscordEnvironment extends NodeEnvironment {
         guildId: this.testGuildId,
       });
 
-      const readyWait = new Promise(resolve => {
+      const readyWait = new Promise((resolve) => {
         this.testBot.on('ready', () => resolve());
       });
       this.testBot.login();
@@ -35,7 +35,7 @@ export default class DiscordEnvironment extends NodeEnvironment {
         }
       } while (
         this.testBot.channels.some(
-          channel => channel.name === this.testChannelName
+          (channel) => channel.name === this.testChannelName
         )
       );
 
@@ -44,7 +44,7 @@ export default class DiscordEnvironment extends NodeEnvironment {
       );
 
       this.global.testBot = this.testBot;
-      this.global.prompt = msg => this.testBot.prompt(this.testChannel, msg);
+      this.global.prompt = (msg) => this.testBot.prompt(this.testChannel, msg);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);

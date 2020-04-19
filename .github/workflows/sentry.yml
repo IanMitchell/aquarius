@@ -1,22 +1,22 @@
-name: Sentry
+# name: Sentry
 
-on:
-  push:
-    branches:
-      - master
+# on:
+#   push:
+#     branches:
+#       - master
 
-jobs:
-  TagRelease:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@master
-      - name: Create a Sentry release
-        uses: tclindner/sentry-releases-action@v1.0.0
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: aquarius
-          SENTRY_PROJECT: aquarius
-        with:
-          tagName: ${{ github.sha }}
-          environment: production
+# jobs:
+#   TagRelease:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@master
+#       - name: Create a Sentry release
+#         uses: tclindner/sentry-releases-action@v1.0.0
+#         env:
+#           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+#           SENTRY_ORG: aquarius
+#           SENTRY_PROJECT: aquarius
+#         with:
+#           tagName: ${{ github.sha }}
+#           environment: production

@@ -1,0 +1,21 @@
+{
+  "name": "jest-discord-bot",
+  "version": "0.1.0",
+  "description": "A Jest plugin for creating a discord.js test instance bot",
+  "author": "Ian Mitchell <ian.mitchel1@live.com>",
+  "homepage": "https://github.com/ianmitchell/jest-discord",
+  "repository": "ianmitchell/jest-discord",
+  "license": "MIT",
+  "keywords": [
+    "discord",
+    "bot",
+    "jest",
+    "testing",
+    "node"
+  ],
+  "main": "lib/index.js",
+  "peerDependencies": {
+    "discord.js": "^12.0.0",
+    "jest": ">=22.0.0"
+  }
+}

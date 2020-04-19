@@ -1,0 +1,19 @@
+{
+  "name": "aquarius-dashboard",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "rollup": {
+    "skip": true
+  },
+  "dependencies": {
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "next": "^9.3.5"
+  }
+}

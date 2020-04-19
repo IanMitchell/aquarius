@@ -5,13 +5,16 @@ node_modules
 coverage
 
 # Workspace Package Builds
-packages/**/lib/
+# packages/**/lib/
 
 # Environment
 .env
 
 # Logs
 *.log
+
+# Builds
+*/**/lib
 
 # System
 .DS_Store
