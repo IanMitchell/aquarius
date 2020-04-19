@@ -16,7 +16,9 @@ export function fixPartialReactionEvents(client, v12 = true) {
     const { d: data } = event;
     const user = client.users.fetch(data.user_id);
     const channel =
-      client.channels.get(data.channel_id) || (await user.createDM());
+      (v12
+        ? client.channels.fetch(data.channel_id)
+        : client.channels.get(data.channel_id)) || (await user.createDM());
 
     // if the message is already in the cache, don't re-emit the event
     if (channel.messages.has(data.message_id)) return;
