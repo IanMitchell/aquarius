@@ -4,7 +4,11 @@
   "description": "Command invocation helper methods for Discord",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",
   "homepage": "https://github.com/ianmitchell/aquarius",
-  "repository": "ianmitchell/aquarius",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/ianmitchell/aquarius.git",
+    "directory": "packages/triggers"
+  },
   "license": "MIT",
   "keywords": [
     "discord",
@@ -19,7 +23,7 @@
     "skip": true
   },
   "dependencies": {
-    "@aquarius/users": "file:../users",
-    "@aquarius/regex": "file:../regex"
+    "@aquarius/regex": "file:../regex",
+    "@aquarius/users": "file:../users"
   }
 }

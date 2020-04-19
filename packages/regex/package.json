@@ -4,7 +4,11 @@
   "description": "Regex matchers for Discord",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",
   "homepage": "https://github.com/ianmitchell/aquarius",
-  "repository": "ianmitchell/aquarius",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/ianmitchell/aquarius.git",
+    "directory": "packages/regex"
+  },
   "license": "MIT",
   "keywords": [
     "discord",
