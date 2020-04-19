@@ -7,7 +7,7 @@ const PARTIAL_EVENTS = {
   MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
 
-export function fixPartialReactionEvents(client, v12 = false) {
+export function fixPartialReactionEvents(client, v12 = true) {
   // See: https://gist.github.com/Danktuary/27b3cef7ef6c42e2d3f5aff4779db8ba
   client.on('raw', async (event) => {
     // `event.t` is the raw event name
