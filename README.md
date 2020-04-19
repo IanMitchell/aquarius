@@ -54,16 +54,16 @@ For help with local development of the bot, check the [Getting Started Wiki Page
 
 If you are working on your own discord bot, Aquarius publishes several different packages that might be of interest.
 
-- [@aquarius/discordjs-fixes](/tree/master/packages/discordjs-fixes) - A library of fixes for the discord.js library.
-- [@aquarius/loading](/tree/master/packages/loading) - Helper methods to simulate loading on Discord.
-- [@aquarius/messages](/tree/master/packages/messages) - Helper methods for dealing with Message objects.
-- [@aquarius/permissions](/tree/master/packages/permissions) - Helper methods and objects for dealing with Discord permissions.
-- [@aquarius/progress-bar](/tree/master/packages/progress-bar) - A configurable progress bar to display in messages.
-- [@aquarius/regex](/tree/master/packages/regex) - A library of Regex patterns to use on Discord messages.
-- [@aquarius/sentry](/tree/master/packages/sentry) - Wrappers to provide additional metadata in Sentry error reports.
-- [@aquarius/triggers](/tree/master/packages/triggers) - A set of helpers that allow you to look for different bot command activation triggers.
-- [@aquarius/users](/tree/master/packages/users) - Helper methods for dealing with User objects.
-- [jest-discord](/tree/master/packages/jest-discord) - WIP Jest integration.
-- [jest-discord-bot](/tree/master/packages/jest-discord-bot) - WIP Jest integration.
-- [jest-discord-fakes](/tree/master/packages/jest-discord-fakes) - WIP Jest integration.
-- [jest-discord-environment](/tree/master/packages/environment) - WIP Jest integration.
+- [@aquarius/discordjs-fixes](/packages/discordjs-fixes) - A library of fixes for the discord.js library.
+- [@aquarius/loading](/packages/loading) - Helper methods to simulate loading on Discord.
+- [@aquarius/messages](/packages/messages) - Helper methods for dealing with Message objects.
+- [@aquarius/permissions](/packages/permissions) - Helper methods and objects for dealing with Discord permissions.
+- [@aquarius/progress-bar](/packages/progress-bar) - A configurable progress bar to display in messages.
+- [@aquarius/regex](/packages/regex) - A library of Regex patterns to use on Discord messages.
+- [@aquarius/sentry](/packages/sentry) - Wrappers to provide additional metadata in Sentry error reports.
+- [@aquarius/triggers](/packages/triggers) - A set of helpers that allow you to look for different bot command activation triggers.
+- [@aquarius/users](/packages/users) - Helper methods for dealing with User objects.
+- [jest-discord](/packages/jest-discord) - WIP Jest integration.
+- [jest-discord-bot](/packages/jest-discord-bot) - WIP Jest integration.
+- [jest-discord-fakes](/packages/jest-discord-fakes) - WIP Jest integration.
+- [jest-discord-environment](/packages/environment) - WIP Jest integration.
