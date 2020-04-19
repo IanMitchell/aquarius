@@ -1,9 +1,9 @@
-import { getUserMock } from 'jest-discord';
+import { getUserFake } from 'jest-discord-fakes';
 import { isBot } from './users';
 
 describe('isBot', () => {
   test('Identifies bots', () => {
-    const user = getUserMock();
+    const user = getUserFake();
     expect(isBot(user)).toBe(false);
 
     user.bot = true;

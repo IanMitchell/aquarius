@@ -1,10 +1,10 @@
 {
-  "name": "jest-discord",
+  "name": "jest-discord-fakes",
   "version": "0.1.0",
-  "description": "A Jest plugin for testing discord.js bots",
+  "description": "A Jest plugin for unit testing discord.js",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",
   "homepage": "https://github.com/ianmitchell/jest-discord",
-  "repository": "ianmitchell/jest-discord",
+  "repository": "ianmitchell/aquarius",
   "license": "MIT",
   "keywords": [
     "discord",
@@ -13,12 +13,8 @@
     "testing",
     "node"
   ],
-  "main": "lib/expect.js",
+  "main": "lib/index.js",
   "peerDependencies": {
-    "discord.js": "^12.0.0",
-    "jest": ">=22.0.0"
-  },
-  "dependencies": {
-    "jest-matcher-utils": "^25.1.0"
+    "discord.js": "^12.0.0"
   }
 }
