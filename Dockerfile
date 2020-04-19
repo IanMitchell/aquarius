@@ -11,13 +11,13 @@ WORKDIR /usr/src/bot
 COPY . .
 
 # Install Bot
-RUN yarn install
+RUN npx lerna bootstrap --hoist
 
 # Install Keyfile
-RUN yarn run build
+RUN npm run build
 
-# Open the Dashboard
+# Open the API
 EXPOSE 3000
 
 # Let's run it!
-CMD [ "yarn", "start" ]
+CMD [ "npm", "start" ]

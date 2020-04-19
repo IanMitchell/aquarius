@@ -19,6 +19,7 @@
     "node": ">=13.5.0"
   },
   "scripts": {
+    "build": "node scripts/install-keyfile",
     "start": "lerna run --scope aquarius --stream --no-prefix start",
     "debug": "lerna run --scope aquarius --stream --no-prefix debug ",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
