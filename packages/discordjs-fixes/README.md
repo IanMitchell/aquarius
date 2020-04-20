@@ -1,4 +1,4 @@
-# @aquarius/discordjs-fixes
+# @aquarius-bot/discordjs-fixes
 
 A library of fixes for the discord.js library. I did not write these; the authors are given credit in the source code and below.
 
@@ -11,7 +11,7 @@ When a discord.js client starts up it only subscribes to Reactions on messages s
 **Usage**
 
 ```javascript
-import { fixPartialReactionEvents } from '@aquarius/discordjs-fixes';
+import { fixPartialReactionEvents } from '@aquarius-bot/discordjs-fixes';
 
 const client = new Discord.Client();
 fixPartialReactionEvents(client);

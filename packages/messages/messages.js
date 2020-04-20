@@ -1,4 +1,4 @@
-import { getMentionType, MENTION, MENTION_TYPES } from '@aquarius/regex';
+import { getMentionType, MENTION, MENTION_TYPES } from '@aquarius-bot/regex';
 import Discord from 'discord.js';
 
 /**

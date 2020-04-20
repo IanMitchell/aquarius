@@ -1,5 +1,5 @@
 {
-  "name": "@aquarius/triggers",
+  "name": "@aquarius-bot/triggers",
   "version": "0.0.1",
   "description": "Command invocation helper methods for Discord",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",
@@ -8,6 +8,9 @@
     "type": "git",
     "url": "ssh://git@github.com/ianmitchell/aquarius.git",
     "directory": "packages/triggers"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "license": "MIT",
   "keywords": [
@@ -23,7 +26,7 @@
     "skip": true
   },
   "dependencies": {
-    "@aquarius/regex": "file:../regex",
-    "@aquarius/users": "file:../users"
+    "@aquarius-bot/regex": "file:../regex",
+    "@aquarius-bot/users": "file:../users"
   }
 }

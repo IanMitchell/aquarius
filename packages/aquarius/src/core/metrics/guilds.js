@@ -1,4 +1,4 @@
-import { isGuildAdmin } from '@aquarius/permissions';
+import { isGuildAdmin } from '@aquarius-bot/permissions';
 import dateFns from 'date-fns';
 import debug from 'debug';
 import aquarius from '../../aquarius';

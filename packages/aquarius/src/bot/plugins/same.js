@@ -1,4 +1,4 @@
-import Sentry from '@aquarius/sentry';
+import Sentry from '@aquarius-bot/sentry';
 import debug from 'debug';
 
 const log = debug('Same');

@@ -1,5 +1,5 @@
 {
-  "name": "@aquarius/testing",
+  "name": "@aquarius-bot/testing",
   "version": "0.0.1",
   "description": "Helpers for testing discord.js bots",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",
@@ -8,6 +8,9 @@
     "type": "git",
     "url": "ssh://git@github.com/ianmitchell/aquarius.git",
     "directory": "packages/testing"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "license": "MIT",
   "keywords": [

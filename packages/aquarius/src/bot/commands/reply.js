@@ -1,4 +1,4 @@
-import { isGuildAdmin } from '@aquarius/permissions';
+import { isGuildAdmin } from '@aquarius-bot/permissions';
 import debug from 'debug';
 import dedent from 'dedent-js';
 

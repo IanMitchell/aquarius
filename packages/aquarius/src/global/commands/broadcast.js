@@ -1,4 +1,4 @@
-import { isStreaming } from '@aquarius/users';
+import { isStreaming } from '@aquarius-bot/users';
 import debug from 'debug';
 import { Constants } from 'discord.js';
 

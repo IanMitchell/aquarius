@@ -1,7 +1,7 @@
-import { getOrderedMentions } from '@aquarius/messages';
-import { isGuildAdmin } from '@aquarius/permissions';
-import { MENTION } from '@aquarius/regex';
-import { getNickname } from '@aquarius/users';
+import { getOrderedMentions } from '@aquarius-bot/messages';
+import { isGuildAdmin } from '@aquarius-bot/permissions';
+import { MENTION } from '@aquarius-bot/regex';
+import { getNickname } from '@aquarius-bot/users';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { humanize } from '../../core/helpers/lists';

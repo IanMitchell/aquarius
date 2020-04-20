@@ -1,4 +1,4 @@
-import { checkBotPermissions } from '@aquarius/permissions';
+import { checkBotPermissions } from '@aquarius-bot/permissions';
 import debug from 'debug';
 import { Permissions } from 'discord.js';
 import { guildEmbed } from '../../core/helpers/embeds';

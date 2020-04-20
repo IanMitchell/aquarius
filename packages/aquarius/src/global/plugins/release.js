@@ -1,4 +1,4 @@
-import { isBot } from '@aquarius/users';
+import { isBot } from '@aquarius-bot/users';
 import debug from 'debug';
 import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';

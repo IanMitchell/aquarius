@@ -1,4 +1,4 @@
-import { startLoading, stopLoading } from '@aquarius/loading';
+import { startLoading, stopLoading } from '@aquarius-bot/loading';
 import debug from 'debug';
 import fetch from 'node-fetch';
 

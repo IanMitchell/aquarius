@@ -1,4 +1,4 @@
-import { checkBotPermissions } from '@aquarius/permissions';
+import { checkBotPermissions } from '@aquarius-bot/permissions';
 import chalk from 'chalk';
 import dateFns from 'date-fns';
 import debug from 'debug';

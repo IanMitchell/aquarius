@@ -1,6 +1,6 @@
-import { isGuildAdmin } from '@aquarius/permissions';
-import Sentry from '@aquarius/sentry';
-import { messageTriggered } from '@aquarius/triggers';
+import { isGuildAdmin } from '@aquarius-bot/permissions';
+import Sentry from '@aquarius-bot/sentry';
+import { messageTriggered } from '@aquarius-bot/triggers';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import pluralize from 'pluralize';

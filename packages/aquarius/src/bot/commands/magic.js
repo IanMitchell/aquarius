@@ -1,7 +1,7 @@
-import { startLoading, stopLoading } from '@aquarius/loading';
-import { checkBotPermissions } from '@aquarius/permissions';
-import Sentry from '@aquarius/sentry';
-import { bracketTrigger } from '@aquarius/triggers';
+import { startLoading, stopLoading } from '@aquarius-bot/loading';
+import { checkBotPermissions } from '@aquarius-bot/permissions';
+import Sentry from '@aquarius-bot/sentry';
+import { bracketTrigger } from '@aquarius-bot/triggers';
 import debug from 'debug';
 import { Permissions } from 'discord.js';
 import fetch from 'node-fetch';

@@ -1,4 +1,4 @@
-# @aquarius/users
+# @aquarius-bot/users
 
 Provides several helper methods for working with discord.js users.
 
@@ -7,7 +7,7 @@ Provides several helper methods for working with discord.js users.
 Install:
 
 ```
-npm i @aquarius/users
+npm i @aquarius-bot/users
 ```
 
 ## API
@@ -20,7 +20,7 @@ Gets the nickname for a User in a Guild. If the user doesn't have one, it return
 
 ```javascript
 import Discord from 'discord.js';
-import { getNickname } from '@aquarius/users';
+import { getNickname } from '@aquarius-bot/users';
 
 const client = new Discord.Client();
 
@@ -38,7 +38,7 @@ Determines if a user is a bot or not.
 
 ```javascript
 import Discord from 'discord.js';
-import { isBot } from '@aquarius/users';
+import { isBot } from '@aquarius-bot/users';
 
 const client = new Discord.Client();
 
@@ -57,7 +57,7 @@ Determines if a user is streaming or not. Note that this takes a presence and no
 
 ```javascript
 import Discord from 'discord.js';
-import { isStreaming } from '@aquarius/users';
+import { isStreaming } from '@aquarius-bot/users';
 
 const client = new Discord.Client();
 

@@ -1,4 +1,4 @@
-// import { getMockGuild } from '@aquarius/testing';
+// import { getMockGuild } from '@aquarius-bot/testing';
 // import {
 //   getOwnedGuilds,
 //   getBotOwner,

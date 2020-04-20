@@ -1,3 +1,3 @@
-# @aquarius/loading
+# @aquarius-bot/loading
 
 TODO!

@@ -1,5 +1,5 @@
 {
-  "name": "@aquarius/loading",
+  "name": "@aquarius-bot/loading",
   "version": "0.0.1",
   "description": "Loading helper methods for Discord",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",
@@ -8,6 +8,9 @@
     "type": "git",
     "url": "ssh://git@github.com/ianmitchell/aquarius.git",
     "directory": "packages/loading"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "license": "MIT",
   "keywords": [

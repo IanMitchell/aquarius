@@ -1,3 +1,3 @@
-# @aquarius/messages
+# @aquarius-bot/messages
 
 TODO!

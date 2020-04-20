@@ -1,4 +1,4 @@
-import { isBot } from '@aquarius/users';
+import { isBot } from '@aquarius-bot/users';
 import debug from 'debug';
 
 const log = debug('Games');

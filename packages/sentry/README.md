@@ -1,3 +1,3 @@
-# @aquarius/sentry
+# @aquarius-bot/sentry
 
 TODO!

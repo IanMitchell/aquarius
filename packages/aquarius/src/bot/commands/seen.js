@@ -1,6 +1,6 @@
-import { getOrderedMentions } from '@aquarius/messages';
-import { MENTION_USER } from '@aquarius/regex';
-import { getNickname } from '@aquarius/users';
+import { getOrderedMentions } from '@aquarius-bot/messages';
+import { MENTION_USER } from '@aquarius-bot/regex';
+import { getNickname } from '@aquarius-bot/users';
 import dateFns from 'date-fns';
 import debug from 'debug';
 

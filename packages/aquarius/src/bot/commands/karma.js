@@ -1,8 +1,8 @@
-import { getOrderedMentions } from '@aquarius/messages';
-import { MENTION_USER } from '@aquarius/regex';
-import Sentry from '@aquarius/sentry';
-import { messageTriggered } from '@aquarius/triggers';
-import { getNickname } from '@aquarius/users';
+import { getOrderedMentions } from '@aquarius-bot/messages';
+import { MENTION_USER } from '@aquarius-bot/regex';
+import Sentry from '@aquarius-bot/sentry';
+import { messageTriggered } from '@aquarius-bot/triggers';
+import { getNickname } from '@aquarius-bot/users';
 import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';

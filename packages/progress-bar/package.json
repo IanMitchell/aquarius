@@ -1,5 +1,5 @@
 {
-  "name": "@aquarius/progress-bar",
+  "name": "@aquarius-bot/progress-bar",
   "version": "0.0.1",
   "description": "Progress Bar for Discord",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",
@@ -8,6 +8,9 @@
     "type": "git",
     "url": "ssh://git@github.com/ianmitchell/aquarius.git",
     "directory": "packages/progress-bar"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "license": "MIT",
   "keywords": [

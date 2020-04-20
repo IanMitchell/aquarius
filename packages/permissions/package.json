@@ -1,5 +1,5 @@
 {
-  "name": "@aquarius/permissions",
+  "name": "@aquarius-bot/permissions",
   "version": "0.0.1",
   "description": "Permission helper methods for Discord",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",
@@ -8,6 +8,9 @@
     "type": "git",
     "url": "ssh://git@github.com/ianmitchell/aquarius.git",
     "directory": "packages/permissions"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "license": "MIT",
   "keywords": [

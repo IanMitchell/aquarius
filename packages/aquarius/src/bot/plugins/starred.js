@@ -1,5 +1,5 @@
-import { getLink } from '@aquarius/messages';
-import { getNickname } from '@aquarius/users';
+import { getLink } from '@aquarius-bot/messages';
+import { getNickname } from '@aquarius-bot/users';
 import debug from 'debug';
 import { MessageEmbed, Permissions } from 'discord.js';
 

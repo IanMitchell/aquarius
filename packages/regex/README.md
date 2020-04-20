@@ -1,4 +1,4 @@
-# @aquarius/regex
+# @aquarius-bot/regex
 
 Regex helpers for matching with Discord message structures.
 
@@ -47,7 +47,7 @@ Assign @user @role
 You would could combine the patterns like this:
 
 ```javascript
-import { MENTION_USER, MENTION_ROLE } from '@aquarius/regex';
+import { MENTION_USER, MENTION_ROLE } from '@aquarius-bot/regex';
 
 const pattern = new RegExp(
   `Assign ${MENTION_USER.source} ${MENTION_ROLE.source}`

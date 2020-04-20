@@ -1,8 +1,8 @@
-import { fixPartialReactionEvents } from '@aquarius/discordjs-fixes';
-import { isDirectMessage } from '@aquarius/messages';
-import Sentry from '@aquarius/sentry';
-import * as triggers from '@aquarius/triggers';
-import { isBot } from '@aquarius/users';
+import { fixPartialReactionEvents } from '@aquarius-bot/discordjs-fixes';
+import { isDirectMessage } from '@aquarius-bot/messages';
+import Sentry from '@aquarius-bot/sentry';
+import * as triggers from '@aquarius-bot/triggers';
+import { isBot } from '@aquarius-bot/users';
 import chalk from 'chalk';
 import debug from 'debug';
 import Discord from 'discord.js';

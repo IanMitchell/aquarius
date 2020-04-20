@@ -1,5 +1,5 @@
-import { startLoading, stopLoading } from '@aquarius/loading';
-import Sentry from '@aquarius/sentry';
+import { startLoading, stopLoading } from '@aquarius-bot/loading';
+import Sentry from '@aquarius-bot/sentry';
 import debug from 'debug';
 import fetch from 'node-fetch';
 

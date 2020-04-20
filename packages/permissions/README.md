@@ -1,3 +1,3 @@
-# @aquarius/permissions
+# @aquarius-bot/permissions
 
 TODO!

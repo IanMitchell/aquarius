@@ -1,6 +1,6 @@
-import { startLoading, stopLoading } from '@aquarius/loading';
-import { checkBotPermissions } from '@aquarius/permissions';
-import Sentry from '@aquarius/sentry';
+import { startLoading, stopLoading } from '@aquarius-bot/loading';
+import { checkBotPermissions } from '@aquarius-bot/permissions';
+import Sentry from '@aquarius-bot/sentry';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';

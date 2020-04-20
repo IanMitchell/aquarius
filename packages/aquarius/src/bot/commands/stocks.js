@@ -1,6 +1,6 @@
-import { startLoading, stopLoading } from '@aquarius/loading';
-import { checkBotPermissions } from '@aquarius/permissions';
-import Sentry from '@aquarius/sentry';
+import { startLoading, stopLoading } from '@aquarius-bot/loading';
+import { checkBotPermissions } from '@aquarius-bot/permissions';
+import Sentry from '@aquarius-bot/sentry';
 import alphaVantageAPI from 'alphavantage';
 import dateFns from 'date-fns';
 import debug from 'debug';

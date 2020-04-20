@@ -2,7 +2,7 @@ import {
   getPermissionName,
   isBotAdmin,
   isGuildAdmin,
-} from '@aquarius/permissions';
+} from '@aquarius-bot/permissions';
 import pluralize from 'pluralize';
 import aquarius from '../../aquarius';
 import { humanize } from './lists';

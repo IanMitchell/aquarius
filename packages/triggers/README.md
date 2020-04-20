@@ -1,3 +1,3 @@
-# @aquarius/triggers
+# @aquarius-bot/triggers
 
 TODO!

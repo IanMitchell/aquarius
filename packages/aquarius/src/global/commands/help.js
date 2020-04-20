@@ -1,5 +1,8 @@
-import { checkBotPermissions, getPermissionName } from '@aquarius/permissions';
-import { getNickname } from '@aquarius/users';
+import {
+  checkBotPermissions,
+  getPermissionName,
+} from '@aquarius-bot/permissions';
+import { getNickname } from '@aquarius-bot/users';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';

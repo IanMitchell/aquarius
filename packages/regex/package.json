@@ -1,5 +1,5 @@
 {
-  "name": "@aquarius/regex",
+  "name": "@aquarius-bot/regex",
   "version": "0.0.1",
   "description": "Regex matchers for Discord",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",
@@ -8,6 +8,9 @@
     "type": "git",
     "url": "ssh://git@github.com/ianmitchell/aquarius.git",
     "directory": "packages/regex"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "license": "MIT",
   "keywords": [

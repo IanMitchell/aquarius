@@ -1,4 +1,4 @@
-import { checkBotPermissions, isGuildAdmin } from '@aquarius/permissions';
+import { checkBotPermissions, isGuildAdmin } from '@aquarius-bot/permissions';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { Permissions } from 'discord.js';

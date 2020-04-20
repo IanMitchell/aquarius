@@ -1,6 +1,6 @@
-import { startLoading, stopLoading } from '@aquarius/loading';
-import { checkBotPermissions } from '@aquarius/permissions';
-import { getNickname } from '@aquarius/users';
+import { startLoading, stopLoading } from '@aquarius-bot/loading';
+import { checkBotPermissions } from '@aquarius-bot/permissions';
+import { getNickname } from '@aquarius-bot/users';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';

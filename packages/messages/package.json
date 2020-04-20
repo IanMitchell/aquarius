@@ -1,5 +1,5 @@
 {
-  "name": "@aquarius/messages",
+  "name": "@aquarius-bot/messages",
   "version": "0.0.1",
   "description": "Message helper methods for Discord",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",
@@ -8,6 +8,9 @@
     "type": "git",
     "url": "ssh://git@github.com/ianmitchell/aquarius.git",
     "directory": "packages/messages"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "license": "MIT",
   "keywords": [
@@ -26,6 +29,6 @@
     "discord.js": "^12.0.0"
   },
   "dependencies": {
-    "@aquarius/regex": "file:../regex"
+    "@aquarius-bot/regex": "file:../regex"
   }
 }

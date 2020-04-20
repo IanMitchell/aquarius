@@ -1,5 +1,5 @@
 {
-  "name": "@aquarius/discordjs-fixes",
+  "name": "@aquarius-bot/discordjs-fixes",
   "version": "0.0.1",
   "description": "Apply discord.js library fixes",
   "author": "Ian Mitchell <ian.mitchel1@live.com>",
@@ -8,6 +8,9 @@
     "type": "git",
     "url": "ssh://git@github.com/ianmitchell/aquarius.git",
     "directory": "packages/discordjs-fixes"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "license": "MIT",
   "keywords": [

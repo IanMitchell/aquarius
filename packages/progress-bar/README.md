@@ -1,3 +1,3 @@
-# @aquarius/progress-bar
+# @aquarius-bot/progress-bar
 
 TODO!
