@@ -22,6 +22,7 @@
     "build": "node scripts/install-keyfile",
     "start": "lerna run --scope aquarius --stream --no-prefix start",
     "debug": "lerna run --scope aquarius --stream --no-prefix debug ",
+    "dev": "lerna run dev --stream",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
     "pretest": "pectin",
     "test": "jest"
