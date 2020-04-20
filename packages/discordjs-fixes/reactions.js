@@ -21,7 +21,11 @@ export function fixPartialReactionEvents(client, v12 = true) {
         : client.channels.get(data.channel_id)) || (await user.createDM());
 
     // if the message is already in the cache, don't re-emit the event
-    if (channel.messages.has(data.message_id)) return;
+    if (
+      (v12 && channel.messages.cache.hash(data.message_id)) ||
+      (!v12 && channel.messages.has(data.message_id))
+    )
+      return;
 
     // if you're on the master/v12 branch, use `channel.messages.fetch()`
     const message = await (v12
