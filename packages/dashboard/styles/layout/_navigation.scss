@@ -1,0 +1,15 @@
+nav {
+  margin-left: auto;
+
+  ul {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    list-style-type: none;
+    margin: 0;
+
+    .right {
+      margin-left: auto;
+    }
+  }
+}
