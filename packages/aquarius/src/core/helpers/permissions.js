@@ -1,8 +1,4 @@
-import {
-  getPermissionName,
-  isBotAdmin,
-  isGuildAdmin,
-} from '@aquarius-bot/permissions';
+import { getPermissionName, isGuildAdmin } from '@aquarius-bot/permissions';
 import pluralize from 'pluralize';
 import aquarius from '../../aquarius';
 import { humanize } from './lists';
@@ -18,7 +14,26 @@ import { humanize } from './lists';
  * @returns {boolean} Whether the user is the bot owner
  */
 export function isBotOwner(user) {
-  return isBotAdmin(user, [aquarius.config.owner]);
+  return user.id === aquarius.config.owner;
+}
+
+/**
+ * Checks to see if a User is a bot admin
+ * @param {User} user - user to check
+ * @returns {boolean} Whether the user is a bot admin
+ */
+export function isBotAdmin(user) {
+  return aquarius.config.admins.includes(user.id) || isBotOwner(user);
+}
+
+/**
+ * Checks to see if a User is a Guild Admin or Bot Admin
+ * @param {Guild} guild - Guild to check admin status in
+ * @param {User} user - User to check admin status for
+ * @returns {boolean} Whether the user is a Guild Admin or Bot Admin
+ */
+export function isAdmin(guild, user) {
+  return isGuildAdmin(guild, user) || isBotAdmin(user);
 }
 
 /**
@@ -28,7 +43,7 @@ export function isBotOwner(user) {
  * @returns {boolean} Whether the user is ignored
  */
 export function isUserIgnored(guild, user) {
-  if (isGuildAdmin(guild, user, true)) {
+  if (isAdmin(guild, user)) {
     return false;
   }
 

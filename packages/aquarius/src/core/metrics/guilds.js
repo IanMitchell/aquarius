@@ -29,7 +29,7 @@ export async function saveSnapshots() {
       ownerId: guild.ownerID,
       vip: !!guild.splash,
       verified: guild.verified,
-      admin: isGuildAdmin(guild, guild.me, false),
+      admin: isGuildAdmin(guild, guild.me),
     });
   });
 

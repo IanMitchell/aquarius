@@ -38,43 +38,16 @@ const PERMISSION_NAMES = new Map([
 ]);
 
 /**
- * Gets a list of Bot Admins. These should be defined as a list of comma-separated IDs in the `ADMINS` environmental variable
- * @returns {string[]} A list of global admins
- */
-export function getBotAdminList() {
-  if (process.env.ADMINS) {
-    return process.env.ADMINS.split(',');
-  }
-
-  return [];
-}
-
-/**
- * Checks to see if a User is a bot admin
- * @param {User} user - user to check
- * @param {string[]} [admins=[]] - List of admin User IDs for the bot. Defaults to `process.env.ADMINS`
- * @returns {boolean} Whether the user is the bot admin
- */
-export function isBotAdmin(user, admins = getBotAdminList()) {
-  return admins.includes(user.id);
-}
-
-/**
  * Checks to see if a User is a Guild Admin
  * @param {Guild} guild - Guild to check admin status in
  * @param {User} user - User to check admin status for
- * @param {boolean} [includeBotAdmins=true] - Include the bot admins as Guild Admins
  * @returns {boolean} Whether the user is a Guild Admin
  */
-export function isGuildAdmin(guild, user, includeBotAdmins = true) {
+export function isGuildAdmin(guild, user) {
   const member = guild.member(user);
 
   if (!member) {
     return false;
-  }
-
-  if (includeBotAdmins && isBotAdmin(user)) {
-    return true;
   }
 
   return member.hasPermission(Permissions.FLAGS.ADMINISTRATOR);

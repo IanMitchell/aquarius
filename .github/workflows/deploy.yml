@@ -42,7 +42,6 @@ jobs:
 
       - name: Configure Kubernetes Secrets
         env:
-          ADMINS: ${{ secrets.ADMINS }}
           TOKEN: ${{ secrets.TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           SENTRY: ${{ secrets.SENTRY }}

@@ -1,4 +1,3 @@
-import { isGuildAdmin } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
 import { messageTriggered } from '@aquarius-bot/triggers';
 import debug from 'debug';
@@ -27,7 +26,7 @@ export default async ({ aquarius, analytics }) => {
   const duration = `${minutes} ${pluralize('minute', minutes)}`;
 
   aquarius.onCommand(/^quiet$/i, async (message) => {
-    if (isGuildAdmin(message.guild, message.author)) {
+    if (aquarius.permissions.isAdmin(message.guild, message.author)) {
       log(`Quiet request in ${message.guild.name}`);
       aquarius.guildManager.get(message.guild.id).muteGuild();
       message.channel.send(`Muting myself for ${duration}!`);
@@ -42,7 +41,7 @@ export default async ({ aquarius, analytics }) => {
 
     if (
       messageTriggered(message, /^quiet (?:stop|end)$/i) &&
-      isGuildAdmin(message.guild, message.author)
+      aquarius.permissions.isAdmin(message.guild, message.author)
     ) {
       log(`Quiet end request in ${message.guild.name}`);
       aquarius.guildManager.get(message.guild.id).unMuteGuild();

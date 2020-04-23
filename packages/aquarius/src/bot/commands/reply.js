@@ -1,4 +1,3 @@
-import { isGuildAdmin } from '@aquarius-bot/permissions';
 import debug from 'debug';
 import dedent from 'dedent-js';
 
@@ -91,7 +90,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^reply remove "(?<trigger>[\s\S]+)"$/i,
     async (message, { groups }) => {
-      if (isGuildAdmin(message.guild, message.author)) {
+      if (aquarius.permissions.isAdmin(message.guild, message.author)) {
         log(`Removing ${groups.trigger}`);
 
         const responses = await aquarius.database.replies
@@ -125,7 +124,7 @@ export default async ({ aquarius, analytics }) => {
       'i'
     ),
     async (message, { groups }) => {
-      if (isGuildAdmin(message.guild, message.author)) {
+      if (aquarius.permissions.isAdmin(message.guild, message.author)) {
         log(`Adding reply: "${groups.trigger}" -> "${groups.response}"`);
 
         if (RESPONSES.get(message.guild.id).has(groups.trigger.toLowerCase())) {
