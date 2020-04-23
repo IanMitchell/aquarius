@@ -51,10 +51,10 @@ export function isBotAdmin(user, admins = process.env.ADMINS || []) {
  * Checks to see if a User is a Guild Admin
  * @param {Guild} guild - Guild to check admin status in
  * @param {User} user - User to check admin status for
- * @param {boolean} [includeBotAdmins=false] - Include the bot admins as Guild Admins
+ * @param {boolean} [includeBotAdmins=true] - Include the bot admins as Guild Admins
  * @returns {boolean} Whether the user is a Guild Admin
  */
-export function isGuildAdmin(guild, user, includeBotAdmins = false) {
+export function isGuildAdmin(guild, user, includeBotAdmins = true) {
   const member = guild.member(user);
 
   if (!member) {
