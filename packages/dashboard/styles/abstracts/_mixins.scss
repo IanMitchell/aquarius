@@ -1,0 +1,12 @@
+@mixin interactive {
+  &:focus,
+  &:active {
+    @content;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+}

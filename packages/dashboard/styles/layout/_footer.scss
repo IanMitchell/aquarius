@@ -1,3 +1,35 @@
 // -----------------------------------------------------------------------------
 // This file contains all styles related to the header of the site/application.
 // -----------------------------------------------------------------------------
+
+.footer {
+  background: var(--dark);
+  color: var(--light);
+
+  &-content {
+    padding: 24px;
+  }
+
+  &-meta {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  h3 {
+    font-size: 36px;
+    text-transform: uppercase;
+    border-bottom: 15px solid var(--light);
+    margin-bottom: 0;
+  }
+
+  p {
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: end;
+  }
+
+  a {
+    color: var(--light);
+  }
+}

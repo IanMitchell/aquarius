@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+import Navigation from '../components/Navigation';
 
 export default function Layout({ children }) {
   const menu = useRef();
@@ -31,14 +32,15 @@ export default function Layout({ children }) {
 
   return (
     <Fragment>
-      {/* <aside className={menuClasses} onClick={onClick} ref={menu}>
+      <aside className={menuClasses} onClick={onClick} ref={menu}>
         <div className="app-menu">
           <h1>Content!</h1>
+          <Navigation />
         </div>
-      </aside> */}
+      </aside>
       <main className="container">
         <Header onClick={onClick} isActive={visible} />
-        {children}
+        <section className="main">{children}</section>
         <Footer />
       </main>
     </Fragment>

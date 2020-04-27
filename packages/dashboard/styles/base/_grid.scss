@@ -1,6 +1,5 @@
 .container {
   display: grid;
-  padding: 24px;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: auto;
   gap: 3% 3%;
@@ -12,6 +11,7 @@
 
 .header {
   grid-area: header;
+  padding: 24px;
 }
 
 .footer {
@@ -20,4 +20,6 @@
 
 .main {
   grid-area: main;
+  padding: 24px;
+  min-height: 40vh;
 }

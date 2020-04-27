@@ -1,9 +1,8 @@
 import classnames from 'classnames';
-import React, { useState } from 'react';
+import React from 'react';
+import Navigation from './Navigation';
 
-export default function Header() {
-  const [isActive, setIsActive] = useState(false);
-
+export default function Header({ onClick, isActive }) {
   const classes = classnames('menu-icon', 'menu-button', {
     'is-active': isActive,
   });
@@ -12,31 +11,15 @@ export default function Header() {
     <header className="header">
       {/* TODO: Make a menu page */}
 
+      <div className="hamburger">
+        <a href="#" className={classes} onClick={onClick}>
+          <span className="burger-icon"></span>
+        </a>
+      </div>
+
       <h1>Aquarius</h1>
 
-      <div className="hamburger">
-        <input type="checkbox" id="nav-toggle" hidden />
-        <label htmlFor="nav-toggle">
-          <span className="toggle-words">
-            <a href="#" className={classes} onClick={() => setIsActive(true)}>
-              <span className="burger-icon"></span>
-            </a>
-          </span>
-        </label>
-        <div className="menu">
-          <ul>
-            <li>
-              <a href="#">Nav Item</a>
-            </li>
-            <li>
-              <a href="#">Nav Item</a>
-            </li>
-            <li>
-              <a href="#">Nav Item</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <Navigation />
     </header>
   );
 }
