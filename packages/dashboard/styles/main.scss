@@ -3,11 +3,11 @@
 // 1. Configuration and helpers
 @import
   'abstracts/variables',
-  'abstracts/mixins';
+  'abstracts/media-query';
 
 // 2. Vendors
 @import
-  'vendors/typesetting',
+  'vendors/burger',
   'vendors/hue',
   'vendors/normalize';
 
@@ -15,6 +15,7 @@
 @import
   'base/base',
   'base/fonts',
+  'base/grid',
   'base/typography',
   'base/helpers';
 
@@ -27,15 +28,10 @@
 
 // 5. Components
 @import
-  'components/button';
+  'components/box',
+  'components/button',
+  'components/stats';
 
 // 6. Page-specific styles
 @import
   'pages/home';
-
-  #particle-canvas {
-    width: 100%;
-    height: 40vh;
-    background: linear-gradient(to bottom, rgb(10, 10, 50) 0%,rgb(60, 10, 60) 100%);
-    vertical-align: middle;
-  }

@@ -2,11 +2,26 @@
 // This file contains very basic styles.
 // -----------------------------------------------------------------------------
 
+:root {
+  --light: #e3e3e3;
+  --dark: #333;
+
+  @media (prefers-color-scheme: dark) {
+    --light: #333;
+    --dark: #e3e3e3;
+  }
+}
+
 /**
  * Set up a decent box model on the root element
  */
  html {
   box-sizing: border-box;
+}
+
+body {
+  color: var(--dark);
+  background-color: var(--light);
 }
 
 /**
@@ -19,17 +34,4 @@
 *::before,
 *::after {
   box-sizing: inherit;
-}
-
-/**
- * Basic styles for links
- */
-a {
-  color: $brand-color;
-  text-decoration: none;
-
-  @include on-event {
-    color: $text-color;
-    text-decoration: underline;
-  }
 }

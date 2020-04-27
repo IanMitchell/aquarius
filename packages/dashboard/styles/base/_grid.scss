@@ -1,0 +1,23 @@
+.container {
+  display: grid;
+  padding: 24px;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: auto;
+  gap: 3% 3%;
+  grid-template-areas:
+    "header header header header header header"
+    "main main main main main main"
+    "footer footer footer footer footer footer";
+}
+
+.header {
+  grid-area: header;
+}
+
+.footer {
+  grid-area: footer;
+}
+
+.main {
+  grid-area: main;
+}

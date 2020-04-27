@@ -9,14 +9,7 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <Fragment>
       <Head>
-        <meta
-          name="description"
-          content="sulfur,business,company,agency,multipurpose,modern,bootstrap4"
-        />
-
-        <meta name="author" content="themefisher.com" />
-
-        <title>Enov| Html5 Business template</title>
+        <title>Aquarius | Discord Bot</title>
       </Head>
       <SWRConfig
         value={{

@@ -1,86 +1,87 @@
+#nav-toggle {
+    // Hides the checkbox
+    position: absolute;
+    opacity: 0;
+    display: none;
+
+}
 .menu {
     position: fixed;
-    left: 0;
+    right: -100%;
     top: 0;
-    width: 100%;
+
     height: 100%;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: 150;
+    width: 100vw;
+}
+#nav-toggle {
+    ~ label {
+        display: block;
+
+        // Nice bouncy transition
+        transition: .5s transform;
+        transition-timing-function: cubic-bezier(.38,.52,.37,1.27);
+
+        // Styling
+        background-color: white;
+        padding: 15px 0;
+        border: 1px solid grey;
+        border-radius: 3px;
+        width: 100px;
+        text-align: center;
+
+    }
+}
+#nav-toggle:checked {
+    ~ label {
+        // Active styles
+        background-color: grey;
+        color: white;
+        transform: translateX(-100vw);
+
+         &::before {
+             content: "Close"; // Changes word on toggle without markup change
+         }
+        .toggle-words {
+            display: none; // Changes word on toggle without markup change
+        }
+    }
+
+    ~ .menu {
+        // Slides the nav out
+        transform: translateX(-100vw);
+    }
 }
 
-.menu--visible {
-    pointer-events: auto;
+
+.menu {
+
+    cursor: pointer;
+    background-color: #efefef;
+
+    transition: .53s transform;
+    transition-timing-function: cubic-bezier(.38,.52,.37,1);
+    ul {
+        padding: 0;
+        margin: 0;
+    }
+    li {
+        list-style: none;
+        a {
+            text-decoration: none;
+            color: grey;
+            padding: 20px;
+            display: block;
+            border-bottom: 1px solid #ccc;
+        }
+    }
+
 }
 
-.app-menu {
-    background-color: #fff;
-    color: #fff;
-    position: relative;
-    max-width: 400px;
-    width: 90%;
-    height: 100%;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-    -webkit-transform: translateX(-103%);
-            transform: translateX(-103%);
-    display: flex;
-    flex-direction: column;
-    will-change: transform;
-    z-index: 160;
-    pointer-events: auto;
-}
 
-.menu--visible .app-menu {
-    -webkit-transform: none;
-            transform: none;
-}
 
-.menu--animatable .app-menu {
-    transition: all 130ms ease-in;
-}
-
-.menu--visible.menu--animatable  .app-menu {
-    transition: all 330ms ease-out;
-}
-
-.menu:after {
-    content: '';
-    display: block;
+.hamburger {
     position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.4);
-    opacity: 0;
-    will-change: opacity;
-    pointer-events: none;
-    transition: opacity 0.3s cubic-bezier(0,0,0.3,1);
-}
-
-.menu--visible.menu:after {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* aux */
-
-.menu-icon {
-  content: "Menu";
-  color: #fff;
-  background-color: #666;
-  width: 40px;
-  height: 40px;
-}
-
-.app-menu {
-  width: 300px;
-  height: 100vh;
-  box-shadow: none;
-  background-color: #ddd;
-}
-
-.menu:after {
-  width: 375px;
-  height: 667px;
+    top: 20px;
+    right: 20px;
+    display: inline-block;
 }

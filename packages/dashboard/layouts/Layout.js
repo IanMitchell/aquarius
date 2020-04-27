@@ -31,13 +31,13 @@ export default function Layout({ children }) {
 
   return (
     <Fragment>
-      <aside className={menuClasses} onClick={onClick} ref={menu}>
+      {/* <aside className={menuClasses} onClick={onClick} ref={menu}>
         <div className="app-menu">
           <h1>Content!</h1>
         </div>
-      </aside>
-      <main className="layout" data-typesettings>
-        <Header onClick={onClick} />
+      </aside> */}
+      <main className="container">
+        <Header onClick={onClick} isActive={visible} />
         {children}
         <Footer />
       </main>

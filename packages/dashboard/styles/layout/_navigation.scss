@@ -1,15 +1,14 @@
-nav {
-  margin-left: auto;
+.menu-button {
+	display: inline-block;
+	padding: .5em;
+	background-color: var(--dark);
+	border: 1px solid var(--dark);
+}
 
-  ul {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    list-style-type: none;
-    margin: 0;
+.burger-icon {
+	@include burger(25px, 3px, 5px, var(--dark));
+}
 
-    .right {
-      margin-left: auto;
-    }
-  }
+.menu-button.is-active .burger-icon {
+	@include burger-to-cross;
 }

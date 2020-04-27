@@ -1,8 +1,24 @@
 /**
  * Basic typography style for copy text
  */
-body {
-  color: $text-color;
-  font: normal 125% / 1.4 $text-font-stack;
-  text-decoration-skip-ink: auto;
+
+@import url('https://rsms.me/inter/inter.css');
+
+html {
+  font-family: 'Inter', sans-serif;
+}
+
+@supports (font-variation-settings: normal) {
+  html {
+    font-family: 'Inter var', sans-serif;
+  }
+}
+
+@mixin text-stroke($color, $stroke) {
+  color: $color;
+  text-shadow:
+   -1px -1px 0 $stroke,
+    1px -1px 0 $stroke,
+    -1px 1px 0 $stroke,
+     1px 1px 0 $stroke;
 }
