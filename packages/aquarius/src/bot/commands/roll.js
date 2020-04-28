@@ -46,7 +46,7 @@ export default async ({ aquarius, analytics }) => {
 
     const values = Array.from(
       roll.matchAll(
-        /(?:(?<sign>[+-]) )?(?<dieCount>\d+)?d(?<dieType>100|20|12|10|8|6|4)(?: ?(?<type>[+-]) ?(?<modifier>\d+(?!d)))?/gi
+        /(?:(?<sign>[+-]) )?(?<dieCount>\d+)?d(?<dieType>[1-9]\d*)(?: ?(?<type>[+-]) ?(?<modifier>\d+(?!d)))?/gi
       )
     );
 
@@ -59,7 +59,7 @@ export default async ({ aquarius, analytics }) => {
         const emoji =
           dieType === '100'
             ? `${aquarius.emojiList.get('d10')}${aquarius.emojiList.get('d10')}`
-            : aquarius.emojiList.get(`d${dieType}`);
+            : (aquarius.emojiList.get(`d${dieType}`) || `d${dieType}`);
 
         const sequence = {
           sign,
