@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import Link from 'next/link';
 import React from 'react';
 import Navigation from './Navigation';
 
@@ -17,7 +18,11 @@ export default function Header({ onClick, isActive }) {
         </a>
       </div>
 
-      <h1>Aquarius</h1>
+      <h1>
+        <Link href="/">
+          <a>Aquarius</a>
+        </Link>
+      </h1>
 
       <Navigation />
     </header>

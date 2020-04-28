@@ -24,11 +24,11 @@ nav {
 	justify-self: end;
 
 	@media(min-width: $mobile-width) {
-		grid-column: 3 / 6;
+		grid-column: 6 / 6;
 	}
 
 	ul {
-		margin: 0 100px 0 0;
+		margin: 0;
 		list-style: none;
 		text-align: end;
 	}

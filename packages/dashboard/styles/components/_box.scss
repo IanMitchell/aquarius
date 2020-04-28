@@ -1,2 +1,12 @@
 .box {
+  border: 5px solid var(--dark);
+  padding: 10px;
+
+  &-title {
+    margin: 0 0 20px 0;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 0.05rem;
+    font-weight: bold;
+  }
 }
