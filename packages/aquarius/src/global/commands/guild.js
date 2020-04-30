@@ -82,7 +82,7 @@ export default async ({ aquarius, analytics }) => {
           return;
         }
 
-        const guild = aquarius.guilds.find(
+        const guild = aquarius.guilds.cache.find(
           (server) => server.name === groups.name
         );
 
