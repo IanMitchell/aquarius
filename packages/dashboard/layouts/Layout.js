@@ -1,3 +1,7 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable consistent-return */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable react/prop-types */
 import classnames from 'classnames';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Footer from '../components/Footer';
@@ -23,11 +27,12 @@ export default function Layout({ children }) {
     if (!menu.current) {
       return;
     }
+    const element = menu.current;
+
     const onTransitionEnd = () => setAnimating(false);
 
-    menu.current.addEventListener('transitionend', onTransitionEnd);
-    return () =>
-      menu.current.removeEventListener('transitionend', onTransitionEnd);
+    element.addEventListener('transitionend', onTransitionEnd);
+    return () => element.removeEventListener('transitionend', onTransitionEnd);
   }, []);
 
   return (

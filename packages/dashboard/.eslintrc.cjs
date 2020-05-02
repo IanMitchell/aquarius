@@ -8,5 +8,6 @@ module.exports = {
   rules: {
     'react/jsx-filename-extension': 0,
     'react/jsx-fragments': [1, 'element'],
+    'react/jsx-one-expression-per-line': 0,
   },
 };

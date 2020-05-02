@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable react/prop-types */
 import classnames from 'classnames';
 import Link from 'next/link';
 import React from 'react';
@@ -14,7 +16,7 @@ export default function Header({ onClick, isActive }) {
 
       <div className="hamburger">
         <a href="#" className={classes} onClick={onClick}>
-          <span className="burger-icon"></span>
+          <span className="burger-icon" />
         </a>
       </div>
 

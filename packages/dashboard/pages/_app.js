@@ -1,3 +1,7 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/jsx-props-no-spreading */
+/* global fetch */
+
 import 'isomorphic-unfetch';
 import Head from 'next/head';
 import React, { Fragment } from 'react';

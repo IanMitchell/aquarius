@@ -9,7 +9,7 @@ const COLORS = {
   fatal: parseInt('d20f2a', 16),
 };
 
-module.exports = async (request, response) => {
+module.exports = async (request) => {
   try {
     const { body } = request;
 

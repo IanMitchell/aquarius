@@ -56,10 +56,10 @@ app.get('/ping', (request, response) => {
 });
 
 // TODO: Implement
-app.get('/contributors', (request, response) => {
-  // TODO: Find all users in home guild with X Role
-  return status(200);
-});
+// app.get('/contributors', (request, response) => {
+//   // TODO: Find all users in home guild with X Role
+//   return status(200);
+// });
 
 app.get('/health', (request, response) => {
   log('Health Request');

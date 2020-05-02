@@ -1,3 +1,4 @@
+/* global window */
 import { useEffect } from 'react';
 import useSWR from 'swr';
 
