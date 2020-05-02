@@ -15,7 +15,7 @@ export default function Navigation() {
             <a>Docs</a>
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link href="/development">
             <a>Development</a>
           </Link>
@@ -29,7 +29,7 @@ export default function Navigation() {
           <Link href="/sponsors">
             <a>Sponsors</a>
           </Link>
-        </li>
+        </li>*/}
       </ul>
     </nav>
   );
