@@ -25,7 +25,6 @@ app.get('/', (request, response) => {
 app.get('/shield/guilds', (request, response) => {
   response.json(
     createShield(
-      aquarius,
       'Guilds',
       aquarius.guilds.cache.array().length.toLocaleString()
     )
@@ -33,24 +32,18 @@ app.get('/shield/guilds', (request, response) => {
 });
 
 app.get('/shield/users', (request, response) => {
-  response.json(
-    createShield(aquarius, 'Users', getTotalUserCount().toLocaleString())
-  );
+  response.json(createShield('Users', getTotalUserCount().toLocaleString()));
 });
 
 app.get('/shield/commands', (request, response) => {
   return response.json(
-    createShield(
-      aquarius,
-      'Commands',
-      aquarius.commandList.size.toLocaleString()
-    )
+    createShield('Commands', aquarius.commandList.size.toLocaleString())
   );
 });
 
 app.get('/link', (request, response) => {
   log('Link Request');
-  return response.redirect(301, botLink());
+  return response.send({ url: botLink() });
 });
 
 app.get('/ping', (request, response) => {
@@ -62,6 +55,12 @@ app.get('/ping', (request, response) => {
   return response.status(500).json({ error: 'bot not running' });
 });
 
+// TODO: Implement
+// app.get('/contributors', (request, response) => {
+//   // TODO: Find all users in home guild with X Role
+//   return status(200);
+// });
+
 app.get('/health', (request, response) => {
   log('Health Request');
   // TODO: Check some stuff
@@ -69,5 +68,5 @@ app.get('/health', (request, response) => {
 });
 
 export default (async () => {
-  return app.listen(3000);
+  return app.listen(3030);
 })();

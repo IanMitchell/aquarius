@@ -59,7 +59,7 @@ export default async ({ aquarius, analytics }) => {
         const emoji =
           dieType === '100'
             ? `${aquarius.emojiList.get('d10')}${aquarius.emojiList.get('d10')}`
-            : (aquarius.emojiList.get(`d${dieType}`) || `d${dieType}`);
+            : aquarius.emojiList.get(`d${dieType}`) || `d${dieType}`;
 
         const sequence = {
           sign,

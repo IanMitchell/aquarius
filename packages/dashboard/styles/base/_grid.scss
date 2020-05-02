@@ -1,0 +1,29 @@
+.container {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: auto;
+  gap: 3% 3%;
+  grid-template-areas:
+    "header header header header header header"
+    "main main main main main main"
+    "footer footer footer footer footer footer";
+}
+
+.header {
+  grid-area: header;
+  display: grid;
+  grid-template-columns: subgrid;
+  padding: 24px;
+}
+
+.footer {
+  grid-area: footer;
+}
+
+.main {
+  grid-area: main;
+  padding: 24px;
+  min-height: 45vh;
+  display: grid;
+  grid-template-columns: subgrid;
+}

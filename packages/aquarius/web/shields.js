@@ -1,4 +1,4 @@
-export default function createShield(aquarius, message, label) {
+export default function createShield(message, label) {
   return {
     schemaVersion: 1,
     message,
