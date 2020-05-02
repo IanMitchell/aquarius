@@ -24,8 +24,11 @@ const LOOP_DURATIONS = new Array(5)
 async function updateNickname(aquarius) {
   const guild = aquarius.guilds.cache.get(GOOD_JOB_MEDIA);
   const check = checkBotPermissions(guild, ...info.permissions);
+  const enabled = aquarius.guildManager
+    .get(guild.id)
+    .isCommandEnabled(info.name);
 
-  if (check.valid) {
+  if (check.valid && enabled) {
     const areki = await guild.members.fetch(AREKI);
     const nickname = getNickname(guild, areki);
     const match = nickname.match(/\d+/);
