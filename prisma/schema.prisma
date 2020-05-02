@@ -34,9 +34,12 @@ model Reply {
   updatedAt DateTime @updatedAt
 }
 
-// TODO: Wait for JSON support
 model Service {
   id        Int      @default(autoincrement()) @id
+  userId    String
+  name      String
+  // TODO: JSON field
+  // values
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -44,8 +47,7 @@ model Service {
 model Setting {
   id        Int      @default(autoincrement()) @id
   key       String
-  // TODO: Any value?
-  // value
+  value     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -70,10 +72,34 @@ model GuildSnapshot {
 
 model GuildSetting {
   id        Int      @default(autoincrement()) @id
+  mute      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EnabledCommand {
+  id        Int      @default(autoincrement()) @id
+  guildId   String
+  command   String
+  emabled   Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CommandConfig {
+  id        Int      @default(autoincrement()) @id
+  guildId   String
+  command   String
   // TODO: JSON fields
-  // commandConfig
-  // enabledCommands
-  // ignoredUsers
+  // config
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model IgnoredUser {
+  id        Int      @default(autoincrement()) @id
+  userId    String
+  guildId   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
