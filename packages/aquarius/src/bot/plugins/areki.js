@@ -17,7 +17,9 @@ export const info = {
 
 const GOOD_JOB_MEDIA = '131816223523602432';
 const AREKI = '132203481565102080';
-const LOOP_DURATIONS = new Array(5).map((val, index) => index * ONE_MINUTE);
+const LOOP_DURATIONS = new Array(5)
+  .fill(0)
+  .map((val, index) => (1 + index) * ONE_MINUTE);
 
 async function updateNickname(aquarius) {
   const guild = aquarius.guilds.cache.get(GOOD_JOB_MEDIA);
