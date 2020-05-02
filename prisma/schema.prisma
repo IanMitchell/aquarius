@@ -1,0 +1,90 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model LastSeen {
+  id        Int      @default(autoincrement()) @id
+  userId    String
+  lastSeen  DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Karma {
+  id        Int      @default(autoincrement()) @id
+  guildId   String
+  karma     Int      @default(0)
+  lastUsage DateTime @default(now())
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Reply {
+  id        Int      @default(autoincrement()) @id
+  guildId   String
+  trigger   String
+  response  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// TODO: Wait for JSON support
+model Service {
+  id        Int      @default(autoincrement()) @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Setting {
+  id        Int      @default(autoincrement()) @id
+  key       String
+  // TODO: Any value?
+  // value
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Quote {
+  id        Int      @default(autoincrement()) @id
+  guildId   String
+  quote     String
+  addedBy   String
+  channel   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GuildSnapshot {
+  id        Int      @default(autoincrement()) @id
+  // TODO: JSON field
+  // snapshot
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GuildSetting {
+  id        Int      @default(autoincrement()) @id
+  // TODO: JSON fields
+  // commandConfig
+  // enabledCommands
+  // ignoredUsers
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Analytic {
+  id        Int      @default(autoincrement()) @id
+  action    String
+  category  String
+  label     String
+  // TODO: JSON field
+  // context
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
