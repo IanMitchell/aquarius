@@ -17,7 +17,10 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^nick(?:name)? (?<nickname>.*)/i,
     async (message, { groups }) => {
-      if (message.member.hasPermission(Permissions.FLAGS.MANAGE_NICKNAMES)) {
+      if (
+        aquarius.permissions.isBotAdmin(message.author) ||
+        message.member.hasPermission(Permissions.FLAGS.MANAGE_NICKNAMES)
+      ) {
         const check = checkBotPermissions(message.guild, ...info.permissions);
 
         if (!check.valid) {

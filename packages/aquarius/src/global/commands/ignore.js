@@ -1,5 +1,4 @@
 import { getOrderedMentions } from '@aquarius-bot/messages';
-import { isGuildAdmin } from '@aquarius-bot/permissions';
 import { MENTION } from '@aquarius-bot/regex';
 import { getNickname } from '@aquarius-bot/users';
 import debug from 'debug';
@@ -28,7 +27,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     new RegExp(`^ignore add ${MENTION.source}`, 'i'),
     async (message) => {
-      if (isGuildAdmin(message.guild, message.author)) {
+      if (aquarius.permissions.isAdmin(message.guild, message.author)) {
         if (message.mentions.users.size > 0) {
           const mentions = await getOrderedMentions(message);
           const user = mentions[mentions.length - 1];
@@ -48,7 +47,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     new RegExp(`^ignore remove ${MENTION.source}`, 'i'),
     async (message) => {
-      if (isGuildAdmin(message.guild, message.author)) {
+      if (aquarius.permissions.isAdmin(message.guild, message.author)) {
         if (message.mentions.users.size > 0) {
           const mentions = await getOrderedMentions(message);
           const user = mentions[mentions.length - 1];

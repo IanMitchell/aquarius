@@ -38,31 +38,16 @@ const PERMISSION_NAMES = new Map([
 ]);
 
 /**
- * Checks to see if a User is a bot admin
- * @param {User} user - user to check
- * @param {string[]} [admins=[]] - List of admin User IDs for the bot. Defaults to `process.env.ADMINS`
- * @returns {boolean} Whether the user is the bot admin
- */
-export function isBotAdmin(user, admins = process.env.ADMINS || []) {
-  return admins.includes(user.id);
-}
-
-/**
  * Checks to see if a User is a Guild Admin
  * @param {Guild} guild - Guild to check admin status in
  * @param {User} user - User to check admin status for
- * @param {boolean} [includeBotAdmins=false] - Include the bot admins as Guild Admins
  * @returns {boolean} Whether the user is a Guild Admin
  */
-export function isGuildAdmin(guild, user, includeBotAdmins = false) {
+export function isGuildAdmin(guild, user) {
   const member = guild.member(user);
 
   if (!member) {
     return false;
-  }
-
-  if (includeBotAdmins && isBotAdmin(user)) {
-    return true;
   }
 
   return member.hasPermission(Permissions.FLAGS.ADMINISTRATOR);
