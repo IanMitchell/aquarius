@@ -12,7 +12,6 @@ export const info = {
   name: 'areki',
   description: "A fun utility for everyone's favorite fansubber.",
   permissions: [Permissions.FLAGS.MANAGE_NICKNAMES],
-  usage: '```@Aquarius nickname <name>```',
 };
 
 const GOOD_JOB_MEDIA = '131816223523602432';
