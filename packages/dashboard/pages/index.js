@@ -2,7 +2,10 @@ import React, { Fragment } from 'react';
 import useSWR from 'swr';
 
 export default function Index() {
-  const { data } = useSWR('https://api.aquarius.sh/link');
+  const { data: link } = useSWR('https://api.aquarius.sh/link');
+  const { data: users } = useSWR('https://api.aquarius.sh/shield/users');
+  const { data: guilds } = useSWR('https://api.aquarius.sh/shield/guilds');
+  const { data: commands } = useSWR('https://api.aquarius.sh/shield/commands');
 
   return (
     <Fragment>
@@ -10,11 +13,11 @@ export default function Index() {
         <h3 className="box-title">Aquarius Stats</h3>
         <div className="box-content">
           <span>Users/</span>
-          <p>5000</p>
+          <p>{users?.label || '--'}</p>
           <span>Guilds/</span>
-          <p>29</p>
+          <p>{guilds?.label || '--'}</p>
           <span>Commands/</span>
-          <p>55</p>
+          <p>{commands?.label || '--'}</p>
         </div>
       </section>
 
@@ -29,7 +32,7 @@ export default function Index() {
             automatically delete zalgo text, or information access commands like
             magic card lookups, Aquarius will help!
           </p>
-          <a href={data?.url || '#'} className="button">
+          <a href={link?.url || '#'} className="button">
             Add Aquarius
           </a>
         </div>
