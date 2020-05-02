@@ -3,10 +3,10 @@ import { getNickname } from '@aquarius-bot/users';
 import debug from 'debug';
 import { MessageEmbed, Permissions } from 'discord.js';
 
-const log = debug('Starred');
+const log = debug('Starboard');
 
 export const info = {
-  name: 'starred',
+  name: 'starboard',
   description:
     'Messages with enough star reactions will be posted to a channel',
 };
@@ -67,7 +67,7 @@ export default async ({ aquarius, settings, analytics }) => {
 
       if (!channel) {
         const errorMsg =
-          "Hey! Unfortunately I can't find a channel to post starred messages to. Please have an admin DM me with `set starred channel <name>` to fix this!";
+          "Hey! Unfortunately I can't find a channel to post starred messages to. Please have an admin DM me with `set starboard channel <name>` to fix this!";
 
         const previousMessages = await message.channel.messages.fetch({
           limit: 100,
