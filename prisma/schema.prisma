@@ -75,48 +75,47 @@ model GuildSnapshot {
 }
 
 model GuildSetting {
-  id              Int              @default(autoincrement()) @id
-  guildId         String           @unique
-  mute            Boolean          @default(false)
-  enabledCommands EnabledCommand[]
-  commandConfigs  CommandConfig[]
-  ignoredUsers    IgnoredUser[]
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  id           Int           @default(autoincrement()) @id
+  guildId      String        @unique
+  mute         Boolean       @default(false)
+  ignoredUsers IgnoredUser[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  commands     Command[]
 }
 
-model EnabledCommand {
-  id             Int           @default(autoincrement()) @id
-  guildSetting   GuildSetting? @relation(fields: [guildSettingId], references: [id])
-  guildSettingId Int?
-  command        String
-  emabled        Boolean
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+model Command {
+  id             Int          @default(autoincrement()) @id
+  guildSetting   GuildSetting @relation(fields: [guildSettingId], references: [id])
+  guildSettingId Int
+  name           String
+  enabled        Boolean
+  configs        Config[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
-  @@unique([guildSettingId, command])
+  @@unique([guildSettingId, name])
 }
 
-model CommandConfig {
-  id             Int           @default(autoincrement()) @id
-  guildSetting   GuildSetting? @relation(fields: [guildSettingId], references: [id])
-  guildSettingId Int?
-  command        String
-  // TODO: JSON fields
-  // config
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+model Config {
+  id        Int      @default(autoincrement()) @id
+  command   Command  @relation(fields: [commandId], references: [id])
+  commandId Int
+  key       String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@unique([guildSettingId, command])
+  @@unique([commandId, key])
 }
 
 model IgnoredUser {
-  id             Int           @default(autoincrement()) @id
-  guildSetting   GuildSetting? @relation(fields: [guildSettingId], references: [id])
-  guildSettingId Int?
+  id             Int          @default(autoincrement()) @id
+  guildSetting   GuildSetting @relation(fields: [guildSettingId], references: [id])
+  guildSettingId Int
   userId         String
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   @@unique([guildSettingId, userId])
 }
