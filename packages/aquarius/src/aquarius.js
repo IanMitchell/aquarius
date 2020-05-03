@@ -3,6 +3,7 @@ import { isDirectMessage } from '@aquarius-bot/messages';
 import Sentry from '@aquarius-bot/sentry';
 import * as triggers from '@aquarius-bot/triggers';
 import { isBot } from '@aquarius-bot/users';
+import { PrismaClient } from '@prisma/client';
 import chalk from 'chalk';
 import debug from 'debug';
 import Discord from 'discord.js';
@@ -25,6 +26,7 @@ const log = debug('Aquarius');
 const errorLog = debug('Aquarius:Error');
 
 /**
+ * @typedef { import('@prisma/client').PrismaClient } PrismaClient
  * @typedef { import('discord.js').Guild } Guild
  * @typedef { import('discord.js').Message } Message
  * @typedef { import('./typedefs').CommandInfo } CommandInfo
@@ -50,8 +52,15 @@ export class Aquarius extends Discord.Client {
 
     /**
      * Static configuration for Aquarius
+     * TODO: Set type
      */
     this.config = this.loadConfig();
+
+    /**
+     * Database connection for Aquarius
+     * @type {PrismaClient}
+     */
+    this.database = new PrismaClient();
 
     /**
      * Manages the Guilds for which Aquarius is a member

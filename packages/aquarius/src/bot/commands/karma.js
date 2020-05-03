@@ -3,7 +3,6 @@ import { MENTION_USER } from '@aquarius-bot/regex';
 import Sentry from '@aquarius-bot/sentry';
 import { messageTriggered } from '@aquarius-bot/triggers';
 import { getNickname } from '@aquarius-bot/users';
-import { PrismaClient } from '@prisma/client';
 import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
@@ -12,7 +11,6 @@ import dedent from 'dedent-js';
 const { formatDistance } = dateFns;
 
 const log = debug('Karma');
-const prisma = new PrismaClient();
 
 export const info = {
   name: 'karma',
@@ -280,7 +278,7 @@ export default async ({ aquarius, settings, analytics }) => {
           .get();
 
         if (giverList.empty) {
-          prisma.karma.add({
+          aquarius.database.karma.add({
             data: {
               guildId: message.guild.id,
               userId: message.author.id,

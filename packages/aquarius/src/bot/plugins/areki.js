@@ -10,6 +10,7 @@ const log = debug('Areki');
 
 export const info = {
   name: 'areki',
+  hidden: true,
   description: "A fun utility for everyone's favorite fansubber.",
   permissions: [Permissions.FLAGS.MANAGE_NICKNAMES],
   usage: '```@Aquarius nickname <name>```',
