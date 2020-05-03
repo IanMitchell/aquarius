@@ -80,16 +80,6 @@ spec:
                 secretKeyRef:
                   name: aquarius-secrets
                   key: MAPBOX_API_KEY
-            - name: FIREBASE_KEYFILE
-              valueFrom:
-                secretKeyRef:
-                  name: aquarius-secrets
-                  key: FIREBASE_KEYFILE
-            - name: FIREBASE_PROJECT
-              valueFrom:
-                secretKeyRef:
-                  name: aquarius-secrets
-                  key: FIREBASE_PROJECT
             - name: ALPHA_VANTAGE_KEY
               valueFrom:
                 secretKeyRef:

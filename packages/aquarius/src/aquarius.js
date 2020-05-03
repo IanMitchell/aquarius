@@ -11,7 +11,6 @@ import yaml from 'js-yaml';
 import path from 'path';
 import Analytics from './core/commands/analytics';
 import Settings from './core/commands/settings';
-import database from './core/database/database';
 import { getDirname } from './core/helpers/files';
 import * as permissions from './core/helpers/permissions';
 import DirectMessageManager from './core/managers/direct-message-manager';
@@ -116,12 +115,6 @@ export class Aquarius extends Discord.Client {
      * @type { typeof import('./core/core/triggers') }
      */
     this.triggers = triggers;
-
-    /**
-     * Interface for working with the Database
-     * @todo define type
-     */
-    this.database = database;
 
     // Apply discord.js Fixes
     fixPartialReactionEvents(this);
