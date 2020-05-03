@@ -23,18 +23,18 @@ async function setBroadcastMessage(aquarius, message = null) {
       return;
     }
 
-    const setting = await aquarius.database
-      .collection('settings')
-      .doc('BROADCAST')
-      .get();
-    msg = setting.exists && setting.data().value;
+    const setting = await aquarius.database.setting.findOne({
+      where: { key: 'BROADCAST' },
+    });
+
+    msg = setting.value;
 
     if (!msg) {
       msg = 'Type `.info` for info';
-      aquarius.database
-        .collection('settings')
-        .doc('BROADCAST')
-        .set({ value: msg });
+      aquarius.database.setting.update({
+        where: { key: 'BROADCAST' },
+        data: { value: msg },
+      });
     }
 
     aquarius.user.setActivity(msg);
@@ -58,10 +58,10 @@ export default async ({ aquarius, analytics }) => {
       if (aquarius.permissions.isBotOwner(message.author)) {
         log(`Setting Broadcast Message to ${groups.message}`);
 
-        aquarius.database
-          .collection('settings')
-          .doc('BROADCAST')
-          .set({ value: groups.message });
+        aquarius.database.setting.update({
+          where: { key: 'BROADCAST' },
+          data: { value: groups.message },
+        });
 
         setBroadcastMessage(aquarius, groups.message);
         message.channel.send('Updated my broadcast message');
