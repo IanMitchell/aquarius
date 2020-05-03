@@ -29,14 +29,15 @@ export default async ({ aquarius, analytics }) => {
       if (user.presence.status !== 'offline') {
         message.channel.send("They're online right now!");
       } else {
-        const lastSeen = await aquarius.database.lastSeen.doc(user.id).get();
+        const data = await aquarius.database.lastSeen.findOne({
+          where: { userId: user.id },
+        });
 
-        if (!lastSeen.exists) {
+        if (!data) {
           message.channel.send(
             `I don't know when ${user} was last online. Sorry!`
           );
         } else {
-          const data = lastSeen.data();
           message.channel.send(
             `${user} was last seen ${formatDistance(data.lastSeen, new Date(), {
               addSuffix: true,
@@ -57,9 +58,11 @@ export default async ({ aquarius, analytics }) => {
       statusDebounce.add(newPresence.user.id);
       log(`${getNickname(newPresence.guild, newPresence.user)} signed off`);
 
-      await aquarius.database.lastSeen
-        .doc(newPresence.user.id)
-        .set({ lastSeen: Date.now() });
+      await aquarius.database.lastSeen.upsert({
+        where: { userId: newPresence.user.id },
+        update: { lastSeen: Date.now() },
+        create: { userId: newPresence.user.id, lastSeen: Date.now() },
+      });
 
       setTimeout(() => statusDebounce.delete(newPresence.user.id), 500);
     }
