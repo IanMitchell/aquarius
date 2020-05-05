@@ -3,7 +3,6 @@ import { isDirectMessage } from '@aquarius-bot/messages';
 import Sentry from '@aquarius-bot/sentry';
 import * as triggers from '@aquarius-bot/triggers';
 import { isBot } from '@aquarius-bot/users';
-import { PrismaClient } from '@prisma/client';
 import chalk from 'chalk';
 import debug from 'debug';
 import Discord from 'discord.js';
@@ -12,6 +11,7 @@ import yaml from 'js-yaml';
 import path from 'path';
 import Analytics from './core/commands/analytics';
 import Settings from './core/commands/settings';
+import database from './core/database/database';
 import { getDirname } from './core/helpers/files';
 import * as permissions from './core/helpers/permissions';
 import DirectMessageManager from './core/managers/direct-message-manager';
@@ -60,7 +60,7 @@ export class Aquarius extends Discord.Client {
      * Database connection for Aquarius
      * @type {PrismaClient}
      */
-    this.database = new PrismaClient();
+    this.database = database;
 
     /**
      * Manages the Guilds for which Aquarius is a member
