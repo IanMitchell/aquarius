@@ -2,7 +2,7 @@ import Sentry from '@aquarius-bot/sentry';
 import debug from 'debug';
 import aquarius from '../../aquarius';
 import database from '../database/database';
-import { deserializeMap, serializeMap } from '../database/serialization';
+import { serializeMap } from '../database/serialization';
 import { TEN_MINUTES } from '../helpers/times';
 
 const log = debug('Guild Setting');
@@ -57,6 +57,13 @@ export default class GuildSettings {
      */
     this.commandConfig = new Map();
 
+    /**
+     * The Relation ID to save new database recores with
+     * @type {Number}
+     * TODO: Make private
+     */
+    this.guildSettingId = null;
+
     // Setup datastructure (overridden by loadSettings)
     Array.from(this.enabledCommands).forEach((name) => {
       this.commandConfig.set(name, new Map());
@@ -93,8 +100,14 @@ export default class GuildSettings {
    * @param {string} id - User ID for the User
    */
   ignoreUser(id) {
-    this.ignoredUsers.add(id);
-    this.saveSettings();
+    if (!this.ignoredUsers.has(id)) {
+      this.ignoredUsers.add(id);
+
+      database.ignoredUser.create({
+        guildSettingId: this.guildSettingId,
+        userId: id,
+      });
+    }
   }
 
   /**
@@ -102,8 +115,16 @@ export default class GuildSettings {
    * @param {string} id - User ID for the User
    */
   unignoreUser(id) {
-    this.ignoredUsers.delete(id);
-    this.saveSettings();
+    if (this.ignoredUsers.has(id)) {
+      this.ignoredUsers.delete(id);
+
+      database.ignoredUser.delete({
+        where: {
+          guildSettingId: this.guildSettingId,
+          userId: id,
+        },
+      });
+    }
   }
 
   /**
@@ -195,27 +216,44 @@ export default class GuildSettings {
    * Loads from the database and overrides current settings
    */
   async loadSettings() {
-    const guild = await database.guildSettings.doc(this.id).get();
+    const guildSetting = await database.guildSetting.findOne({
+      where: {
+        guildId: this.id,
+      },
+    });
 
-    if (!guild.exists) {
+    if (!guildSetting) {
       log(`No settings found for ${this.id}`);
       this.saveSettings();
     } else {
-      const data = guild.data();
-
       log(`Loading settings for ${this.id}`);
-      this.enabledCommands = new Set(data.enabledCommands);
-      this.ignoredUsers = new Set(data.ignoredUsers);
+
+      const [commands, ignores, configs] = await Promise.all([
+        database.command.findMany({
+          select: { id: true, name: true },
+          where: { guildSetting, enabled: true },
+        }),
+        database.ignoredUser.findMany({
+          select: { userId: true },
+          where: { guildSetting },
+        }),
+        database.config.findMany({ where: { guildSetting } }),
+      ]);
+
+      this.enabledCommands = new Set(commands.map((cmd) => cmd.name));
+      this.ignoredUsers = new Set(ignores.map((ignore) => ignore.userId));
       this.commandConfig = new Map(
-        Object.entries(data.commandConfig).map(([command, settings]) => [
-          command,
-          deserializeMap(settings),
+        commands.map((cmd) => [
+          cmd.name,
+          configs
+            .filter((config) => config.commandId === cmd.id)
+            .map((cfg) => [cfg.key, cfg.value]),
         ])
       );
-      this.muted = data.mute;
+      this.muted = guildSetting.mute;
 
-      if (Date.now() < data.mute) {
-        this.muteGuild(data.mute - Date.now());
+      if (Date.now() < guildSetting.mute) {
+        this.muteGuild(guildSetting.mute - Date.now());
       } else {
         this.unMuteGuild();
       }
