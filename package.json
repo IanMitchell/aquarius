@@ -50,7 +50,7 @@
     "@babel/preset-env": "^7.9.5",
     "@sentry/node": "5.15.5",
     "babel-eslint": "^10.0.3",
-    "babel-jest": "^25.3.0",
+    "babel-jest": "^26.0.0",
     "babel-plugin-add-module-exports": "^1.0.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-replace-object-assign": "^2.0.0",
