@@ -13,7 +13,7 @@ export const info = {
 };
 
 const FREQUENCY = FIVE_MINUTES;
-const MESSAGE_LIMIT = 50;
+const MESSAGE_LIMIT = 20;
 
 const parser = new Parser({
   headers: {
