@@ -2,7 +2,6 @@ import Sentry from '@aquarius-bot/sentry';
 import debug from 'debug';
 import aquarius from '../../aquarius';
 import database from '../database/database';
-import { serializeMap } from '../database/serialization';
 import { TEN_MINUTES } from '../helpers/times';
 
 const log = debug('Guild Setting');
@@ -132,9 +131,16 @@ export default class GuildSettings {
    * @param {string} name - Name of the command to enable
    */
   enableCommand(name) {
-    this.enabledCommands.add(name);
-    this.setCommandSettings(name, new Map(), false);
-    this.saveSettings();
+    if (!this.enabledCommands.has(name)) {
+      this.enabledCommands.add(name);
+      this.setCommandSettings(name, new Map(), false);
+
+      database.command.upsert({
+        where: { guildSettingId: this.id, name },
+        create: { name, enabled: true },
+        update: { enabled: true },
+      });
+    }
   }
 
   /**
@@ -144,7 +150,11 @@ export default class GuildSettings {
   disableCommand(name) {
     this.enabledCommands.delete(name);
     this.removeCommandSettings(name, false);
-    this.saveSettings();
+
+    database.command.update({
+      where: { guildSettingId: this.id, name },
+      data: { enabled: false },
+    });
   }
 
   /**
@@ -193,12 +203,10 @@ export default class GuildSettings {
 
     setTimeout(() => this.unMuteGuild(), duration);
 
-    database.guildSettings.doc(this.id).set(
-      {
-        mute: Date.now() + duration,
-      },
-      { merge: true }
-    );
+    database.guildSetting.update({
+      where: { id: this.guildSettingId },
+      data: { mute: Date.now() + duration },
+    });
   }
 
   /**
@@ -208,7 +216,11 @@ export default class GuildSettings {
     if (this.muted) {
       log(`Unmuting ${this.id}`);
       this.muted = false;
-      this.saveSettings();
+
+      database.guildSetting.update({
+        where: { id: this.guildSettingId },
+        data: { mute: null },
+      });
     }
   }
 
@@ -266,21 +278,43 @@ export default class GuildSettings {
   async saveSettings() {
     log(`Saving settings for ${this.id}`);
     try {
-      const serializedConfig = Array.from(this.commandConfig.entries()).reduce(
-        (config, [command, settings]) =>
-          Object.assign(config, { [command]: serializeMap(settings) }),
-        {}
-      );
+      // const serializedConfig = Array.from(this.commandConfig.entries()).reduce(
+      //   (config, [command, settings]) =>
+      //     Object.assign(config, { [command]: serializeMap(settings) }),
+      //   {}
+      // );
 
-      return database.guildSettings.doc(this.id).set(
-        {
+      database.guildSetting.upsert({
+        where: { guildId: this.id },
+        create: {
           mute: this.muted,
-          enabledCommands: Array.from(this.enabledCommands),
-          commandConfig: serializedConfig,
-          ignoredUsers: Array.from(this.ignoredUsers),
         },
-        { merge: true }
-      );
+        update: {
+          mute: this.muted,
+        },
+      })
+
+      const commandIds = Array.from(this.enabledCommands).map((cmd) =>
+          database.command.upsert({
+            select: {
+              id,
+            },
+            where: {
+              guildSettingId: this.guildSettingId,
+              name: cmd,
+            },
+            create: {
+              guildSettingId: this.guildSettingId,
+              name: cmd,
+              enabled: true,
+            },
+            update: { enabled: true },
+          })
+        ),
+
+      // TODO: Update Enabled Commands
+
+      // TODO: Update Command Configs
     } catch (error) {
       log(error);
       Sentry.captureException(error);

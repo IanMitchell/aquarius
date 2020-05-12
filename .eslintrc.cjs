@@ -5,6 +5,7 @@ module.exports = {
   },
   extends: [
     'airbnb-base',
+    'plugin:promise/recommended',
     'plugin:jest/recommended',
     'plugin:prettier/recommended',
   ],
