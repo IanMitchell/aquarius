@@ -10,7 +10,7 @@ jobs:
       - name: Use Node.js 13.x
         uses: actions/setup-node@v1
         with:
-          node-version: 13.7
+          node-version: 14.2
       - name: Lint
         run: |
           npx lerna bootstrap --hoist
@@ -23,7 +23,7 @@ jobs:
       - name: Use Node.js 13.x
         uses: actions/setup-node@v1
         with:
-          node-version: 13.7
+          node-version: 14.2
       - name: Jest
         run: |
           npx lerna bootstrap --hoist
