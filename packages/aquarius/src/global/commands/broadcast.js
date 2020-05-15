@@ -15,7 +15,7 @@ export const info = {
 async function setBroadcastMessage(aquarius, message = null) {
   let msg = message;
 
-  if (aquarius && aquarius.user) {
+  if (aquarius?.user) {
     log('Setting game to generic instructions');
 
     if (msg) {
@@ -28,7 +28,7 @@ async function setBroadcastMessage(aquarius, message = null) {
       where: { key: 'BROADCAST' },
     });
 
-    msg = setting.value;
+    msg = setting?.value;
 
     if (!msg) {
       msg = 'Type `.info` for info';
@@ -78,14 +78,7 @@ export default async ({ aquarius, analytics }) => {
     }
 
     // No game change means we don't update
-    if (
-      !(
-        oldPresence &&
-        oldPresence.activities &&
-        newPresence &&
-        newPresence.activities
-      )
-    ) {
+    if (!oldPresence?.activities || !newPresence?.activities) {
       return;
     }
 

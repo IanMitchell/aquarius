@@ -23,7 +23,7 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       let region = REGIONS.US;
 
-      if (groups.region && groups.region.toUpperCase() in REGIONS) {
+      if (groups?.region?.toUpperCase() in REGIONS) {
         region = REGIONS[groups.region.toUpperCase()];
       }
 

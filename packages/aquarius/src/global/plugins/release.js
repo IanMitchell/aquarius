@@ -27,14 +27,7 @@ export default async ({ aquarius, analytics }) => {
       },
     });
 
-    let previousVersion = 0;
-
-    if (setting) {
-      previousVersion = setting.value;
-    } else {
-      log('Could not find previous version setting');
-    }
-
+    const previousVersion = setting?.value ?? 0;
     const response = await fetch(`${GITHUB_API}/${pkg.repository}/releases`);
     const json = await response.json();
 

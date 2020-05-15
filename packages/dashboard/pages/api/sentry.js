@@ -23,7 +23,7 @@ module.exports = async (request) => {
           description: body.message,
           url: body.url,
           timestamp: new Date(body.event.received * 1000).toISOString(),
-          color: COLORS[body.level] || COLORS.error,
+          color: COLORS[body.level] ?? COLORS.error,
           footer: {
             icon_url: 'https://github.com/fluidicon.png',
             text: 'Aquarius',

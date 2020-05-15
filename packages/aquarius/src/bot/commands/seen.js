@@ -17,7 +17,8 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  // Presence change event triggers once per guild
+  // The presence change event triggers once per guild, and we only want
+  // to track one of them
   const statusDebounce = new Set();
 
   aquarius.onCommand(

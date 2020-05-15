@@ -67,13 +67,7 @@ async function getPosterInfo(name) {
 
   const json = await response.json();
 
-  if (
-    json &&
-    json.data &&
-    json.data.Media &&
-    json.data.Media.coverImage &&
-    json.data.Media.coverImage.extraLarge
-  ) {
+  if (json?.data?.Media?.coverImage?.extraLarge) {
     const embedInfo = {
       thumbnail: json.data.Media.coverImage.extraLarge,
       color: json.data.Media.coverImage.color,

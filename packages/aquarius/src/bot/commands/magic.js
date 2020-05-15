@@ -42,7 +42,7 @@ export default async ({ aquarius, analytics }) => {
           cardList.map((card) => getCard(card.groups.name))
         );
         const images = responses.reduce((list, json) => {
-          if (json && !json.status) {
+          if (!json?.status) {
             const [entry] = json.data;
             list.push(entry.image_uris.png);
           }

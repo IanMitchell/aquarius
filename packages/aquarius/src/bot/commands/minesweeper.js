@@ -48,7 +48,7 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       log('Generating game');
 
-      const difficulty = groups.difficulty || 'beginner';
+      const difficulty = groups.difficulty ?? 'beginner';
       const { rows, columns, mines } = DIFFICULTIES[difficulty];
 
       const minesweeper = new Minesweeper({

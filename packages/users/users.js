@@ -23,11 +23,7 @@ export function getNickname(guild, user) {
     member = guild.member(user);
   }
 
-  if (member && member.nickname) {
-    return member.nickname;
-  }
-
-  return member.user.username;
+  return member?.nickname ?? member.user.username;
 }
 
 /**

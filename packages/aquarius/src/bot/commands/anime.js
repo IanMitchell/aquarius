@@ -32,7 +32,7 @@ const INFO_QUERY = `
     sfw: Media(search: $search, isAdult: false, format_in: [TV, TV_SHORT, OVA, ONA, MOVIE]) @skip(if: $nsfw) {
       ...AnimeInfo
     }
-    nsfw:Media(search: $search, format_in: [TV, TV_SHORT, OVA, ONA, MOVIE]) @include(if: $nsfw) {
+    nsfw: Media(search: $search, format_in: [TV, TV_SHORT, OVA, ONA, MOVIE]) @include(if: $nsfw) {
       ...AnimeInfo
     }
   }
@@ -56,11 +56,11 @@ const INFO_QUERY = `
 `;
 
 function createAnimeEmbed(data) {
-  if (!data || !data.data || (!data.data.sfw && !data.data.nsfw)) {
+  if (!data?.data?.sfw && !data?.data?.nsfw) {
     return null;
   }
 
-  const show = data.data.sfw || data.data.nsfw;
+  const show = data.data.sfw ?? data.data.nsfw;
   const { title } = show;
 
   const embed = new MessageEmbed({
@@ -86,7 +86,7 @@ function createAnimeEmbed(data) {
     ],
   });
 
-  if (show.coverImage && show.coverImage.color) {
+  if (show?.coverImage?.color) {
     embed.setColor(getEmbedColorFromHex(show.coverImage.color));
   }
 

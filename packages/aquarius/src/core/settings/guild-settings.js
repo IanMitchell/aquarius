@@ -163,7 +163,7 @@ export default class GuildSettings {
    * @return {Map}
    */
   getCommandSettings(name) {
-    return this.commandConfig.get(name) || new Map();
+    return this.commandConfig.get(name) ?? new Map();
   }
 
   /**
