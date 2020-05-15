@@ -37,6 +37,25 @@ export default function Index() {
           </a>
         </div>
       </section>
+
+      <section className="box">
+        <h3 className="box-title">Testimonials</h3>
+        <div className="box-content">
+          <blockquote>
+            If your slots code isn&lsquo;t whats on your GitHub I&lsquo;m
+            reporting you to the FTC
+            <cite>Jukey</cite>
+          </blockquote>
+          <blockquote>
+            Aquarius can just guide my next trade.
+            <cite>AMD Simp</cite>
+          </blockquote>
+          <blockquote>
+            your bot is shit
+            <cite>skiddiks</cite>
+          </blockquote>
+        </div>
+      </section>
     </Fragment>
   );
 }

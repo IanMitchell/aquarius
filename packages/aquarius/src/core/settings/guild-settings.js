@@ -292,25 +292,25 @@ export default class GuildSettings {
         update: {
           mute: this.muted,
         },
-      })
+      });
 
       const commandIds = Array.from(this.enabledCommands).map((cmd) =>
-          database.command.upsert({
-            select: {
-              id,
-            },
-            where: {
-              guildSettingId: this.guildSettingId,
-              name: cmd,
-            },
-            create: {
-              guildSettingId: this.guildSettingId,
-              name: cmd,
-              enabled: true,
-            },
-            update: { enabled: true },
-          })
-        ),
+        database.command.upsert({
+          select: {
+            id,
+          },
+          where: {
+            guildSettingId: this.guildSettingId,
+            name: cmd,
+          },
+          create: {
+            guildSettingId: this.guildSettingId,
+            name: cmd,
+            enabled: true,
+          },
+          update: { enabled: true },
+        })
+      );
 
       // TODO: Update Enabled Commands
 

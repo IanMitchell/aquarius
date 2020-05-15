@@ -5,9 +5,9 @@ module.exports = {
   },
   extends: [
     'airbnb-base',
-    'plugin:promise/recommended',
     'plugin:jest/recommended',
     'plugin:prettier/recommended',
+    'plugin:promise/recommended',
   ],
   parser: 'babel-eslint',
   plugins: ['jest'],
