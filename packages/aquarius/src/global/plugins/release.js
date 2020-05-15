@@ -19,16 +19,20 @@ export const info = {
 export default async ({ aquarius, analytics }) => {
   aquarius.on('ready', async () => {
     const setting = await aquarius.database.setting.findOne({
+      select: {
+        value: true,
+      },
       where: {
         key: 'LAST_RELEASE_ID',
       },
     });
 
-    let previousVersion = setting.value;
+    let previousVersion = 0;
 
-    if (!previousVersion) {
+    if (setting) {
+      previousVersion = setting.value;
+    } else {
       log('Could not find previous version setting');
-      previousVersion = 0;
     }
 
     const response = await fetch(`${GITHUB_API}/${pkg.repository}/releases`);
@@ -72,9 +76,10 @@ export default async ({ aquarius, analytics }) => {
 
       analytics.trackUsage('release', null, { release: json[0].id });
 
-      aquarius.database.setting.update({
+      aquarius.database.setting.upsert({
+        update: { value: json[0].id },
+        create: { key: 'LAST_RELEASE_ID', value: json[0].id },
         where: { key: 'LAST_RELEASE_ID' },
-        data: { value: json[0].id },
       });
     }
   });
