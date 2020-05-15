@@ -31,7 +31,7 @@ export default async ({ aquarius, analytics }) => {
     const response = await fetch(`${GITHUB_API}/${pkg.repository}/releases`);
     const json = await response.json();
 
-    if (json && json.length && json[0].id > previousVersion) {
+    if (json?.length && json[0].id > previousVersion) {
       log('New version detected');
 
       const message = new MessageEmbed({
