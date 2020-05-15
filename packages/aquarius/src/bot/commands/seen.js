@@ -30,6 +30,7 @@ export default async ({ aquarius, analytics }) => {
         message.channel.send("They're online right now!");
       } else {
         const data = await aquarius.database.lastSeen.findOne({
+          select: { lastSeen: true },
           where: { userId: user.id },
         });
 
