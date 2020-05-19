@@ -8,7 +8,7 @@ import { getIconColor } from '../../core/helpers/colors';
 import { humanize } from '../../core/helpers/lists';
 import { capitalize } from '../../core/helpers/strings';
 
-const log = debug('Slots');
+const log = debug('Steam');
 
 export const info = {
   name: 'steam',
@@ -40,7 +40,10 @@ export default async ({ aquarius, analytics }) => {
         const store = new URL('https://store.steampowered.com/api/storesearch');
         store.searchParams.append('cc', 'us');
         store.searchParams.append('l', 'en');
-        store.searchParams.append('term', groups.game.replace(' ', '+'));
+        store.searchParams.append(
+          'term',
+          encodeURIComponent(groups.game.replace(' ', '+'))
+        );
 
         const storeRequest = await fetch(store);
         const storeResponse = await storeRequest.json();
