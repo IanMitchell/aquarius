@@ -47,6 +47,7 @@ export default async ({ aquarius, analytics }) => {
 
         if (!storeResponse?.total) {
           message.channel.send("Sorry, I didn't find any results for that!");
+          stopLoading(message.channel);
           return;
         }
 
