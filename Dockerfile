@@ -1,4 +1,4 @@
-FROM node:13.7
+FROM node:14.2
 
 ARG keyfile
 ENV FIREBASE_KEYFILE_CONTENTS=$keyfile
