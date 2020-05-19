@@ -1,5 +1,6 @@
+import { checkBotPermissions } from '@aquarius-bot/permissions';
 import debug from 'debug';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import { getIconColor } from '../../core/helpers/colors';
 import { humanize } from '../../core/helpers/lists';
@@ -10,6 +11,7 @@ const log = debug('Slots');
 export const info = {
   name: 'steam',
   description: 'Pulls information about Steam games',
+  permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: '```@Aquarius steam info <game>```',
 };
 
@@ -19,6 +21,16 @@ export default async ({ aquarius, analytics }) => {
     /^steam info (?<game>.*)$/i,
     async (message, { groups }) => {
       log(`Looking up ${groups.game}`);
+
+      const check = checkBotPermissions(message.guild, ...info.permissions);
+
+      if (!check.valid) {
+        log('Invalid permissions');
+        message.channel.send(
+          aquarius.permissions.getRequestMessage(check.missing)
+        );
+        return;
+      }
 
       const store = new URL('https://store.steampowered.com/api/storesearch');
       store.searchParams.append('cc', 'us');
@@ -63,26 +75,28 @@ export default async ({ aquarius, analytics }) => {
         .setImage(data.header_image);
 
       // Get Price
-      const current = (data.price_overview.final / 100).toLocaleString(
-        'en-US',
-        {
-          style: 'currency',
-          currency: data.price_overview.currency,
-        }
-      );
+      if (data.price_overview?.final > 0) {
+        const current = (data.price_overview.final / 100).toLocaleString(
+          'en-US',
+          {
+            style: 'currency',
+            currency: data.price_overview.currency,
+          }
+        );
 
-      const initial = (data.price_overview.initial / 100).toLocaleString(
-        'en-US',
-        {
-          style: 'currency',
-          currency: data.price_overview.currency,
-        }
-      );
-      embed.addField(
-        '💰 Price',
-        current === initial ? current : `~~${initial}~~ ${current}`,
-        true
-      );
+        const initial = (data.price_overview.initial / 100).toLocaleString(
+          'en-US',
+          {
+            style: 'currency',
+            currency: data.price_overview.currency,
+          }
+        );
+        embed.addField(
+          '💰 Price',
+          current === initial ? current : `~~${initial}~~ ${current}`,
+          true
+        );
+      }
 
       // Get Genres
       embed.addField(
@@ -105,24 +119,37 @@ export default async ({ aquarius, analytics }) => {
         );
       }
 
+      if (data.categories?.length > 0) {
+        const categories = data.categories
+          .filter((category) => {
+            return (
+              category.description.toLowerCase() === 'single-player' ||
+              category.description.toLowerCase() === 'multi-player'
+            );
+          })
+          .map((category) => category.description);
+
+        if (categories.length > 0) {
+          embed.addField('🎮 Players', humanize(categories), true);
+        }
+      }
+
+      // Get DLC
+      if (data.dlc?.length > 0) {
+        embed.addField('🔗 DLC Count', data.dlc.length, true);
+      }
+
+      // Get Release Date
+      if (data.release_date?.date) {
+        embed.addField('📅 Release Date', data.release_date.date, true);
+      }
+
       // Get Platforms
       const platforms = Object.keys(data.platforms).map((value) =>
         capitalize(value)
       );
       if (platforms.length > 0) {
         embed.addField('💻 Platforms', humanize(platforms), true);
-      }
-
-      // TODO: Determine single player vs multi player
-
-      // Get DLC
-      if (data.dlc.length > 0) {
-        embed.addField('🔗 DLC Count', data.dlc.length);
-      }
-
-      // Get Release Date
-      if (data.release_date?.date) {
-        embed.addField('📅 Release Date', data.release_date.date, true);
       }
 
       // Get Footer
@@ -139,7 +166,7 @@ export default async ({ aquarius, analytics }) => {
 
       message.channel.send(embed);
 
-      analytics.trackUsage('steam', message);
+      analytics.trackUsage('info', message);
     }
   );
 };
