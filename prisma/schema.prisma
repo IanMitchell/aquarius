@@ -127,3 +127,11 @@ model Analytic {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model BanList {
+  id        Int      @default(autoincrement()) @id
+  guildId   String   @unique
+  reason    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
