@@ -23,7 +23,7 @@ async function decorateMessage(message) {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onMessage(info, async (message) => {
-    const matches = message.cleanContent.match(/(?<channel>#\w+)/i);
+    const matches = message.cleanContent.match(/(?<channel>\b#\w+)/i);
 
     if (matches) {
       const check = checkBotPermissions(message.guild, ...info.permissions);
