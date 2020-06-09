@@ -77,6 +77,19 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  aquarius.on('ready', async () => {
+    const owner = await aquarius.users.fetch(aquarius.config.owner);
+
+    if (isStreaming(owner.presence)) {
+      log('Broadcasting Stream');
+
+      setStreaming(aquarius, getGame(owner.presence));
+      analytics.trackUsage('broadcast twitch');
+    } else {
+      setBroadcastMessage(aquarius);
+    }
+  });
+
   /**
    * There are four cases to account for:
    *   1. Online + Not Streaming -> Online + Streaming
@@ -85,12 +98,15 @@ export default async ({ aquarius, analytics }) => {
    *   4. Online + Streaming -> Offline
    */
   aquarius.on('presenceUpdate', async (oldPresence, newPresence) => {
+    log('Status update!');
     if (newPresence.user.id !== aquarius.config.owner) {
+      log('Incorrect Presences');
       return;
     }
 
     // No game change means we don't update
     if (!isStreaming(oldPresence) && !isStreaming(newPresence)) {
+      log('Not streaming in either presence');
       return;
     }
 
@@ -132,6 +148,4 @@ export default async ({ aquarius, analytics }) => {
       analytics.trackUsage('broadcast twitch');
     }
   });
-
-  aquarius.on('ready', () => setBroadcastMessage(aquarius));
 };
