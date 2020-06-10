@@ -99,6 +99,7 @@ export default async ({ aquarius, analytics }) => {
    */
   aquarius.on('presenceUpdate', async (oldPresence, newPresence) => {
     log('Status update!');
+
     if (newPresence.user.id !== aquarius.config.owner) {
       log('Incorrect Presences');
       return;
