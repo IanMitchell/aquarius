@@ -7,7 +7,7 @@ import { isBot } from '@aquarius-bot/users';
  * Get Aquarius's mention regex
  * @returns {RegExp} Aquarius's mention regex
  */
-export function botMention(id = process.env.BOT_ID) {
+export function botMention(id) {
   return new RegExp(`<@!?${id}>`);
 }
 
@@ -16,8 +16,10 @@ export function botMention(id = process.env.BOT_ID) {
  * @param {Message} message - the message to check
  * @returns {?RegExpMatchArray} the regex match array or null if no match
  */
-export function botMentionTrigger(message, id = process.env.BOT_ID) {
-  return message.content.trim().match(new RegExp(`^${botMention(id).source}`));
+export function botMentionTrigger(message) {
+  return message.content
+    .trim()
+    .match(new RegExp(`^${botMention(message.client.user.id).source}`));
 }
 
 /**
@@ -85,14 +87,14 @@ export function bracketTrigger(message) {
  * @returns {boolean|?RegExpMatchArray} False if no match or a bot sends the
  * message or an Array or null from a RegExp match group
  */
-export function messageTriggered(message, trigger, id = process.env.BOT_ID) {
+export function messageTriggered(message, trigger) {
   // We don't respond to other bots. The "Shaun Boley" check
   if (isBot(message.author)) {
     return false;
   }
 
   // @aquarius trigger [message]
-  if (botMentionTrigger(message, id)) {
+  if (botMentionTrigger(message)) {
     return message.content
       .trim()
       .replace(new RegExp(`^${regex.MENTION_USER.source} `), '')
