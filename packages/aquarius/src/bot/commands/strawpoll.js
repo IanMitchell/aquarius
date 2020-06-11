@@ -1,4 +1,3 @@
-import { startLoading, stopLoading } from '@aquarius-bot/loading';
 import Sentry from '@aquarius-bot/sentry';
 import debug from 'debug';
 import dedent from 'dedent-js';
@@ -43,7 +42,6 @@ export default async ({ aquarius, analytics }) => {
       }
 
       try {
-        startLoading(message.channel);
         const response = await fetch('https://www.strawpoll.me/api/v2/polls', {
           method: 'post',
           body: JSON.stringify({
@@ -58,8 +56,6 @@ export default async ({ aquarius, analytics }) => {
       } catch (error) {
         Sentry.captureException(error);
         message.channel.send('Sorry, something went wrong!');
-      } finally {
-        stopLoading(message.channel);
       }
 
       analytics.trackUsage('strawpoll', message);

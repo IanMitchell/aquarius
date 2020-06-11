@@ -1,4 +1,3 @@
-import { startLoading, stopLoading } from '@aquarius-bot/loading';
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import { getNickname } from '@aquarius-bot/users';
 import debug from 'debug';
@@ -34,8 +33,6 @@ export default async ({ aquarius, analytics }) => {
       );
       return;
     }
-
-    startLoading(message.channel);
 
     const guilds = getTotalGuildCount();
     const channels = aquarius.channels.cache.reduce((value, channel) => {
@@ -96,8 +93,6 @@ export default async ({ aquarius, analytics }) => {
       .setFooter(`Version: ${pkg.version} | Server Donations: $IanMitchel1`);
 
     message.channel.send(embed);
-
-    stopLoading(message.channel);
 
     analytics.trackUsage('info', message);
   });
