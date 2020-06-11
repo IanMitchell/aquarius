@@ -16,7 +16,7 @@ export const info = {
 export default async ({ aquarius, analytics }) => {
   aquarius.on('guildCreate', async (guild) => {
     log(`Joined Server ${guild.name} (${guild.memberCount} members)`);
-    const channel = aquarius.channels.fetch(aquarius.config.home.channel);
+    const channel = await aquarius.channels.fetch(aquarius.config.home.channel);
     const check = checkBotPermissions(channel.guild, ...info.permissions);
 
     if (!check.valid) {
@@ -37,7 +37,7 @@ export default async ({ aquarius, analytics }) => {
 
   aquarius.on('guildDelete', async (guild) => {
     log(`Left Server ${guild.name} (${guild.memberCount} members)`);
-    const channel = aquarius.channels.fetch(aquarius.config.home.channel);
+    const channel = await aquarius.channels.fetch(aquarius.config.home.channel);
     const check = checkBotPermissions(channel.guild, ...info.permissions);
 
     if (!check.valid) {
