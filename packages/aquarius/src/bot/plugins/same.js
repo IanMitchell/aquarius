@@ -77,7 +77,7 @@ export default async ({ aquarius, settings, analytics }) => {
   };
 
   // We want to track bot messages for this too, otherwise it looks weird
-  aquarius.on('message', (message) => {
+  aquarius.on('message', async (message) => {
     Sentry.configureMessageScope(message);
 
     if (message.content === '' || !message.guild) {
@@ -88,7 +88,7 @@ export default async ({ aquarius, settings, analytics }) => {
     pushMessage(message, size);
   });
 
-  aquarius.onMessage(info, (message) => {
+  aquarius.onMessage(info, async (message) => {
     if (message.content === '' || !message.guild) {
       return;
     }

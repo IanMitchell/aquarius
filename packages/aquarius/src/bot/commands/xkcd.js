@@ -1,3 +1,4 @@
+import { startLoading, stopLoading } from '@aquarius-bot/loading';
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
 import debug from 'debug';
@@ -59,6 +60,8 @@ export default async ({ aquarius, analytics }) => {
       return;
     }
 
+    startLoading(message.channel);
+
     try {
       const postJson = await getLatestPostJson();
       const embed = createEmbedFromJson(postJson);
@@ -70,6 +73,8 @@ export default async ({ aquarius, analytics }) => {
 
       message.channel.send('Sorry, there was a problem loading the comic.');
     }
+
+    stopLoading(message.channel);
 
     analytics.trackUsage('latest', message);
   });
@@ -86,6 +91,8 @@ export default async ({ aquarius, analytics }) => {
       );
       return;
     }
+
+    startLoading(message.channel);
 
     try {
       const latestPostJson = await getLatestPostJson();
@@ -119,6 +126,7 @@ export default async ({ aquarius, analytics }) => {
     }
 
     analytics.trackUsage('random', message);
+    stopLoading(message.channel);
   });
 
   aquarius.onCommand(/^xkcd (?<id>\d+)$/i, async (message, { groups }) => {
@@ -133,6 +141,8 @@ export default async ({ aquarius, analytics }) => {
       );
       return;
     }
+
+    startLoading(message.channel);
 
     try {
       const id = parseInt(groups.id, 10);
@@ -149,5 +159,6 @@ export default async ({ aquarius, analytics }) => {
     }
 
     analytics.trackUsage('target', message);
+    stopLoading(message.channel);
   });
 };

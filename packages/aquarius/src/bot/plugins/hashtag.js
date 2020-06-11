@@ -22,7 +22,7 @@ async function decorateMessage(message) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onMessage(info, (message) => {
+  aquarius.onMessage(info, async (message) => {
     const matches = message.cleanContent.match(/(?<channel>#\w+)/i);
 
     if (matches) {

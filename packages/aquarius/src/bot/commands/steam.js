@@ -1,3 +1,4 @@
+import { startLoading, stopLoading } from '@aquarius-bot/loading';
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
 import debug from 'debug';
@@ -33,6 +34,8 @@ export default async ({ aquarius, analytics }) => {
         return;
       }
 
+      startLoading(message.channel);
+
       try {
         const store = new URL('https://store.steampowered.com/api/storesearch');
         store.searchParams.append('cc', 'us');
@@ -47,6 +50,7 @@ export default async ({ aquarius, analytics }) => {
 
         if (!storeResponse?.total) {
           message.channel.send("Sorry, I didn't find any results for that!");
+          stopLoading(message.channel);
           return;
         }
 
@@ -177,6 +181,8 @@ export default async ({ aquarius, analytics }) => {
         Sentry.captureException(error);
         message.channel.send('Sorry, something went wrong!');
       }
+
+      stopLoading(message.channel);
 
       analytics.trackUsage('info', message);
     }

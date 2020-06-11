@@ -1,3 +1,4 @@
+import { startLoading, stopLoading } from '@aquarius-bot/loading';
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
 import debug from 'debug';
@@ -63,6 +64,8 @@ export default async ({ aquarius, analytics }) => {
       return;
     }
 
+    startLoading(message.channel);
+
     try {
       log(`Querying for '${groups.word}'`);
       const auth = `key=${process.env.DICTIONARY_API_KEY}`;
@@ -97,5 +100,7 @@ export default async ({ aquarius, analytics }) => {
       log(error);
       Sentry.captureException(error);
     }
+
+    stopLoading(message.channel);
   });
 };

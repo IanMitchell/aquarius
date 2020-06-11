@@ -66,7 +66,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
-  aquarius.onCommand(/^ignore list$/i, (message) => {
+  aquarius.onCommand(/^ignore list$/i, async (message) => {
     log(`Generating list for ${message.guild.name}`);
     const ids = aquarius.guildManager.get(message.guild.id).ignoredUsers;
     const list = Array.from(ids).map((userId) =>

@@ -11,7 +11,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^games list$/i, (message) => {
+  aquarius.onCommand(/^games list$/i, async (message) => {
     log('Getting game list');
 
     const games = message.guild.members.reduce((list, member) => {

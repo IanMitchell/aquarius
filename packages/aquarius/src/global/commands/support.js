@@ -10,7 +10,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^support/i, (message) => {
+  aquarius.onCommand(/^support/i, async (message) => {
     log(`Support request in ${message.guild.name}`);
 
     message.channel.send('http://discord.companyinc.company');

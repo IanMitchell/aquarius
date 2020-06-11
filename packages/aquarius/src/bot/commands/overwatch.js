@@ -20,7 +20,7 @@ const REGIONS = {
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^overwatch (?:(?<region>[A-Za-z]{2}) )?(?<account>[\w]+#[\d]{4,5})$/i,
-    (message, { groups }) => {
+    async (message, { groups }) => {
       let region = REGIONS.US;
 
       if (groups.region && groups.region.toUpperCase() in REGIONS) {

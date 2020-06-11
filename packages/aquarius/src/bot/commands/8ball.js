@@ -34,7 +34,7 @@ const responses = [
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^8ball .+$/i, (message) => {
+  aquarius.onCommand(/^8ball .+$/i, async (message) => {
     log('Generating response');
     message.channel.send(`🎱 | ${randomValue(responses)}`);
 

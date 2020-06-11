@@ -10,7 +10,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onTrigger(/^ping$/i, (message) => {
+  aquarius.onTrigger(/^ping$/i, async (message) => {
     log("I'm up!");
     message.channel.send('pong');
     analytics.trackUsage('ping', message);

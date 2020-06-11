@@ -89,7 +89,7 @@ export function helpMessage(aquarius, commandInfo, guild) {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   // Handle generic help
-  aquarius.onCommand(/^help$/i, (message) => {
+  aquarius.onCommand(/^help$/i, async (message) => {
     log(`Help request in "${message.guild.name}#${message.channel.name}"`);
 
     const check = checkBotPermissions(message.guild, ...info.permissions);
@@ -137,7 +137,7 @@ export default async ({ aquarius, analytics }) => {
   });
 
   // Handle help for specific command
-  aquarius.onCommand(/^help (?<command>.+)$/i, (message, { groups }) => {
+  aquarius.onCommand(/^help (?<command>.+)$/i, async (message, { groups }) => {
     log(
       `Help request for ${groups.command} in "${message.guild.name}#${message.channel.name}"`
     );

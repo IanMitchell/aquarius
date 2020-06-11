@@ -16,11 +16,14 @@ function sarcastic(str) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^sarcastic (?<string>.+)$/i, (message, { groups }) => {
-    log(`Sarcastic request on: ${groups.string}`);
-    message.channel.send(
-      `${sarcastic(groups.string)} ${aquarius.emojiList.get('spongebob')}`
-    );
-    analytics.trackUsage('sarcastic', message);
-  });
+  aquarius.onCommand(
+    /^sarcastic (?<string>.+)$/i,
+    async (message, { groups }) => {
+      log(`Sarcastic request on: ${groups.string}`);
+      message.channel.send(
+        `${sarcastic(groups.string)} ${aquarius.emojiList.get('spongebob')}`
+      );
+      analytics.trackUsage('sarcastic', message);
+    }
+  );
 };
