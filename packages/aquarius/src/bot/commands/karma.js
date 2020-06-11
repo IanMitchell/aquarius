@@ -37,6 +37,17 @@ const COOLDOWN = {
 };
 
 async function updateKarma(aquarius, guild, receiver, giver, amount) {
+  // TODO: When Prisma supports operations we should fix this
+  const value = await aquarius.database.karma.findOne({
+    select: {
+      karma: true,
+    },
+    where: {
+      userId: receiver,
+      guildId: guild,
+    },
+  });
+
   const update = await aquarius.database.karma.upsert({
     select: {
       karma: true,
@@ -48,7 +59,7 @@ async function updateKarma(aquarius, guild, receiver, giver, amount) {
       lastUsage: Date.now() - ONE_WEEK,
     },
     update: {
-      karma: karma + amount, // TODO: Wait for prisma to support ops
+      karma: value.karma + amount,
     },
     where: {
       userId: receiver,
