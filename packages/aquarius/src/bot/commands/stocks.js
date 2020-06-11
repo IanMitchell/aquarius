@@ -1,4 +1,3 @@
-import { startLoading, stopLoading } from '@aquarius-bot/loading';
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
 import alphaVantageAPI from 'alphavantage';
@@ -169,8 +168,6 @@ export default async ({ aquarius, analytics }) => {
       }
 
       try {
-        startLoading(message.channel);
-
         const [profileDataResponse, priceData] = await Promise.all([
           fetch(
             `https://financialmodelingprep.com/api/v3/company/profile/${groups.sign}/`
@@ -198,7 +195,6 @@ export default async ({ aquarius, analytics }) => {
         );
       }
 
-      stopLoading(message.channel);
       analytics.trackUsage('info', message);
     }
   );
@@ -219,8 +215,6 @@ export default async ({ aquarius, analytics }) => {
       }
 
       try {
-        startLoading(message.channel);
-
         const response = await fetch(
           `https://financialmodelingprep.com/api/v3/company/rating/${groups.sign}`
         );
@@ -262,7 +256,6 @@ export default async ({ aquarius, analytics }) => {
         );
       }
 
-      stopLoading(message.channel);
       analytics.trackUsage('rating', message);
     }
   );
@@ -286,8 +279,6 @@ export default async ({ aquarius, analytics }) => {
     }
 
     try {
-      startLoading(message.channel);
-
       const response = await fetch(
         'https://financialmodelingprep.com/api/v3/majors-indexes'
       );
@@ -321,7 +312,6 @@ export default async ({ aquarius, analytics }) => {
       );
     }
 
-    stopLoading(message.channel);
     analytics.trackUsage('indexes', message);
   });
 
@@ -343,8 +333,6 @@ export default async ({ aquarius, analytics }) => {
       }
 
       try {
-        startLoading(message.channel);
-
         const data = normalize(await ALPHA_VANTAGE.performance.sector());
 
         const embed = new MessageEmbed({
@@ -373,7 +361,6 @@ export default async ({ aquarius, analytics }) => {
         );
       }
 
-      stopLoading(message.channel);
       analytics.trackUsage('sectors', message);
     }
   );

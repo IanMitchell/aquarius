@@ -21,7 +21,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^color (?<name>.+)$/i, async (message, { groups }) => {
+  aquarius.onCommand(/^color (?<name>.+)$/i, (message, { groups }) => {
     log(`Looking up color ${groups.name}`);
 
     let color;

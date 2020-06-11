@@ -50,7 +50,7 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('stats', message);
   });
 
-  aquarius.onCommand(/(server|guild) list/i, async (message) => {
+  aquarius.onCommand(/(server|guild) list/i, (message) => {
     if (aquarius.permissions.isBotOwner(message.author)) {
       log('List Requested');
       const guilds = aquarius.guilds.cache.array();

@@ -1,4 +1,3 @@
-import { startLoading, stopLoading } from '@aquarius-bot/loading';
 import debug from 'debug';
 import fetch from 'node-fetch';
 
@@ -15,7 +14,6 @@ export const info = {
 export default async ({ aquarius }) => {
   aquarius.onCommand(/^cat$/i, async (message) => {
     log('Image request');
-    startLoading(message.channel);
 
     try {
       // TODO: Switch to thecatapi? This one takes forever and times out
@@ -32,7 +30,5 @@ export default async ({ aquarius }) => {
       log(e);
       message.channel.send("Sorry, I wasn't able to get an image!");
     }
-
-    stopLoading(message.channel);
   });
 };
