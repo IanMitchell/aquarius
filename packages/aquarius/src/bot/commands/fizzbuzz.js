@@ -1,4 +1,3 @@
-import { startLoading, stopLoading } from '@aquarius-bot/loading';
 import Sentry from '@aquarius-bot/sentry';
 import debug from 'debug';
 import fetch from 'node-fetch';
@@ -17,7 +16,6 @@ export default async ({ aquarius, analytics }) => {
     /^fizzbuzz (?<input>[\d]+)$/i,
     async (message, { groups }) => {
       log(`Checking ${groups.input}`);
-      startLoading(message.channel);
 
       try {
         const response = await fetch(
@@ -43,7 +41,6 @@ export default async ({ aquarius, analytics }) => {
         );
       }
 
-      stopLoading(message.channel);
       analytics.trackUsage('fizzbuzz', message);
     }
   );

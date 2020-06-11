@@ -1,4 +1,3 @@
-import { startLoading, stopLoading } from '@aquarius-bot/loading';
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
 import { bracketTrigger } from '@aquarius-bot/triggers';
@@ -40,7 +39,6 @@ export default async ({ aquarius, analytics }) => {
           .join(', ')}`
       );
 
-      startLoading(message.channel);
       try {
         const responses = await Promise.all(
           cardList.map((card) => getCard(card.groups.name))
@@ -71,8 +69,6 @@ export default async ({ aquarius, analytics }) => {
         log(error);
         Sentry.captureException(error);
       }
-
-      stopLoading(message.channel);
     }
   );
 };

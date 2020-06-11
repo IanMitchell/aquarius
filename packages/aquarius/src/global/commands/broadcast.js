@@ -52,26 +52,23 @@ function setStreaming(aquarius, activity) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(
-    /^broadcast (?<message>.*)$/i,
-    async (message, { groups }) => {
-      if (aquarius.permissions.isBotOwner(message.author)) {
-        log(`Setting Broadcast Message to ${groups.message}`);
+  aquarius.onCommand(/^broadcast (?<message>.*)$/i, (message, { groups }) => {
+    if (aquarius.permissions.isBotOwner(message.author)) {
+      log(`Setting Broadcast Message to ${groups.message}`);
 
-        aquarius.database
-          .collection('settings')
-          .doc('BROADCAST')
-          .set({ value: groups.message });
+      aquarius.database
+        .collection('settings')
+        .doc('BROADCAST')
+        .set({ value: groups.message });
 
-        setBroadcastMessage(aquarius, groups.message);
-        message.channel.send('Updated my broadcast message');
+      setBroadcastMessage(aquarius, groups.message);
+      message.channel.send('Updated my broadcast message');
 
-        analytics.trackUsage('broadcast message');
-      }
+      analytics.trackUsage('broadcast message');
     }
-  );
+  });
 
-  aquarius.on('presenceUpdate', async (oldPresence, newPresence) => {
+  aquarius.on('presenceUpdate', (oldPresence, newPresence) => {
     if (newPresence.user.id !== aquarius.config.owner) {
       return;
     }

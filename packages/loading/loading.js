@@ -33,3 +33,12 @@ export function isLoading(channel) {
 export function getLoadingCount(channel) {
   return channel.typingCount;
 }
+
+/**
+ * Checks to see if a function is async or not.
+ * @param {function} handler - Command handler function
+ * @returns {boolean} Whether the command is async or not
+ */
+export function isAsyncCommand(handler) {
+  return handler.constructor.name === 'AsyncFunction';
+}

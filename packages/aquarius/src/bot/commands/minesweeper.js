@@ -45,7 +45,7 @@ const DIFFICULTIES = {
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^minesweeper(?: (?<difficulty>beginner|intermediate|expert))?$/i,
-    async (message, { groups }) => {
+    (message, { groups }) => {
       log('Generating game');
 
       const difficulty = groups.difficulty || 'beginner';
@@ -70,7 +70,7 @@ export default async ({ aquarius, analytics }) => {
 
   aquarius.onCommand(
     /^minesweeper custom (?<count>\d{1,2})$/i,
-    async (message, { groups }) => {
+    (message, { groups }) => {
       log(`Generating custom game with ${groups.count} bombs`);
 
       const mines = Math.min(groups.count, 24);
