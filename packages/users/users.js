@@ -1,9 +1,10 @@
-import { Activity, GuildMember } from 'discord.js';
+import { GuildMember } from 'discord.js';
 
 /**
  * @typedef {import('discord.js').User} User
  * @typedef {import('discord.js').Guild} Guild
  * @typedef {import('discord.js').Presence} Presence
+ * @typedef {import('discord.js').Activity} Activity
  */
 
 /**
