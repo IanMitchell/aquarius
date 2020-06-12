@@ -22,6 +22,11 @@ const LOOP_DURATIONS = new Array(5)
 
 async function updateNickname(aquarius) {
   const guild = aquarius.guilds.cache.get(GOOD_JOB_MEDIA);
+
+  if (!guild) {
+    return;
+  }
+
   const check = checkBotPermissions(guild, ...info.permissions);
   const enabled = aquarius.guildManager
     .get(guild.id)

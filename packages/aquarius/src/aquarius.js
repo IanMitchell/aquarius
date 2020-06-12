@@ -349,12 +349,14 @@ export class Aquarius extends Discord.Client {
     }
 
     const commandInfo = this.triggerMap.get(regex.toString());
+    let isLoading = false;
 
     if (this.isUsageAllowed(message, commandInfo)) {
       try {
         const match = matchFn(message, regex);
         if (match) {
           if (isAsyncCommand(handler)) {
+            isLoading = true;
             startLoading(message.channel);
           }
 
@@ -365,7 +367,7 @@ export class Aquarius extends Discord.Client {
         errorLog(error);
         Sentry.captureException(error);
       } finally {
-        if (isAsyncCommand(handler)) {
+        if (isLoading && isAsyncCommand(handler)) {
           stopLoading(message.channel);
         }
       }
@@ -387,14 +389,15 @@ export class Aquarius extends Discord.Client {
       return;
     }
 
+    let isLoading = false;
+
     if (this.isUsageAllowed(message, commandInfo) && !isBot(message.author)) {
       try {
         const match = matchFn(message);
 
         if (match) {
           if (isAsyncCommand(handler)) {
-            log(commandInfo);
-            log(matchFn);
+            isLoading = true;
             startLoading(message.channel);
           }
 
@@ -405,7 +408,7 @@ export class Aquarius extends Discord.Client {
         errorLog(error);
         Sentry.captureException(error);
       } finally {
-        if (isAsyncCommand(handler)) {
+        if (isLoading && isAsyncCommand(handler)) {
           stopLoading(message.channel);
         }
       }
