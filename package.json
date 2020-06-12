@@ -78,5 +78,8 @@
     "stylelint": "^13.3.3",
     "stylelint-config-sass-guidelines": "^7.0.0",
     "stylelint-config-standard": "^20.0.0"
+  },
+  "volta": {
+    "node": "14.2.0"
   }
 }

@@ -1,6 +1,5 @@
-import { isStreaming } from '@aquarius-bot/users';
+import { getGame, getStream, isStreaming } from '@aquarius-bot/users';
 import debug from 'debug';
-import { Constants } from 'discord.js';
 
 const log = debug('Broadcast');
 
@@ -43,10 +42,13 @@ async function setBroadcastMessage(aquarius, message = null) {
   }
 }
 
-function setStreaming(aquarius, activity) {
-  aquarius.user.setActivity(activity.name, {
-    url: activity.url,
-    type: Constants.ActivityTypes.STREAMING,
+function setStreaming(aquarius, presence) {
+  const game = getGame(presence);
+  const stream = getStream(presence);
+
+  aquarius.user.setActivity(game.name, {
+    url: stream.url,
+    type: 'STREAMING',
   });
 }
 
@@ -71,24 +73,37 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  aquarius.on('ready', async () => {
+    const owner = await aquarius.users.fetch(aquarius.config.owner);
+
+    if (isStreaming(owner.presence)) {
+      log('Broadcasting Stream');
+
+      setStreaming(aquarius, owner.presence);
+      analytics.trackUsage('broadcast twitch');
+    } else {
+      setBroadcastMessage(aquarius);
+    }
+  });
+
+  /**
+   * There are four cases to account for:
+   *   1. Online + Not Streaming -> Online + Streaming
+   *   2. Online + Streaming -> Online + Not Streaming
+   *   3. Offline -> Online + Streaming
+   *   4. Online + Streaming -> Offline
+   */
   aquarius.on('presenceUpdate', async (oldPresence, newPresence) => {
     if (newPresence.user.id !== aquarius.config.owner) {
       return;
     }
 
     // No game change means we don't update
-    if (
-      !(
-        oldPresence &&
-        oldPresence.activities &&
-        newPresence &&
-        newPresence.activities
-      )
-    ) {
+    if (!isStreaming(oldPresence) && !isStreaming(newPresence)) {
       return;
     }
 
-    // User signs off, end a stream
+    // User signing off
     if (newPresence.status === 'offline') {
       log('Ending Stream Broadcast');
 
@@ -104,7 +119,7 @@ export default async ({ aquarius, analytics }) => {
     ) {
       log('Broadcasting Stream');
 
-      setStreaming(aquarius, newPresence.game);
+      setStreaming(aquarius, newPresence);
       analytics.trackUsage('broadcast twitch');
       return;
     }
@@ -113,7 +128,7 @@ export default async ({ aquarius, analytics }) => {
     if (!isStreaming(oldPresence) && isStreaming(newPresence)) {
       log('Broadcasting Stream');
 
-      setStreaming(aquarius, newPresence.game);
+      setStreaming(aquarius, newPresence);
       analytics.trackUsage('broadcast twitch');
       return;
     }
@@ -126,6 +141,4 @@ export default async ({ aquarius, analytics }) => {
       analytics.trackUsage('broadcast twitch');
     }
   });
-
-  aquarius.on('ready', () => setBroadcastMessage(aquarius));
 };

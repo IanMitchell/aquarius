@@ -5,7 +5,7 @@ import * as triggers from '@aquarius-bot/triggers';
 import { isBot } from '@aquarius-bot/users';
 import chalk from 'chalk';
 import debug from 'debug';
-import Discord from 'discord.js';
+import Discord, { Intents } from 'discord.js';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
@@ -40,7 +40,7 @@ const errorLog = debug('Aquarius:Error');
 export class Aquarius extends Discord.Client {
   constructor() {
     log('Booting up...');
-    super();
+    super({ ws: { intents: Intents.ALL } });
 
     // We have more listeners than normal - each command registers one to
     // several on average, so we hit the warning frequently. Small bumps
