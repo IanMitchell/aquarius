@@ -75,7 +75,8 @@ async function checkForUpdates(guild, url, name, analytics, errorName = null) {
     log(error);
     Sentry.captureException(error);
 
-    const errorChannel = guild.channels.cache.find((chan) => chan.name === errorName) ?? channel;
+    const errorChannel =
+      guild.channels.cache.find((chan) => chan.name === errorName) ?? channel;
 
     const errorPosted = await checkForPastContent(
       errorChannel,
