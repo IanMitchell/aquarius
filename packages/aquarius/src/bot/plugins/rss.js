@@ -37,7 +37,7 @@ async function checkForPastContent(channel, content, limit = MESSAGE_LIMIT) {
   }
 }
 
-async function checkForUpdates(guild, url, name, analytics) {
+async function checkForUpdates(guild, url, name, analytics, errorName = null) {
   const channel = guild.channels.cache.find((c) => c.name === name);
 
   if (!url || !channel) {
@@ -75,13 +75,19 @@ async function checkForUpdates(guild, url, name, analytics) {
     log(error);
     Sentry.captureException(error);
 
+    const errorChannel = guild.channels.cache.find((c) => c.name === errorName);
+
+    if (!errorChannel) {
+      errorChannel = channel;
+    }
+
     const errorPosted = await checkForPastContent(
-      channel,
+      errorChannel,
       'Could not parse this RSS feed',
       1
     );
     if (!errorPosted) {
-      channel.send(`Could not parse this RSS feed: ${url}`);
+      errorChannel.send(`Could not parse this RSS feed: ${url}`);
     }
   }
 }
@@ -92,7 +98,8 @@ function loop(aquarius, settings, analytics) {
       log(`Checking feed for ${guild.name}`);
       const url = settings.get(guild.id, 'url');
       const name = settings.get(guild.id, 'channel');
-      checkForUpdates(guild, url, name, analytics);
+      const errorName = settings.get(guild.id, 'errorChannel');
+      checkForUpdates(guild, url, name, analytics, errorName);
     }
   });
 }
@@ -101,6 +108,7 @@ function loop(aquarius, settings, analytics) {
 export default async ({ aquarius, settings, analytics }) => {
   settings.register('url', 'URL for the RSS Feed', null);
   settings.register('channel', 'Channel name to post in', null);
+  settings.register('errorChannel', 'Channel name to post errors in', null);
 
   aquarius.on('ready', () => {
     setInterval(() => {
