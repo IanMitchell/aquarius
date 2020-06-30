@@ -31,7 +31,9 @@ export default async ({ aquarius, analytics }) => {
       await Promise.all(
         message.guild.emojis.cache.map(async (emoji) =>
           downloadImage(emoji.url).then((data) =>
-            zip.file(`${emoji.name}.png`, data, { base64: true })
+            zip.file(`${emoji.name}.${emoji.animated ? 'gif' : 'png'}`, data, {
+              base64: true,
+            })
           )
         )
       );
