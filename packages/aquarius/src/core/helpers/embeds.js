@@ -40,8 +40,8 @@ export async function guildEmbed(guild, ...fields) {
   let color = 0x333333;
 
   try {
-    if (guild.iconURL()) {
-      color = await getIconColor(guild.iconURL());
+    if (guild.icon) {
+      color = await getIconColor(guild.iconURL({ format: 'png' }));
     }
   } catch (error) {
     log(error);
@@ -50,7 +50,7 @@ export async function guildEmbed(guild, ...fields) {
 
   const embed = new MessageEmbed()
     .setTitle(guild.name)
-    .setThumbnail(guild.iconURL())
+    .setThumbnail(guild.iconURL({ format: 'png' }))
     .setDescription(`Created on ${date} by ${guild.owner.displayName}`)
     .setColor(color)
     .addField(

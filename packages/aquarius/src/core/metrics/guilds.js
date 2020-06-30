@@ -25,7 +25,7 @@ export async function saveSnapshots() {
       date: Date.now(),
       guildId: guild.id,
       name: guild.name,
-      icon: guild.iconURL(),
+      icon: guild.iconURL({ format: 'png' }),
       ownerId: guild.ownerID,
       vip: !!guild.splash,
       verified: guild.verified,
