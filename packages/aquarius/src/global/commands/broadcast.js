@@ -99,7 +99,7 @@ export default async ({ aquarius, analytics }) => {
     }
 
     // No game change means we don't update
-    if (!isStreaming(oldPresence) && !isStreaming(newPresence)) {
+    if (oldPresence && !isStreaming(oldPresence) && !isStreaming(newPresence)) {
       return;
     }
 
