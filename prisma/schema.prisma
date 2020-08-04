@@ -13,6 +13,9 @@ model LastSeen {
   lastSeen  DateTime @default(now())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("last_seen")
 }
 
 model Karma {
@@ -25,6 +28,8 @@ model Karma {
   updatedAt DateTime @updatedAt
 
   @@unique([guildId, userId])
+  @@index([guildId, userId])
+  @@map("karma")
 }
 
 model Reply {
@@ -34,6 +39,9 @@ model Reply {
   response  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([guildId])
+  @@map("replies")
 }
 
 model Service {
@@ -45,6 +53,8 @@ model Service {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, name])
+  @@index([userId, name])
+  @@map("linked_services")
 }
 
 model Setting {
@@ -53,6 +63,9 @@ model Setting {
   value     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([key])
+  @@map("settings")
 }
 
 model Quote {
@@ -63,6 +76,9 @@ model Quote {
   channel   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index(guildId)
+  @@map("quotes")
 }
 
 model GuildSnapshot {
@@ -70,6 +86,8 @@ model GuildSnapshot {
   snapshot  Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("guild_snapshots")
 }
 
 model GuildSetting {
@@ -80,6 +98,9 @@ model GuildSetting {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
   commands     EnabledCommand[]
+
+  @@index([guildId])
+  @@map("guild_settings")
 }
 
 model EnabledCommand {
@@ -93,6 +114,7 @@ model EnabledCommand {
   updatedAt      DateTime        @updatedAt
 
   @@unique([guildSettingId, name])
+  @@map("enabled_commands")
 }
 
 model CommandConfig {
@@ -105,6 +127,7 @@ model CommandConfig {
   updatedAt DateTime       @updatedAt
 
   @@unique([commandId, key])
+  @@map("command_configs")
 }
 
 model IgnoredUser {
@@ -116,6 +139,7 @@ model IgnoredUser {
   updatedAt      DateTime     @updatedAt
 
   @@unique([guildSettingId, userId])
+  @@map("ignored_users")
 }
 
 model Analytic {
@@ -126,6 +150,9 @@ model Analytic {
   context   Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([action])
+  @@map("analytic_events")
 }
 
 model BanList {
@@ -134,4 +161,7 @@ model BanList {
   reason    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([guildId])
+  @@map("guild_bans")
 }
