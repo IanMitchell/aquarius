@@ -1,9 +1,10 @@
-import { Constants, GuildMember } from 'discord.js';
+import { GuildMember } from 'discord.js';
 
 /**
  * @typedef {import('discord.js').User} User
  * @typedef {import('discord.js').Guild} Guild
  * @typedef {import('discord.js').Presence} Presence
+ * @typedef {import('discord.js').Activity} Activity
  */
 
 /**
@@ -49,7 +50,23 @@ export function isBot(user) {
  * @returns {boolean} whether the user is streaming or not
  */
 export function isStreaming(presence) {
-  return presence.activities.some(
-    (activity) => activity.type === Constants.ActivityTypes.STREAMING
-  );
+  return presence.activities.some((activity) => activity.type === 'STREAMING');
+}
+
+/**
+ * Finds the  Game Activity of a User Presence
+ * @param {Presence} presence - presence of the user to check
+ * @returns {?Activity} The game Activity
+ */
+export function getGame(presence) {
+  return presence.activities.find((activity) => activity.type === 'PLAYING');
+}
+
+/**
+ * Finds the Streaming Activity of a User Presence
+ * @param {Presence} presence - presence of the user to check
+ * @returns {?Activity} The streaming Activity
+ */
+export function getStream(presence) {
+  return presence.activities.find((activity) => activity.type === 'STREAMING');
 }

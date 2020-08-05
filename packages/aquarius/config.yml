@@ -11,6 +11,7 @@ defaultCommands:
   - 8ball
   - choose
   - dadjoke
+  - emojis
   - fizzbuzz
   - games
   - karma
