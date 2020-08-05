@@ -309,8 +309,10 @@ export default class GuildSettings {
               configs: {
                 update: Array.from(this.getCommandSettings(cmd).entries()).map(
                   ([key, value]) => ({
-                    key,
-                    value,
+                    update: {
+                      key,
+                      value,
+                    },
                   })
                 ),
               },
