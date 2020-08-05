@@ -232,36 +232,37 @@ export default class GuildSettings {
       where: {
         guildId: this.id,
       },
+      include: {
+        ignoredUsers: true,
+        commands: {
+          include: {
+            configs: true,
+          },
+        },
+      },
     });
 
     if (!guildSetting) {
       log(`No settings found for ${this.id}`);
       this.saveSettings();
     } else {
-      log(`Loading settings for ${this.id}`);
+      this.enabledCommands = new Set(
+        guildSetting.commands.map((cmd) => cmd.name)
+      );
 
-      const [commands, ignores, configs] = await Promise.all([
-        database.command.findMany({
-          select: { id: true, name: true },
-          where: { guildSetting, enabled: true },
-        }),
-        database.ignoredUser.findMany({
-          select: { userId: true },
-          where: { guildSetting },
-        }),
-        database.config.findMany({ where: { guildSetting } }),
-      ]);
+      this.ignoredUsers = new Set(
+        guildSetting.ignoredUsers.map((ignore) => ignore.userId)
+      );
 
-      this.enabledCommands = new Set(commands.map((cmd) => cmd.name));
-      this.ignoredUsers = new Set(ignores.map((ignore) => ignore.userId));
       this.commandConfig = new Map(
-        commands.map((cmd) => [
+        guildSetting.commands.map((cmd) => [
           cmd.name,
-          configs
+          cmd.configs
             .filter((config) => config.commandId === cmd.id)
             .map((cfg) => [cfg.key, cfg.value]),
         ])
       );
+
       this.muted = guildSetting.mute;
 
       if (Date.now() < guildSetting.mute) {
