@@ -61,7 +61,7 @@ function* getServiceLinkInformation(services) {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   // Gently guide people trying to link accounts in a guild channel
-  aquarius.onCommand(/^services$/i, async (message) => {
+  aquarius.onCommand(/^services$/i, (message) => {
     log('Service request in guild channel');
     message.channel.send(
       'To add a service, please send me `services add` via direct message'

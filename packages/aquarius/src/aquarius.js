@@ -1,4 +1,9 @@
 import { fixPartialReactionEvents } from '@aquarius-bot/discordjs-fixes';
+import {
+  isAsyncCommand,
+  startLoading,
+  stopLoading,
+} from '@aquarius-bot/loading';
 import { isDirectMessage } from '@aquarius-bot/messages';
 import Sentry from '@aquarius-bot/sentry';
 import * as triggers from '@aquarius-bot/triggers';
@@ -344,17 +349,27 @@ export class Aquarius extends Discord.Client {
     }
 
     const commandInfo = this.triggerMap.get(regex.toString());
+    let isLoading = false;
 
     if (this.isUsageAllowed(message, commandInfo)) {
       try {
         const match = matchFn(message, regex);
         if (match) {
+          if (isAsyncCommand(handler)) {
+            isLoading = true;
+            startLoading(message.channel);
+          }
+
           // TODO: Benchmark?
           await handler(message, match);
         }
       } catch (error) {
         errorLog(error);
         Sentry.captureException(error);
+      } finally {
+        if (isLoading && isAsyncCommand(handler)) {
+          stopLoading(message.channel);
+        }
       }
     }
   }
@@ -374,17 +389,28 @@ export class Aquarius extends Discord.Client {
       return;
     }
 
+    let isLoading = false;
+
     if (this.isUsageAllowed(message, commandInfo) && !isBot(message.author)) {
       try {
         const match = matchFn(message);
 
         if (match) {
+          if (isAsyncCommand(handler)) {
+            isLoading = true;
+            startLoading(message.channel);
+          }
+
           // TODO: Benchmark?
           handler(message, match);
         }
       } catch (error) {
         errorLog(error);
         Sentry.captureException(error);
+      } finally {
+        if (isLoading && isAsyncCommand(handler)) {
+          stopLoading(message.channel);
+        }
       }
     }
   }

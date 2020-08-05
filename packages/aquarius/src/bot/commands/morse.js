@@ -17,23 +17,17 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(
-    /^morse encode (?<input>.+)$/i,
-    async (message, { groups }) => {
-      log(`Encoding "${groups.input}"`);
-      const str = morse.encode(groups.input);
-      message.channel.send(str);
-      analytics.trackUsage('enocde', message);
-    }
-  );
+  aquarius.onCommand(/^morse encode (?<input>.+)$/i, (message, { groups }) => {
+    log(`Encoding "${groups.input}"`);
+    const str = morse.encode(groups.input);
+    message.channel.send(str);
+    analytics.trackUsage('enocde', message);
+  });
 
-  aquarius.onCommand(
-    /^morse decode (?<input>.+)$/i,
-    async (message, { groups }) => {
-      log(`Decoding "${groups.input}"`);
-      const str = morse.decode(groups.input);
-      message.channel.send(str);
-      analytics.trackUsage('decode', message);
-    }
-  );
+  aquarius.onCommand(/^morse decode (?<input>.+)$/i, (message, { groups }) => {
+    log(`Decoding "${groups.input}"`);
+    const str = morse.decode(groups.input);
+    message.channel.send(str);
+    analytics.trackUsage('decode', message);
+  });
 };
