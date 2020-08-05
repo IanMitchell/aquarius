@@ -1,4 +1,9 @@
+import { isGuildAdmin } from '@aquarius/permissions';
+import debug from 'debug';
 import aquarius from '../../aquarius';
+import { ONE_DAY } from '../helpers/times';
+
+const log = debug('Discord Metric');
 
 export function getTotalUserCount() {
   return aquarius.guilds.cache.reduce(
@@ -11,52 +16,59 @@ export function getTotalGuildCount() {
   return aquarius.guilds.cache.size;
 }
 
-export function getTotalChannelCount() {}
+export function getTotalChannelCount() {
+  return aquarius.guilds.cache.reduce(
+    (sum, guild) => sum + guild.channels.cache.size,
+    0
+  );
+}
 
-export function getTotalAdminCount() {}
+export function getTotalAdminCount() {
+  return aquarius.guilds.cache.filter((guild) => isGuildAdmin(guild, guild.me))
+    .length;
+}
 
-export function getSpecialGuildCount() {}
+export function getTotalSubscriberCount() {
+  return aquarius.guilds.cache.reduce(
+    (sum, guild) => sum + guild.premiumSubscriptionCount,
+    0
+  );
+}
+
+export function getSpecialGuildCount() {
+  return aquarius.guilds.cache.reduce(
+    (sum, guild) => sum + (guild.verified ? 1 : 0),
+    0
+  );
+}
 
 export function saveSnapshot() {
-  const data = {
+  const snapshot = {
     userCount: getTotalUserCount(),
     guildCount: getTotalGuildCount(),
+    subscriberCount: getTotalSubscriberCount(),
     channelCount: getTotalChannelCount(),
     adminCount: getTotalAdminCount(),
     specialGuildCount: getSpecialGuildCount(),
   };
+
+  aquarius.database.snapshot.create({
+    data: {
+      snapshot,
+    },
+  });
 }
 
 export async function setupDailySnapshotLoop() {
   log('Registering Metric Tracking');
 
-  // Retrieve the last time we updated
-  const snapshotList = await aquarius.database.guildSnapshots
-    .orderBy('date', 'desc')
-    .limit(1)
-    .get();
+  // Calculate time until next day
+  const target = 0; // 12:00 tomorrow
 
-  let target = 0;
-
-  if (!snapshotList.empty) {
-    const snapshot = snapshotList.docs[0].data();
-    // We want to target 1:00 on Sunday of the next week
-    target =
-      startOfWeek(new Date(snapshot.date + ONE_WEEK)).getTime() + ONE_HOUR;
-  }
-
-  // If we missed it, save immediately and push to next week
-  if (target <= Date.now()) {
-    await saveSnapshots();
-    target = startOfWeek(new Date()).getTime() + ONE_WEEK + ONE_HOUR;
-  }
-
-  // Create a loop that looks to further Sundays!
   setTimeout(() => {
-    saveSnapshots();
-    setInterval(
-      saveSnapshots,
-      ONE_WEEK + ONE_HOUR - (Date.now() - startOfWeek(new Date()).getTime())
-    );
+    saveSnapshot();
+
+    // Set it to run once a day
+    setInterval(saveSnapshot, ONE_DAY);
   }, target - Date.now());
 }
