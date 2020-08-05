@@ -1,4 +1,5 @@
-import { isGuildAdmin } from '@aquarius/permissions';
+import { isGuildAdmin } from '@aquarius-bot/permissions';
+import { startOfTomorrow } from 'date-fns';
 import debug from 'debug';
 import aquarius from '../../aquarius';
 import { ONE_DAY } from '../helpers/times';
@@ -62,13 +63,10 @@ export function saveSnapshot() {
 export async function setupDailySnapshotLoop() {
   log('Registering Metric Tracking');
 
-  // Calculate time until next day
-  const target = 0; // 12:00 tomorrow
-
   setTimeout(() => {
     saveSnapshot();
 
     // Set it to run once a day
     setInterval(saveSnapshot, ONE_DAY);
-  }, target - Date.now());
+  }, startOfTomorrow() - new Date());
 }
