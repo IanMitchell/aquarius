@@ -1,7 +1,6 @@
 import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
-import { randomValue } from '../../core/helpers/lists';
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;
@@ -39,17 +38,27 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^quotes random$/, async (message) => {
     log('Getting random quote');
 
-    const quoteList = await aquarius.database.quotes
-      .where('guildId', '==', message.guild.id)
-      .get();
+    const quoteCount = await aquarius.database.quote.count({
+      where: {
+        guildId: message.guild.id,
+      },
+    });
 
-    if (quoteList.empty) {
+    if (quoteCount === 0) {
       message.channel.send('There are no quotes in the server yet!');
       return;
     }
 
-    const quote = randomValue(quoteList.docs);
-    message.channel.send(getQuoteMessage(quote.data()));
+    const randomTarget = Math.floor(Math.random() * quoteCount);
+
+    const quote = await aquarius.database.quote.findOne({
+      where: {
+        quoteId: randomTarget,
+        guildId: message.guild.id,
+      },
+    });
+
+    message.channel.send(getQuoteMessage(quote));
     analytics.trackUsage('random', message);
   });
 
@@ -58,17 +67,19 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       log(`Reading quote ${groups.id}`);
 
-      const list = await aquarius.database.quotes
-        .where('quoteId', '==', parseInt(groups.id, 10))
-        .where('guildId', '==', message.guild.id)
-        .get();
+      const quote = await aquarius.database.quote.findOne({
+        where: {
+          quoteId: parseInt(groups.id, 10),
+          guildId: message.guild.id,
+        },
+      });
 
-      if (list.empty) {
+      if (!quote) {
         message.channel.send(`I couldn't find a quote with id #${groups.id}`);
         return;
       }
 
-      message.channel.send(getQuoteMessage(list.docs[0].data()));
+      message.channel.send(getQuoteMessage(quote));
       analytics.trackUsage('read', message);
     }
   );
@@ -78,27 +89,23 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       log('Adding new quote');
 
-      let id = 1;
-      const quoteRef = await aquarius.database.quotes
-        .where('guildId', '==', message.guild.id)
-        .orderBy('quoteId', 'desc')
-        .limit(1)
-        .get();
-
-      if (!quoteRef.empty) {
-        id = quoteRef.docs[0].data().quoteId + 1;
-      }
-
-      await aquarius.database.quotes.add({
-        guildId: message.guild.id,
-        channelName: message.channel.name,
-        addedBy: message.author.username,
-        quoteId: id,
-        quote: groups.quote,
-        date: Date.now(),
+      const quoteCount = await aquarius.database.quote.count({
+        where: {
+          guildId: message.guild.id,
+        },
       });
 
-      message.channel.send(`Added quote #${id}!`);
+      await aquarius.database.quote.create({
+        data: {
+          guildId: message.guild.id,
+          channel: message.channel.name,
+          addedBy: message.author.username,
+          quoteId: quoteCount + 1,
+          quote: groups.quote,
+        },
+      });
+
+      message.channel.send(`Added quote #${quoteCount + 1}!`);
       analytics.trackUsage('add', message);
     }
   );

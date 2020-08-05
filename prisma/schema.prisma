@@ -72,11 +72,13 @@ model Quote {
   id        Int      @default(autoincrement()) @id
   guildId   String
   quote     String
+  quoteId   int
   addedBy   String
   channel   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([guildId, quoteId])
   @@index(guildId)
   @@map("quotes")
 }
