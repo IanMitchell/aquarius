@@ -279,43 +279,45 @@ export default class GuildSettings {
   async saveSettings() {
     log(`Saving settings for ${this.id}`);
     try {
-      // const serializedConfig = Array.from(this.commandConfig.entries()).reduce(
-      //   (config, [command, settings]) =>
-      //     Object.assign(config, { [command]: serializeMap(settings) }),
-      //   {}
-      // );
-
-      database.guildSetting.upsert({
-        where: { guildId: this.id },
+      return database.guildSetting.upsert({
+        where: {
+          guildId: this.id,
+        },
         create: {
           mute: this.muted,
+          commands: {
+            create: Array.from(this.enabledCommands).map((cmd) => ({
+              name: cmd,
+              enabled: true,
+              configs: {
+                create: Array.from(this.getCommandSettings(cmd).entries()).map(
+                  ([key, value]) => ({
+                    key,
+                    value,
+                  })
+                ),
+              },
+            })),
+          },
         },
         update: {
           mute: this.muted,
+          commands: {
+            upsert: Array.from(this.enabledCommands).map((cmd) => ({
+              name: cmd,
+              enabled: true,
+              configs: {
+                update: Array.from(this.getCommandSettings(cmd).entries()).map(
+                  ([key, value]) => ({
+                    key,
+                    value,
+                  })
+                ),
+              },
+            })),
+          },
         },
       });
-
-      const commandIds = Array.from(this.enabledCommands).map((cmd) =>
-        database.command.upsert({
-          select: {
-            id,
-          },
-          where: {
-            guildSettingId: this.guildSettingId,
-            name: cmd,
-          },
-          create: {
-            guildSettingId: this.guildSettingId,
-            name: cmd,
-            enabled: true,
-          },
-          update: { enabled: true },
-        })
-      );
-
-      // TODO: Update Enabled Commands
-
-      // TODO: Update Command Configs
     } catch (error) {
       log(error);
       Sentry.captureException(error);
