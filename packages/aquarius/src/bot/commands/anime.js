@@ -1,4 +1,3 @@
-import { startLoading, stopLoading } from '@aquarius-bot/loading';
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
 import dateFns from 'date-fns';
@@ -127,8 +126,6 @@ export default async ({ aquarius, analytics }) => {
       }
 
       try {
-        startLoading(message.channel);
-
         const response = await fetch(ANILIST_API, {
           method: 'POST',
           headers: {
@@ -151,7 +148,6 @@ export default async ({ aquarius, analytics }) => {
 
         if (!embed) {
           message.channel.send("I wasn't able to find that show!");
-          stopLoading(message.channel);
           return;
         }
 
@@ -161,8 +157,6 @@ export default async ({ aquarius, analytics }) => {
         Sentry.captureException(error);
         message.channel.send('Sorry, something went wrong');
       }
-
-      stopLoading(message.channel);
     }
   );
 };

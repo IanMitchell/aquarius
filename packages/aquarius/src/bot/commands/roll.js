@@ -41,7 +41,7 @@ function getSequenceDescription({ sign, emoji, rolls, modifier }) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^roll (?<roll>.*)$/i, async (message, { groups }) => {
+  aquarius.onCommand(/^roll (?<roll>.*)$/i, (message, { groups }) => {
     const { roll } = groups;
 
     const values = Array.from(

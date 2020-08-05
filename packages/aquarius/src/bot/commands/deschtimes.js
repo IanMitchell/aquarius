@@ -1,4 +1,3 @@
-import { startLoading, stopLoading } from '@aquarius-bot/loading';
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
 import formatDistance from 'date-fns/formatDistance';
@@ -155,8 +154,6 @@ export default async ({ aquarius, analytics }) => {
     }
 
     try {
-      startLoading(message.channel);
-
       const data = await getShowData(message.guild.id, groups.show.trim());
 
       if (data.message) {
@@ -178,8 +175,6 @@ export default async ({ aquarius, analytics }) => {
       message.channel.send(
         `Sorry, there was a problem. ${owner} might be able to help!`
       );
-    } finally {
-      stopLoading(message.channel);
     }
   });
 
@@ -199,8 +194,6 @@ export default async ({ aquarius, analytics }) => {
       }
 
       try {
-        startLoading(message.channel);
-
         const body = new FormData();
         body.append('username', message.author.id);
         body.append('platform', 'discord');
@@ -246,8 +239,6 @@ export default async ({ aquarius, analytics }) => {
         message.channel.send(
           `Sorry, there was a problem. ${owner} might be able to help!`
         );
-      } finally {
-        stopLoading(message.channel);
       }
     }
   );
@@ -256,8 +247,6 @@ export default async ({ aquarius, analytics }) => {
     log(`Marking ${groups.show} as done`);
 
     try {
-      startLoading(message.channel);
-
       const body = new FormData();
       body.append('platform', 'discord');
       body.append('channel', message.guild.id);
@@ -281,8 +270,6 @@ export default async ({ aquarius, analytics }) => {
       message.channel.send(
         `Sorry, there was a problem. ${owner} might be able to help!`
       );
-    } finally {
-      stopLoading(message.channel);
     }
   });
 
@@ -291,8 +278,6 @@ export default async ({ aquarius, analytics }) => {
     log('Airing request');
 
     try {
-      startLoading(message.channel);
-
       const uri = `${SHOWTIMES.SERVER}/shows.json?platform=discord&channel=${message.guild.id}`;
 
       const response = await fetch(uri);
@@ -331,8 +316,6 @@ export default async ({ aquarius, analytics }) => {
       message.channel.send(
         `Sorry, there was a problem. ${owner} might be able to help!`
       );
-    } finally {
-      stopLoading(message.channel);
     }
   });
 };

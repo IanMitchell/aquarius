@@ -50,7 +50,7 @@ export default async ({ aquarius, analytics }) => {
     });
   });
 
-  aquarius.onMessage(info, async (message) => {
+  aquarius.onMessage(info, (message) => {
     const { id } = message.guild;
     const content = message.cleanContent.trim().toLowerCase();
 
@@ -62,7 +62,7 @@ export default async ({ aquarius, analytics }) => {
     }
   });
 
-  aquarius.onCommand(/^reply list$/i, async (message) => {
+  aquarius.onCommand(/^reply list$/i, (message) => {
     log('Listing replies');
 
     if (

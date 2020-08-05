@@ -37,62 +37,59 @@ function countDecimals(number) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(
-    /^c(?:hoose)? (?<input>.+)$/i,
-    async (message, { groups }) => {
-      // Check for a choice in a range
-      const rangeMatch = groups.input.match(RANGE_REGEX);
+  aquarius.onCommand(/^c(?:hoose)? (?<input>.+)$/i, (message, { groups }) => {
+    // Check for a choice in a range
+    const rangeMatch = groups.input.match(RANGE_REGEX);
 
-      if (rangeMatch) {
-        const { groups: rangeGroups } = rangeMatch;
-        log(
-          `Matching between ${rangeGroups.lowerBound} and ${rangeGroups.upperBound}`
+    if (rangeMatch) {
+      const { groups: rangeGroups } = rangeMatch;
+      log(
+        `Matching between ${rangeGroups.lowerBound} and ${rangeGroups.upperBound}`
+      );
+
+      const min = Math.min(
+        parseFloat(rangeGroups.lowerBound),
+        parseFloat(rangeGroups.upperBound)
+      );
+      const max = Math.max(
+        parseFloat(rangeGroups.lowerBound),
+        parseFloat(rangeGroups.upperBound)
+      );
+
+      if (rangeGroups.lowerBoundDecimal || rangeGroups.upperBoundDecimal) {
+        const decimals = Math.min(
+          Math.max(
+            countDecimals(parseFloat(rangeGroups.lowerBound)),
+            countDecimals(parseFloat(rangeGroups.upperBound))
+          ),
+          MAX_DECIMAL_PRECISION
         );
 
-        const min = Math.min(
-          parseFloat(rangeGroups.lowerBound),
-          parseFloat(rangeGroups.upperBound)
+        message.channel.send(
+          (min + Math.random() * (max - min)).toFixed(decimals)
         );
-        const max = Math.max(
-          parseFloat(rangeGroups.lowerBound),
-          parseFloat(rangeGroups.upperBound)
-        );
-
-        if (rangeGroups.lowerBoundDecimal || rangeGroups.upperBoundDecimal) {
-          const decimals = Math.min(
-            Math.max(
-              countDecimals(parseFloat(rangeGroups.lowerBound)),
-              countDecimals(parseFloat(rangeGroups.upperBound))
-            ),
-            MAX_DECIMAL_PRECISION
-          );
-
-          message.channel.send(
-            (min + Math.random() * (max - min)).toFixed(decimals)
-          );
-          analytics.trackUsage('choose', message);
-          return;
-        }
-
-        message.channel.send(Math.floor(min + Math.random() * (max - min + 1)));
         analytics.trackUsage('choose', message);
         return;
       }
 
-      // Get a choice in a list delimited by a space or comma
-      let choices = getChoices(groups.input, ',');
-      if (choices.length <= 1) {
-        choices = getChoices(groups.input, ' ');
-      }
-
-      if (choices.length === 0) {
-        message.channel.send('There are no choices to choose from!');
-        return;
-      }
-
-      log(`Matching between ${humanize(choices)}`);
-      message.channel.send(randomValue(choices));
+      message.channel.send(Math.floor(min + Math.random() * (max - min + 1)));
       analytics.trackUsage('choose', message);
+      return;
     }
-  );
+
+    // Get a choice in a list delimited by a space or comma
+    let choices = getChoices(groups.input, ',');
+    if (choices.length <= 1) {
+      choices = getChoices(groups.input, ' ');
+    }
+
+    if (choices.length === 0) {
+      message.channel.send('There are no choices to choose from!');
+      return;
+    }
+
+    log(`Matching between ${humanize(choices)}`);
+    message.channel.send(randomValue(choices));
+    analytics.trackUsage('choose', message);
+  });
 };

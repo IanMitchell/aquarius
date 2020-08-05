@@ -1,13 +1,13 @@
 name: Test
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   Lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Use Node.js 13.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
           node-version: 14.2
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Use Node.js 13.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
           node-version: 14.2

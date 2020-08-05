@@ -13,7 +13,7 @@ export const info = {
   hidden: true,
   description: "A fun utility for everyone's favorite fansubber.",
   permissions: [Permissions.FLAGS.MANAGE_NICKNAMES],
-  usage: '```@Aquarius nickname <name>```',
+  hidden: true,
 };
 
 const GOOD_JOB_MEDIA = '131816223523602432';
@@ -25,6 +25,11 @@ const LOOP_DURATIONS = Array.from(
 
 async function updateNickname(aquarius) {
   const guild = aquarius.guilds.cache.get(GOOD_JOB_MEDIA);
+
+  if (!guild) {
+    return;
+  }
+
   const check = checkBotPermissions(guild, ...info.permissions);
   const enabled = aquarius.guildManager
     .get(guild.id)

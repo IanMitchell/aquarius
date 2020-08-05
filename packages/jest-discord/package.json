@@ -23,6 +23,6 @@
     "jest": ">=22.0.0"
   },
   "dependencies": {
-    "jest-matcher-utils": "^25.1.0"
+    "jest-matcher-utils": "^26.0.0"
   }
 }
