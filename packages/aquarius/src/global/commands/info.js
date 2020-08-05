@@ -7,9 +7,11 @@ import { MessageEmbed, Permissions } from 'discord.js';
 import pluralize from 'pluralize';
 import pkg from '../../../package.json';
 import { getGitHubLink, getVanityBotLink } from '../../core/helpers/links';
-import { getTotalGuildCount } from '../../core/metrics/guilds';
+import {
+  getTotalGuildCount,
+  getTotalUserCount,
+} from '../../core/metrics/discord';
 import { getResourceUsage } from '../../core/metrics/resources';
-import { getTotalUserCount } from '../../core/metrics/users';
 
 const log = debug('Info');
 

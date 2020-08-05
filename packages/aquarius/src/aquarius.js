@@ -18,7 +18,7 @@ import DirectMessageManager from './core/managers/direct-message-manager';
 import EmojiManager from './core/managers/emoji-manager';
 import GuildManager from './core/managers/guild-manager';
 import ServiceManager from './core/managers/service-manager';
-import { setupWeeklyGuildLoop } from './core/metrics/guilds';
+import { setupDailySnapshotLoop } from './core/metrics/discord';
 import CommandConfig from './core/settings/command-config';
 import TriggerMap from './core/settings/trigger-map';
 
@@ -146,7 +146,7 @@ export class Aquarius extends Discord.Client {
   initialize() {
     this.guildManager.initialize();
     this.emojiList.initialize();
-    setupWeeklyGuildLoop();
+    setupDailySnapshotLoop();
   }
 
   /**
