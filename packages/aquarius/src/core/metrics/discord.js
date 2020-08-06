@@ -54,6 +54,7 @@ export function saveSnapshot() {
     channelCount: getTotalChannelCount(),
     adminCount: getTotalAdminCount(),
     specialGuildCount: getSpecialGuildCount(),
+    enabledCommands: aquarius.database.enabledCommand.count(),
   };
 
   aquarius.database.snapshot.create({
