@@ -47,7 +47,7 @@ export function helpMessage(aquarius, commandInfo, guild) {
   const embed = new MessageEmbed({
     author: {
       name: 'Aquarius',
-      icon_url: aquarius.user.avatarURL(),
+      icon_url: aquarius.user.avatarURL({ format: 'png' }),
       url: getHost(),
     },
     title: capitalize(commandInfo.name),

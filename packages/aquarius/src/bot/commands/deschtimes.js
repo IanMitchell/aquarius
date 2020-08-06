@@ -85,7 +85,10 @@ async function createShowEmbed(show, posterInfo) {
   const embed = new MessageEmbed()
     .setTitle(`${show.name} #${show.episode}`)
     .setColor(0x008000)
-    .setFooter('Brought to you by Deschtimes™', owner.avatarURL);
+    .setFooter(
+      'Brought to you by Deschtimes™',
+      owner.avatarURL({ format: 'png' })
+    );
 
   if (posterInfo) {
     embed.setColor(getEmbedColorFromHex(posterInfo.color));

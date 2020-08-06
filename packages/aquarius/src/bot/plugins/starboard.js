@@ -97,7 +97,10 @@ export default async ({ aquarius, settings, analytics }) => {
       }
 
       const embed = new MessageEmbed()
-        .setAuthor(getNickname(guild, message.author), message.author.avatarURL)
+        .setAuthor(
+          getNickname(guild, message.author),
+          message.author.avatarURL({ format: 'png' })
+        )
         .setColor('GOLD')
         .setURL(getLink(message))
         .setDescription(message.content)

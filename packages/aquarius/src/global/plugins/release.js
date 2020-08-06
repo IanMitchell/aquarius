@@ -39,7 +39,7 @@ export default async ({ aquarius, analytics }) => {
         description:
           'A new version of Aquarius has been released! The changelog is below:',
         url: getDocsLink(),
-        color: await getIconColor(aquarius.user.avatarURL()),
+        color: await getIconColor(aquarius.user.avatarURL({ format: 'png' })),
       });
 
       json.forEach(async (release) => {
