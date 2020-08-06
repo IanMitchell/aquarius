@@ -95,7 +95,7 @@ model Snapshot {
 model GuildSetting {
   id           Int              @default(autoincrement()) @id
   guildId      String           @unique
-  mute         Int
+  mute         Int?
   ignoredUsers IgnoredUser[]
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt

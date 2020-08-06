@@ -1,10 +1,7 @@
-import Prisma from '@prisma/client';
 import debug from 'debug';
+import database from '../database/database';
 
 const log = debug('Analytics');
-
-// CJS / ESM compatibility
-const client = new Prisma.PrismaClient();
 
 /**
  * Creates a event record in the Analytics table. Automatically associates a date with the action
@@ -16,7 +13,7 @@ const client = new Prisma.PrismaClient();
 export default async function track(category, label, action, context) {
   log(`Tracking ${category}>${label}>${action}`);
 
-  return client.analytics.create({
+  return database.analytic.create({
     data: {
       category,
       label,

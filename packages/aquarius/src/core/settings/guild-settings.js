@@ -103,8 +103,14 @@ export default class GuildSettings {
       this.ignoredUsers.add(id);
 
       database.ignoredUser.create({
-        guildSettingId: this.guildSettingId,
-        userId: id,
+        data: {
+          userId: id,
+          guildSetting: {
+            connect: {
+              guildId: this.id,
+            },
+          },
+        },
       });
     }
   }
@@ -119,8 +125,8 @@ export default class GuildSettings {
 
       database.ignoredUser.delete({
         where: {
-          guildSettingId: this.guildSettingId,
           userId: id,
+          guildSettingId: this.guildSettingId,
         },
       });
     }
@@ -135,10 +141,20 @@ export default class GuildSettings {
       this.enabledCommands.add(name);
       this.setCommandSettings(name, new Map(), false);
 
-      database.command.upsert({
-        where: { guildSettingId: this.id, name },
-        create: { name, enabled: true },
-        update: { enabled: true },
+      database.enabledCommand.upsert({
+        where: {
+          guildSettingId_name: {
+            guildSettingId: this.guildSettingId,
+            name,
+          },
+        },
+        create: {
+          name,
+          enabled: true,
+        },
+        update: {
+          enabled: true,
+        },
       });
     }
   }
@@ -151,9 +167,16 @@ export default class GuildSettings {
     this.enabledCommands.delete(name);
     this.removeCommandSettings(name, false);
 
-    database.command.update({
-      where: { guildSettingId: this.id, name },
-      data: { enabled: false },
+    database.enabledCommand.update({
+      where: {
+        guildSettingId_name: {
+          guildSettingId: this.guildSettingId,
+          name,
+        },
+      },
+      data: {
+        enabled: false,
+      },
     });
   }
 
@@ -204,8 +227,12 @@ export default class GuildSettings {
     setTimeout(() => this.unMuteGuild(), duration);
 
     database.guildSetting.update({
-      where: { id: this.guildSettingId },
-      data: { mute: Date.now() + duration },
+      where: {
+        guildId: this.id,
+      },
+      data: {
+        mute: Date.now() + duration,
+      },
     });
   }
 
@@ -218,8 +245,12 @@ export default class GuildSettings {
       this.muted = false;
 
       database.guildSetting.update({
-        where: { id: this.guildSettingId },
-        data: { mute: null },
+        where: {
+          guildId: this.id,
+        },
+        data: {
+          mute: undefined,
+        },
       });
     }
   }
@@ -246,6 +277,8 @@ export default class GuildSettings {
       log(`No settings found for ${this.id}`);
       this.saveSettings();
     } else {
+      this.guildSettingId = guildSetting.id;
+
       this.enabledCommands = new Set(
         guildSetting.commands.map((cmd) => cmd.name)
       );
@@ -279,52 +312,88 @@ export default class GuildSettings {
   async saveSettings() {
     log(`Saving settings for ${this.id}`);
     try {
-      return database.guildSetting.upsert({
+      // First save top level settings and commands
+      const guildSetting = await database.guildSetting.upsert({
         where: {
           guildId: this.id,
         },
         create: {
-          mute: this.muted,
-          commands: {
-            create: Array.from(this.enabledCommands).map((cmd) => ({
-              name: cmd,
-              enabled: true,
-              configs: {
-                create: Array.from(this.getCommandSettings(cmd).entries()).map(
-                  ([key, value]) => ({
-                    key,
-                    value,
-                  })
-                ),
-              },
-            })),
-          },
+          guildId: this.id,
+          mute: this.muted ? this.muted : undefined,
         },
         update: {
-          mute: this.muted,
-          commands: {
-            upsert: Array.from(this.enabledCommands).map((cmd) => ({
-              name: cmd,
-              enabled: true,
-              configs: {
-                update: Array.from(this.getCommandSettings(cmd).entries()).map(
-                  ([key, value]) => ({
-                    update: {
-                      key,
-                      value,
-                    },
-                  })
-                ),
-              },
-            })),
-          },
+          mute: this.muted ? this.muted : undefined,
         },
       });
+
+      // Assign the record ID
+      this.guildSettingId = guildSetting.id;
+
+      // Since we need the guildSetting Record ID, we have to do this after
+      // the initial record is created. Here, we loop through each command and
+      // either update or create a record for it
+      const commands = await Promise.all(
+        Array.from(this.enabledCommands).map((cmd) => {
+          return database.enabledCommand.upsert({
+            where: {
+              guildSettingId_name: {
+                guildSettingId: guildSetting.id,
+                name: cmd,
+              },
+            },
+            create: {
+              name: cmd,
+              enabled: true,
+              guildSetting: {
+                connect: {
+                  id: this.guildSettingId,
+                },
+              },
+            },
+            update: {
+              enabled: true,
+            },
+          });
+        })
+      );
+
+      // Finally, for each command we also need to save its config. As before,
+      // we need the record ID in order to perform this action so it has to come
+      // after. Here, we loop through each command, then loop through each
+      // setting and either update or create a record for it
+      await Promise.all(
+        commands.map((command) => {
+          return Promise.all(
+            Array.from(this.getCommandSettings(command.name).entries()).map(
+              ([key, value]) => {
+                return database.commandConfig.upsert({
+                  where: {
+                    commandId_key: {
+                      commandId: command.id,
+                      key,
+                    },
+                  },
+                  create: {
+                    key,
+                    value,
+                    command: {
+                      connect: {
+                        id: command.id,
+                      },
+                    },
+                  },
+                  update: {
+                    value,
+                  },
+                });
+              }
+            )
+          );
+        })
+      );
     } catch (error) {
       log(error);
       Sentry.captureException(error);
-
-      return null;
     }
   }
 }
