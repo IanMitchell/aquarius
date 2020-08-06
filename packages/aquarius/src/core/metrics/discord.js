@@ -1,8 +1,11 @@
 import { isGuildAdmin } from '@aquarius-bot/permissions';
-import { startOfTomorrow } from 'date-fns';
+import dateFns from 'date-fns';
 import debug from 'debug';
 import aquarius from '../../aquarius';
 import { ONE_DAY } from '../helpers/times';
+
+// CJS / ESM compatibility
+const { startOfTomorrow } = dateFns;
 
 const log = debug('Discord Metric');
 

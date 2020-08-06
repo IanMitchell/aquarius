@@ -12,7 +12,7 @@ export const info = {
 export default async ({ aquarius, analytics }) => {
   const checkBanlist = async () => {
     log('Checking Guild Banlist');
-    const list = await aquarius.database.banlist.findMany({
+    const list = await aquarius.database.banList.findMany({
       select: { guildId: true },
     });
 
