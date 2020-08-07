@@ -170,7 +170,7 @@ export default async ({ aquarius, analytics }) => {
       try {
         const [profileDataResponse, priceData] = await Promise.all([
           fetch(
-            `https://financialmodelingprep.com/api/v3/company/profile/${groups.sign}/`
+            `https://financialmodelingprep.com/api/v3/company/profile/${groups.sign}?apikey=${process.env.FINANCIAL_MODELING_API_KEY}`
           ),
           ALPHA_VANTAGE.data.quote(groups.sign),
         ]);
@@ -216,7 +216,7 @@ export default async ({ aquarius, analytics }) => {
 
       try {
         const response = await fetch(
-          `https://financialmodelingprep.com/api/v3/company/rating/${groups.sign}`
+          `https://financialmodelingprep.com/api/v3/company/rating/${groups.sign}?apikey=${process.env.FINANCIAL_MODELING_API_KEY}`
         );
         const data = await response.json();
 
@@ -280,7 +280,7 @@ export default async ({ aquarius, analytics }) => {
 
     try {
       const response = await fetch(
-        'https://financialmodelingprep.com/api/v3/majors-indexes'
+        `https://financialmodelingprep.com/api/v3/majors-indexes?apikey=${process.env.FINANCIAL_MODELING_API_KEY}`
       );
       const data = await response.json();
 

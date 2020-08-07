@@ -57,6 +57,7 @@ jobs:
           FIREBASE_KEYFILE: ${{ secrets.FIREBASE_KEYFILE }}
           FIREBASE_PROJECT: ${{ secrets.FIREBASE_PROJECT }}
           ALPHA_VANTAGE_KEY: ${{ secrets.ALPHA_VANTAGE_KEY }}
+          FINANCIAL_MODELING_API_KEY: ${{ secrets.FINANCIAL_MODELING_API_KEY }}
         run: envsubst < $GITHUB_WORKSPACE/kube/_secrets.yml > $GITHUB_WORKSPACE/kube/secrets.yml
 
       - name: Deploy to DigitalOcean Kubernetes
