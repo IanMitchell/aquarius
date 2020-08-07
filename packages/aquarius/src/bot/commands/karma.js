@@ -43,8 +43,10 @@ async function updateKarma(aquarius, guild, receiver, giver, amount) {
       karma: true,
     },
     where: {
-      userId: receiver,
-      guildId: guild,
+      guildId_userId: {
+        guildId: guild,
+        userId: receiver,
+      },
     },
   });
 
@@ -52,32 +54,36 @@ async function updateKarma(aquarius, guild, receiver, giver, amount) {
     select: {
       karma: true,
     },
+    where: {
+      guildId_userId: {
+        guildId: guild,
+        userId: receiver,
+      },
+    },
     create: {
       userId: receiver,
       guildId: guild,
       karma: 1,
-      lastUsage: Date.now() - ONE_WEEK,
+      lastUsage: new Date(Date.now() - ONE_WEEK),
     },
     update: {
-      karma: value.karma + amount,
-    },
-    where: {
-      userId: receiver,
-      guildId: guild,
+      karma: (value?.karma ?? 0) + amount,
     },
   });
 
   await aquarius.database.karma.upsert({
+    where: {
+      guildId_userId: {
+        guildId: guild,
+        userId: giver,
+      },
+    },
     create: {
       userId: giver,
       guildId: guild,
     },
     update: {
-      lastUsage: Date.now(),
-    },
-    where: {
-      userId: giver,
-      guildId: guild,
+      lastUsage: new Date(),
     },
   });
 
@@ -131,7 +137,7 @@ export default async ({ aquarius, settings, analytics }) => {
         orderBy: {
           karma: 'desc',
         },
-        first: 5,
+        take: 5,
       });
 
       if (!list.length) {
@@ -142,11 +148,13 @@ export default async ({ aquarius, settings, analytics }) => {
       }
 
       // TODO: Convert into MessageEmbed
-      const entries = list.map(async (row, idx) => {
-        const user = await aquarius.users.fetch(row.userId);
-        const nickname = getNickname(message.guild, user);
-        return `${idx + 1}. ${nickname} - ${row.karma} ${name}`;
-      });
+      const entries = await Promise.all(
+        list.map(async (row, idx) => {
+          const user = await aquarius.users.fetch(row.userId);
+          const nickname = getNickname(message.guild, user);
+          return `${idx + 1}. ${nickname} - ${row.karma} ${name}`;
+        })
+      );
 
       const str = dedent`
         **${name} Leaderboard**
@@ -186,8 +194,10 @@ export default async ({ aquarius, settings, analytics }) => {
           karma: true,
         },
         where: {
-          userId: user.id,
-          guildId: message.guild.id,
+          guildId_userId: {
+            guildId: message.guild.id,
+            userId: user.id,
+          },
         },
       });
 
@@ -238,17 +248,19 @@ export default async ({ aquarius, settings, analytics }) => {
             lastUsage: true,
           },
           where: {
-            userId: message.author.id,
-            guildId: message.guild.id,
+            guildId_userId: {
+              guildId: message.guild.id,
+              userId: message.author.id,
+            },
           },
         });
 
-        if (giver && cooldown > Date.now() - giver.lastUsage) {
+        if (giver && cooldown > Date.now() - giver.lastUsage.getTime()) {
           log('Karma cooldown');
           message.channel.send(
             `You need to wait ${formatDistance(
               Date.now(),
-              giver.lastUsage + cooldown
+              giver.lastUsage.getTime() + cooldown
             )} to give ${name}!`
           );
           return;
@@ -311,17 +323,19 @@ export default async ({ aquarius, settings, analytics }) => {
             lastUsage: true,
           },
           where: {
-            userId: message.author.id,
-            guildId: message.guild.id,
+            guildId_userId: {
+              guildId: message.guild.id,
+              userId: message.author.id,
+            },
           },
         });
 
-        if (giver && cooldown > Date.now() - giver.lastUsage) {
+        if (giver && cooldown > Date.now() - giver.lastUsage.getTime()) {
           log('Karma cooldown');
           message.channel.send(
             `You need to wait ${formatDistance(
               Date.now(),
-              giver.lastUsage + cooldown
+              giver.lastUsage.getTime() + cooldown
             )} to take ${name}!`
           );
           return;

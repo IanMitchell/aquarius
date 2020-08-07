@@ -16,8 +16,8 @@
     "node": ">=13.0.0"
   },
   "scripts": {
-    "start": "cross-env DEBUG=*,-engine*,-babel*,-send,-ref*,-express* node -r dotenv/config --es-module-specifier-resolution=node index.js",
-    "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect -r dotenv/config --es-module-specifier-resolution=node index.js"
+    "start": "cross-env DEBUG_COLORS=true DEBUG=*,-engine*,-babel*,-send,-ref*,-express* node -r dotenv/config --es-module-specifier-resolution=node index.js",
+    "debug": "cross-env DEBUG_COLORS=true DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect -r dotenv/config --es-module-specifier-resolution=node index.js --color"
   },
   "rollup": {
     "skip": true
@@ -40,6 +40,7 @@
     "date-fns": "^2.9.0",
     "debug": "^4.1.1",
     "dedent-js": "^1.0.1",
+    "supports-color": "^7.1.0",
     "discord.js": "^12.0.0",
     "discord.js-minesweeper": "^1.0.6",
     "dotenv": "^8.2.0",
