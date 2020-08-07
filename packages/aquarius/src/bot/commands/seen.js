@@ -61,9 +61,16 @@ export default async ({ aquarius, analytics }) => {
       log(`${getNickname(newPresence.guild, newPresence.user)} signed off`);
 
       await aquarius.database.lastSeen.upsert({
-        where: { userId: newPresence.user.id },
-        update: { lastSeen: Date.now() },
-        create: { userId: newPresence.user.id, lastSeen: Date.now() },
+        where: {
+          userId: newPresence.user.id,
+        },
+        update: {
+          lastSeen: new Date(),
+        },
+        create: {
+          userId: newPresence.user.id,
+          lastSeen: new Date(),
+        },
       });
 
       setTimeout(() => statusDebounce.delete(newPresence.user.id), 500);

@@ -67,13 +67,13 @@ export default async ({ aquarius, analytics }) => {
           });
       });
 
-      analytics.trackUsage('release', null, { release: json[0].id });
-
-      aquarius.database.setting.upsert({
-        update: { value: json[0].id },
-        create: { key: 'LAST_RELEASE_ID', value: json[0].id },
+      await aquarius.database.setting.upsert({
         where: { key: 'LAST_RELEASE_ID' },
+        create: { key: 'LAST_RELEASE_ID', value: json[0].id },
+        update: { value: json[0].id },
       });
+
+      analytics.trackUsage('release', null, { release: json[0].id });
     }
   });
 };

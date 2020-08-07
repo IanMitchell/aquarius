@@ -59,9 +59,15 @@ export default async ({ aquarius, analytics }) => {
     if (aquarius.permissions.isBotOwner(message.author)) {
       log(`Setting Broadcast Message to ${groups.message}`);
 
-      aquarius.database.setting.update({
+      aquarius.database.setting.upsert({
         where: { key: 'BROADCAST' },
-        data: { value: groups.message },
+        create: {
+          key: 'BROADCAST',
+          value: groups.message,
+        },
+        update: {
+          value: groups.message,
+        },
       });
 
       setBroadcastMessage(aquarius, groups.message);
@@ -111,8 +117,8 @@ export default async ({ aquarius, analytics }) => {
 
     // User signs on while streaming, broadcast it
     if (
-      oldPresence.status === 'offline' &&
-      newPresence.status !== 'offline' &&
+      oldPresence?.status === 'offline' &&
+      newPresence?.status !== 'offline' &&
       isStreaming(newPresence)
     ) {
       log('Broadcasting Stream');
