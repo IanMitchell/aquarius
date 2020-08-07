@@ -60,7 +60,7 @@ model Service {
 model Setting {
   id        Int      @default(autoincrement()) @id
   key       String   @unique
-  value     String
+  value     Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

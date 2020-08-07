@@ -27,7 +27,7 @@ async function setBroadcastMessage(aquarius, message = null) {
       where: { key: 'BROADCAST' },
     });
 
-    msg = setting?.value;
+    msg = setting?.value?.message;
 
     if (!msg) {
       msg = 'Type `.info` for info';
@@ -63,10 +63,14 @@ export default async ({ aquarius, analytics }) => {
         where: { key: 'BROADCAST' },
         create: {
           key: 'BROADCAST',
-          value: groups.message,
+          value: {
+            message: groups.message,
+          },
         },
         update: {
-          value: groups.message,
+          value: {
+            message: groups.message,
+          },
         },
       });
 

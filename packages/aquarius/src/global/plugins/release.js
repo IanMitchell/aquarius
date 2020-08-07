@@ -27,7 +27,7 @@ export default async ({ aquarius, analytics }) => {
       },
     });
 
-    const previousVersion = setting?.value ?? 0;
+    const previousVersion = setting?.value?.version ?? 0;
     const response = await fetch(`${GITHUB_API}/${pkg.repository}/releases`);
     const json = await response.json();
 
@@ -68,9 +68,20 @@ export default async ({ aquarius, analytics }) => {
       });
 
       await aquarius.database.setting.upsert({
-        where: { key: 'LAST_RELEASE_ID' },
-        create: { key: 'LAST_RELEASE_ID', value: json[0].id },
-        update: { value: json[0].id },
+        where: {
+          key: 'LAST_RELEASE_ID',
+        },
+        create: {
+          key: 'LAST_RELEASE_ID',
+          value: {
+            version: json[0].id,
+          },
+        },
+        update: {
+          value: {
+            version: json[0].id,
+          },
+        },
       });
 
       analytics.trackUsage('release', null, { release: json[0].id });
