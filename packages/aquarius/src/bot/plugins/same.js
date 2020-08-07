@@ -80,7 +80,11 @@ export default async ({ aquarius, settings, analytics }) => {
   aquarius.on('message', (message) => {
     Sentry.configureMessageScope(message);
 
-    if (message.content === '' || !message.guild) {
+    if (
+      message.content === '' ||
+      !message.guild ||
+      message.author.id === aquarius.user.id
+    ) {
       return;
     }
 
