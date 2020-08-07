@@ -280,7 +280,9 @@ export default class GuildSettings {
       this.guildSettingId = guildSetting.id;
 
       this.enabledCommands = new Set(
-        guildSetting.commands.map((cmd) => cmd.name)
+        guildSetting.commands
+          .filter((cmd) => cmd.enabled)
+          .map((cmd) => cmd.name)
       );
 
       this.ignoredUsers = new Set(
@@ -290,9 +292,11 @@ export default class GuildSettings {
       this.commandConfig = new Map(
         guildSetting.commands.map((cmd) => [
           cmd.name,
-          cmd.configs
-            .filter((config) => config.commandId === cmd.id)
-            .map((cfg) => [cfg.key, cfg.value]),
+          new Map(
+            cmd.configs
+              .filter((config) => config.commandId === cmd.id)
+              .map((cfg) => [cfg.key, cfg.value])
+          ),
         ])
       );
 
