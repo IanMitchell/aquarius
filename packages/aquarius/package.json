@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "cross-env DEBUG=*,-engine*,-babel*,-send,-ref*,-express* node -r dotenv/config --es-module-specifier-resolution=node index.js",
-    "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect-brk=9229 -r dotenv/config --es-module-specifier-resolution=node index.js"
+    "debug": "cross-env DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect -r dotenv/config --es-module-specifier-resolution=node index.js"
   },
   "rollup": {
     "skip": true
