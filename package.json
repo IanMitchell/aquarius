@@ -27,7 +27,8 @@
     "lint:js": "eslint . --ext .js --ignore-path .gitignore",
     "lint": "npm run lint:js",
     "pretest": "pectin",
-    "test": "jest"
+    "test": "jest",
+    "migrate": "npx prisma migrate save --experimental && npx prisma migrate up --experimental && npx prisma generate"
   },
   "dependencies": {
     "@aquarius-bot/discordjs-fixes": "file:packages/discordjs-fixes",
