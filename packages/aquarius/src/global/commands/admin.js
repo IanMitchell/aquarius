@@ -6,6 +6,7 @@ import { humanize } from '../../core/helpers/lists';
 
 const log = debug('Admin');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'admin',
   description: 'Add, remove, and configure commands for your server.',

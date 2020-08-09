@@ -8,6 +8,7 @@ import { ONE_MINUTE } from '../../core/helpers/times';
 
 const log = debug('Areki');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'areki',
   hidden: true,

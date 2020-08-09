@@ -9,6 +9,7 @@ const { formatDistance } = dateFns;
 
 const log = debug('Seen');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'seen',
   description: 'Tracks when a user was last online.',

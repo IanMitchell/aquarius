@@ -3,6 +3,7 @@ import { humanize, shuffle } from '../../core/helpers/lists';
 
 const log = debug('Order');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'order',
   description:

@@ -6,6 +6,7 @@ import { getBotOwner } from '../../core/helpers/users';
 
 const log = debug('Greeting');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'greeting',
   hidden: true,

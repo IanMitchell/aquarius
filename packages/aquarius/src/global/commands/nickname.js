@@ -5,6 +5,7 @@ import { Permissions } from 'discord.js';
 
 const log = debug('Nickname');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'nickname',
   description: "Updates the bot's nickname.",

@@ -6,6 +6,7 @@ import { helpMessage } from './help';
 
 const log = debug('Services');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'services',
   description: 'Link accounts and profiles with me for easy lookup and API use',

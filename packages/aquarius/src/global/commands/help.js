@@ -17,6 +17,7 @@ const EMOJI = {
   INVALID: ':x:',
 };
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'help',
   description:

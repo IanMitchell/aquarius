@@ -3,6 +3,7 @@ import debug from 'debug';
 
 const log = debug('Same');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'same',
   description: 'After a number of repeated posts the bot will mimic it.',

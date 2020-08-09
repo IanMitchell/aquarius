@@ -3,6 +3,7 @@ import debug from 'debug';
 
 const log = debug('Broadcast');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'broadcast',
   hidden: true,

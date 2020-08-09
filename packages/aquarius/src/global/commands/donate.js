@@ -2,6 +2,7 @@ import debug from 'debug';
 
 const log = debug('Donate');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'donate',
   description: 'Displays donation information',

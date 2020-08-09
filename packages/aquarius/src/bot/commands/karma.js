@@ -13,6 +13,7 @@ const { formatDistance } = dateFns;
 
 const log = debug('Karma');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'karma',
   description: 'A Karma system for users in your server.',

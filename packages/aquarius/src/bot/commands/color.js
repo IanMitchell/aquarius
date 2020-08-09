@@ -6,6 +6,7 @@ import { getEmbedColorFromHex } from '../../core/helpers/colors';
 
 const log = debug('Color');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'color',
   description: 'Lookup information about a color.',

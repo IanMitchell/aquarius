@@ -4,6 +4,7 @@ import Minesweeper from 'discord.js-minesweeper';
 
 const log = debug('Minesweeper');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'minesweeper',
   description: 'Play a game of minesweeper!',

@@ -4,6 +4,7 @@ import { randomValue } from '../../core/helpers/lists';
 
 const log = debug('Slots');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'slots',
   description: 'Simulates a slot roller.',

@@ -7,6 +7,7 @@ import fetch from 'node-fetch';
 
 const log = debug('Magic');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'magic',
   description: 'Posts images for linked Magic: the Gathering cards.',

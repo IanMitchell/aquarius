@@ -3,6 +3,7 @@ import { randomValue } from '../../core/helpers/lists';
 
 const log = debug('8ball');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: '8ball',
   description: 'Outputs one of the classic 8ball responses.',

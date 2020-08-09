@@ -3,6 +3,7 @@ import { getVanityBotLink } from '../../core/helpers/links';
 
 const log = debug('Invite');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'invite',
   description: 'Get a link to add me to your server',

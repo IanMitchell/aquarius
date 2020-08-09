@@ -3,6 +3,7 @@
 
 // const log = debug('Autorole');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'autorole',
   description: 'Allows members to sign up for roles via message reactions.',

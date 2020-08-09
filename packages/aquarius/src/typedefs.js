@@ -37,7 +37,10 @@
  * @typedef {Object} CommandInfo
  * @property {string} name - The name of the Command
  * @property {string} description - A short description of the Command's function
- * @property {string} usage - A DocOpt usage description
+ * @property {string} [usage] - A DocOpt usage description
+ * @property {number[]} [permissions] - An array of required permissions for the command
+ * @property {boolean} [hidden] - Whether the command should show up in the command list or not
+ * @property {boolean} [disabled] - Whether the command is currently disabled or not
  */
 
 // Needed to have typedefs work

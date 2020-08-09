@@ -2,6 +2,7 @@ import debug from 'debug';
 
 const log = debug('Sarcastic');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'sarcastic',
   description: 'Makes input text sarcastic.',

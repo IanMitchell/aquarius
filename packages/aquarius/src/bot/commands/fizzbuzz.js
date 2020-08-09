@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 
 const log = debug('Fizzbuzz');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'fizzbuzz',
   description: 'A fresh take on a classic programming problem.',

@@ -7,6 +7,7 @@ import fetch from 'node-fetch';
 
 const log = debug('Hearthstone');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'hearthstone',
   description: 'Posts images for linked Hearthstone cards.',

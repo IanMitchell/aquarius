@@ -4,6 +4,7 @@ import morse from 'morse';
 
 const log = debug('DadJoke');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'morse',
   description: 'Encode or decode morse code.',

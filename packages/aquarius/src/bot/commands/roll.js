@@ -3,6 +3,7 @@ import dedent from 'dedent-js';
 
 const log = debug('Roll');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'roll',
   description: 'Simulates a tabletop dice roll',

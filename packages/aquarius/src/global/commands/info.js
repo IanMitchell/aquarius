@@ -14,6 +14,7 @@ import { getResourceUsage } from '../../core/metrics/resources';
 
 const log = debug('Info');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'info',
   description: 'Displays basic information about Aquarius.',

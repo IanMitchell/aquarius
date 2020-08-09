@@ -4,6 +4,7 @@ import { Permissions } from 'discord.js';
 
 const log = debug('Hashtag');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'hashtag',
   description: 'Discourages hashtags through emoji responses.',

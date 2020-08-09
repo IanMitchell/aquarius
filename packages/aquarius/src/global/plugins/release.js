@@ -9,6 +9,7 @@ import { getDocsLink } from '../../core/helpers/links';
 const log = debug('Release');
 const GITHUB_API = 'https://api.github.com/repos';
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'release',
   hidden: true,

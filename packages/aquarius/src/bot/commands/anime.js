@@ -14,6 +14,7 @@ const { formatDistance } = dateFns;
 
 const log = debug('Anime');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'anime',
   description: 'Anime related commands such as show lookups.',

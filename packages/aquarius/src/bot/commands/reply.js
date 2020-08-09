@@ -3,6 +3,7 @@ import dedent from 'dedent-js';
 
 const log = debug('Reply');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'reply',
   description: 'Have the bot automatically respond to phrases.',

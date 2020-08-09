@@ -11,6 +11,7 @@ import { getBotOwner } from '../../core/helpers/users';
 
 const log = debug('Deschtimes');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'deschtimes',
   description: 'Read and Update your Deschtimes database from Discord',

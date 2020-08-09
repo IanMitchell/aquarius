@@ -8,6 +8,7 @@ import { MUTE_DURATION } from '../../core/settings/guild-settings';
 
 const log = debug('Quiet');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'quiet',
   description: 'Tell Aquarius to go inactive for ten minutes [Admin Only].',

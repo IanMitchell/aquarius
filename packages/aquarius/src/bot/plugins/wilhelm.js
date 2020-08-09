@@ -13,9 +13,7 @@ const WILHELM_SCREAM = path.join(
 
 const INTERVALS = new Map();
 
-// May require discord.js v12:
-// https://github.com/discordjs/discord.js/issues/2820
-// https://github.com/discordjs/discord.js/issues/3362
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'wilhelm',
   description:

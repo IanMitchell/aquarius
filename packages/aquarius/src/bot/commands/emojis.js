@@ -6,6 +6,7 @@ import fetch from 'node-fetch';
 
 const log = debug('Emojis');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'emojis',
   description: 'Creates a zip file with all server emojis',

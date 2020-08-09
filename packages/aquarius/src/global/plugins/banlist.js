@@ -2,6 +2,7 @@ import debug from 'debug';
 
 const log = debug('Banlist');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'banlist',
   hidden: true,

@@ -5,6 +5,7 @@ import { MessageEmbed, Permissions } from 'discord.js';
 
 const log = debug('Starboard');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'starboard',
   description:

@@ -7,6 +7,7 @@ const { formatDistance } = dateFns;
 
 const log = debug('Quotes');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'quotes',
   description: 'Store memorable quotes.',

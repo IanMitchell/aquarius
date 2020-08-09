@@ -7,6 +7,7 @@ import { humanize } from '../../core/helpers/lists';
 
 const log = debug('Ignore');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'ignore',
   description: 'Tell Aquarius to ignore a user [Admin Only].',

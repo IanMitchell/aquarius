@@ -3,6 +3,7 @@ import { getExactTimeInterval } from '../../core/helpers/dates';
 
 const log = debug('Uptime');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'uptime',
   description: 'Displays how long the bot has been running.',

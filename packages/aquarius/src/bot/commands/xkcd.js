@@ -7,6 +7,7 @@ import fetch from 'node-fetch';
 
 const log = debug('xkcd');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'xkcd',
   description: 'View an xkcd comic.',
