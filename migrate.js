@@ -30,11 +30,99 @@ async function migrateAnalytics() {
   console.log('\tFinished Migrating Analytics');
 }
 
-// guildSettings
+async function migrateGuildSettings() {
+  console.log('\tMigrating Guild Settings');
 
-// guildSnapshots
+  const recordList = await firestore.collection('guildSettings').get();
+  await Promise.all(
+    recordList.docs.map(async (record) => {
+      const setting = record.data();
 
-// karma
+      console.log('\t\tCreating Setting Record');
+      const guildSetting = await prisma.guildSetting.create({
+        data: {
+          guildId: record.id,
+          mute: setting.mute || undefined,
+        },
+      });
+
+      console.log('\t\tCreating Ignored Users');
+      const users = await Promise.all(
+        setting.ignoredUsers.map((entry) => {
+          return prisma.ignoredUser.create({
+            data: {
+              userId: entry,
+              guildSetting: {
+                connect: {
+                  id: guildSetting.id,
+                },
+              },
+            },
+          });
+        })
+      );
+
+      console.log('\t\tCreating Enabled Commands');
+      const commands = await Promise.all(
+        setting.enabledCommands.map((cmd) => {
+          return prisma.enabledCommand.create({
+            data: {
+              name: cmd,
+              enabled: true,
+              guildSetting: {
+                connect: {
+                  id: guildSetting.id,
+                },
+              },
+            },
+          });
+        })
+      );
+
+      console.log('\t\tCreating Command Configs');
+      return Promise.all(
+        Object.keys(setting.commandConfig).map((name) => {
+          const config = setting.commandConfig[name];
+
+          return Promise.all(
+            Object.entries(config).map(async ([key, value]) => {
+              console.log(
+                `\t\t\t[${guildSetting.id}, ${name}, ${key}, ${value}]`
+              );
+              const cmd = await prisma.enabledCommand.findOne({
+                where: {
+                  guildSettingId_name: {
+                    guildSettingId: guildSetting.id,
+                    name,
+                  },
+                },
+              });
+
+              if (!cmd) {
+                return Promise.resolve();
+              }
+
+              return prisma.commandConfig.create({
+                data: {
+                  key,
+                  value,
+                  command: {
+                    connect: {
+                      id: cmd.id,
+                    },
+                  },
+                },
+              });
+            })
+          );
+        })
+      );
+    })
+  );
+
+  console.log('\tFinished Migrating Guild Settings');
+}
+
 async function migrateKarma() {
   console.log('\tMigrating Karma');
 
@@ -169,7 +257,8 @@ async function migrateSettings() {
 console.log('Starting Migration...');
 
 Promise.all([
-  migrateAnalytics(),
+  // migrateAnalytics(),
+  migrateGuildSettings(),
   // migrateKarma(),
   // migrateLastSeen(),
   // migrateQuotes(),
