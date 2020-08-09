@@ -13,6 +13,14 @@
       "skipFiles": ["<node_internals>/**"]
     },
     {
+      "name": "Launch Migrate",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["./migrate.js"],
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
       "name": "Attach",
       "port": 9229,
       "request": "attach",
