@@ -93,7 +93,9 @@ export default class ServiceManager {
    */
   async getKeysForUser(user) {
     const services = await database.service.findMany({
-      where: { userId: user.id },
+      where: {
+        userId: user.id,
+      },
     });
 
     if (!services) {
@@ -127,7 +129,10 @@ export default class ServiceManager {
     log(`Retrieving ${service} for ${user.username}`);
 
     return database.service.findOne({
-      where: { userId: user.id, name: service },
+      where: {
+        userId: user.id,
+        name: service,
+      },
     });
   }
 
@@ -142,9 +147,18 @@ export default class ServiceManager {
     log(`Setting ${name} for ${user.username}`);
 
     return database.services.upsert({
-      where: { userId: user.id, name },
-      update: { values: fields },
-      create: { userId: user.id, name, values: fields },
+      where: {
+        userId: user.id,
+        name,
+      },
+      create: {
+        userId: user.id,
+        name,
+        values: fields,
+      },
+      update: {
+        values: fields,
+      },
     });
   }
 
@@ -158,7 +172,10 @@ export default class ServiceManager {
     log(`Removing ${service} for user ${user.username}`);
 
     return database.services.delete({
-      where: { userId: user.id, name: service },
+      where: {
+        userId: user.id,
+        name: service,
+      },
     });
   }
 }
