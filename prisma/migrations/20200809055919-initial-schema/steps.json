@@ -589,7 +589,7 @@
           "arguments": [
             {
               "name": "",
-              "value": "[guildId]"
+              "value": "[guildId, trigger]"
             }
           ]
         },
