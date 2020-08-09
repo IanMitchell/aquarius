@@ -16,14 +16,9 @@ export default async ({ aquarius, analytics }) => {
       select: { guildId: true },
     });
 
-    if (list.length === 0) {
-      return;
-    }
-
-    const ids = list.map((guild) => guild.guildId);
-
-    aquarius.guilds.cache.array().forEach((guild) => {
-      if (ids.includes(guild.id)) {
+    list.forEach((entry) => {
+      if (aquarius.guilds.cache.has(entry.id)) {
+        const guild = aquarius.guilds.cache.get(entry.id);
         log(`Leaving ${guild.name}`);
         guild.leave();
 
