@@ -28,16 +28,19 @@ const DIFFICULTIES = {
     rows: 4,
     columns: 4,
     mines: 2,
+    zeroFirstCell: false,
   },
   intermediate: {
     rows: 8,
     columns: 8,
     mines: 10,
+    zeroFirstCell: true,
   },
   expert: {
     rows: 15,
     columns: 8,
     mines: 25,
+    zeroFirstCell: true,
   },
 };
 
@@ -49,12 +52,13 @@ export default async ({ aquarius, analytics }) => {
       log('Generating game');
 
       const difficulty = groups.difficulty || 'beginner';
-      const { rows, columns, mines } = DIFFICULTIES[difficulty];
+      const { rows, columns, mines, zeroFirstCell } = DIFFICULTIES[difficulty];
 
       const minesweeper = new Minesweeper({
         rows,
         columns,
         mines,
+        zeroFirstCell,
         revealFirstCell: true,
       });
 
