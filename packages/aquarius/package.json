@@ -32,7 +32,7 @@
     "@aquarius-bot/triggers": "file:../triggers",
     "@aquarius-bot/users": "file:../users",
     "@google-cloud/firestore": "^4.0.0",
-    "@sentry/node": "5.21.1",
+    "@sentry/node": "5.21.4",
     "alphavantage": "^2.0.1",
     "chalk": "^4.0.0",
     "cors": "^2.8.5",
