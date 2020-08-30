@@ -28,7 +28,8 @@
     "lint": "npm run lint:js",
     "pretest": "pectin",
     "test": "jest",
-    "migrate": "npx prisma migrate save --experimental && npx prisma migrate up --experimental && npx prisma generate"
+    "db:migrate": "npx prisma migrate save --experimental && npx prisma migrate up --experimental && npx prisma generate",
+    "db:up": "npx prisma migrate up --experimental"
   },
   "dependencies": {
     "@aquarius-bot/discordjs-fixes": "file:packages/discordjs-fixes",
@@ -52,7 +53,7 @@
     "@babel/preset-env": "^7.9.5",
     "@google-cloud/firestore": "^4.2.0",
     "@prisma/cli": "^2.4.1",
-    "@sentry/node": "5.20.1",
+    "@sentry/node": "5.22.0",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^26.0.0",
     "babel-plugin-add-module-exports": "^1.0.2",
