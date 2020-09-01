@@ -37,60 +37,6 @@ const COOLDOWN = {
   DEFAULT: 60 * 5,
 };
 
-async function updateKarma(aquarius, guild, receiver, giver, amount) {
-  // TODO: When Prisma supports operations we should fix this
-  const value = await aquarius.database.karma.findOne({
-    select: {
-      karma: true,
-    },
-    where: {
-      guildId_userId: {
-        guildId: guild,
-        userId: receiver,
-      },
-    },
-  });
-
-  const update = await aquarius.database.karma.upsert({
-    select: {
-      karma: true,
-    },
-    where: {
-      guildId_userId: {
-        guildId: guild,
-        userId: receiver,
-      },
-    },
-    create: {
-      userId: receiver,
-      guildId: guild,
-      karma: 1,
-      lastUsage: new Date(Date.now() - ONE_WEEK),
-    },
-    update: {
-      karma: (value?.karma ?? 0) + amount,
-    },
-  });
-
-  await aquarius.database.karma.upsert({
-    where: {
-      guildId_userId: {
-        guildId: guild,
-        userId: giver,
-      },
-    },
-    create: {
-      userId: giver,
-      guildId: guild,
-    },
-    update: {
-      lastUsage: new Date(),
-    },
-  });
-
-  return update;
-}
-
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, settings, analytics }) => {
   settings.register(
@@ -267,13 +213,45 @@ export default async ({ aquarius, settings, analytics }) => {
           return;
         }
 
-        const receiver = await updateKarma(
-          aquarius,
-          message.guild.id,
-          user.id,
-          message.author.id,
-          1
-        );
+        const receiver = await aquarius.database.karma.upsert({
+          select: {
+            karma: true,
+          },
+          where: {
+            guildId_userId: {
+              guildId: message.guild.id,
+              userId: user.id,
+            },
+          },
+          create: {
+            guildId: message.guild.id,
+            userId: user.id,
+            karma: 1,
+            lastUsage: new Date(Date.now() - ONE_WEEK),
+          },
+          update: {
+            karma: {
+              increment: 1,
+            },
+          },
+        });
+
+        await aquarius.database.karma.upsert({
+          where: {
+            guildId_userId: {
+              guildId: message.guild.id,
+              userId: message.author.id,
+            },
+          },
+          create: {
+            guildId: message.guild.id,
+            userId: message.author.id,
+          },
+          update: {
+            lastUsage: new Date(),
+          },
+        });
+
         const nickname = await getNickname(message.guild, user);
         message.channel.send(
           `${name} given! ${nickname} now has ${receiver.karma} ${name}.`
@@ -342,13 +320,45 @@ export default async ({ aquarius, settings, analytics }) => {
           return;
         }
 
-        const receiver = await updateKarma(
-          aquarius,
-          message.guild.id,
-          user.id,
-          message.author.id,
-          -1
-        );
+        const receiver = await aquarius.database.karma.upsert({
+          select: {
+            karma: true,
+          },
+          where: {
+            guildId_userId: {
+              guildId: message.guild.id,
+              userId: user.id,
+            },
+          },
+          create: {
+            guildId: message.guild.id,
+            userId: user.id,
+            karma: 1,
+            lastUsage: new Date(Date.now() - ONE_WEEK),
+          },
+          update: {
+            karma: {
+              decrement: 1,
+            },
+          },
+        });
+
+        await aquarius.database.karma.upsert({
+          where: {
+            guildId_userId: {
+              guildId: message.guild.id,
+              userId: message.author.id,
+            },
+          },
+          create: {
+            guildId: message.guild.id,
+            userId: message.author.id,
+          },
+          update: {
+            lastUsage: new Date(),
+          },
+        });
+
         const nickname = await getNickname(message.guild, user);
         message.channel.send(
           `${name} taken! ${nickname} now has ${receiver.karma} ${name}.`
