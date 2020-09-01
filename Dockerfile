@@ -1,6 +1,4 @@
-FROM node:14.2
-
-ARG keyfile
+FROM node:14.9
 
 # Setup Bot directory
 WORKDIR /usr/src/bot
@@ -10,9 +8,6 @@ COPY . .
 
 # Install Bot
 RUN npx lerna bootstrap --hoist
-
-# Install Keyfile
-RUN npm run build
 
 # Open the API
 EXPOSE 3000

@@ -19,7 +19,6 @@
     "node": ">=14.2.0"
   },
   "scripts": {
-    "build": "node scripts/install-keyfile",
     "start": "lerna run --scope aquarius --stream --no-prefix start",
     "debug": "lerna run --scope aquarius --stream --no-prefix debug ",
     "dev": "lerna run dev --stream",
@@ -28,8 +27,8 @@
     "lint": "npm run lint:js",
     "pretest": "pectin",
     "test": "jest",
-    "db:migrate": "npx prisma migrate save --experimental && npx prisma migrate up --experimental && npx prisma generate",
-    "db:up": "npx prisma migrate up --experimental"
+    "db:create": "npx prisma migrate up --experimental && npx prisma generate",
+    "db:migrate": "npx prisma migrate save --experimental && npx prisma migrate up --experimental && npx prisma generate"
   },
   "dependencies": {
     "@aquarius-bot/discordjs-fixes": "file:packages/discordjs-fixes",
@@ -85,6 +84,6 @@
     "stylelint-config-standard": "^20.0.0"
   },
   "volta": {
-    "node": "14.2.0"
+    "node": "14.9.0"
   }
 }
