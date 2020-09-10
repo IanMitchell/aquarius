@@ -34,6 +34,7 @@
     "@google-cloud/firestore": "^4.0.0",
     "@sentry/node": "5.22.3",
     "alphavantage": "^2.0.1",
+    "node-cache": "5.1.2",
     "chalk": "^4.0.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.0",
