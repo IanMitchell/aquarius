@@ -105,11 +105,11 @@ spec:
                 secretKeyRef:
                   name: aquarius-secrets
                   key: FINANCIAL_MODELING_API_KEY
-            - name: AIR_NOW_API_KEY
+            - name: IQAIR_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: aquarius-secrets
-                  key: AIR_NOW_API_KEY
+                  key: IQAIR_API_KEY
 
       imagePullSecrets:
           - name: dockerhub
