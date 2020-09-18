@@ -13,7 +13,7 @@ export const info = {
   name: 'seen',
   description: 'Tracks when a user was last online.',
   usage: '```@Aquarius seen <@User>```',
-  disabled: true
+  disabled: true,
 };
 
 /** @type {import('../../typedefs').Command} */
