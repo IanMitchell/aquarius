@@ -66,7 +66,8 @@ async function getForecast(longitude, latitude) {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   const cache = new NodeCache({
-    stdTTL: ONE_HOUR,
+    // This is in seconds
+    stdTTL: ONE_HOUR / 1000,
   });
 
   aquarius.onCommand(
