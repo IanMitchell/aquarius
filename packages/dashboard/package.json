@@ -18,7 +18,7 @@
     "react-dom": "16.13.1",
     "next": "^9.3.5",
     "sass": "1.26.10",
-    "swr": "0.3.1",
+    "swr": "0.3.5",
     "isomorphic-unfetch": "^3.0.0",
     "classnames": "^2.2.6"
   }
