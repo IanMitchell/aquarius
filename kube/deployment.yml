@@ -30,6 +30,11 @@ spec:
                 secretKeyRef:
                   name: aquarius-secrets
                   key: CLIENT_ID
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: DATABASE_URL
             - name: SENTRY
               valueFrom:
                 secretKeyRef:

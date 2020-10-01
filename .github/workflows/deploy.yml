@@ -41,6 +41,7 @@ jobs:
         env:
           TOKEN: ${{ secrets.TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SENTRY: ${{ secrets.SENTRY }}
           DICTIONARY_API_KEY: ${{ secrets.DICTIONARY_API_KEY }}
           TEST_BOT_TOKEN: ${{ secrets.TEST_BOT_TOKEN }}
