@@ -16,7 +16,7 @@
     "node": ">=13.0.0"
   },
   "scripts": {
-    "start": "cross-env DEBUG_COLORS=true DEBUG=*,-engine*,-babel*,-send,-ref*,-express* node -r dotenv/config --es-module-specifier-resolution=node index.js",
+    "start": "cross-env DEBUG_COLORS=true DEBUG=*,-engine*,-babel*,-send,-ref*,-express*,-prisma-client,-plusX node -r dotenv/config --es-module-specifier-resolution=node index.js",
     "debug": "cross-env DEBUG_COLORS=true DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect -r dotenv/config --es-module-specifier-resolution=node index.js --color"
   },
   "rollup": {
