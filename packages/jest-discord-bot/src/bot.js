@@ -1,3 +1,5 @@
+/* eslint-disable promise/catch-or-return */
+/* eslint-disable promise/always-return */
 import Discord from 'discord.js';
 
 const DEFAULTS = {
