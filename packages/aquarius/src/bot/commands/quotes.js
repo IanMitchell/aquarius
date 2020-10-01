@@ -24,7 +24,7 @@ export const info = {
 };
 
 function getQuoteMessage(quote) {
-  const time = formatDistance(quote.date, new Date(), { addSuffix: true });
+  const time = formatDistance(quote.createdAt, new Date(), { addSuffix: true });
 
   return dedent`
     *Quote ${quote.quoteId} added by ${quote.addedBy} ${time}*
@@ -54,8 +54,10 @@ export default async ({ aquarius, analytics }) => {
 
     const quote = await aquarius.database.quote.findOne({
       where: {
-        quoteId: randomTarget,
-        guildId: message.guild.id,
+        guildId_quoteId: {
+          quoteId: randomTarget,
+          guildId: message.guild.id,
+        },
       },
     });
 
