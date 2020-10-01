@@ -29,6 +29,9 @@ export const info = {
 
     **View Command Specific Help**
     \`\`\`@Aquarius help <command>\`\`\`
+
+    **Instructions on Adding or Removing Commands**
+    \`\`\`@Aquarius help admin\`\`\`
   `,
 };
 
