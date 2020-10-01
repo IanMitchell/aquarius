@@ -22,31 +22,55 @@ export default async ({ aquarius, analytics }) => {
   // to track one of them
   const statusDebounce = new Set();
 
+  const checkUser = async (user, message) => {
+    if (user.presence.status !== 'offline') {
+      message.channel.send("They're online right now!");
+    } else {
+      const data = await aquarius.database.lastSeen.findOne({
+        select: {
+          lastSeen: true,
+        },
+        where: {
+          userId: user.id,
+        },
+      });
+
+      if (!data) {
+        message.channel.send(
+          `I don't know when ${user} was last online. Sorry!`
+        );
+      } else {
+        message.channel.send(
+          `${user} was last seen ${formatDistance(data.lastSeen, new Date(), {
+            addSuffix: true,
+          })}`
+        );
+      }
+    }
+  };
+
   aquarius.onCommand(
     new RegExp(`^seen ${MENTION_USER.source}$`, 'i'),
     async (message) => {
       const [user] = await getOrderedMentions(message);
       log(`Request for ${user.username}`);
 
-      if (user.presence.status !== 'offline') {
-        message.channel.send("They're online right now!");
-      } else {
-        const data = await aquarius.database.lastSeen.findOne({
-          select: { lastSeen: true },
-          where: { userId: user.id },
-        });
+      checkUser(user, message);
 
-        if (!data) {
-          message.channel.send(
-            `I don't know when ${user} was last online. Sorry!`
-          );
-        } else {
-          message.channel.send(
-            `${user} was last seen ${formatDistance(data.lastSeen, new Date(), {
-              addSuffix: true,
-            })}`
-          );
-        }
+      analytics.trackUsage('seen', message);
+    }
+  );
+
+  aquarius.onCommand(
+    new RegExp(`^seen id (?<id>\\d+)$`, 'i'),
+    async (message, { groups }) => {
+      log(`ID Request for ${groups.id}`);
+
+      try {
+        const member = await message.guild.members.fetch(groups.id);
+        checkUser(member.user, message);
+      } catch (err) {
+        message.channel.send("That user doesn't appear to be in this server!");
       }
 
       analytics.trackUsage('seen', message);
