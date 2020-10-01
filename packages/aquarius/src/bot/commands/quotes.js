@@ -72,8 +72,10 @@ export default async ({ aquarius, analytics }) => {
 
       const quote = await aquarius.database.quote.findOne({
         where: {
-          quoteId: parseInt(groups.id, 10),
-          guildId: message.guild.id,
+          guildId_quoteId: {
+            quoteId: parseInt(groups.id, 10),
+            guildId: message.guild.id,
+          },
         },
       });
 
