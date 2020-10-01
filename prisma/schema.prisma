@@ -5,11 +5,12 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
+  output          = "./client"
   previewFeatures = ["atomicNumberOperations"]
 }
 
 model LastSeen {
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id @default(autoincrement())
   userId    String   @unique
   lastSeen  DateTime @default(now())
   createdAt DateTime @default(now())
@@ -20,7 +21,7 @@ model LastSeen {
 }
 
 model Karma {
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id @default(autoincrement())
   guildId   String
   userId    String
   karma     Int      @default(0)
@@ -34,7 +35,7 @@ model Karma {
 }
 
 model Reply {
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id @default(autoincrement())
   guildId   String
   trigger   String
   response  String
@@ -46,7 +47,7 @@ model Reply {
 }
 
 model Service {
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id @default(autoincrement())
   userId    String
   name      String
   values    Json
@@ -59,7 +60,7 @@ model Service {
 }
 
 model Setting {
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id @default(autoincrement())
   key       String   @unique
   value     Json
   createdAt DateTime @default(now())
@@ -70,7 +71,7 @@ model Setting {
 }
 
 model Quote {
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id @default(autoincrement())
   guildId   String
   quote     String
   quoteId   Int
@@ -85,7 +86,7 @@ model Quote {
 }
 
 model Snapshot {
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id @default(autoincrement())
   snapshot  Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -94,7 +95,7 @@ model Snapshot {
 }
 
 model GuildSetting {
-  id           Int              @default(autoincrement()) @id
+  id           Int              @id @default(autoincrement())
   guildId      String           @unique
   mute         Int?
   ignoredUsers IgnoredUser[]
@@ -107,7 +108,7 @@ model GuildSetting {
 }
 
 model EnabledCommand {
-  id             Int             @default(autoincrement()) @id
+  id             Int             @id @default(autoincrement())
   guildSetting   GuildSetting    @relation(fields: [guildSettingId], references: [id])
   guildSettingId Int
   name           String
@@ -121,7 +122,7 @@ model EnabledCommand {
 }
 
 model CommandConfig {
-  id        Int            @default(autoincrement()) @id
+  id        Int            @id @default(autoincrement())
   command   EnabledCommand @relation(fields: [commandId], references: [id])
   commandId Int
   key       String
@@ -134,7 +135,7 @@ model CommandConfig {
 }
 
 model IgnoredUser {
-  id             Int          @default(autoincrement()) @id
+  id             Int          @id @default(autoincrement())
   guildSetting   GuildSetting @relation(fields: [guildSettingId], references: [id])
   guildSettingId Int
   userId         String
@@ -146,7 +147,7 @@ model IgnoredUser {
 }
 
 model Analytic {
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id @default(autoincrement())
   action    String
   category  String
   label     String
@@ -159,7 +160,7 @@ model Analytic {
 }
 
 model BanList {
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id @default(autoincrement())
   guildId   String   @unique
   reason    String?
   createdAt DateTime @default(now())

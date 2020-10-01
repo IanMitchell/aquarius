@@ -7,7 +7,7 @@ WORKDIR /usr/src/bot
 COPY . .
 
 # Install Bot
-RUN npx lerna bootstrap --hoist
+RUN npm install
 
 # Create Prisma Engine
 RUN npx prisma generate

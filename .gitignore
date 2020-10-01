@@ -1,11 +1,7 @@
-# Dependencies and Build
+# Dependencies
 node_modules
 .esm-cache
-.next
 coverage
-
-# Workspace Package Builds
-# packages/**/lib/
 
 # Environment
 .env
@@ -14,6 +10,8 @@ coverage
 *.log
 
 # Builds
+prisma/client
+.next
 */**/lib
 
 # System
