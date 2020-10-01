@@ -3,6 +3,7 @@ import { MENTION_USER } from '@aquarius-bot/regex';
 import { getNickname } from '@aquarius-bot/users';
 import dateFns from 'date-fns';
 import debug from 'debug';
+import dedent from 'dedent-js';
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;
@@ -13,7 +14,13 @@ const log = debug('Seen');
 export const info = {
   name: 'seen',
   description: 'Tracks when a user was last online.',
-  usage: '```@Aquarius seen <@User>```',
+  usage: dedent`
+    **Mention Lookup**
+    \`\`\`@Aquarius seen <@User>\`\`\`
+
+    **ID Lookup**
+    \`\`\`@Aquarius seen id <user id>\`\`\`
+  `,
 };
 
 /** @type {import('../../typedefs').Command} */
