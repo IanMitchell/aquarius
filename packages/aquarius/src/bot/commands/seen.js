@@ -42,15 +42,21 @@ export default async ({ aquarius, analytics }) => {
         },
       });
 
+      const nickname = await getNickname(message.guild, user);
+
       if (!data) {
         message.channel.send(
-          `I don't know when ${user} was last online. Sorry!`
+          `I don't know when ${nickname} was last online. Sorry!`
         );
       } else {
         message.channel.send(
-          `${user} was last seen ${formatDistance(data.lastSeen, new Date(), {
-            addSuffix: true,
-          })}`
+          `${nickname} was last seen ${formatDistance(
+            data.lastSeen,
+            new Date(),
+            {
+              addSuffix: true,
+            }
+          )}`
         );
       }
     }
