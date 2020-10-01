@@ -5,8 +5,10 @@ import debug from 'debug';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';
 import FormData from 'form-data';
+import NodeCache from 'node-cache';
 import fetch from 'node-fetch';
 import { getEmbedColorFromHex } from '../../core/helpers/colors';
+import { ONE_HOUR } from '../../core/helpers/times';
 import { getBotOwner } from '../../core/helpers/users';
 
 const log = debug('Deschtimes');
@@ -35,7 +37,11 @@ const SHOWTIMES = {
   SERVER: process.env.SHOWTIMES_SERVER,
   KEY: process.env.SHOWTIMES_KEY,
 };
-const POSTER_CACHE = new Map();
+
+const POSTER_CACHE = new NodeCache({
+  stdTTL: ONE_HOUR / 1000,
+  checkperiod: 0,
+});
 
 async function getPosterInfo(name) {
   if (POSTER_CACHE.has(name)) {
