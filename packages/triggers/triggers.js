@@ -22,13 +22,35 @@ export function botMentionTrigger(message) {
     .match(new RegExp(`^${botMention(message.client.user.id).source}`));
 }
 
+function startsWithTrigger(message, character) {
+  return message.content.trim().startsWith(character);
+}
+
 /**
  * Check to see if a message starts with `.`
  * @param {Message} message - the message to check
  * @returns {boolean} Whether the message starts with `.`
  */
 export function dotTrigger(message) {
-  return message.content.trim().startsWith('.');
+  return startsWithTrigger(message, '.');
+}
+
+/**
+ * Check to see if a message starts with `;`
+ * @param {Message} message - the message to check
+ * @returns {boolean} Whether the message starts with `;`
+ */
+export function semicolonTrigger(message) {
+  return startsWithTrigger(message, ';');
+}
+
+/**
+ * Check to see if a message starts with `?`
+ * @param {Message} message - the message to check
+ * @returns {boolean} Whether the message starts with `?`
+ */
+export function questionTrigger(message) {
+  return startsWithTrigger(message, '?');
 }
 
 /**
@@ -37,7 +59,7 @@ export function dotTrigger(message) {
  * @returns {boolean} Whether the message starts with `!`
  */
 export function exclamationTrigger(message) {
-  return message.content.trim().startsWith('!');
+  return startsWithTrigger(message, '!');
 }
 
 /**
@@ -101,8 +123,13 @@ export function messageTriggered(message, trigger) {
       .match(trigger);
   }
 
-  // .trigger [message] OR !trigger [message]
-  if (dotTrigger(message, trigger) || exclamationTrigger(message, trigger)) {
+  // .trigger [message] OR !trigger [message] OR ;trigger [message]
+  if (
+    dotTrigger(message, trigger) ||
+    exclamationTrigger(message, trigger) ||
+    questionTrigger(message, trigger) ||
+    semicolonTrigger(message, trigger)
+  ) {
     return message.content.trim().substr(1).match(trigger);
   }
 
