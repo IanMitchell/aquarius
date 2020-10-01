@@ -28,7 +28,7 @@ jobs:
         run: |
           npx lerna bootstrap --hoist
           npm test
-  Validate Schema:
+  Schema:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
