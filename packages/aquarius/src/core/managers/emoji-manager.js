@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import debug from 'debug';
 import aquarius from '../../aquarius';
-import { TEN_MINUTES } from '../helpers/times';
+import { ONE_HOUR } from '../helpers/times';
 
 const log = debug('Emoji Manager');
 
@@ -19,7 +19,7 @@ export default class EmojiManager extends Map {
 
     this.getList();
 
-    setInterval(() => this.getList(), TEN_MINUTES);
+    setInterval(() => this.getList(), ONE_HOUR);
   }
 
   /**

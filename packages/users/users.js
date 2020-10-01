@@ -24,11 +24,7 @@ export function getNickname(guild, user) {
     member = guild.member(user);
   }
 
-  if (member && member.nickname) {
-    return member.nickname;
-  }
-
-  return member.user.username;
+  return member?.nickname ?? member.user.username;
 }
 
 /**
@@ -50,7 +46,10 @@ export function isBot(user) {
  * @returns {boolean} whether the user is streaming or not
  */
 export function isStreaming(presence) {
-  return presence.activities.some((activity) => activity.type === 'STREAMING');
+  return (
+    presence?.activities?.some((activity) => activity.type === 'STREAMING') ??
+    false
+  );
 }
 
 /**
@@ -59,7 +58,7 @@ export function isStreaming(presence) {
  * @returns {?Activity} The game Activity
  */
 export function getGame(presence) {
-  return presence.activities.find((activity) => activity.type === 'PLAYING');
+  return presence?.activities?.find((activity) => activity.type === 'PLAYING');
 }
 
 /**
@@ -68,5 +67,7 @@ export function getGame(presence) {
  * @returns {?Activity} The streaming Activity
  */
 export function getStream(presence) {
-  return presence.activities.find((activity) => activity.type === 'STREAMING');
+  return presence?.activities?.find(
+    (activity) => activity.type === 'STREAMING'
+  );
 }

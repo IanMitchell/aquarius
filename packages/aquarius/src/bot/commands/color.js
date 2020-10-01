@@ -6,6 +6,7 @@ import { getEmbedColorFromHex } from '../../core/helpers/colors';
 
 const log = debug('Color');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'color',
   description: 'Lookup information about a color.',
@@ -47,7 +48,7 @@ export default async ({ aquarius, analytics }) => {
           `http://singlecolorimage.com/get/${color.hex.substring(1)}/350x350`
         )
         .setColor(getEmbedColorFromHex(color.hex))
-        .addField('Keyword', color.keyword || 'N/A', true)
+        .addField('Keyword', color.keyword ?? 'N/A', true)
         .addField('Hex', color.hex, true)
         .addField('CMYK', color.cmyk.join(', '), true)
         .addField('HSL', color.hsl.join(', '), true)

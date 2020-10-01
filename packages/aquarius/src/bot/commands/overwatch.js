@@ -2,6 +2,7 @@ import debug from 'debug';
 
 const log = debug('Overwatch');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'overwatch',
   description: "Links to a user's Overwatch career overview page.",
@@ -23,7 +24,7 @@ export default async ({ aquarius, analytics }) => {
     (message, { groups }) => {
       let region = REGIONS.US;
 
-      if (groups.region && groups.region.toUpperCase() in REGIONS) {
+      if (groups?.region?.toUpperCase() in REGIONS) {
         region = REGIONS[groups.region.toUpperCase()];
       }
 

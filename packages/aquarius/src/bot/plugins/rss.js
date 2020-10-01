@@ -6,6 +6,7 @@ import { FIVE_MINUTES } from '../../core/helpers/times';
 
 const log = debug('RSS');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'rss',
   description:

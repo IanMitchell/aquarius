@@ -2,6 +2,7 @@ import debug from 'debug';
 
 const log = debug('Ping');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'ping',
   description: 'Checks to see if the bot is online and responding.',

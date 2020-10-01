@@ -9,6 +9,7 @@ import { getDocsLink } from '../../core/helpers/links';
 const log = debug('Release');
 const GITHUB_API = 'https://api.github.com/repos';
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'release',
   hidden: true,
@@ -18,21 +19,20 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.on('ready', async () => {
-    const setting = await aquarius.database
-      .collection('settings')
-      .doc('LAST_RELEASE_ID')
-      .get();
-    let previousVersion = setting.exists && setting.data();
+    const setting = await aquarius.database.setting.findOne({
+      select: {
+        value: true,
+      },
+      where: {
+        key: 'LAST_RELEASE_ID',
+      },
+    });
 
-    if (!previousVersion) {
-      log('Could not find previous version setting');
-      previousVersion = { value: 0 };
-    }
-
+    const previousVersion = setting?.value?.version ?? 0;
     const response = await fetch(`${GITHUB_API}/${pkg.repository}/releases`);
     const json = await response.json();
 
-    if (json && json.length && json[0].id > previousVersion.value) {
+    if (json?.length && json[0].id > previousVersion) {
       log('New version detected');
 
       const message = new MessageEmbed({
@@ -40,11 +40,11 @@ export default async ({ aquarius, analytics }) => {
         description:
           'A new version of Aquarius has been released! The changelog is below:',
         url: getDocsLink(),
-        color: await getIconColor(aquarius.user.avatarURL()),
+        color: await getIconColor(aquarius.user.avatarURL({ format: 'png' })),
       });
 
       json.forEach(async (release) => {
-        if (release.id > previousVersion.value) {
+        if (release.id > previousVersion) {
           message.addField(release.name, release.body);
         }
       });
@@ -68,11 +68,24 @@ export default async ({ aquarius, analytics }) => {
           });
       });
 
-      analytics.trackUsage('release', null, { release: json[0].id });
-
-      aquarius.database.collection('settings').doc('LAST_RELEASE_ID').set({
-        value: json[0].id,
+      await aquarius.database.setting.upsert({
+        where: {
+          key: 'LAST_RELEASE_ID',
+        },
+        create: {
+          key: 'LAST_RELEASE_ID',
+          value: {
+            version: json[0].id,
+          },
+        },
+        update: {
+          value: {
+            version: json[0].id,
+          },
+        },
       });
+
+      analytics.trackUsage('release', null, { release: json[0].id });
     }
   });
 };

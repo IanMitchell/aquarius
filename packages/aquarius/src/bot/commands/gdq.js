@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 
 const log = debug('GDQ');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'gdq',
   description: 'Gets a random Games Done Quick donation message.',

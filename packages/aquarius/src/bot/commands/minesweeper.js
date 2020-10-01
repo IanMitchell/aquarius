@@ -4,6 +4,7 @@ import Minesweeper from 'discord.js-minesweeper';
 
 const log = debug('Minesweeper');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'minesweeper',
   description: 'Play a game of minesweeper!',
@@ -51,7 +52,7 @@ export default async ({ aquarius, analytics }) => {
     (message, { groups }) => {
       log('Generating game');
 
-      const difficulty = groups.difficulty || 'beginner';
+      const difficulty = groups.difficulty ?? 'beginner';
       const { rows, columns, mines, zeroFirstCell } = DIFFICULTIES[difficulty];
 
       const minesweeper = new Minesweeper({

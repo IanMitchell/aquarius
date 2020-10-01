@@ -1,8 +1,4 @@
-FROM node:14.2
-
-ARG keyfile
-ENV FIREBASE_KEYFILE_CONTENTS=$keyfile
-ENV FIREBASE_KEYFILE .keyfile.json
+FROM node:14.9
 
 # Setup Bot directory
 WORKDIR /usr/src/bot
@@ -13,8 +9,8 @@ COPY . .
 # Install Bot
 RUN npx lerna bootstrap --hoist
 
-# Install Keyfile
-RUN npm run build
+# Create Prisma Engine
+RUN npx prisma generate
 
 # Open the API
 EXPOSE 3000

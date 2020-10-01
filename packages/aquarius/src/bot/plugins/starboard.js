@@ -5,6 +5,7 @@ import { MessageEmbed, Permissions } from 'discord.js';
 
 const log = debug('Starboard');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'starboard',
   description:
@@ -97,7 +98,10 @@ export default async ({ aquarius, settings, analytics }) => {
       }
 
       const embed = new MessageEmbed()
-        .setAuthor(getNickname(guild, message.author), message.author.avatarURL)
+        .setAuthor(
+          getNickname(guild, message.author),
+          message.author.avatarURL({ format: 'png' })
+        )
         .setColor('GOLD')
         .setURL(getLink(message))
         .setDescription(message.content)

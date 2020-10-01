@@ -5,6 +5,7 @@ import { guildEmbed } from '../../core/helpers/embeds';
 
 const log = debug('Notification');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'notification',
   hidden: true,

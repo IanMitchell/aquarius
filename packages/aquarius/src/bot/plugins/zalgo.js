@@ -7,6 +7,7 @@ const { isZalgo } = Zalgo;
 
 const log = debug('Zalgo');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'zalgo',
   description: 'Automatically deletes messages containing Zalgo.',

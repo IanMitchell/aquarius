@@ -2,6 +2,7 @@ import debug from 'debug';
 
 const log = debug('Support');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'support',
   description: 'Get an invite to the official bot server',

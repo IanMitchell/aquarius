@@ -8,11 +8,24 @@
       "name": "Launch Aquarius",
       "type": "node",
       "request": "launch",
-      "cwd": "${workspaceFolder}",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "debug"],
-      "protocol": "inspector",
-      "port": 9229
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Launch Migrate",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["./migrate.js"],
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Attach",
+      "port": 9229,
+      "request": "attach",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
     },
     {
       "name": "Debug Jest Tests",

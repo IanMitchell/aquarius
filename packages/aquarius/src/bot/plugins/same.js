@@ -3,6 +3,7 @@ import debug from 'debug';
 
 const log = debug('Same');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'same',
   description: 'After a number of repeated posts the bot will mimic it.',
@@ -80,7 +81,11 @@ export default async ({ aquarius, settings, analytics }) => {
   aquarius.on('message', (message) => {
     Sentry.configureMessageScope(message);
 
-    if (message.content === '' || !message.guild) {
+    if (
+      message.content === '' ||
+      !message.guild ||
+      message.author.id === aquarius.user.id
+    ) {
       return;
     }
 

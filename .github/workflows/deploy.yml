@@ -16,10 +16,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Build container image
-        env:
-          FIREBASE_KEYFILE: ${{ secrets.FIREBASE_KEYFILE }}
-          FIREBASE_KEYFILE_CONTENTS: ${{ secrets.FIREBASE_KEYFILE_CONTENTS }}
-        run: docker build -t ianmitchell/aquarius:$(echo $GITHUB_SHA | head -c7) . --build-arg keyfile="${FIREBASE_KEYFILE_CONTENTS//[$'\t\r\n']}"
+        run: docker build -t ianmitchell/aquarius:$(echo $GITHUB_SHA | head -c7) ."
 
       - name: Docker Login
         env:
@@ -44,6 +41,7 @@ jobs:
         env:
           TOKEN: ${{ secrets.TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SENTRY: ${{ secrets.SENTRY }}
           DICTIONARY_API_KEY: ${{ secrets.DICTIONARY_API_KEY }}
           TEST_BOT_TOKEN: ${{ secrets.TEST_BOT_TOKEN }}
@@ -54,8 +52,6 @@ jobs:
           GITHUB_API_TOKEN: ${{ secrets.GITHUB_API_TOKEN }}
           DARK_SKY_API_KEY: ${{ secrets.DARK_SKY_API_KEY }}
           MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}
-          FIREBASE_KEYFILE: ${{ secrets.FIREBASE_KEYFILE }}
-          FIREBASE_PROJECT: ${{ secrets.FIREBASE_PROJECT }}
           ALPHA_VANTAGE_KEY: ${{ secrets.ALPHA_VANTAGE_KEY }}
           FINANCIAL_MODELING_API_KEY: ${{ secrets.FINANCIAL_MODELING_API_KEY }}
           IQAIR_API_KEY: ${{ secrets.IQAIR_API_KEY }}

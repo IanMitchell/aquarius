@@ -13,6 +13,7 @@ const { parse } = dateFns;
 
 const log = debug('Stocks');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'stocks',
   description: 'Retrieve recent information about the stock market',

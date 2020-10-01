@@ -4,6 +4,7 @@ import { Permissions } from 'discord.js';
 
 const log = debug('Hashtag');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'hashtag',
   description: 'Discourages hashtags through emoji responses.',
@@ -33,11 +34,7 @@ export default async ({ aquarius, analytics }) => {
         return;
       }
 
-      // Make sure we aren't triggering on channel mentions
-      const channels =
-        message.mentions &&
-        message.mentions.channels &&
-        message.mentions.channels.size;
+      const channels = message?.mentions?.channels?.size ?? 0;
 
       if (matches.length - 1 > channels) {
         log(

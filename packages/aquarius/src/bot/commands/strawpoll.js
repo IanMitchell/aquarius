@@ -5,10 +5,11 @@ import fetch from 'node-fetch';
 
 const log = debug('Strawpoll');
 
-// TODO: Check docopt on this
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'strawpoll',
   description: 'Creates a strawpoll',
+  // TODO: Check docopt on this
   usage: dedent`
     To create a poll:
     \`\`\`@Aquarius strawpoll <title> | <options>;...\`\`\`

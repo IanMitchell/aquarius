@@ -4,7 +4,7 @@ import { Constants } from 'discord.js';
 import express from 'express';
 import aquarius from '../src/aquarius';
 import { botLink } from '../src/core/helpers/links';
-import { getTotalUserCount } from '../src/core/metrics/users';
+import { getTotalUserCount } from '../src/core/metrics/discord';
 import createShield from './shields';
 // import { getMetricHandler } from './metrics';
 

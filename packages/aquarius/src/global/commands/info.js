@@ -6,12 +6,15 @@ import { MessageEmbed, Permissions } from 'discord.js';
 import pluralize from 'pluralize';
 import pkg from '../../../package.json';
 import { getGitHubLink, getVanityBotLink } from '../../core/helpers/links';
-import { getTotalGuildCount } from '../../core/metrics/guilds';
+import {
+  getTotalGuildCount,
+  getTotalUserCount,
+} from '../../core/metrics/discord';
 import { getResourceUsage } from '../../core/metrics/resources';
-import { getTotalUserCount } from '../../core/metrics/users';
 
 const log = debug('Info');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'info',
   description: 'Displays basic information about Aquarius.',
@@ -56,7 +59,7 @@ export default async ({ aquarius, analytics }) => {
       .setDescription(
         `You can add me to your server by clicking this link: ${getVanityBotLink()}`
       )
-      .setThumbnail(aquarius.user.displayAvatarURL())
+      .setThumbnail(aquarius.user.displayAvatarURL({ format: 'png' }))
       .addField('Developer', 'Desch#3091')
       .addField(
         'Stats',

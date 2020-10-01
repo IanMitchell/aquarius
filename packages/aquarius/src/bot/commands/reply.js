@@ -3,6 +3,7 @@ import dedent from 'dedent-js';
 
 const log = debug('Reply');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'reply',
   description: 'Have the bot automatically respond to phrases.',
@@ -36,16 +37,15 @@ export default async ({ aquarius, analytics }) => {
 
       RESPONSES.set(guild.id, new Map());
 
-      const recordList = await aquarius.database.replies
-        .where('guildId', '==', guild.id)
-        .get();
+      const responses = await aquarius.database.reply.findMany({
+        where: { guildId: guild.id },
+      });
 
-      if (recordList.empty) {
+      if (!responses.length) {
         return;
       }
 
-      recordList.docs.forEach((record) => {
-        const reply = record.data();
+      responses.forEach((reply) => {
         RESPONSES.get(reply.guildId).set(reply.trigger, reply.response);
       });
     });
@@ -93,13 +93,14 @@ export default async ({ aquarius, analytics }) => {
       if (aquarius.permissions.isAdmin(message.guild, message.author)) {
         log(`Removing ${groups.trigger}`);
 
-        const responses = await aquarius.database.replies
-          .where('guildId', '==', message.guild.id)
-          .where('trigger', '==', groups.trigger.toLowerCase())
-          .get();
+        const response = await aquarius.database.reply.delete({
+          where: {
+            guildId: message.guild.id,
+            trigger: groups.trigger.toLowerCase(),
+          },
+        });
 
-        if (!responses.empty) {
-          responses.docs[0].ref.delete();
+        if (response) {
           RESPONSES.get(message.guild.id).delete(groups.trigger.toLowerCase());
 
           message.channel.send(`Removed '${groups.trigger}'`);
@@ -132,10 +133,12 @@ export default async ({ aquarius, analytics }) => {
           return;
         }
 
-        const response = await aquarius.database.replies.add({
-          guildId: message.guild.id,
-          trigger: groups.trigger.toLowerCase(),
-          response: groups.response,
+        const response = await aquarius.database.reply.create({
+          data: {
+            guildId: message.guild.id,
+            trigger: groups.trigger.toLowerCase(),
+            response: groups.response,
+          },
         });
 
         if (response) {

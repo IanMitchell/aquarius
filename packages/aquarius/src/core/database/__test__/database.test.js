@@ -1,3 +1,1 @@
-// import Database from '../index';
-
-test.todo('Proxies collection names');
+test.todo('Write tests?');

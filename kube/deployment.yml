@@ -30,6 +30,11 @@ spec:
                 secretKeyRef:
                   name: aquarius-secrets
                   key: CLIENT_ID
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: DATABASE_URL
             - name: SENTRY
               valueFrom:
                 secretKeyRef:
@@ -80,16 +85,6 @@ spec:
                 secretKeyRef:
                   name: aquarius-secrets
                   key: MAPBOX_API_KEY
-            - name: FIREBASE_KEYFILE
-              valueFrom:
-                secretKeyRef:
-                  name: aquarius-secrets
-                  key: FIREBASE_KEYFILE
-            - name: FIREBASE_PROJECT
-              valueFrom:
-                secretKeyRef:
-                  name: aquarius-secrets
-                  key: FIREBASE_PROJECT
             - name: ALPHA_VANTAGE_KEY
               valueFrom:
                 secretKeyRef:

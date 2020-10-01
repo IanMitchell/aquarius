@@ -7,6 +7,7 @@ import { guildEmbed } from '../../core/helpers/embeds';
 
 const log = debug('Guild');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'guild',
   description: 'Displays basic information about your server.',

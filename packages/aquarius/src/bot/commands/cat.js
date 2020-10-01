@@ -4,6 +4,8 @@ import fetch from 'node-fetch';
 const log = debug('Cat');
 
 // TODO: Implement and Test
+
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'cat',
   description: 'Posts an image of a cat',

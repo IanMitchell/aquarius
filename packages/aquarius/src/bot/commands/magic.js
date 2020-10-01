@@ -7,6 +7,7 @@ import fetch from 'node-fetch';
 
 const log = debug('Magic');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'magic',
   description: 'Posts images for linked Magic: the Gathering cards.',
@@ -40,7 +41,7 @@ export default async ({ aquarius, analytics }) => {
           cardList.map((card) => getCard(card.groups.name))
         );
         const images = responses.reduce((list, json) => {
-          if (json && !json.status) {
+          if (!json?.status) {
             const [entry] = json.data;
             list.push(entry.image_uris.png);
           }

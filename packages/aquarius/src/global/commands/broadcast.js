@@ -3,6 +3,7 @@ import debug from 'debug';
 
 const log = debug('Broadcast');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'broadcast',
   hidden: true,
@@ -14,7 +15,7 @@ export const info = {
 async function setBroadcastMessage(aquarius, message = null) {
   let msg = message;
 
-  if (aquarius && aquarius.user) {
+  if (aquarius?.user) {
     log('Setting game to generic instructions');
 
     if (msg) {
@@ -22,18 +23,19 @@ async function setBroadcastMessage(aquarius, message = null) {
       return;
     }
 
-    const setting = await aquarius.database
-      .collection('settings')
-      .doc('BROADCAST')
-      .get();
-    msg = setting.exists && setting.data().value;
+    const setting = await aquarius.database.setting.findOne({
+      select: { value: true },
+      where: { key: 'BROADCAST' },
+    });
+
+    msg = setting?.value?.message;
 
     if (!msg) {
       msg = 'Type `.info` for info';
-      aquarius.database
-        .collection('settings')
-        .doc('BROADCAST')
-        .set({ value: msg });
+      aquarius.database.setting.update({
+        where: { key: 'BROADCAST' },
+        data: { value: msg },
+      });
     }
 
     aquarius.user.setActivity(msg);
@@ -58,13 +60,23 @@ export default async ({ aquarius, analytics }) => {
     if (aquarius.permissions.isBotOwner(message.author)) {
       log(`Setting Broadcast Message to ${groups.message}`);
 
-      aquarius.database
-        .collection('settings')
-        .doc('BROADCAST')
-        .set({ value: groups.message });
+      aquarius.database.setting.upsert({
+        where: { key: 'BROADCAST' },
+        create: {
+          key: 'BROADCAST',
+          value: {
+            message: groups.message,
+          },
+        },
+        update: {
+          value: {
+            message: groups.message,
+          },
+        },
+      });
 
       setBroadcastMessage(aquarius, groups.message);
-      message.channel.send('Updated my broadcast message');
+      message.channel.send('My broadcast message has been updated!');
 
       analytics.trackUsage('broadcast message');
     }
@@ -110,8 +122,8 @@ export default async ({ aquarius, analytics }) => {
 
     // User signs on while streaming, broadcast it
     if (
-      oldPresence.status === 'offline' &&
-      newPresence.status !== 'offline' &&
+      oldPresence?.status === 'offline' &&
+      newPresence?.status !== 'offline' &&
       isStreaming(newPresence)
     ) {
       log('Broadcasting Stream');

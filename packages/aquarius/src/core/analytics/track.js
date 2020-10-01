@@ -13,11 +13,12 @@ const log = debug('Analytics');
 export default async function track(category, label, action, context) {
   log(`Tracking ${category}>${label}>${action}`);
 
-  return database.analytics.add({
-    category,
-    label,
-    action,
-    context,
-    date: new Date(),
+  return database.analytic.create({
+    data: {
+      category,
+      label,
+      action,
+      context,
+    },
   });
 }

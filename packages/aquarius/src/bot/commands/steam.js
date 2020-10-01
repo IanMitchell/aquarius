@@ -9,6 +9,7 @@ import { capitalize } from '../../core/helpers/strings';
 
 const log = debug('Steam');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'steam',
   description: 'Pulls information about Steam games',

@@ -3,6 +3,7 @@ import debug from 'debug';
 
 const log = debug('Games');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'games',
   description: 'Lists all the games members are currently playing.',

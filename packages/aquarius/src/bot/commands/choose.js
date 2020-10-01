@@ -3,6 +3,7 @@ import { humanize, randomValue } from '../../core/helpers/lists';
 
 const log = debug('Choose');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'choose',
   description:

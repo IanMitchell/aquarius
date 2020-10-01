@@ -23,7 +23,7 @@ import DirectMessageManager from './core/managers/direct-message-manager';
 import EmojiManager from './core/managers/emoji-manager';
 import GuildManager from './core/managers/guild-manager';
 import ServiceManager from './core/managers/service-manager';
-import { setupWeeklyGuildLoop } from './core/metrics/guilds';
+import { setupDailySnapshotLoop } from './core/metrics/discord';
 import CommandConfig from './core/settings/command-config';
 import TriggerMap from './core/settings/trigger-map';
 
@@ -31,6 +31,7 @@ const log = debug('Aquarius');
 const errorLog = debug('Aquarius:Error');
 
 /**
+ * @typedef { import('@prisma/client').PrismaClient } PrismaClient
  * @typedef { import('discord.js').Guild } Guild
  * @typedef { import('discord.js').Message } Message
  * @typedef { import('./typedefs').CommandInfo } CommandInfo
@@ -56,8 +57,15 @@ export class Aquarius extends Discord.Client {
 
     /**
      * Static configuration for Aquarius
+     * TODO: Set type
      */
     this.config = this.loadConfig();
+
+    /**
+     * Database connection for Aquarius
+     * @type {PrismaClient}
+     */
+    this.database = database;
 
     /**
      * Manages the Guilds for which Aquarius is a member
@@ -122,12 +130,6 @@ export class Aquarius extends Discord.Client {
      */
     this.triggers = triggers;
 
-    /**
-     * Interface for working with the Database
-     * @todo define type
-     */
-    this.database = database;
-
     // Apply discord.js Fixes
     fixPartialReactionEvents(this);
 
@@ -149,7 +151,7 @@ export class Aquarius extends Discord.Client {
   initialize() {
     this.guildManager.initialize();
     this.emojiList.initialize();
-    setupWeeklyGuildLoop();
+    setupDailySnapshotLoop();
   }
 
   /**

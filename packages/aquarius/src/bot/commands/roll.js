@@ -3,6 +3,7 @@ import dedent from 'dedent-js';
 
 const log = debug('Roll');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'roll',
   description: 'Simulates a tabletop dice roll',
@@ -14,8 +15,8 @@ export const info = {
 };
 
 function getRolls(amount, die) {
-  return new Array(parseInt(amount, 10) || 1)
-    .fill('')
+  return new Array(parseInt(amount, 10))
+    .fill(0)
     .map(() => 1 + Math.floor(Math.random() * parseInt(die, 10)));
 }
 
@@ -59,7 +60,7 @@ export default async ({ aquarius, analytics }) => {
         const emoji =
           dieType === '100'
             ? `${aquarius.emojiList.get('d10')}${aquarius.emojiList.get('d10')}`
-            : aquarius.emojiList.get(`d${dieType}`) || `d${dieType}`;
+            : aquarius.emojiList.get(`d${dieType}`) ?? `d${dieType}`;
 
         const sequence = {
           sign,

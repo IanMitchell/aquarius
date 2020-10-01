@@ -19,7 +19,6 @@
     "node": ">=14.2.0"
   },
   "scripts": {
-    "build": "node scripts/install-keyfile",
     "start": "lerna run --scope aquarius --stream --no-prefix start",
     "debug": "lerna run --scope aquarius --stream --no-prefix debug ",
     "dev": "lerna run dev --stream",
@@ -27,7 +26,9 @@
     "lint:js": "eslint . --ext .js --ignore-path .gitignore",
     "lint": "npm run lint:js",
     "pretest": "pectin",
-    "test": "jest"
+    "test": "jest",
+    "db:create": "npx prisma migrate up --experimental && npx prisma generate",
+    "db:migrate": "npx prisma migrate save --experimental && npx prisma migrate up --experimental && npx prisma generate"
   },
   "dependencies": {
     "@aquarius-bot/discordjs-fixes": "file:packages/discordjs-fixes",
@@ -40,6 +41,7 @@
     "@aquarius-bot/testing": "file:packages/testing",
     "@aquarius-bot/triggers": "file:packages/triggers",
     "@aquarius-bot/users": "file:packages/users",
+    "@prisma/client": "^2.8.0",
     "aquarius": "file:packages/aquarius",
     "aquarius-dashboard": "file:packages/dashboard"
   },
@@ -48,6 +50,8 @@
     "@babel/core": "^7.9.0",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-env": "^7.9.5",
+    "@google-cloud/firestore": "^4.2.0",
+    "@prisma/cli": "^2.8.0",
     "@sentry/node": "5.22.3",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^26.0.0",
@@ -63,6 +67,7 @@
     "eslint-plugin-jest": "^23.8.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.3",
+    "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.0",
     "jest": "^26.0.0",
@@ -80,6 +85,6 @@
     "stylelint-config-standard": "^20.0.0"
   },
   "volta": {
-    "node": "14.2.0"
+    "node": "14.9.0"
   }
 }

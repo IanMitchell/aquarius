@@ -2,6 +2,7 @@ import debug from 'debug';
 
 const log = debug('Switch Code');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'switchcode',
   description: 'Nintendo Switch Friend Code lookup helper.',

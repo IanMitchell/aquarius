@@ -7,6 +7,7 @@ import fetch from 'node-fetch';
 
 const log = debug('Hearthstone');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'hearthstone',
   description: 'Posts images for linked Hearthstone cards.',
@@ -44,7 +45,7 @@ export default async ({ aquarius, analytics }) => {
           cardList.map((card) => getCard(card.groups.name))
         );
         const images = responses.reduce((list, json) => {
-          if (json && !json.error) {
+          if (!json?.error) {
             const [entry] = json;
             list.push(entry.img);
           }

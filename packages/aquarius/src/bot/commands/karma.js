@@ -6,12 +6,14 @@ import { getNickname } from '@aquarius-bot/users';
 import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
+import { ONE_WEEK } from '../../core/helpers/times';
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;
 
 const log = debug('Karma');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'karma',
   description: 'A Karma system for users in your server.',
@@ -71,13 +73,21 @@ export default async ({ aquarius, settings, analytics }) => {
 
       const name = settings.get(message.guild.id, 'name');
 
-      const list = await aquarius.database.karma
-        .where('guildId', '==', message.guild.id)
-        .orderBy('karma', 'desc')
-        .limit(5)
-        .get();
+      const list = await aquarius.database.karma.findMany({
+        select: {
+          userId: true,
+          karma: true,
+        },
+        where: {
+          guildId: message.guild.id,
+        },
+        orderBy: {
+          karma: 'desc',
+        },
+        take: 5,
+      });
 
-      if (list.empty === 0) {
+      if (!list.length) {
         message.channel.send(
           'It appears no one in this server has any karma yet!'
         );
@@ -86,11 +96,10 @@ export default async ({ aquarius, settings, analytics }) => {
 
       // TODO: Convert into MessageEmbed
       const entries = await Promise.all(
-        list.docs.map(async (row, idx) => {
-          const data = row.data();
-          const user = await aquarius.users.fetch(data.userId);
+        list.map(async (row, idx) => {
+          const user = await aquarius.users.fetch(row.userId);
           const nickname = getNickname(message.guild, user);
-          return `${idx + 1}. ${nickname} - ${data.karma} ${name}`;
+          return `${idx + 1}. ${nickname} - ${row.karma} ${name}`;
         })
       );
 
@@ -127,16 +136,21 @@ export default async ({ aquarius, settings, analytics }) => {
 
       const name = settings.get(message.guild.id, 'name');
 
-      const recordList = await aquarius.database.karma
-        .where('userId', '==', user.id)
-        .where('guildId', '==', message.guild.id)
-        .get();
+      const record = await aquarius.database.karma.findOne({
+        select: {
+          karma: true,
+        },
+        where: {
+          guildId_userId: {
+            guildId: message.guild.id,
+            userId: user.id,
+          },
+        },
+      });
 
-      const str = recordList.empty
-        ? "They don't have any karma yet!"
-        : `${getNickname(message.guild, user)} has ${
-            recordList.docs[0].data().karma
-          } ${name}`;
+      const str = record
+        ? `${getNickname(message.guild, user)} has ${record.karma} ${name}`
+        : "They don't have any karma yet!";
 
       message.channel.send(str);
       analytics.trackUsage('lookup', message);
@@ -176,60 +190,71 @@ export default async ({ aquarius, settings, analytics }) => {
       );
 
       try {
-        const giverList = await aquarius.database.karma
-          .where('userId', '==', message.author.id)
-          .where('guildId', '==', message.guild.id)
-          .get();
+        const giver = await aquarius.database.karma.findOne({
+          select: {
+            lastUsage: true,
+          },
+          where: {
+            guildId_userId: {
+              guildId: message.guild.id,
+              userId: message.author.id,
+            },
+          },
+        });
 
-        if (giverList.empty) {
-          aquarius.database.karma.add({
-            userId: message.author.id,
-            guildId: message.guild.id,
-            lastUsage: Date.now(),
-            karma: 0,
-          });
-        } else {
-          const giverDoc = giverList.docs[0];
-          const giver = giverDoc.data();
-
-          if (cooldown > Date.now() - giver.lastUsage) {
-            log('Karma cooldown');
-            message.channel.send(
-              `You need to wait ${formatDistance(
-                Date.now(),
-                giver.lastUsage + cooldown
-              )} to give ${name}!`
-            );
-            return;
-          }
-
-          giverDoc.ref.set({ lastUsage: Date.now() }, { merge: true });
+        if (giver && cooldown > Date.now() - giver.lastUsage.getTime()) {
+          log('Karma cooldown');
+          message.channel.send(
+            `You need to wait ${formatDistance(
+              Date.now(),
+              giver.lastUsage.getTime() + cooldown
+            )} to give ${name}!`
+          );
+          return;
         }
 
-        const receiverList = await aquarius.database.karma
-          .where('userId', '==', user.id)
-          .where('guildId', '==', message.guild.id)
-          .get();
-
-        let karma = 1;
-
-        if (receiverList.empty) {
-          aquarius.database.karma.add({
+        const receiver = await aquarius.database.karma.upsert({
+          select: {
+            karma: true,
+          },
+          where: {
+            guildId_userId: {
+              guildId: message.guild.id,
+              userId: user.id,
+            },
+          },
+          create: {
+            guildId: message.guild.id,
             userId: user.id,
-            guildId: message.guild.id,
-            lastUsage: Date.now(),
-            karma,
-          });
-        } else {
-          const receiverDoc = receiverList.docs[0];
-          karma += receiverDoc.data().karma;
+            karma: 1,
+            lastUsage: new Date(Date.now() - ONE_WEEK),
+          },
+          update: {
+            karma: {
+              increment: 1,
+            },
+          },
+        });
 
-          receiverDoc.ref.set({ karma }, { merge: true });
-        }
+        await aquarius.database.karma.upsert({
+          where: {
+            guildId_userId: {
+              guildId: message.guild.id,
+              userId: message.author.id,
+            },
+          },
+          create: {
+            guildId: message.guild.id,
+            userId: message.author.id,
+          },
+          update: {
+            lastUsage: new Date(),
+          },
+        });
 
         const nickname = await getNickname(message.guild, user);
         message.channel.send(
-          `${name} given! ${nickname} now has ${karma} ${name}.`
+          `${name} given! ${nickname} now has ${receiver.karma} ${name}.`
         );
         analytics.trackUsage('increase', message);
       } catch (error) {
@@ -272,60 +297,71 @@ export default async ({ aquarius, settings, analytics }) => {
       );
 
       try {
-        const giverList = await aquarius.database.karma
-          .where('userId', '==', message.author.id)
-          .where('guildId', '==', message.guild.id)
-          .get();
+        const giver = await aquarius.database.karma.findOne({
+          select: {
+            lastUsage: true,
+          },
+          where: {
+            guildId_userId: {
+              guildId: message.guild.id,
+              userId: message.author.id,
+            },
+          },
+        });
 
-        if (giverList.empty) {
-          aquarius.database.karma.add({
-            userId: message.author.id,
-            guildId: message.guild.id,
-            lastUsage: Date.now(),
-            karma: 0,
-          });
-        } else {
-          const giverDoc = giverList.docs[0];
-          const giver = giverDoc.data();
-
-          if (cooldown > Date.now() - giver.lastUsage) {
-            log('Karma cooldown');
-            message.channel.send(
-              `You need to wait ${formatDistance(
-                Date.now(),
-                giver.lastUsage + cooldown
-              )} to take ${name}!`
-            );
-            return;
-          }
-
-          giverDoc.ref.set({ lastUsage: Date.now() }, { merge: true });
+        if (giver && cooldown > Date.now() - giver.lastUsage.getTime()) {
+          log('Karma cooldown');
+          message.channel.send(
+            `You need to wait ${formatDistance(
+              Date.now(),
+              giver.lastUsage.getTime() + cooldown
+            )} to take ${name}!`
+          );
+          return;
         }
 
-        const receiverList = await aquarius.database.karma
-          .where('userId', '==', user.id)
-          .where('guildId', '==', message.guild.id)
-          .get();
-
-        let karma = -1;
-
-        if (receiverList.empty) {
-          aquarius.database.karma.add({
+        const receiver = await aquarius.database.karma.upsert({
+          select: {
+            karma: true,
+          },
+          where: {
+            guildId_userId: {
+              guildId: message.guild.id,
+              userId: user.id,
+            },
+          },
+          create: {
+            guildId: message.guild.id,
             userId: user.id,
-            guildId: message.guild.id,
-            lastUsage: Date.now(),
-            karma,
-          });
-        } else {
-          const receiverDoc = receiverList.docs[0];
-          karma += receiverDoc.data().karma;
+            karma: 1,
+            lastUsage: new Date(Date.now() - ONE_WEEK),
+          },
+          update: {
+            karma: {
+              decrement: 1,
+            },
+          },
+        });
 
-          receiverDoc.ref.set({ karma }, { merge: true });
-        }
+        await aquarius.database.karma.upsert({
+          where: {
+            guildId_userId: {
+              guildId: message.guild.id,
+              userId: message.author.id,
+            },
+          },
+          create: {
+            guildId: message.guild.id,
+            userId: message.author.id,
+          },
+          update: {
+            lastUsage: new Date(),
+          },
+        });
 
         const nickname = await getNickname(message.guild, user);
         message.channel.send(
-          `${name} taken! ${nickname} now has ${karma} ${name}.`
+          `${name} taken! ${nickname} now has ${receiver.karma} ${name}.`
         );
         analytics.trackUsage('decrease', message);
       } catch (error) {

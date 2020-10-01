@@ -1,4 +1,3 @@
-import Firestore from '@google-cloud/firestore';
 import debug from 'debug';
 import fs from 'fs';
 import yaml from 'js-yaml';
@@ -93,13 +92,17 @@ export default class ServiceManager {
    * @returns {string[]} List of keys for linked Services
    */
   async getKeysForUser(user) {
-    const list = await database.services.doc(user.id).get();
+    const services = await database.service.findMany({
+      where: {
+        userId: user.id,
+      },
+    });
 
-    if (!list.exists) {
+    if (!services) {
       return [];
     }
 
-    return Object.keys(list.data());
+    return services.map((service) => service.name);
   }
 
   /**
@@ -125,15 +128,12 @@ export default class ServiceManager {
   async getLink(user, service) {
     log(`Retrieving ${service} for ${user.username}`);
 
-    const serviceList = await database.services.doc(user.id).get();
-
-    if (!serviceList.exists) {
-      return null;
-    }
-
-    const services = serviceList.data();
-
-    return services[service.toLowerCase()];
+    return database.service.findOne({
+      where: {
+        userId: user.id,
+        name: service,
+      },
+    });
   }
 
   /**
@@ -146,12 +146,20 @@ export default class ServiceManager {
   async setLink(user, name, fields) {
     log(`Setting ${name} for ${user.username}`);
 
-    return database.services.doc(user.id).set(
-      {
-        [name.toLowerCase()]: fields,
+    return database.services.upsert({
+      where: {
+        userId: user.id,
+        name,
       },
-      { merge: true }
-    );
+      create: {
+        userId: user.id,
+        name,
+        values: fields,
+      },
+      update: {
+        values: fields,
+      },
+    });
   }
 
   /**
@@ -163,8 +171,11 @@ export default class ServiceManager {
   async removeLink(user, service) {
     log(`Removing ${service} for user ${user.username}`);
 
-    return database.services.doc(user.id).update({
-      [service.toLowerCase()]: Firestore.FieldValue.delete(),
+    return database.services.delete({
+      where: {
+        userId: user.id,
+        name: service,
+      },
     });
   }
 }

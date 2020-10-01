@@ -7,6 +7,7 @@ import { ONE_HOUR } from '../../core/helpers/times';
 
 const log = debug('Twitchmote');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'twitchmote',
   description: 'Imports global Twitch Emoji.',

@@ -13,6 +13,8 @@ const log = debug('Weather');
 
 // TODO: Support Celcius
 // https://darksky.net/dev/docs#forecast-request
+
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'weather',
   description: 'View weekly weather forecast.',

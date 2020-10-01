@@ -12,6 +12,7 @@ const { DOMParser } = xmldom;
 const log = debug('Define');
 const API = 'http://www.dictionaryapi.com/api/v1/references/collegiate/xml';
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'define',
   description: 'Provides the definition for a word',

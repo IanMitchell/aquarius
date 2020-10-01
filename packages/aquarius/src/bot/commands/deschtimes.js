@@ -11,6 +11,7 @@ import { getBotOwner } from '../../core/helpers/users';
 
 const log = debug('Deschtimes');
 
+/** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'deschtimes',
   description: 'Read and Update your Deschtimes database from Discord',
@@ -66,13 +67,7 @@ async function getPosterInfo(name) {
 
   const json = await response.json();
 
-  if (
-    json &&
-    json.data &&
-    json.data.Media &&
-    json.data.Media.coverImage &&
-    json.data.Media.coverImage.extraLarge
-  ) {
+  if (json?.data?.Media?.coverImage?.extraLarge) {
     const embedInfo = {
       thumbnail: json.data.Media.coverImage.extraLarge,
       color: json.data.Media.coverImage.color,
@@ -91,7 +86,10 @@ async function createShowEmbed(show, posterInfo) {
   const embed = new MessageEmbed()
     .setTitle(`${show.name} #${show.episode}`)
     .setColor(0x008000)
-    .setFooter('Brought to you by Deschtimes™', owner.avatarURL);
+    .setFooter(
+      'Brought to you by Deschtimes™',
+      owner.avatarURL({ format: 'png' })
+    );
 
   if (posterInfo) {
     embed.setColor(getEmbedColorFromHex(posterInfo.color));
