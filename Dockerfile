@@ -9,6 +9,9 @@ COPY . .
 # Install Bot
 RUN npx lerna bootstrap --hoist
 
+# Create Prisma Engine
+RUN npx prisma generate
+
 # Open the API
 EXPOSE 3000
 

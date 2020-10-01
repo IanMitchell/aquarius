@@ -41,6 +41,7 @@
     "@aquarius-bot/testing": "file:packages/testing",
     "@aquarius-bot/triggers": "file:packages/triggers",
     "@aquarius-bot/users": "file:packages/users",
+    "@prisma/client": "^2.8.0",
     "aquarius": "file:packages/aquarius",
     "aquarius-dashboard": "file:packages/dashboard"
   },
