@@ -1,4 +1,5 @@
 import debug from 'debug';
+import { getInputAsNumber } from '../../core/helpers/input';
 import { humanize, shuffle } from '../../core/helpers/lists';
 
 const log = debug('Order');
@@ -69,12 +70,12 @@ export default async ({ aquarius, analytics }) => {
       );
 
       const min = Math.min(
-        parseInt(rangeGroups.lowerBound, 10),
-        parseInt(rangeGroups.upperBound, 10)
+        getInputAsNumber(rangeGroups.lowerBound),
+        getInputAsNumber(rangeGroups.upperBound)
       );
       const max = Math.max(
-        parseInt(rangeGroups.lowerBound, 10),
-        parseInt(rangeGroups.upperBound, 10)
+        getInputAsNumber(rangeGroups.lowerBound),
+        getInputAsNumber(rangeGroups.upperBound)
       );
 
       if (min >= ORDER_LIMITS.VALUE || max >= ORDER_LIMITS.VALUE) {

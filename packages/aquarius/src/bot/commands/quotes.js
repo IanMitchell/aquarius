@@ -1,6 +1,7 @@
 import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
+import { getInputAsNumber } from '../../core/helpers/input';
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;
@@ -70,21 +71,28 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       log(`Reading quote ${groups.id}`);
 
-      const quote = await aquarius.database.quote.findOne({
-        where: {
-          guildId_quoteId: {
-            quoteId: parseInt(groups.id, 10),
-            guildId: message.guild.id,
-          },
-        },
-      });
+      const quoteId = getInputAsNumber(groups.id);
 
-      if (!quote) {
-        message.channel.send(`I couldn't find a quote with id #${groups.id}`);
-        return;
+      if (quoteId) {
+        const quote = await aquarius.database.quote.findOne({
+          where: {
+            guildId_quoteId: {
+              quoteId,
+              guildId: message.guild.id,
+            },
+          },
+        });
+
+        if (!quote) {
+          message.channel.send(`I couldn't find a quote with id #${groups.id}`);
+          return;
+        }
+
+        message.channel.send(getQuoteMessage(quote));
+      } else {
+        message.channel.send("Sorry, it looks like that isn't a valid ID!");
       }
 
-      message.channel.send(getQuoteMessage(quote));
       analytics.trackUsage('read', message);
     }
   );

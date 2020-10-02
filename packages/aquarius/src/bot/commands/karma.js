@@ -6,6 +6,7 @@ import { getNickname } from '@aquarius-bot/users';
 import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
+import { getInputAsNumber } from '../../core/helpers/input';
 import { ONE_WEEK } from '../../core/helpers/times';
 
 // CJS / ESM compatibility
@@ -51,13 +52,10 @@ export default async ({ aquarius, settings, analytics }) => {
   );
 
   const getCooldown = (guild) => {
-    let val = parseInt(settings.get(guild.id, 'cooldown'), 10);
+    const cooldown =
+      getInputAsNumber(settings.get(guild.id, 'cooldown')) ?? COOLDOWN.DEFAULT;
 
-    if (Number.isNaN(val)) {
-      val = COOLDOWN.DEFAULT;
-    }
-
-    return Math.max(COOLDOWN.MIN, val) * 1000;
+    return Math.max(COOLDOWN.MIN, cooldown) * 1000;
   };
 
   // Leaderboard Trigger

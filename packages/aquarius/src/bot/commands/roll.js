@@ -1,5 +1,6 @@
 import debug from 'debug';
 import dedent from 'dedent-js';
+import { getInputAsNumber } from '../../core/helpers/input';
 
 const log = debug('Roll');
 
@@ -15,7 +16,8 @@ export const info = {
 };
 
 function getRolls(amount, die) {
-  return new Array(parseInt(amount, 10))
+  const size = getInputAsNumber(amount) ?? 1;
+  return new Array(size)
     .fill(0)
     .map(() => 1 + Math.floor(Math.random() * parseInt(die, 10)));
 }

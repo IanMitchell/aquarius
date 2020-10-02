@@ -1,5 +1,6 @@
 import Sentry from '@aquarius-bot/sentry';
 import debug from 'debug';
+import { getInputAsNumber } from '../../core/helpers/input';
 
 const log = debug('Same');
 
@@ -68,13 +69,9 @@ export default async ({ aquarius, settings, analytics }) => {
   );
 
   const getSize = (guild) => {
-    let val = parseInt(settings.get(guild.id, 'size'), 10);
-
-    if (Number.isNaN(val)) {
-      val = MESSAGE_STACK_SIZE;
-    }
-
-    return Math.max(2, val);
+    const value =
+      getInputAsNumber(settings.get(guild.id, 'size')) ?? MESSAGE_STACK_SIZE;
+    return Math.max(2, value);
   };
 
   // We want to track bot messages for this too, otherwise it looks weird

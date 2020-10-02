@@ -3,6 +3,7 @@ import Sentry from '@aquarius-bot/sentry';
 import { getNickname } from '@aquarius-bot/users';
 import debug from 'debug';
 import { Permissions } from 'discord.js';
+import { getInputAsNumber } from '../../core/helpers/input';
 import { randomValue } from '../../core/helpers/lists';
 import { ONE_MINUTE } from '../../core/helpers/times';
 
@@ -43,7 +44,7 @@ async function updateNickname(aquarius) {
     if (match) {
       log("Updating Areki's nickname");
 
-      let number = parseInt(match[0], 10);
+      let number = getInputAsNumber(match[0]) ?? 0;
 
       if (nickname.endsWith('%-slowly-depleting Ganbareki')) {
         number -= 1;

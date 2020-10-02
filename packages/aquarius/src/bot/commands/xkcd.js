@@ -4,6 +4,7 @@ import debug from 'debug';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
+import { getInputAsNumber } from '../../core/helpers/input';
 
 const log = debug('xkcd');
 
@@ -136,12 +137,16 @@ export default async ({ aquarius, analytics }) => {
     }
 
     try {
-      const id = parseInt(groups.id, 10);
+      const id = getInputAsNumber(groups.id);
 
-      const postJson = await getPostJsonById(id);
-      const embed = createEmbedFromJson(postJson);
+      if (!id) {
+        message.channel.send("That doesn't look like a valid id!");
+      } else {
+        const postJson = await getPostJsonById(id);
+        const embed = createEmbedFromJson(postJson);
 
-      message.channel.send(embed);
+        message.channel.send(embed);
+      }
     } catch (error) {
       log(error);
       Sentry.captureException(error);

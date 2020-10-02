@@ -2,6 +2,7 @@ import { getLink } from '@aquarius-bot/messages';
 import { getNickname } from '@aquarius-bot/users';
 import debug from 'debug';
 import { MessageEmbed, Permissions } from 'discord.js';
+import { getInputAsNumber } from '../../core/helpers/input';
 
 const log = debug('Starboard');
 
@@ -29,13 +30,9 @@ export default async ({ aquarius, settings, analytics }) => {
   );
 
   const getAmount = (guild) => {
-    let val = parseInt(settings.get(guild.id, 'amount'), 10);
-
-    if (Number.isNaN(val)) {
-      val = DEFAULT_AMOUNT;
-    }
-
-    return Math.max(1, val);
+    const value =
+      getInputAsNumber(settings.get(guild.id, 'amount')) ?? DEFAULT_AMOUNT;
+    return Math.max(1, value);
   };
 
   aquarius.on('messageReactionAdd', async (messageReaction) => {
