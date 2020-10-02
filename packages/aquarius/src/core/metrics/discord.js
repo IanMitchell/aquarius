@@ -29,7 +29,7 @@ export function getTotalChannelCount() {
 
 export function getTotalAdminCount() {
   return aquarius.guilds.cache.filter((guild) => isGuildAdmin(guild, guild.me))
-    .length;
+    .size;
 }
 
 export function getTotalSubscriberCount() {
@@ -46,7 +46,7 @@ export function getSpecialGuildCount() {
   );
 }
 
-export function saveSnapshot() {
+export async function saveSnapshot() {
   const snapshot = {
     userCount: getTotalUserCount(),
     guildCount: getTotalGuildCount(),
@@ -54,14 +54,18 @@ export function saveSnapshot() {
     channelCount: getTotalChannelCount(),
     adminCount: getTotalAdminCount(),
     specialGuildCount: getSpecialGuildCount(),
-    enabledCommands: aquarius.database.enabledCommand.count(),
+    enabledCommands: await aquarius.database.enabledCommand.count(),
   };
 
-  aquarius.database.snapshot.create({
-    data: {
-      snapshot,
-    },
-  });
+  try {
+    await aquarius.database.snapshot.create({
+      data: {
+        snapshot,
+      },
+    });
+  } catch (err) {
+    log(err);
+  }
 }
 
 export async function setupDailySnapshotLoop() {
