@@ -48,39 +48,44 @@ async function getPosterInfo(name) {
     return POSTER_CACHE.get(name);
   }
 
-  const response = await fetch('https://graphql.anilist.co', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({
-      query: `
-      query ($search: String) {
-        Media(search: $search, format_in: [TV, TV_SHORT, OVA, ONA, MOVIE]) {
-          coverImage {
-            extraLarge
-            color
+  try {
+    const response = await fetch('https://graphql.anilist.co', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+        query ($search: String) {
+          Media(search: $search, format_in: [TV, TV_SHORT, OVA, ONA, MOVIE]) {
+            coverImage {
+              extraLarge
+              color
+            }
           }
         }
-      }
-      `,
-      variables: {
-        search: name,
-      },
-    }),
-  });
+        `,
+        variables: {
+          search: name,
+        },
+      }),
+    });
 
-  const json = await response.json();
+    const json = await response.json();
 
-  if (json?.data?.Media?.coverImage?.extraLarge) {
-    const embedInfo = {
-      thumbnail: json.data.Media.coverImage.extraLarge,
-      color: json.data.Media.coverImage.color,
-    };
+    if (json?.data?.Media?.coverImage?.extraLarge) {
+      const embedInfo = {
+        thumbnail: json.data.Media.coverImage.extraLarge,
+        color: json.data.Media.coverImage.color,
+      };
 
-    POSTER_CACHE.set(name, embedInfo);
-    return embedInfo;
+      POSTER_CACHE.set(name, embedInfo);
+      return embedInfo;
+    }
+  } catch (error) {
+    log(error);
+    Sentry.captureException(error);
   }
 
   return null;
