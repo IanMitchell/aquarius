@@ -98,20 +98,25 @@ export default class GuildSettings {
    * Adds a User to the Guild ignore list and updates the Database
    * @param {string} id - User ID for the User
    */
-  ignoreUser(id) {
+  async ignoreUser(id) {
     if (!this.ignoredUsers.has(id)) {
       this.ignoredUsers.add(id);
 
-      database.ignoredUser.create({
-        data: {
-          userId: id,
-          guildSetting: {
-            connect: {
-              guildId: this.id,
+      try {
+        await database.ignoredUser.create({
+          data: {
+            userId: id,
+            guildSetting: {
+              connect: {
+                guildId: this.id,
+              },
             },
           },
-        },
-      });
+        });
+      } catch (error) {
+        log(error);
+        Sentry.captureException(error);
+      }
     }
   }
 
@@ -119,16 +124,21 @@ export default class GuildSettings {
    * Removes a User from the Guild ignore list and updates the Database
    * @param {string} id - User ID for the User
    */
-  unignoreUser(id) {
+  async unignoreUser(id) {
     if (this.ignoredUsers.has(id)) {
       this.ignoredUsers.delete(id);
 
-      database.ignoredUser.delete({
-        where: {
-          userId: id,
-          guildSettingId: this.guildSettingId,
-        },
-      });
+      try {
+        await database.ignoredUser.delete({
+          where: {
+            userId: id,
+            guildSettingId: this.guildSettingId,
+          },
+        });
+      } catch (error) {
+        log(error);
+        Sentry.captureException(error);
+      }
     }
   }
 
@@ -136,26 +146,36 @@ export default class GuildSettings {
    * Enables a command for the Guild and saves it to the database
    * @param {string} name - Name of the command to enable
    */
-  enableCommand(name) {
+  async enableCommand(name) {
     if (!this.enabledCommands.has(name)) {
       this.enabledCommands.add(name);
       this.setCommandSettings(name, new Map(), false);
 
-      database.enabledCommand.upsert({
-        where: {
-          guildSettingId_name: {
-            guildSettingId: this.guildSettingId,
-            name,
+      try {
+        await database.enabledCommand.upsert({
+          where: {
+            guildSettingId_name: {
+              guildSettingId: this.guildSettingId,
+              name,
+            },
           },
-        },
-        create: {
-          name,
-          enabled: true,
-        },
-        update: {
-          enabled: true,
-        },
-      });
+          create: {
+            name,
+            enabled: true,
+            guildSetting: {
+              connect: {
+                guildId: this.guildSettingId,
+              },
+            },
+          },
+          update: {
+            enabled: true,
+          },
+        });
+      } catch (error) {
+        log(error);
+        Sentry.captureException(error);
+      }
     }
   }
 
@@ -163,21 +183,26 @@ export default class GuildSettings {
    * Disables a command for the Guild and saves it to the database
    * @param {string} name - Name of the command to disable
    */
-  disableCommand(name) {
+  async disableCommand(name) {
     this.enabledCommands.delete(name);
     this.removeCommandSettings(name, false);
 
-    database.enabledCommand.update({
-      where: {
-        guildSettingId_name: {
-          guildSettingId: this.guildSettingId,
-          name,
+    try {
+      await database.enabledCommand.update({
+        where: {
+          guildSettingId_name: {
+            guildSettingId: this.guildSettingId,
+            name,
+          },
         },
-      },
-      data: {
-        enabled: false,
-      },
-    });
+        data: {
+          enabled: false,
+        },
+      });
+    } catch (error) {
+      log(error);
+      Sentry.captureException(error);
+    }
   }
 
   /**
@@ -226,32 +251,42 @@ export default class GuildSettings {
 
     setTimeout(() => this.unMuteGuild(), duration);
 
-    database.guildSetting.update({
-      where: {
-        guildId: this.id,
-      },
-      data: {
-        mute: Date.now() + duration,
-      },
-    });
+    try {
+      await database.guildSetting.update({
+        where: {
+          guildId: this.id,
+        },
+        data: {
+          mute: Date.now() + duration,
+        },
+      });
+    } catch (error) {
+      log(error);
+      Sentry.captureException(error);
+    }
   }
 
   /**
    * Marks a guild as being unmuted and updates the database
    */
-  unMuteGuild() {
+  async unMuteGuild() {
     if (this.muted) {
       log(`Unmuting ${this.id}`);
       this.muted = false;
 
-      database.guildSetting.update({
-        where: {
-          guildId: this.id,
-        },
-        data: {
-          mute: undefined,
-        },
-      });
+      try {
+        await database.guildSetting.update({
+          where: {
+            guildId: this.id,
+          },
+          data: {
+            mute: undefined,
+          },
+        });
+      } catch (error) {
+        log(error);
+        Sentry.captureException(error);
+      }
     }
   }
 
@@ -259,54 +294,59 @@ export default class GuildSettings {
    * Loads from the database and overrides current settings
    */
   async loadSettings() {
-    const guildSetting = await database.guildSetting.findOne({
-      where: {
-        guildId: this.id,
-      },
-      include: {
-        ignoredUsers: true,
-        commands: {
-          include: {
-            configs: true,
+    try {
+      const guildSetting = await database.guildSetting.findOne({
+        where: {
+          guildId: this.id,
+        },
+        include: {
+          ignoredUsers: true,
+          commands: {
+            include: {
+              configs: true,
+            },
           },
         },
-      },
-    });
+      });
 
-    if (!guildSetting) {
-      log(`No settings found for ${this.id}`);
-      this.saveSettings();
-    } else {
-      this.guildSettingId = guildSetting.id;
-
-      this.enabledCommands = new Set(
-        guildSetting.commands
-          .filter((cmd) => cmd.enabled)
-          .map((cmd) => cmd.name)
-      );
-
-      this.ignoredUsers = new Set(
-        guildSetting.ignoredUsers.map((ignore) => ignore.userId)
-      );
-
-      this.commandConfig = new Map(
-        guildSetting.commands.map((cmd) => [
-          cmd.name,
-          new Map(
-            cmd.configs
-              .filter((config) => config.commandId === cmd.id)
-              .map((cfg) => [cfg.key, cfg.value])
-          ),
-        ])
-      );
-
-      this.muted = guildSetting.mute;
-
-      if (Date.now() < guildSetting.mute) {
-        this.muteGuild(guildSetting.mute - Date.now());
+      if (!guildSetting) {
+        log(`No settings found for ${this.id}`);
+        this.saveSettings();
       } else {
-        this.unMuteGuild();
+        this.guildSettingId = guildSetting.id;
+
+        this.enabledCommands = new Set(
+          guildSetting.commands
+            .filter((cmd) => cmd.enabled)
+            .map((cmd) => cmd.name)
+        );
+
+        this.ignoredUsers = new Set(
+          guildSetting.ignoredUsers.map((ignore) => ignore.userId)
+        );
+
+        this.commandConfig = new Map(
+          guildSetting.commands.map((cmd) => [
+            cmd.name,
+            new Map(
+              cmd.configs
+                .filter((config) => config.commandId === cmd.id)
+                .map((cfg) => [cfg.key, cfg.value])
+            ),
+          ])
+        );
+
+        this.muted = guildSetting.mute;
+
+        if (Date.now() < guildSetting.mute) {
+          this.muteGuild(guildSetting.mute - Date.now());
+        } else {
+          this.unMuteGuild();
+        }
       }
+    } catch (error) {
+      log(error);
+      Sentry.captureException(error);
     }
   }
 
