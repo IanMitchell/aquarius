@@ -1,3 +1,4 @@
+import Sentry from '@aquarius-bot/sentry';
 import debug from 'debug';
 import fs from 'fs';
 import yaml from 'js-yaml';
@@ -92,17 +93,23 @@ export default class ServiceManager {
    * @returns {string[]} List of keys for linked Services
    */
   async getKeysForUser(user) {
-    const services = await database.service.findMany({
-      where: {
-        userId: user.id,
-      },
-    });
+    try {
+      const services = await database.service.findMany({
+        where: {
+          userId: user.id,
+        },
+      });
 
-    if (!services) {
+      if (!services) {
+        return [];
+      }
+
+      return services.map((service) => service.name);
+    } catch (error) {
+      log(error);
+      Sentry.captureException(error);
       return [];
     }
-
-    return services.map((service) => service.name);
   }
 
   /**
@@ -130,8 +137,10 @@ export default class ServiceManager {
 
     return database.service.findOne({
       where: {
-        userId: user.id,
-        name: service,
+        userId_name: {
+          userId: user.id,
+          name: service.toLowerCase(),
+        },
       },
     });
   }
@@ -146,14 +155,16 @@ export default class ServiceManager {
   async setLink(user, name, fields) {
     log(`Setting ${name} for ${user.username}`);
 
-    return database.services.upsert({
+    return database.service.upsert({
       where: {
-        userId: user.id,
-        name,
+        userId_name: {
+          userId: user.id,
+          name: name.toLowerCase(),
+        },
       },
       create: {
         userId: user.id,
-        name,
+        name: name.toLowerCase(),
         values: fields,
       },
       update: {
@@ -171,10 +182,12 @@ export default class ServiceManager {
   async removeLink(user, service) {
     log(`Removing ${service} for user ${user.username}`);
 
-    return database.services.delete({
+    return database.service.delete({
       where: {
-        userId: user.id,
-        name: service,
+        userId_name: {
+          userId: user.id,
+          name: service.toLowerCase(),
+        },
       },
     });
   }

@@ -164,7 +164,7 @@ export default class GuildSettings {
             enabled: true,
             guildSetting: {
               connect: {
-                guildId: this.guildSettingId,
+                id: this.guildSettingId,
               },
             },
           },

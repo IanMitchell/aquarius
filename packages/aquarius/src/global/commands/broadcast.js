@@ -1,3 +1,4 @@
+import Sentry from '@aquarius-bot/sentry';
 import { getGame, getStream, isStreaming } from '@aquarius-bot/users';
 import debug from 'debug';
 
@@ -56,31 +57,40 @@ function setStreaming(aquarius, presence) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  aquarius.onCommand(/^broadcast (?<message>.*)$/i, (message, { groups }) => {
-    if (aquarius.permissions.isBotOwner(message.author)) {
-      log(`Setting Broadcast Message to ${groups.message}`);
+  aquarius.onCommand(
+    /^broadcast (?<message>.*)$/i,
+    async (message, { groups }) => {
+      if (aquarius.permissions.isBotOwner(message.author)) {
+        log(`Setting Broadcast Message to ${groups.message}`);
 
-      aquarius.database.setting.upsert({
-        where: { key: 'BROADCAST' },
-        create: {
-          key: 'BROADCAST',
-          value: {
-            message: groups.message,
-          },
-        },
-        update: {
-          value: {
-            message: groups.message,
-          },
-        },
-      });
+        try {
+          await aquarius.database.setting.upsert({
+            where: { key: 'BROADCAST' },
+            create: {
+              key: 'BROADCAST',
+              value: {
+                message: groups.message,
+              },
+            },
+            update: {
+              value: {
+                message: groups.message,
+              },
+            },
+          });
 
-      setBroadcastMessage(aquarius, groups.message);
-      message.channel.send('My broadcast message has been updated!');
+          setBroadcastMessage(aquarius, groups.message);
+          message.channel.send('My broadcast message has been updated!');
+        } catch (error) {
+          log(error);
+          Sentry.captureException(error);
+          message.channel.send('Sorry, I encountered a problem!');
+        }
 
-      analytics.trackUsage('broadcast message');
+        analytics.trackUsage('broadcast message');
+      }
     }
-  });
+  );
 
   aquarius.on('ready', async () => {
     const owner = await aquarius.users.fetch(aquarius.config.owner);
