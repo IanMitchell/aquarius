@@ -50,7 +50,7 @@ Very rarely we'll announce new features or planned downtime in the Discord serve
 
 ## Development
 
-For help with local development of the bot, check the [Getting Started Wiki Page](/wiki/Getting-Started).
+For help with local development of the bot, check the [Getting Started Wiki Page](https://github.com/IanMitchell/aquarius/wiki/Getting-Started).
 
 If you are working on your own discord bot, Aquarius publishes several different packages that might be of interest.
 
