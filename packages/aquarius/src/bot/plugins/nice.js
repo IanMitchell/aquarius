@@ -13,7 +13,10 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onMessage(info, (message) => {
-    if (message.cleanContent.match(/\b69\b/)) {
+    if (
+      message.cleanContent.match(/\b69\b/) ||
+      message.cleanContent.match(/:six: ?:nine:/)
+    ) {
       log(`69 in ${message.guild.name}`);
 
       const check = checkBotPermissions(message.guild, ...info.permissions);
