@@ -32,7 +32,7 @@
     "@aquarius-bot/triggers": "file:../triggers",
     "@aquarius-bot/users": "file:../users",
     "@prisma/client": "^2.8.0",
-    "@sentry/node": "5.22.3",
+    "@sentry/node": "5.24.2",
     "alphavantage": "^2.0.1",
     "node-cache": "5.1.2",
     "chalk": "^4.0.0",
