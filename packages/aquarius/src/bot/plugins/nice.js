@@ -15,7 +15,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onMessage(info, (message) => {
     if (
       message.cleanContent.match(/\b69\b/) ||
-      message.cleanContent.match(/(?::six:)|6️⃣ ?(?::nine:)|9️⃣/)
+      message.cleanContent.match(/(?:(?::six:)|6️⃣) ?(?:(?::nine:)|9️⃣)/)
     ) {
       log(`69 in ${message.guild.name}`);
 
