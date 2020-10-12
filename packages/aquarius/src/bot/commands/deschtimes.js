@@ -107,18 +107,18 @@ async function createShowEmbed(show, posterInfo) {
     embed.setThumbnail(posterInfo.thumbnail);
   }
 
-  const positions = new Map();
+  embed.addField(
+    'Status',
+    show.status
+      .map((staff) => {
+        if (staff.finished) {
+          return `~~${staff.acronym}~~`;
+        }
 
-  show.status.forEach((staff) => {
-    // Pending takes precedence
-    if (staff.finished && !positions.has(staff.acronym)) {
-      positions.set(staff.acronym, `~~${staff.acronym}~~`);
-    } else if (!staff.finished) {
-      positions.set(staff.acronym, `**${staff.acronym}**`);
-    }
-  });
-
-  embed.addField('Status', Array.from(positions.values()).join(' '));
+        return `**${staff.acronym}**`;
+      })
+      .join(' ')
+  );
 
   const updatedDate = new Date(show.updated_at);
   const airDate = new Date(show.air_date);
