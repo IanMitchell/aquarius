@@ -95,8 +95,10 @@ export default async ({ aquarius, analytics }) => {
 
         const response = await aquarius.database.reply.delete({
           where: {
-            guildId: message.guild.id,
-            trigger: groups.trigger.toLowerCase(),
+            guildId_trigger: {
+              guildId: message.guild.id,
+              trigger: groups.trigger.toLowerCase(),
+            },
           },
         });
 
