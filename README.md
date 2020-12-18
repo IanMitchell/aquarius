@@ -18,7 +18,7 @@ Aquarius is a general purpose [Discord](https://discordapp.com/) chat bot. If yo
 
 Aquarius is designed to be easy and intuitive to use for both users and new contributors. The goal is to reach feature parity with the mega-bots with much less code complexity. It is fully customizeable, allowing guilds to enable or disable commands in order to make the bot fit their exact needs.
 
-Aquarius is written in Node.js and interacts with many different APIs and Services. It is hosted on Digital Ocean and uses a Google Firestore database.
+Aquarius is written in Node.js and interacts with many different APIs and Services. It is hosted on Digital Ocean and uses a PostgreSQL database.
 
 ## Usage
 
