@@ -27,8 +27,14 @@ export const info = {
 function getQuoteMessage(quote) {
   const time = formatDistance(quote.createdAt, new Date(), { addSuffix: true });
 
+  if (!quote.saidBy)
+    return dedent`
+      *Quote ${quote.quoteId} added by ${quote.addedBy} ${time}*
+      ${quote.quote}
+    `;
+
   return dedent`
-    *Quote ${quote.quoteId} added by ${quote.addedBy} ${time}*
+    *Quote ${quote.quoteId} from <@${quote.saidBy}> added by ${quote.addedBy} ${time}*
     ${quote.quote}
   `;
 }
