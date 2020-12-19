@@ -156,28 +156,13 @@ export default async ({ aquarius, analytics }) => {
   );
 
   aquarius.onCommand(
-    /^quotes (?:new|add) (?<quote>[^]*)$/i,
+    RegExp(
+      `^quotes (?:new|add) ${regex.MENTION_USER.source} (?<quote>[^]*)$`,
+      'i'
+    ),
     async (message, { groups }) => {
       log('Adding new quote');
-
-      const quoteCount = await aquarius.database.quote.count({
-        where: {
-          guildId: message.guild.id,
-        },
-      });
-
-      await aquarius.database.quote.create({
-        data: {
-          guildId: message.guild.id,
-          channel: message.channel.name,
-          addedBy: message.author.username,
-          quoteId: quoteCount + 1,
-          quote: groups.quote,
-        },
-      });
-
-      message.channel.send(`Added quote #${quoteCount + 1}!`);
-      analytics.trackUsage('add', message);
+      addQuote(message, groups.quote, groups.id);
     }
   );
 };
