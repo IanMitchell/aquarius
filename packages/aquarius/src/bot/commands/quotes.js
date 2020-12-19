@@ -1,6 +1,7 @@
 import dateFns from 'date-fns';
 import debug from 'debug';
 import dedent from 'dedent-js';
+import * as regex from '@aquarius-bot/regex';
 import { getInputAsNumber } from '../../core/helpers/input';
 
 // CJS / ESM compatibility
@@ -100,6 +101,57 @@ export default async ({ aquarius, analytics }) => {
       }
 
       analytics.trackUsage('read', message);
+    }
+  );
+
+  async function addQuote(message, text, saidBy) {
+    const quoteCount = await aquarius.database.quote.count({
+      where: {
+        guildId: message.guild.id,
+      },
+    });
+
+    await aquarius.database.quote.create({
+      data: {
+        guildId: message.guild.id,
+        channel: message.channel.id,
+        addedBy: message.author.username,
+        saidBy,
+        quoteId: quoteCount + 1,
+        quote: text,
+      },
+    });
+
+    message.channel.send(`Added quote #${quoteCount + 1}!`);
+    analytics.trackUsage('add', message);
+  }
+
+  aquarius.onCommand(
+    RegExp(`^quote ${regex.MENTION_USER.source} (?<search>[^]*)$`, 'i'),
+    async (message, { groups }) => {
+      log('Adding new quote by search');
+
+      const search = groups.search.toLowerCase();
+
+      const history = await message.channel.fetch({ before: message.id });
+      const result = history.reduce((best, cur) => {
+        if (
+          cur.author.id === groups.id &&
+          (!best || cur.createdAt > best.createdAt) &&
+          cur.cleanContent.toLowerCase().contains(search)
+        )
+          return cur;
+        return best;
+      });
+
+      if (!result) {
+        message.channel.send(
+          `Sorry, I don't remember what <@${groups.id}> said about ${groups.search}.`
+        );
+        return;
+      }
+
+      addQuote(message, groups.id, result.cleanContent);
     }
   );
 
