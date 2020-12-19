@@ -165,4 +165,97 @@ export default async ({ aquarius, analytics }) => {
       addQuote(message, groups.quote, groups.id);
     }
   );
+
+  async function editQuote(message, quote, search, replace, modifiers) {
+    // TODO fix case-insensitive mode
+    const edited = quote.quote[
+      modifiers.includes('g') ? 'replaceAll' : 'replace'
+    ](search, replace);
+
+    await aquarius.database.quote.update({
+      select: {
+        guildId_quoteId: {
+          quoteId: quote.quoteId,
+          guildId: quote.guildId,
+        },
+      },
+      data: {
+        quote: edited,
+      },
+    });
+
+    message.channel.send(`Edited quote #${quote.quoteId}!`);
+    analytics.trackUsage('edit', message);
+  }
+
+  aquarius.onCommand(
+    RegExp(
+      `^quotes edit ${regex.MENTION_USER.source} s(?<delimeter>.)(?<search>(?:(?!\\k<delimeter>).)+)(?:\\k<delimeter>)(?<replace>.*)(?:\\k<delimeter>)(?<modifiers>[gi]+)\\s*$`,
+      'i'
+    ),
+    async (message, { groups }) => {
+      log('Modifying existing quote');
+
+      const modifiers = groups.modifiers.toLowerCase();
+
+      const mode = modifiers.includes('i') ? 'insensitive' : 'default';
+
+      const quote = await aquarius.database.quote.findFirst({
+        where: {
+          AND: [
+            { guildId: message.guild.id },
+            { quote: { contains: groups.search, mode } },
+          ],
+        },
+      });
+
+      if (!quote) {
+        message.channel.send(
+          `Sorry, I don't remember what <@${groups.id}> said about ${groups.search}.`
+        );
+        return;
+      }
+
+      editQuote(message, quote, groups.search, groups.replace, modifiers);
+    }
+  );
+
+  aquarius.onCommand(
+    RegExp(
+      `^quotes edit #?(?<quoteId>\\d+) s(?<delimeter>.)(?<search>(?:(?!\\k<delimeter>).)+)(?:\\k<delimeter>)(?<replace>.*)(?:\\k<delimeter>)(?<modifiers>[gi]+)\\s*$`,
+      'i'
+    ),
+    async (message, { groups }) => {
+      log('Modifying existing quote');
+
+      const quoteId = getInputAsNumber(groups.quoteId);
+
+      if (!quoteId) {
+        message.channel.send("Sorry, it looks like that isn't a valid ID!");
+        return;
+      }
+
+      const quote = await aquarius.database.quote.findOne({
+        where: {
+          guildId_quoteId: {
+            quoteId,
+            guildId: message.guild.id,
+          },
+        },
+      });
+
+      if (!quote) {
+        message.channel.send(`Sorry, I don't have a quote with ID ${quoteId}.`);
+        return;
+      }
+
+      editQuote(
+        message,
+        quote,
+        groups.search,
+        groups.replace,
+        groups.modifiers.toLowerCase()
+      );
+    }
+  );
 };
