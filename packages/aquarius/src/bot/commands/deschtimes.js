@@ -107,13 +107,8 @@ export default async ({ aquarius, analytics, settings }) => {
 
     try {
       const token = settings.get(message.guild.id, 'token');
-      // const response = await fetch(
-      //   `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
-      //     groups.show
-      //   )}.json`
-      // );
       const response = await fetch(
-        `http://localhost:3000/api/v1/groups/${token}/shows/${encodeURIComponent(
+        `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
           groups.show
         )}.json`
       );
@@ -156,15 +151,10 @@ export default async ({ aquarius, analytics, settings }) => {
 
       try {
         const token = settings.get(message.guild.id, 'token');
-        // const url = new URL(
-        //   `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
-        //     groups.show
-        //   )}.json`
-        // );
         const url = new URL(
-          `http://localhost:3000/api/v1/groups/${token}/shows/${encodeURIComponent(
+          `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
             groups.show
-          )}/staff`
+          )}.json`
         );
         url.searchParams.append('finished', groups.status === 'done');
         url.searchParams.append('member', message.author.id);
@@ -210,15 +200,10 @@ export default async ({ aquarius, analytics, settings }) => {
 
     try {
       const token = settings.get(message.guild.id, 'token');
-      // const url = new URL(
-      //   `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
-      //     groups.show
-      //   )}.json`
-      // );
       const url = new URL(
-        `http://localhost:3000/api/v1/groups/${token}/shows/${encodeURIComponent(
+        `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
           groups.show
-        )}/episodes`
+        )}.json`
       );
       url.searchParams.append('member', message.author.id);
 
