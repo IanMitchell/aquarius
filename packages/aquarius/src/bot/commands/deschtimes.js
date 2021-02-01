@@ -18,23 +18,29 @@ export const info = {
     **Blame**:
     \`\`\`@Aquarius blame <show>\`\`\`
 
-    **Airing**:
-    \`\`\`@Aquarius airing\`\`\`
-
     **Update Staff**
     \`\`\`@Aquarius <done|undone> <position> <show>\`\`\`
+
+    **Update Future Episode**
+    \`\`\`@Aquarius <done|undone> <position> #<episode number> <show>\`\`\`
 
     **Mark as Released**
     \`\`\`@Aquarius release <show>\`\`\`
   `,
 };
 
-function getShowEmbed(data) {
+function getShowEmbed(data, episodeNumber) {
   data.poster =
     'https://deschtimes.herokuapp.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBFQT09IiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--edf3bbbf817dd716d69dec6a37be5d9d7af3d111/bx87423-gPNtu8QbGped.jpg';
-  const [episode] = data.episodes
-    .filter((ep) => !ep.released)
-    .sort((a, b) => a.number - b.number);
+  let episode = null;
+
+  if (episodeNumber) {
+    episode = data.episodes.find((ep) => ep.number === episodeNumber);
+  } else {
+    [episode] = data.episodes
+      .filter((ep) => !ep.released)
+      .sort((a, b) => a.number - b.number);
+  }
 
   const embed = new MessageEmbed()
     .setAuthor('Deschtimes', null, 'https://deschtimes.com')
@@ -180,7 +186,9 @@ export default async ({ aquarius, analytics, settings }) => {
         const data = await response.json();
 
         if (response.ok) {
-          message.channel.send(getShowEmbed(data));
+          message.channel.send(
+            getShowEmbed(data, parseInt(groups.episode, 10))
+          );
         } else {
           message.channel.send(data.message);
         }
