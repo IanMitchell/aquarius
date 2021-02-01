@@ -135,7 +135,7 @@ export default async ({ aquarius, analytics, settings }) => {
   });
 
   aquarius.onCommand(
-    /^(?:(?:(?<status>done|undone) (?<position>\w+)(?: \#(?<episode>\d+))? (?<show>.+)))$/i,
+    /^(?:(?:(?<status>done|undone) (?<position>\w+)(?: #(?<episode>\d+))? (?<show>.+)))$/i,
     async (message, { groups }) => {
       log(`Status update for ${groups.show}`);
 
