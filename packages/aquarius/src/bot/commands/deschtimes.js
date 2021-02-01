@@ -78,7 +78,7 @@ async function getShowEmbed(data, episodeNumber) {
       .join(' ')
   );
 
-  const updatedDate = new Date(data.updated_at);
+  const updatedDate = new Date(episode.updated_at);
   const airDate = new Date(episode.air_date);
 
   if (updatedDate > airDate) {
