@@ -5,6 +5,7 @@ import debug from 'debug';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
+import { getIconColor } from '../../core/helpers/colors';
 import { getBotOwner } from '../../core/helpers/users';
 
 const log = debug('Deschtimes');
@@ -29,9 +30,7 @@ export const info = {
   `,
 };
 
-function getShowEmbed(data, episodeNumber) {
-  data.poster =
-    'https://deschtimes.herokuapp.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBFQT09IiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--edf3bbbf817dd716d69dec6a37be5d9d7af3d111/bx87423-gPNtu8QbGped.jpg';
+async function getShowEmbed(data, episodeNumber) {
   let episode = null;
 
   if (episodeNumber) {
@@ -48,7 +47,8 @@ function getShowEmbed(data, episodeNumber) {
     .setColor(0x008000);
 
   if (data.poster) {
-    // embed.setColor(getIconColor(data.poster));
+    const color = await getIconColor(data.poster);
+    embed.setColor(color);
     embed.setThumbnail(data.poster);
   }
 
@@ -186,9 +186,8 @@ export default async ({ aquarius, analytics, settings }) => {
         const data = await response.json();
 
         if (response.ok) {
-          message.channel.send(
-            getShowEmbed(data, parseInt(groups.episode, 10))
-          );
+          const embed = await getShowEmbed(data, parseInt(groups.episode, 10));
+          message.channel.send(embed);
         } else {
           message.channel.send(data.message);
         }
@@ -229,7 +228,8 @@ export default async ({ aquarius, analytics, settings }) => {
       const data = await response.json();
 
       if (response.ok) {
-        message.channel.send('Episode released!', getShowEmbed(data));
+        const embed = await getShowEmbed(data);
+        message.channel.send('Episode released!', embed);
       } else {
         message.channel.send(data.message);
       }
