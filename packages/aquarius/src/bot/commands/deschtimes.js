@@ -51,6 +51,10 @@ async function getShowEmbed(data, episodeNumber) {
     embed.setThumbnail(data.poster);
   }
 
+  if (data.status) {
+    embed.setDescription(data.status);
+  }
+
   if (!episode) {
     embed.setTitle(data.name);
     embed.addField(
