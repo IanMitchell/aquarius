@@ -43,7 +43,6 @@ async function getShowEmbed(data, episodeNumber) {
 
   const embed = new MessageEmbed()
     .setAuthor('Deschtimes', null, 'https://deschtimes.com')
-    .setTitle(`${data.name} #${episode.number}`)
     .setColor(0x008000);
 
   if (data.poster) {
@@ -52,6 +51,16 @@ async function getShowEmbed(data, episodeNumber) {
     embed.setThumbnail(data.poster);
   }
 
+  if (!episode) {
+    embed.setTitle(data.name);
+    embed.addField(
+      'Finished',
+      formatDistance(new Date(data.updated_at), new Date(), { addSuffix: true })
+    );
+    return embed;
+  }
+
+  embed.setTitle(`${data.name} #${episode.number}`);
   embed.addField(
     'Status',
     episode.staff
