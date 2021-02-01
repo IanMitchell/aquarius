@@ -4,11 +4,8 @@ import formatDistance from 'date-fns/formatDistance';
 import debug from 'debug';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';
-import FormData from 'form-data';
-import NodeCache from 'node-cache';
 import fetch from 'node-fetch';
-import { getEmbedColorFromHex } from '../../core/helpers/colors';
-import { ONE_HOUR } from '../../core/helpers/times';
+import { getIconColor } from '../../core/helpers/colors';
 import { getBotOwner } from '../../core/helpers/users';
 
 const log = debug('Deschtimes');
@@ -22,106 +19,54 @@ export const info = {
     **Blame**:
     \`\`\`@Aquarius blame <show>\`\`\`
 
-    **Airing**:
-    \`\`\`@Aquarius airing\`\`\`
-
     **Update Staff**
     \`\`\`@Aquarius <done|undone> <position> <show>\`\`\`
+
+    **Update Future Episode**
+    \`\`\`@Aquarius <done|undone> <position> #<episode number> <show>\`\`\`
 
     **Mark as Released**
     \`\`\`@Aquarius release <show>\`\`\`
   `,
 };
 
-const SHOWTIMES = {
-  SERVER: process.env.SHOWTIMES_SERVER,
-  KEY: process.env.SHOWTIMES_KEY,
-};
+async function getShowEmbed(data, episodeNumber) {
+  let episode = null;
 
-const POSTER_CACHE = new NodeCache({
-  stdTTL: ONE_HOUR / 1000,
-  checkperiod: 0,
-});
-
-async function getPosterInfo(name) {
-  if (POSTER_CACHE.has(name)) {
-    return POSTER_CACHE.get(name);
+  if (episodeNumber) {
+    episode = data.episodes.find((ep) => ep.number === episodeNumber);
+  } else {
+    [episode] = data.episodes
+      .filter((ep) => !ep.released)
+      .sort((a, b) => a.number - b.number);
   }
-
-  try {
-    const response = await fetch('https://graphql.anilist.co', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        query: `
-        query ($search: String) {
-          Media(search: $search, format_in: [TV, TV_SHORT, OVA, ONA, MOVIE]) {
-            coverImage {
-              extraLarge
-              color
-            }
-          }
-        }
-        `,
-        variables: {
-          search: name,
-        },
-      }),
-    });
-
-    const json = await response.json();
-
-    if (json?.data?.Media?.coverImage?.extraLarge) {
-      const embedInfo = {
-        thumbnail: json.data.Media.coverImage.extraLarge,
-        color: json.data.Media.coverImage.color,
-      };
-
-      POSTER_CACHE.set(name, embedInfo);
-      return embedInfo;
-    }
-  } catch (error) {
-    log(error);
-    Sentry.captureException(error);
-  }
-
-  return null;
-}
-
-async function createShowEmbed(show, posterInfo) {
-  const owner = await getBotOwner();
 
   const embed = new MessageEmbed()
-    .setTitle(`${show.name} #${show.episode}`)
-    .setColor(0x008000)
-    .setFooter(
-      'Brought to you by Deschtimes™',
-      owner.avatarURL({ format: 'png' })
-    );
+    .setAuthor('Deschtimes', null, 'https://deschtimes.com')
+    .setTitle(`${data.name} #${episode.number}`)
+    .setColor(0x008000);
 
-  if (posterInfo) {
-    embed.setColor(getEmbedColorFromHex(posterInfo.color));
-    embed.setThumbnail(posterInfo.thumbnail);
+  if (data.poster) {
+    const color = await getIconColor(data.poster);
+    embed.setColor(color);
+    embed.setThumbnail(data.poster);
   }
 
   embed.addField(
     'Status',
-    show.status
+    episode.staff
       .map((staff) => {
         if (staff.finished) {
-          return `~~${staff.acronym}~~`;
+          return `~~${staff.position.acronym}~~`;
         }
 
-        return `**${staff.acronym}**`;
+        return `**${staff.position.acronym}**`;
       })
       .join(' ')
   );
 
-  const updatedDate = new Date(show.updated_at);
-  const airDate = new Date(show.air_date);
+  const updatedDate = new Date(data.updated_at);
+  const airDate = new Date(episode.air_date);
 
   if (updatedDate > airDate) {
     embed.addField(
@@ -143,18 +88,10 @@ async function createShowEmbed(show, posterInfo) {
   return embed;
 }
 
-async function getShowData(guildId, show) {
-  const url = new URL(`${SHOWTIMES.SERVER}/blame.json`);
-  url.searchParams.append('platform', 'discord');
-  url.searchParams.append('channel', guildId);
-  url.searchParams.append('show', encodeURIComponent(show));
-
-  const response = await fetch(url);
-  return response.json();
-}
-
 /** @type {import('../../typedefs').Command} */
-export default async ({ aquarius, analytics }) => {
+export default async ({ aquarius, analytics, settings }) => {
+  settings.register('token', "Your Group's Deschtimes token", 0);
+
   aquarius.onCommand(/^blame (?<show>.+)$/i, async (message, { groups }) => {
     log(`Blame request for ${groups.show}`);
 
@@ -169,7 +106,13 @@ export default async ({ aquarius, analytics }) => {
     }
 
     try {
-      const data = await getShowData(message.guild.id, groups.show.trim());
+      const token = settings.get(message.guild.id, 'token');
+      const response = await fetch(
+        `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
+          groups.show
+        )}.json`
+      );
+      const data = await response.json();
 
       if (data.message) {
         log(`Error: ${data.message}`);
@@ -177,9 +120,7 @@ export default async ({ aquarius, analytics }) => {
         return;
       }
 
-      const posterInfo = await getPosterInfo(data.name);
-      const embed = await createShowEmbed(data, posterInfo);
-
+      const embed = await getShowEmbed(data);
       message.channel.send(embed);
       analytics.trackUsage('blame', message);
     } catch (error) {
@@ -194,7 +135,7 @@ export default async ({ aquarius, analytics }) => {
   });
 
   aquarius.onCommand(
-    /^(?:(?:(?<status>done|undone) (?<position>tl|tlc|enc|ed|tm|ts|qc) (?<show>.+)))$/i,
+    /^(?:(?:(?<status>done|undone) (?<position>\w+)(?: #(?<episode>\d+))? (?<show>.+)))$/i,
     async (message, { groups }) => {
       log(`Status update for ${groups.show}`);
 
@@ -209,42 +150,38 @@ export default async ({ aquarius, analytics }) => {
       }
 
       try {
-        const body = new FormData();
-        body.append('username', message.author.id);
-        body.append('platform', 'discord');
-        body.append('channel', message.guild.id);
-        body.append('status', groups.status === 'done' ? 'true' : 'false');
-        body.append('name', groups.show.trim());
-        body.append('position', groups.position);
-        body.append('auth', SHOWTIMES.KEY);
+        const token = settings.get(message.guild.id, 'token');
+        const url = new URL(
+          `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
+            groups.show
+          )}.json`
+        );
+        url.searchParams.append('finished', groups.status === 'done');
+        url.searchParams.append('member', message.author.id);
+        url.searchParams.append(
+          'position',
+          encodeURIComponent(groups.position)
+        );
 
-        const response = await fetch(`${SHOWTIMES.SERVER}/staff`, {
-          method: 'PUT',
-          body,
+        if (groups.episode) {
+          url.searchParams.append(
+            'episode_number',
+            encodeURIComponent(groups.episode)
+          );
+        }
+
+        const response = await fetch(url, {
+          method: 'PATCH',
         });
         const data = await response.json();
 
-        if (!response.ok) {
-          log(`Error: ${data.message}`);
+        if (response.ok) {
+          const embed = await getShowEmbed(data, parseInt(groups.episode, 10));
+          message.channel.send(embed);
+        } else {
           message.channel.send(data.message);
-          return;
         }
 
-        message.channel.send(data.message);
-
-        const showData = await getShowData(
-          message.guild.id,
-          groups.show.trim()
-        );
-
-        if (showData.message) {
-          return;
-        }
-
-        const posterInfo = await getPosterInfo(showData.name);
-        const embed = await createShowEmbed(showData, posterInfo);
-
-        message.channel.send(embed);
         analytics.trackUsage('status', message);
       } catch (error) {
         log(error);
@@ -262,67 +199,27 @@ export default async ({ aquarius, analytics }) => {
     log(`Marking ${groups.show} as done`);
 
     try {
-      const body = new FormData();
-      body.append('platform', 'discord');
-      body.append('channel', message.guild.id);
-      body.append('name', groups.show.trim());
-      body.append('username', message.author.id);
-      body.append('auth', SHOWTIMES.KEY);
+      const token = settings.get(message.guild.id, 'token');
+      const url = new URL(
+        `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
+          groups.show
+        )}.json`
+      );
+      url.searchParams.append('member', message.author.id);
 
-      const response = await fetch(`${SHOWTIMES.SERVER}/release`, {
-        method: 'PUT',
-        body,
+      const response = await fetch(url, {
+        method: 'PATCH',
       });
       const data = await response.json();
 
-      message.channel.send(data.message);
-      analytics.trackUsage('release', message);
-    } catch (error) {
-      log(error);
-      Sentry.captureException(error);
-
-      const owner = await getBotOwner();
-      message.channel.send(
-        `Sorry, there was a problem. ${owner} might be able to help!`
-      );
-    }
-  });
-
-  // TODO: Deprecate and move into `.anime airing <show>`
-  aquarius.onCommand(/^airing$/i, async (message) => {
-    log('Airing request');
-
-    try {
-      const uri = `${SHOWTIMES.SERVER}/shows.json?platform=discord&channel=${message.guild.id}`;
-
-      const response = await fetch(uri);
-      const data = await response.json();
-
-      if (data.message) {
-        log(`Error: ${data.message}`);
+      if (response.ok) {
+        const embed = await getShowEmbed(data);
+        message.channel.send('Episode released!', embed);
+      } else {
         message.channel.send(data.message);
-        return;
       }
 
-      if (data.shows.length === 0) {
-        message.channel.send('No more airing shows this season!');
-        return;
-      }
-
-      const msg = data.shows.reduce(
-        (str, show) =>
-          str +
-          dedent`
-          **${show.name}** #${show.episode_number}
-          Airs ${formatDistance(new Date(show.air_date), new Date(), {
-            addSuffix: true,
-          })}.\n\n
-        `,
-        ''
-      );
-
-      message.channel.send(msg);
-      analytics.trackUsage('airing', message);
+      analytics.trackUsage('release', message);
     } catch (error) {
       log(error);
       Sentry.captureException(error);
