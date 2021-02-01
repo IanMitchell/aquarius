@@ -167,7 +167,7 @@ export default async ({ aquarius, analytics, settings }) => {
         const url = new URL(
           `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
             groups.show
-          )}.json`
+          )}/staff`
         );
         url.searchParams.append('finished', groups.status === 'done');
         url.searchParams.append('member', message.author.id);
@@ -216,7 +216,7 @@ export default async ({ aquarius, analytics, settings }) => {
       const url = new URL(
         `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
           groups.show
-        )}.json`
+        )}/episodes`
       );
       url.searchParams.append('member', message.author.id);
 
