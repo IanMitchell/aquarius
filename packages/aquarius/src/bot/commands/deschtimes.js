@@ -65,18 +65,21 @@ async function getShowEmbed(data, episodeNumber) {
   }
 
   embed.setTitle(`${data.name} #${episode.number}`);
-  embed.addField(
-    'Status',
-    episode.staff
-      .map((staff) => {
-        if (staff.finished) {
-          return `~~${staff.position.acronym}~~`;
-        }
 
-        return `**${staff.position.acronym}**`;
-      })
-      .join(' ')
-  );
+  if (episode.staff.length > 0) {
+    embed.addField(
+      'Status',
+      episode.staff
+        .map((staff) => {
+          if (staff.finished) {
+            return `~~${staff.position.acronym}~~`;
+          }
+
+          return `**${staff.position.acronym}**`;
+        })
+        .join(' ')
+    );
+  }
 
   const updatedDate = new Date(episode.updated_at);
   const airDate = new Date(episode.air_date);
