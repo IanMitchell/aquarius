@@ -108,47 +108,50 @@ async function getShowEmbed(data, episodeNumber) {
 export default async ({ aquarius, analytics, settings }) => {
   settings.register('token', "Your Group's Deschtimes token", 0);
 
-  aquarius.onCommand(/^blame (?<show>.+)$/i, async (message, { groups }) => {
-    log(`Blame request for ${groups.show}`);
+  aquarius.onCommand(
+    /^blame (?:#(?<episode>\d+) )?(?<show>.+)$/i,
+    async (message, { groups }) => {
+      log(`Blame request for ${groups.show}`);
 
-    const check = checkBotPermissions(message.guild, ...info.permissions);
+      const check = checkBotPermissions(message.guild, ...info.permissions);
 
-    if (!check.valid) {
-      log('Invalid permissions');
-      message.channel.send(
-        aquarius.permissions.getRequestMessage(check.missing)
-      );
-      return;
-    }
-
-    try {
-      const token = settings.get(message.guild.id, 'token');
-      const response = await fetch(
-        `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
-          groups.show
-        )}.json`
-      );
-      const data = await response.json();
-
-      if (data.message) {
-        log(`Error: ${data.message}`);
-        message.channel.send(data.message);
+      if (!check.valid) {
+        log('Invalid permissions');
+        message.channel.send(
+          aquarius.permissions.getRequestMessage(check.missing)
+        );
         return;
       }
 
-      const embed = await getShowEmbed(data);
-      message.channel.send(embed);
-      analytics.trackUsage('blame', message);
-    } catch (error) {
-      log(error);
-      Sentry.captureException(error);
+      try {
+        const token = settings.get(message.guild.id, 'token');
+        const response = await fetch(
+          `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
+            groups.show
+          )}.json`
+        );
+        const data = await response.json();
 
-      const owner = await getBotOwner();
-      message.channel.send(
-        `Sorry, there was a problem. ${owner} might be able to help!`
-      );
+        if (data.message) {
+          log(`Error: ${data.message}`);
+          message.channel.send(data.message);
+          return;
+        }
+
+        const embed = await getShowEmbed(data, groups.episode);
+        message.channel.send(embed);
+        analytics.trackUsage('blame', message);
+      } catch (error) {
+        log(error);
+        Sentry.captureException(error);
+
+        const owner = await getBotOwner();
+        message.channel.send(
+          `Sorry, there was a problem. ${owner} might be able to help!`
+        );
+      }
     }
-  });
+  );
 
   aquarius.onCommand(
     /^(?:(?:(?<status>done|undone) (?<position>\w+)(?: #(?<episode>\d+))? (?<show>.+)))$/i,
