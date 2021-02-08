@@ -19,6 +19,9 @@ export const info = {
     **Blame**:
     \`\`\`@Aquarius blame <show>\`\`\`
 
+    **Blame Future Episode**:
+    \`\`\`@Aquarius blame #<episode number> <show>\`\`\`
+
     **Update Staff**
     \`\`\`@Aquarius <done|undone> <position> <show>\`\`\`
 
@@ -138,7 +141,7 @@ export default async ({ aquarius, analytics, settings }) => {
           return;
         }
 
-        const embed = await getShowEmbed(data, groups.episode);
+        const embed = await getShowEmbed(data, parseInt(groups.episode, 10));
         message.channel.send(embed);
         analytics.trackUsage('blame', message);
       } catch (error) {
