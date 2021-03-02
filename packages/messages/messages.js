@@ -26,7 +26,7 @@ export function getLink(message) {
  * the message but by Snowflake ID instead. Sometimes it's important to get
  * the mentions in order - this helper function will do that.
  * @param {Discord.Message} message
- * @param {boolean} [repeats=false] - Include repeated mentions
+ * @param {boolean} [repeats=true] - Include repeated mentions
  * @returns {Discord.MessageMentions[]} Ordered list of Mentions
  */
 export async function getOrderedMentions(message, repeats = true) {

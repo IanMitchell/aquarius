@@ -36,9 +36,13 @@ export const info = {
 async function getShowEmbed(data, episodeNumber) {
   let episode = null;
 
-  if (episodeNumber) {
+  // Account for Episode 0
+  if (episodeNumber != null) {
     episode = data.episodes.find((ep) => ep.number === episodeNumber);
-  } else {
+  }
+
+  // Account for no set episode or missing episode number
+  if (!episode) {
     [episode] = data.episodes
       .filter((ep) => !ep.released)
       .sort((a, b) => a.number - b.number);
@@ -59,11 +63,16 @@ async function getShowEmbed(data, episodeNumber) {
   }
 
   if (!episode) {
+    const [lastEpisode] = data.episodes.sort((a, b) => b.number - a.number);
+
     embed.setTitle(data.name);
     embed.addField(
       'Finished',
-      formatDistance(new Date(data.updated_at), new Date(), { addSuffix: true })
+      formatDistance(new Date(lastEpisode.updated_at), new Date(), {
+        addSuffix: true,
+      })
     );
+
     return embed;
   }
 
