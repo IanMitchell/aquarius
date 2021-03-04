@@ -124,13 +124,13 @@ export default async ({ aquarius, settings, analytics }) => {
       return messageTriggered(message, regex);
     },
     async (message) => {
-      const [user] = await getOrderedMentions(message);
+      const [member] = await getOrderedMentions(message);
 
-      if (user === undefined) {
+      if (member === undefined) {
         return;
       }
 
-      log(`Karma lookup for ${getNickname(message.guild, user)}`);
+      log(`Karma lookup for ${getNickname(message.guild, member)}`);
 
       const name = settings.get(message.guild.id, 'name');
 
@@ -141,13 +141,13 @@ export default async ({ aquarius, settings, analytics }) => {
         where: {
           guildId_userId: {
             guildId: message.guild.id,
-            userId: user.id,
+            userId: member.user.id,
           },
         },
       });
 
       const str = record
-        ? `${getNickname(message.guild, user)} has ${record.karma} ${name}`
+        ? `${getNickname(message.guild, member)} has ${record.karma} ${name}`
         : "They don't have any karma yet!";
 
       message.channel.send(str);
@@ -163,9 +163,9 @@ export default async ({ aquarius, settings, analytics }) => {
       return message.content.match(regex);
     },
     async (message) => {
-      const [user] = await getOrderedMentions(message);
+      const [member] = await getOrderedMentions(message);
 
-      if (!user) {
+      if (!member) {
         return;
       }
 
@@ -173,7 +173,7 @@ export default async ({ aquarius, settings, analytics }) => {
       const cooldown = getCooldown(message.guild);
 
       if (
-        user === message.author &&
+        member.user === message.author &&
         !aquarius.permissions.isBotOwner(message.author)
       ) {
         message.channel.send(`You cannot give ${name} to yourself!`);
@@ -183,7 +183,7 @@ export default async ({ aquarius, settings, analytics }) => {
       log(
         `${message.author.username} gave karma to ${getNickname(
           message.guild,
-          user
+          member
         )}`
       );
 
@@ -218,12 +218,12 @@ export default async ({ aquarius, settings, analytics }) => {
           where: {
             guildId_userId: {
               guildId: message.guild.id,
-              userId: user.id,
+              userId: member.user.id,
             },
           },
           create: {
             guildId: message.guild.id,
-            userId: user.id,
+            userId: member.user.id,
             karma: 1,
             lastUsage: new Date(Date.now() - ONE_WEEK),
           },
@@ -250,7 +250,7 @@ export default async ({ aquarius, settings, analytics }) => {
           },
         });
 
-        const nickname = await getNickname(message.guild, user);
+        const nickname = await getNickname(message.guild, member);
         message.channel.send(
           `${name} given! ${nickname} now has ${receiver.karma} ${name}.`
         );
@@ -270,9 +270,9 @@ export default async ({ aquarius, settings, analytics }) => {
       return message.content.match(regex);
     },
     async (message) => {
-      const [user] = await getOrderedMentions(message);
+      const [member] = await getOrderedMentions(message);
 
-      if (!user) {
+      if (!member) {
         return;
       }
 
@@ -280,7 +280,7 @@ export default async ({ aquarius, settings, analytics }) => {
       const cooldown = getCooldown(message.guild);
 
       if (
-        user === message.author &&
+        member.user === message.author &&
         !aquarius.permissions.isBotOwner(message.author)
       ) {
         message.channel.send(`You cannot take ${name} from yourself!`);
@@ -290,7 +290,7 @@ export default async ({ aquarius, settings, analytics }) => {
       log(
         `${message.author.username} took karma from ${getNickname(
           message.guild,
-          user
+          member
         )}`
       );
 
@@ -325,12 +325,12 @@ export default async ({ aquarius, settings, analytics }) => {
           where: {
             guildId_userId: {
               guildId: message.guild.id,
-              userId: user.id,
+              userId: member.user.id,
             },
           },
           create: {
             guildId: message.guild.id,
-            userId: user.id,
+            userId: member.user.id,
             karma: 1,
             lastUsage: new Date(Date.now() - ONE_WEEK),
           },
@@ -357,7 +357,7 @@ export default async ({ aquarius, settings, analytics }) => {
           },
         });
 
-        const nickname = await getNickname(message.guild, user);
+        const nickname = await getNickname(message.guild, member);
         message.channel.send(
           `${name} taken! ${nickname} now has ${receiver.karma} ${name}.`
         );
