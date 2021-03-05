@@ -121,7 +121,7 @@ export default async ({ aquarius, analytics, settings }) => {
   settings.register('token', "Your Group's Deschtimes token", 0);
 
   aquarius.onCommand(
-    /^blame (?:#(?<episode>\d+) )?(?<show>.+)$/i,
+    /^blame (?:#(?<episode>\d+) )?(?<show>[^.](?:.+)?)$/i,
     async (message, { groups }) => {
       log(`Blame request for ${groups.show}`);
 
@@ -166,7 +166,7 @@ export default async ({ aquarius, analytics, settings }) => {
   );
 
   aquarius.onCommand(
-    /^(?:(?:(?<status>done|undone) (?<position>\w+)(?: #(?<episode>\d+))? (?<show>.+)))$/i,
+    /^(?:(?:(?<status>done|undone) (?<position>\w+)(?: #(?<episode>\d+))? (?<show>[^.](?:.+)?)))$/i,
     async (message, { groups }) => {
       log(`Status update for ${groups.show}`);
 
@@ -226,39 +226,42 @@ export default async ({ aquarius, analytics, settings }) => {
     }
   );
 
-  aquarius.onCommand(/^release\s(?<show>.+)$/i, async (message, { groups }) => {
-    log(`Marking ${groups.show} as done`);
+  aquarius.onCommand(
+    /^release\s(?<show>[^.](?:.+)?)$/i,
+    async (message, { groups }) => {
+      log(`Marking ${groups.show} as done`);
 
-    try {
-      const token = settings.get(message.guild.id, 'token');
-      const url = new URL(
-        `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
-          groups.show
-        )}/episodes`
-      );
-      url.searchParams.append('member', message.author.id);
+      try {
+        const token = settings.get(message.guild.id, 'token');
+        const url = new URL(
+          `https://deschtimes.com/api/v1/groups/${token}/shows/${encodeURIComponent(
+            groups.show
+          )}/episodes`
+        );
+        url.searchParams.append('member', message.author.id);
 
-      const response = await fetch(url, {
-        method: 'PATCH',
-      });
-      const data = await response.json();
+        const response = await fetch(url, {
+          method: 'PATCH',
+        });
+        const data = await response.json();
 
-      if (response.ok) {
-        const embed = await getShowEmbed(data);
-        message.channel.send('Episode released!', embed);
-      } else {
-        message.channel.send(data.message);
+        if (response.ok) {
+          const embed = await getShowEmbed(data);
+          message.channel.send('Episode released!', embed);
+        } else {
+          message.channel.send(data.message);
+        }
+
+        analytics.trackUsage('release', message);
+      } catch (error) {
+        log(error);
+        Sentry.captureException(error);
+
+        const owner = await getBotOwner();
+        message.channel.send(
+          `Sorry, there was a problem. ${owner} might be able to help!`
+        );
       }
-
-      analytics.trackUsage('release', message);
-    } catch (error) {
-      log(error);
-      Sentry.captureException(error);
-
-      const owner = await getBotOwner();
-      message.channel.send(
-        `Sorry, there was a problem. ${owner} might be able to help!`
-      );
     }
-  });
+  );
 };
