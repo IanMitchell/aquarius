@@ -86,20 +86,4 @@ export default async ({ aquarius }) => {
       }
     }, ONE_MINUTE);
   });
-
-  let guild = null;
-  let areki = null;
-
-  aquarius.on('ready', async () => {
-    guild = aquarius.guilds.cache.get(GOOD_JOB_MEDIA);
-    areki = await guild.members.fetch(AREKI);
-  });
-
-  aquarius.onMessage(info, (message) => {
-    if (message?.guild?.id !== guild?.id || message?.author?.id !== areki?.id) {
-      return;
-    }
-
-    message.react('🇪');
-  });
 };
