@@ -1,5 +1,5 @@
+import { ActivityTypes } from '@aquarius-bot/discordjs-fixes';
 import { GuildMember } from 'discord.js';
-
 /**
  * @typedef {import('discord.js').User} User
  * @typedef {import('discord.js').Guild} Guild
@@ -47,8 +47,9 @@ export function isBot(user) {
  */
 export function isStreaming(presence) {
   return (
-    presence?.activities?.some((activity) => activity.type === 'STREAMING') ??
-    false
+    presence?.activities?.some(
+      (activity) => activity.type === ActivityTypes.STREAMING
+    ) ?? false
   );
 }
 
@@ -58,7 +59,9 @@ export function isStreaming(presence) {
  * @returns {?Activity} The game Activity
  */
 export function getGame(presence) {
-  return presence?.activities?.find((activity) => activity.type === 'PLAYING');
+  return presence?.activities?.find(
+    (activity) => activity.type === ActivityTypes.PLAYING
+  );
 }
 
 /**
@@ -68,6 +71,6 @@ export function getGame(presence) {
  */
 export function getStream(presence) {
   return presence?.activities?.find(
-    (activity) => activity.type === 'STREAMING'
+    (activity) => activity.type === ActivityTypes.STREAMING
   );
 }

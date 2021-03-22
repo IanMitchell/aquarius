@@ -24,5 +24,8 @@
   "type": "module",
   "rollup": {
     "skip": true
+  },
+  "peerDependencies": {
+    "discord.js": "^12.0.0"
   }
 }
