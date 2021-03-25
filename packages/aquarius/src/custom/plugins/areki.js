@@ -25,7 +25,7 @@ const LOOP_DURATIONS = Array.from(
 );
 
 async function updateNickname(aquarius) {
-  const guild = aquarius.guilds.cache.get(GOOD_JOB_MEDIA);
+  const guild = await aquarius.guilds.fetch(GOOD_JOB_MEDIA);
 
   if (!guild) {
     return;
