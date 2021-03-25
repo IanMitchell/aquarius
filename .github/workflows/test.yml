@@ -1,42 +1,32 @@
 name: Test
 
-on: [push, pull_request]
+on:
+  workflow_run:
+    workflows: ['Setup']
+    types: [completed]
 
 jobs:
   Lint:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - uses: actions/checkout@master
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.2
       - name: Lint
         run: |
-          npx lerna bootstrap --hoist
           npm run pretest
           npm run lint
+
   Test:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - uses: actions/checkout@master
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.2
       - name: Jest
         run: |
-          npx lerna bootstrap --hoist
           npm test
+
   Schema:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - uses: actions/checkout@master
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.2
-      - name: Jest
+      - name: Prisma Validation
         run: |
-          npx lerna bootstrap --hoist
           npx prisma generate
