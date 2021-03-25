@@ -51,4 +51,6 @@ export default class TriggerMap extends Map {
   onDynamicTrigger() {}
 
   onDirectMessage() {}
+
+  loop() {}
 }
