@@ -189,6 +189,16 @@ export class Aquarius extends Discord.Client {
     this.loadDirectory(path.join(getDirname(import.meta.url), 'bot/commands'));
     log('Loading Bot Plugins...');
     this.loadDirectory(path.join(getDirname(import.meta.url), 'bot/plugins'));
+
+    // Disabled until we have custom commands
+    // log('Loading Custom Bot Commands...');
+    // this.loadDirectory(
+    //   path.join(getDirname(import.meta.url), 'custom/commands')
+    // );
+    log('Loading Custom Bot Plugins...');
+    this.loadDirectory(
+      path.join(getDirname(import.meta.url), 'custom/plugins')
+    );
   }
 
   /**
