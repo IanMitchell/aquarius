@@ -90,16 +90,12 @@ async function checkForUpdates(guild, url, name, analytics, errorName = null) {
   }
 }
 
-function loop(aquarius, settings, analytics) {
-  aquarius.guilds.cache.forEach((guild) => {
-    if (aquarius.guildManager.get(guild.id).isCommandEnabled(info.name)) {
-      log(`Checking feed for ${guild.name}`);
-      const url = settings.get(guild.id, 'url');
-      const name = settings.get(guild.id, 'channel');
-      const errorName = settings.get(guild.id, 'errorChannel');
-      checkForUpdates(guild, url, name, analytics, errorName);
-    }
-  });
+function onLoop(aquarius, settings, analytics, guild) {
+  log(`Checking feed for ${guild.name}`);
+  const url = settings.get(guild.id, 'url');
+  const name = settings.get(guild.id, 'channel');
+  const errorName = settings.get(guild.id, 'errorChannel');
+  checkForUpdates(guild, url, name, analytics, errorName);
 }
 
 /** @type {import('../../typedefs').Command} */
@@ -108,9 +104,9 @@ export default async ({ aquarius, settings, analytics }) => {
   settings.register('channel', 'Channel name to post in', null);
   settings.register('errorChannel', 'Channel name to post errors in', null);
 
-  aquarius.on('ready', () => {
-    setInterval(() => {
-      loop(aquarius, settings, analytics);
-    }, FREQUENCY);
-  });
+  aquarius.loop(
+    info,
+    (guild) => onLoop(aquarius, settings, analytics, guild),
+    FREQUENCY
+  );
 };
