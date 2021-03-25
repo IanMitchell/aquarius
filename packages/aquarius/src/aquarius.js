@@ -534,7 +534,7 @@ export class Aquarius extends Discord.Client {
    * **Note**: This should only be used in rare cases where static RegExp
    * patterns aren't sufficient. For example, you might need this if your
    * command is invoked differently per guild depending on a command setting.
-   * @param {commandInfo} commandInfo - Command registering the dynamic trigger
+   * @param {CommandInfo} commandInfo - Command registering the dynamic trigger
    * @param {MatchFn} matchFn - Function that checks for successful matches
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
@@ -542,6 +542,26 @@ export class Aquarius extends Discord.Client {
     this.on('message', (message) => {
       Sentry.configureMessageScope(message);
       this.handleMessage(message, commandInfo, handler, matchFn);
+    });
+  }
+
+  /**
+   * Creates a periodic loop that triggers the callback for each guild that has enabled the command.
+   * @param {CommandInfo} commandInfo - Command registering the loop
+   * @param {(guild: Guild) => {}} callback - Function called per guild that has enabled the command
+   * @param {number} frequency - How frequently to run the loop
+   */
+  loop(commandInfo, callback, frequency) {
+    this.on('ready', () => {
+      setInterval(() => {
+        this.guilds.cache.forEach((guild) => {
+          if (
+            this.guildManager.get(guild.id).isCommandEnabled(commandInfo.name)
+          ) {
+            callback(guild);
+          }
+        });
+      }, frequency);
     });
   }
 }

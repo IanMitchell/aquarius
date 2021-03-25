@@ -82,37 +82,37 @@ function voiceCheck(guild, target, analytics) {
   );
 }
 
-function createLoop(aquarius, settings, analytics) {
-  log('Creating checks');
+function onLoop(aquarius, settings, analytics, guild) {
+  log('Checking interval');
 
-  aquarius.guilds.cache.array().forEach((guild) => {
-    if (INTERVALS.has(guild.id)) {
+  if (INTERVALS.has(guild.id)) {
+    return;
+  }
+
+  if (aquarius.guildManager.get(guild.id).isCommandEnabled(info.name)) {
+    const target = settings.get(guild.id, 'target');
+
+    if (target === null) {
       return;
     }
 
-    if (aquarius.guildManager.get(guild.id).isCommandEnabled(info.name)) {
-      const target = settings.get(guild.id, 'target');
-
-      if (target === null) {
-        return;
-      }
-
-      INTERVALS.set(
-        guild.id,
-        setTimeout(
-          () => voiceCheck(guild, target, analytics),
-          getRandomInterval()
-        )
-      );
-    }
-  });
+    INTERVALS.set(
+      guild.id,
+      setTimeout(
+        () => voiceCheck(guild, target, analytics),
+        getRandomInterval()
+      )
+    );
+  }
 }
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, settings, analytics }) => {
   settings.register('target', 'User ID to Target', null);
 
-  aquarius.on('ready', () =>
-    setInterval(() => createLoop(aquarius, settings, analytics), ONE_HOUR)
+  aquarius.loop(
+    info,
+    (guild) => onLoop(aquarius, settings, analytics, guild),
+    ONE_HOUR
   );
 };
