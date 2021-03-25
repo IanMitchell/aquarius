@@ -7,12 +7,10 @@ on:
       - main
 
 jobs:
-
   Deploy:
     name: Digital Ocean
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout master
         uses: actions/checkout@v2
 
@@ -47,7 +45,6 @@ jobs:
           DICTIONARY_API_KEY: ${{ secrets.DICTIONARY_API_KEY }}
           TEST_BOT_TOKEN: ${{ secrets.TEST_BOT_TOKEN }}
           HEARTHSTONE_KEY: ${{ secrets.HEARTHSTONE_KEY }}
-          TIMBER_KEY: ${{ secrets.TIMBER_KEY }}
           SHOWTIMES_SERVER: ${{ secrets.SHOWTIMES_SERVER }}
           SHOWTIMES_KEY: ${{ secrets.SHOWTIMES_KEY }}
           GITHUB_API_TOKEN: ${{ secrets.GITHUB_API_TOKEN }}

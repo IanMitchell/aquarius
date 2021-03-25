@@ -55,11 +55,6 @@ spec:
                 secretKeyRef:
                   name: aquarius-secrets
                   key: HEARTHSTONE_KEY
-            - name: TIMBER_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: aquarius-secrets
-                  key: TIMBER_KEY
             - name: SHOWTIMES_SERVER
               valueFrom:
                 secretKeyRef:
@@ -107,4 +102,4 @@ spec:
                   key: IQAIR_API_KEY
 
       imagePullSecrets:
-          - name: dockerhub
+        - name: dockerhub
