@@ -33,7 +33,7 @@ export default async ({ aquarius, analytics }) => {
     if (user.presence.status !== 'offline') {
       message.channel.send("They're online right now!");
     } else {
-      const data = await aquarius.database.lastSeen.findOne({
+      const data = await aquarius.database.lastSeen.findUnique({
         select: {
           lastSeen: true,
         },

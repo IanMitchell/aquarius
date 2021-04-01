@@ -92,7 +92,7 @@ export default async ({ aquarius, analytics }) => {
         log('List Requested');
 
         try {
-          const entry = await aquarius.database.banList.findOne({
+          const entry = await aquarius.database.banList.findUnique({
             where: { guildId: groups.input },
           });
 

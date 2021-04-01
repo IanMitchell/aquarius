@@ -55,6 +55,11 @@ jobs:
           IQAIR_API_KEY: ${{ secrets.IQAIR_API_KEY }}
         run: envsubst < $GITHUB_WORKSPACE/kube/_secrets.yml > $GITHUB_WORKSPACE/kube/secrets.yml
 
+      - name: Apply Database Migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npx prisma migrate deploy
+
       - name: Deploy to DigitalOcean Kubernetes
         uses: docker://lachlanevenson/k8s-kubectl
         with:

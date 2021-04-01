@@ -24,7 +24,7 @@ async function setBroadcastMessage(aquarius, message = null) {
       return;
     }
 
-    const setting = await aquarius.database.setting.findOne({
+    const setting = await aquarius.database.setting.findUnique({
       select: { value: true },
       where: { key: 'BROADCAST' },
     });

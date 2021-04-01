@@ -134,7 +134,7 @@ export default async ({ aquarius, settings, analytics }) => {
 
       const name = settings.get(message.guild.id, 'name');
 
-      const record = await aquarius.database.karma.findOne({
+      const record = await aquarius.database.karma.findUnique({
         select: {
           karma: true,
         },
@@ -188,7 +188,7 @@ export default async ({ aquarius, settings, analytics }) => {
       );
 
       try {
-        const giver = await aquarius.database.karma.findOne({
+        const giver = await aquarius.database.karma.findUnique({
           select: {
             lastUsage: true,
           },
@@ -295,7 +295,7 @@ export default async ({ aquarius, settings, analytics }) => {
       );
 
       try {
-        const giver = await aquarius.database.karma.findOne({
+        const giver = await aquarius.database.karma.findUnique({
           select: {
             lastUsage: true,
           },

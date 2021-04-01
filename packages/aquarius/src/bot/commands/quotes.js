@@ -53,7 +53,7 @@ export default async ({ aquarius, analytics }) => {
 
     const randomTarget = Math.floor(Math.random() * quoteCount);
 
-    const quote = await aquarius.database.quote.findOne({
+    const quote = await aquarius.database.quote.findUnique({
       where: {
         guildId_quoteId: {
           quoteId: randomTarget,
@@ -74,7 +74,7 @@ export default async ({ aquarius, analytics }) => {
       const quoteId = getInputAsNumber(groups.id);
 
       if (quoteId) {
-        const quote = await aquarius.database.quote.findOne({
+        const quote = await aquarius.database.quote.findUnique({
           where: {
             guildId_quoteId: {
               quoteId,
