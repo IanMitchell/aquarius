@@ -76,18 +76,18 @@ export default async ({ aquarius, settings, analytics }) => {
 
   // We want to track bot messages for this too, otherwise it looks weird
   aquarius.on('message', (message) => {
-    Sentry.configureMessageScope(message);
+    Sentry.withMessageScope(message, () => {
+      if (
+        message.content === '' ||
+        !message.guild ||
+        message.author.id === aquarius.user.id
+      ) {
+        return;
+      }
 
-    if (
-      message.content === '' ||
-      !message.guild ||
-      message.author.id === aquarius.user.id
-    ) {
-      return;
-    }
-
-    const size = getSize(message.guild);
-    pushMessage(message, size);
+      const size = getSize(message.guild);
+      pushMessage(message, size);
+    });
   });
 
   aquarius.onMessage(info, (message) => {

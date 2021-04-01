@@ -435,29 +435,29 @@ export class Aquarius extends Discord.Client {
    */
   onDirectMessage(regex, handler) {
     this.on('message', (message) => {
-      Sentry.configureMessageScope(message);
-
-      if (message.channel.type === 'dm') {
-        if (isBot(message.author)) {
-          return;
-        }
-
-        const match = this.triggers.customTrigger(message, regex);
-
-        if (match) {
-          if (this.directMessages.isActive(message.author)) {
-            log(
-              `Ignoring Message due to inflight request: ${message.cleanContent}`
-            );
-            message.channel.send(
-              "_(It looks like you might be trying to use a command - I can't do two at once! You can stop the current command by sending `Stop`)_"
-            );
+      Sentry.withMessageScope(message, () => {
+        if (message.channel.type === 'dm') {
+          if (isBot(message.author)) {
             return;
           }
 
-          handler(message, match);
+          const match = this.triggers.customTrigger(message, regex);
+
+          if (match) {
+            if (this.directMessages.isActive(message.author)) {
+              log(
+                `Ignoring Message due to inflight request: ${message.cleanContent}`
+              );
+              message.channel.send(
+                "_(It looks like you might be trying to use a command - I can't do two at once! You can stop the current command by sending `Stop`)_"
+              );
+              return;
+            }
+
+            handler(message, match);
+          }
         }
-      }
+      });
     });
   }
 
@@ -471,9 +471,9 @@ export class Aquarius extends Discord.Client {
    */
   onMessage(info, handler) {
     this.on('message', (message) => {
-      Sentry.configureMessageScope(message);
-
-      this.handleMessage(message, info, handler, () => true);
+      Sentry.withMessageScope(message, () => {
+        this.handleMessage(message, info, handler, () => true);
+      });
     });
   }
 
@@ -494,14 +494,14 @@ export class Aquarius extends Discord.Client {
    */
   onCommand(regex, handler) {
     this.on('message', (message) => {
-      Sentry.configureMessageScope(message);
-
-      this.handleCommand(
-        message,
-        regex,
-        handler,
-        this.triggers.messageTriggered
-      );
+      Sentry.withMessageScope(message, () => {
+        this.handleCommand(
+          message,
+          regex,
+          handler,
+          this.triggers.messageTriggered
+        );
+      });
     });
   }
 
@@ -520,9 +520,14 @@ export class Aquarius extends Discord.Client {
    */
   onTrigger(regex, handler) {
     this.on('message', (message) => {
-      Sentry.configureMessageScope(message);
-
-      this.handleCommand(message, regex, handler, this.triggers.customTrigger);
+      Sentry.withMessageScope(message, () => {
+        this.handleCommand(
+          message,
+          regex,
+          handler,
+          this.triggers.customTrigger
+        );
+      });
     });
   }
 
@@ -540,8 +545,9 @@ export class Aquarius extends Discord.Client {
    */
   onDynamicTrigger(commandInfo, matchFn, handler) {
     this.on('message', (message) => {
-      Sentry.configureMessageScope(message);
-      this.handleMessage(message, commandInfo, handler, matchFn);
+      Sentry.withMessageScope(message, () => {
+        this.handleMessage(message, commandInfo, handler, matchFn);
+      });
     });
   }
 
