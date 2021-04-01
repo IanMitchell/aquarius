@@ -295,7 +295,7 @@ export default class GuildSettings {
    */
   async loadSettings() {
     try {
-      const guildSetting = await database.guildSetting.findOne({
+      const guildSetting = await database.guildSetting.findUnique({
         where: {
           guildId: this.id,
         },

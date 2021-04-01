@@ -135,7 +135,7 @@ export default class ServiceManager {
   async getLink(user, service) {
     log(`Retrieving ${service} for ${user.username}`);
 
-    return database.service.findOne({
+    return database.service.findUnique({
       where: {
         userId_name: {
           userId: user.id,

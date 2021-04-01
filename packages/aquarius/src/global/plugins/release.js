@@ -19,7 +19,7 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.on('ready', async () => {
-    const setting = await aquarius.database.setting.findOne({
+    const setting = await aquarius.database.setting.findUnique({
       select: {
         value: true,
       },
