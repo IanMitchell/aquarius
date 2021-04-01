@@ -41,7 +41,7 @@
     "@aquarius-bot/testing": "file:packages/testing",
     "@aquarius-bot/triggers": "file:packages/triggers",
     "@aquarius-bot/users": "file:packages/users",
-    "@prisma/client": "^2.8.0",
+    "@prisma/client": "^2.11.0",
     "aquarius": "file:packages/aquarius",
     "aquarius-dashboard": "file:packages/dashboard"
   },
@@ -50,7 +50,7 @@
     "@babel/core": "^7.9.0",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-env": "^7.9.5",
-    "@prisma/cli": "^2.8.0",
+    "@prisma/cli": "^2.11.0",
     "@sentry/node": "5.27.1",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^26.0.0",
