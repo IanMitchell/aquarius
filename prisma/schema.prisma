@@ -74,6 +74,7 @@ model Quote {
   guildId   String
   quote     String
   quoteId   Int
+  saidBy    String
   addedBy   String
   channel   String
   createdAt DateTime @default(now())
