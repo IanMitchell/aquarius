@@ -1,5 +1,5 @@
 import { randomValue } from '../../core/helpers/lists';
-import getLogger from '../../core/logging/log';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
 const log = getLogger('8ball');
 
@@ -36,7 +36,7 @@ const responses = [
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^8ball .+$/i, (message) => {
-    log.info('Generating response', { message });
+    log.info('Generating response', getMessageMeta(message));
     message.channel.send(`🎱 | ${randomValue(responses)}`);
 
     analytics.trackUsage('8ball', message);
