@@ -27,7 +27,10 @@ process.on('SIGINT', onSignal);
 /**
  * Description of the metadata allowed in log messages
  * @typedef {Object} LogMeta
- * @property {string} guildId - a Guild ID
+ * @property {?string} guildId - a Guild ID
+ * @property {?string} channelId - a Channel ID
+ * @property {?string} authorId - an Author ID
+ * @property {?string} content - content for the trigger message
  */
 
 /**
@@ -44,7 +47,7 @@ process.on('SIGINT', onSignal);
  */
 
 /**
- *
+ * Creates a logger instance
  * @param {string} name - name for the area of code (usually the command name)
  * @returns {Logger} a logger instance
  */
@@ -59,16 +62,21 @@ export default function getLogger(name) {
       get: (logTarget, property, receiver) => {
         return new Proxy(() => {}, {
           apply: (fnTarget, thisArg, argumentList) => {
-            const [message, ...metaArgs] = argumentList;
-            // For dev and test environments, we want simple easy-to-read
-            // logging, so we drop the level and meta information.
-            if (process.env.NODE_ENV !== 'production') {
-              log(message);
-            } else {
-              logger.log(message, {
-                level: property,
-                meta: metaArgs,
-              });
+            try {
+              const [message, metaArgs] = argumentList;
+              // For dev and test environments, we want simple easy-to-read
+              // logging, so we drop the level and meta information.
+              if (process.env.NODE_ENV !== 'production') {
+                log(message);
+              } else {
+                logger.log(message, {
+                  app: name ?? 'aquarius',
+                  level: property,
+                  meta: metaArgs,
+                });
+              }
+            } catch (error) {
+              console.error(error);
             }
           },
         });
@@ -84,6 +92,9 @@ export default function getLogger(name) {
  */
 export function getMessageMeta(message) {
   return {
-    guildId: message.guild.id,
+    guildId: message?.guild?.id,
+    channelId: message?.channel?.id,
+    authorId: message?.author?.id,
+    content: message?.cleanContent,
   };
 }
