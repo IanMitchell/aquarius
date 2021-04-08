@@ -8,6 +8,10 @@ const logger = logdna.createLogger(process.env.LOGDNA_KEY, {
   indexMeta: true,
 });
 
+if (process.env.NODE_ENV === 'production') {
+  logger.info('Creating connection to LogDNA');
+}
+
 async function shutdown() {
   await once(logger, 'cleared');
 }
@@ -44,7 +48,12 @@ process.on('SIGINT', onSignal);
 /**
  * Description of a CommandParameter passed into Plugins and Commands
  * @typedef {Object} Logger
+ * @property {LogMessage} info - Log a message with Info level
+ * @property {LogMessage} warn - Log a message with Warn level
  * @property {LogMessage} debug - Log a message with Debug level
+ * @property {LogMessage} error - Log a message with Error level
+ * @property {LogMessage} fatal - Log a message with Fatal level
+ * @property {LogMessage} trace - Log a message with Trace level
  */
 
 /**

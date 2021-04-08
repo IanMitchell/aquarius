@@ -33,7 +33,7 @@ async function getTwitchEmoteList() {
 
     json.emotes.forEach((emoji) => EMOTES.set(emoji.code, getUrl(emoji.id)));
   } catch (error) {
-    log.error(`Error syncing Twitch Emotes`);
+    log.error(`Error syncing Twitch Emotes`, { error: error.message });
     Sentry.captureException(error);
   }
 }
@@ -59,7 +59,7 @@ export default async ({ aquarius, analytics }) => {
       const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
-        log.info('Invalid permissions', getMessageMeta(message));
+        log.warn('Invalid permissions', getMessageMeta(message));
         message.channel.send(
           aquarius.permissions.getRequestMessage(check.missing)
         );
@@ -81,7 +81,7 @@ export default async ({ aquarius, analytics }) => {
 
         message.channel.send(`I've imported ${emote}!`);
       } catch (error) {
-        log.error(error); // TODO: Handle?
+        log.error(error.message);
         Sentry.captureException(error);
 
         message.channel.send("Sorry, I wasn't able to import the emoji :sad:");

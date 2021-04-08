@@ -11,7 +11,7 @@ async function initialize() {
     log.info('Starting Server');
     await import('./web/server.js');
   } catch (error) {
-    log.error(error); // TODO: Fix
+    log.fatal(error.message, { error });
     Sentry.captureException(error);
   }
 }

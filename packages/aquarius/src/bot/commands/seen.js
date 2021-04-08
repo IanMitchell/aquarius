@@ -1,6 +1,7 @@
 import { getOrderedMentions } from '@aquarius-bot/messages';
 import { MENTION_USER } from '@aquarius-bot/regex';
 import { getNickname } from '@aquarius-bot/users';
+import chalk from 'chalk';
 import dateFns from 'date-fns';
 import dedent from 'dedent-js';
 import getLogger, {
@@ -69,7 +70,10 @@ export default async ({ aquarius, analytics }) => {
     new RegExp(`^seen ${MENTION_USER.source}$`, 'i'),
     async (message) => {
       const [user] = await getOrderedMentions(message);
-      log.info(`Request for ${user.username}`, getMessageMeta(message));
+      log.info(
+        `Request for ${chalk.green(user.username)}`,
+        getMessageMeta(message)
+      );
 
       checkUser(user, message);
 
@@ -80,7 +84,10 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     new RegExp(`^seen id (?<id>\\d+)$`, 'i'),
     async (message, { groups }) => {
-      log.info(`ID Request for ${groups.id}`, getMessageMeta(message));
+      log.info(
+        `ID Request for ${chalk.green(groups.id)}`,
+        getMessageMeta(message)
+      );
 
       try {
         const member = await message.guild.members.fetch(groups.id);
@@ -100,7 +107,9 @@ export default async ({ aquarius, analytics }) => {
     ) {
       statusDebounce.add(newPresence.user.id);
       log.info(
-        `${getNickname(newPresence.guild, newPresence.user)} signed off`,
+        `${chalk.green(
+          getNickname(newPresence.guild, newPresence.user)
+        )} signed off`,
         getPresenceMeta(newPresence)
       );
 

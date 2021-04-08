@@ -1,5 +1,6 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
+import chalk from 'chalk';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
@@ -54,7 +55,7 @@ export default async ({ aquarius, analytics }) => {
     const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
-      log.error('Invalid permissions', getMessageMeta(message));
+      log.warn('Invalid permissions', getMessageMeta(message));
       message.channel.send(
         aquarius.permissions.getRequestMessage(check.missing)
       );
@@ -67,7 +68,7 @@ export default async ({ aquarius, analytics }) => {
 
       message.channel.send(embed);
     } catch (error) {
-      log.error(error); // TODO: Handle
+      log.error(error.message);
       Sentry.captureException(error);
 
       message.channel.send('Sorry, there was a problem loading the comic.');
@@ -82,7 +83,7 @@ export default async ({ aquarius, analytics }) => {
     const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
-      log.error('Invalid permissions', getMessageMeta(message));
+      log.warn('Invalid permissions', getMessageMeta(message));
       message.channel.send(
         aquarius.permissions.getRequestMessage(check.missing)
       );
@@ -117,7 +118,7 @@ export default async ({ aquarius, analytics }) => {
         message.channel.send(embed);
       }
     } catch (error) {
-      log(error);
+      log.error(error.message);
       Sentry.captureException(error);
 
       message.channel.send('Sorry, there was a problem loading the comic.');
@@ -127,12 +128,12 @@ export default async ({ aquarius, analytics }) => {
   });
 
   aquarius.onCommand(/^xkcd (?<id>\d+)$/i, async (message, { groups }) => {
-    log(`Retrieving comic ${groups.id}`);
+    log.info(`Retrieving comic ${chalk.blue(groups.id)}`);
 
     const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
-      log('Invalid permissions');
+      log.warn('Invalid permissions');
       message.channel.send(
         aquarius.permissions.getRequestMessage(check.missing)
       );
@@ -151,7 +152,7 @@ export default async ({ aquarius, analytics }) => {
         message.channel.send(embed);
       }
     } catch (error) {
-      log(error);
+      log.error(error.message);
       Sentry.captureException(error);
 
       message.channel.send('Sorry, there was a problem loading the comic.');

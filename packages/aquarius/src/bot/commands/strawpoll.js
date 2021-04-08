@@ -55,6 +55,7 @@ export default async ({ aquarius, analytics }) => {
         const json = await response.json();
         message.channel.send(`:bar_chart: | https://strawpoll.me/${json.id}`);
       } catch (error) {
+        log.error(error.message);
         Sentry.captureException(error);
         message.channel.send('Sorry, something went wrong!');
       }

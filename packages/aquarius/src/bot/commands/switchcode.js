@@ -1,4 +1,5 @@
 import Sentry from '@aquarius-bot/sentry';
+import chalk from 'chalk';
 import getLogger, { getMessageMeta } from '../../core/logging/log';
 
 const log = getLogger('Switch Code');
@@ -14,7 +15,7 @@ export const info = {
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^switchcode$/i, async (message) => {
     log.info(
-      `Switch code request from ${message.author.username}`,
+      `Switch code request from ${chalk.green(message.author.username)}`,
       getMessageMeta(message)
     );
 
@@ -36,10 +37,11 @@ export default async ({ aquarius, analytics }) => {
         );
       }
     } catch (error) {
-      log.error(error); // TODO: Fix
+      log.error(error.message);
       Sentry.captureException(error);
       message.channel.send('Sorry, I encountered a problem!');
     }
+
     analytics.trackUsage('switchcode', message);
   });
 };
