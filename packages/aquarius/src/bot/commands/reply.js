@@ -1,7 +1,7 @@
-import debug from 'debug';
 import dedent from 'dedent-js';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Reply');
+const log = getLogger('Reply');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -25,7 +25,7 @@ const RESPONSES = new Map();
 export default async ({ aquarius, analytics }) => {
   // Initialize Response Map
   aquarius.on('ready', () => {
-    log('Loading Responses');
+    log.info('Loading Responses');
 
     aquarius.guilds.cache.map(async (guild) => {
       // This loop will be run twice - the first is the 'real' time, and the
@@ -56,7 +56,7 @@ export default async ({ aquarius, analytics }) => {
     const content = message.cleanContent.trim().toLowerCase();
 
     if (RESPONSES.has(id) && RESPONSES.get(id).has(content)) {
-      log(`Input: ${message.cleanContent}`);
+      log.info(`Input: ${message.cleanContent}`, getMessageMeta(message));
       const response = RESPONSES.get(id).get(content);
       message.channel.send(response);
       analytics.trackUsage('response', message, { response });
@@ -64,7 +64,7 @@ export default async ({ aquarius, analytics }) => {
   });
 
   aquarius.onCommand(/^reply list$/i, (message) => {
-    log('Listing replies');
+    log.info('Listing replies', getMessageMeta(message));
 
     if (
       RESPONSES.has(message.guild.id) &&
@@ -91,7 +91,7 @@ export default async ({ aquarius, analytics }) => {
     /^reply remove "(?<trigger>[\s\S]+)"$/i,
     async (message, { groups }) => {
       if (aquarius.permissions.isAdmin(message.guild, message.author)) {
-        log(`Removing ${groups.trigger}`);
+        log.info(`Removing ${groups.trigger}`, getMessageMeta(message));
 
         const response = await aquarius.database.reply.delete({
           where: {
@@ -128,7 +128,10 @@ export default async ({ aquarius, analytics }) => {
     ),
     async (message, { groups }) => {
       if (aquarius.permissions.isAdmin(message.guild, message.author)) {
-        log(`Adding reply: "${groups.trigger}" -> "${groups.response}"`);
+        log.info(
+          `Adding reply: "${groups.trigger}" -> "${groups.response}"`,
+          getMessageMeta(message)
+        );
 
         if (RESPONSES.get(message.guild.id).has(groups.trigger.toLowerCase())) {
           message.channel.send('A reply with that trigger already exists!');

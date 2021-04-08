@@ -1,6 +1,6 @@
-import debug from 'debug';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Sarcastic');
+const log = getLogger('Sarcastic');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -18,7 +18,7 @@ function sarcastic(str) {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^sarcastic (?<string>.+)$/i, (message, { groups }) => {
-    log(`Sarcastic request on: ${groups.string}`);
+    log.info(`Sarcastic request on: ${groups.string}`, getMessageMeta(message));
     message.channel.send(
       `${sarcastic(groups.string)} ${aquarius.emojiList.get('spongebob')}`
     );

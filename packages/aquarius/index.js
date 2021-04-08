@@ -1,17 +1,17 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
+import getLogger from './src/core/logging/log';
 
-const log = debug('Host');
+const log = getLogger('Host');
 
 async function initialize() {
   try {
-    log('Loading Bot');
+    log.info('Loading Bot');
     await import('./src/aquarius.js');
 
-    log('Starting Server');
+    log.info('Starting Server');
     await import('./web/server.js');
   } catch (error) {
-    log(error);
+    log.error(error); // TODO: Fix
     Sentry.captureException(error);
   }
 }

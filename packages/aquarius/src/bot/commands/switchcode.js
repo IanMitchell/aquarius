@@ -1,7 +1,7 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Switch Code');
+const log = getLogger('Switch Code');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -13,7 +13,10 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^switchcode$/i, async (message) => {
-    log(`Switch code request from ${message.author.username}`);
+    log.info(
+      `Switch code request from ${message.author.username}`,
+      getMessageMeta(message)
+    );
 
     try {
       const service = await aquarius.services.getLink(
@@ -33,7 +36,7 @@ export default async ({ aquarius, analytics }) => {
         );
       }
     } catch (error) {
-      log(error);
+      log.error(error); // TODO: Fix
       Sentry.captureException(error);
       message.channel.send('Sorry, I encountered a problem!');
     }

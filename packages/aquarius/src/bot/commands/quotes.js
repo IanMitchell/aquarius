@@ -1,12 +1,12 @@
 import dateFns from 'date-fns';
-import debug from 'debug';
 import dedent from 'dedent-js';
 import { getInputAsNumber } from '../../core/helpers/input';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;
 
-const log = debug('Quotes');
+const log = getLogger('Quotes');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -38,7 +38,7 @@ export default async ({ aquarius, analytics }) => {
   // TODO: Add a `.quotes find phrase` command
 
   aquarius.onCommand(/^quotes random$/, async (message) => {
-    log('Getting random quote');
+    log.info('Getting random quote', getMessageMeta(message));
 
     const quoteCount = await aquarius.database.quote.count({
       where: {
@@ -69,7 +69,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^quotes read #?(?<id>[0-9]+)$/i,
     async (message, { groups }) => {
-      log(`Reading quote ${groups.id}`);
+      log.info(`Reading quote ${groups.id}`, getMessageMeta(message));
 
       const quoteId = getInputAsNumber(groups.id);
 
@@ -100,7 +100,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^quotes (?:new|add) (?<quote>[^]*)$/i,
     async (message, { groups }) => {
-      log('Adding new quote');
+      log.info('Adding new quote', getMessageMeta(message));
 
       const quoteCount = await aquarius.database.quote.count({
         where: {

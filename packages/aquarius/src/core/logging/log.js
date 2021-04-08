@@ -22,6 +22,7 @@ process.on('SIGINT', onSignal);
 
 /**
  * @typedef { import('discord.js').Message } Message
+ * @typedef { import('discord.js').Presence } Presence
  */
 
 /**
@@ -92,9 +93,36 @@ export default function getLogger(name) {
  */
 export function getMessageMeta(message) {
   return {
-    guildId: message?.guild?.id,
-    channelId: message?.channel?.id,
-    authorId: message?.author?.id,
+    guild: {
+      id: message?.guild?.id,
+      name: message?.guild?.name,
+    },
+    channel: {
+      id: message?.channel?.id,
+      name: message?.channel?.name,
+    },
+    author: {
+      id: message?.author?.id,
+      name: message?.author?.username,
+    },
     content: message?.cleanContent,
+  };
+}
+
+/**
+ * Creates a Log Meta object from a presence
+ * @param {Presence} presence - presence associated with the log event
+ * @returns {LogMeta} a consistent and formatted meta object for a messag event
+ */
+export function getPresenceMeta(presence) {
+  return {
+    guild: {
+      id: presence.guild.id,
+      name: presence.guild.name,
+    },
+    user: {
+      id: presence.user.id,
+      name: presence.user.username,
+    },
   };
 }
