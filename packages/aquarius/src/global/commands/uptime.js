@@ -1,7 +1,7 @@
-import debug from 'debug';
 import { getExactTimeInterval } from '../../core/helpers/dates';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Uptime');
+const log = getLogger('Uptime');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -13,7 +13,7 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^uptime/i, (message) => {
-    log('Uptime Requested');
+    log.info('Uptime Requested');
     const uptime = getExactTimeInterval(
       Date.now() - aquarius.uptime,
       Date.now()

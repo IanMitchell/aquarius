@@ -1,7 +1,7 @@
-import debug from 'debug';
 import { Constants } from 'discord.js';
 import fastify from 'fastify';
 import cors from 'fastify-cors';
+import getLogger from '../../core/logging/log';
 import aquarius from '../src/aquarius';
 import { botLink } from '../src/core/helpers/links';
 import { getTotalUserCount } from '../src/core/metrics/discord';
@@ -11,7 +11,7 @@ import createShield from './shields';
 const server = fastify();
 server.register(cors);
 
-const log = debug('Server');
+const log = getLogger('Server');
 
 server.get('/', (request, response) => {
   return response.json({
@@ -42,12 +42,12 @@ server.get('/shield/commands', (request, response) => {
 });
 
 server.get('/link', (request, response) => {
-  log('Link Request');
+  log.info('Link Request');
   return response.send({ url: botLink() });
 });
 
 server.get('/ping', (request, response) => {
-  log('Ping Request');
+  log.info('Ping Request');
   if (aquarius.status === Constants.Status.READY) {
     return response.send({ ping: aquarius.ping.toString() });
   }
@@ -62,7 +62,7 @@ server.get('/ping', (request, response) => {
 // });
 
 server.get('/health', async (request, response) => {
-  log('Health Request');
+  log.info('Health Request');
   // TODO: Check some stuff
   return response.code(200);
 });
@@ -71,7 +71,7 @@ export default (async () => {
   try {
     await server.listen(3030);
   } catch (error) {
-    log(error);
+    log.fatal(error.message);
     process.exit(1);
   }
 })();

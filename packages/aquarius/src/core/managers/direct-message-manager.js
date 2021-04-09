@@ -1,7 +1,8 @@
-import debug from 'debug';
+import chalk from 'chalk';
 import { FIVE_MINUTES } from '../helpers/times';
+import getLogger from '../logging/log';
 
-const log = debug('DirectMessageManager');
+const log = getLogger('DirectMessageManager');
 
 /**
  * @typedef {import('discord.js').User} User
@@ -39,7 +40,7 @@ export default class DirectMessageManager {
       this.status.set(user.id, STATUS.PENDING);
 
       task = () => {
-        log(`Prompting ${user.username}`);
+        log.info(`Prompting ${chalk.green(user.username)}`);
         user.send(str);
 
         const collector = user.dmChannel.createMessageCollector(
@@ -49,7 +50,7 @@ export default class DirectMessageManager {
 
         collector.on('collect', (msg) => {
           if (msg.cleanContent.toLowerCase() === 'stop') {
-            log(`Stopping collector for ${user.username}`);
+            log.info(`Stopping collector for ${chalk.green(user.username)}`);
             return collector.stop('manual');
           }
 
@@ -60,11 +61,15 @@ export default class DirectMessageManager {
           this.status.set(user.id, STATUS.FULFILLED);
 
           if (reason === 'manual' || reason === 'time') {
-            log(`Rejecting for ${user.username} due to ${reason}`);
+            log.info(
+              `Rejecting for ${chalk.green(user.username)} due to ${chalk.blue(
+                reason
+              )}`
+            );
             reject(reason);
           }
 
-          log(`Returning input for ${user.username}`);
+          log.info(`Returning input for ${chalk.green(user.username)}`);
           resolve(msgs.first());
         });
       };

@@ -1,8 +1,9 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
-import debug from 'debug';
+import chalk from 'chalk';
 import { Permissions } from 'discord.js';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Hashtag');
+const log = getLogger('Hashtag');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -30,21 +31,25 @@ export default async ({ aquarius, analytics }) => {
       const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
-        log('Invalid permissions');
+        log.warn('Invalid permissions', getMessageMeta(message));
         return;
       }
 
       const channels = message?.mentions?.channels?.size ?? 0;
 
       if (matches.length - 1 > channels) {
-        log(
-          `Decorating ${matches.groups.channel} by ${message.author.username}`
+        log.info(
+          `Decorating ${chalk.blue(matches.groups.channel)} by ${chalk.green(
+            message.author.username
+          )}`
         );
         decorateMessage(message);
         analytics.trackUsage('decorate', message, { type: 'hash' });
       }
     } else if (message.cleanContent.toLowerCase().includes('hashtag')) {
-      log(`Decorating Hashtag word by ${message.author.username}`);
+      log.info(
+        `Decorating Hashtag word by ${chalk.green(message.author.username)}`
+      );
       decorateMessage(message);
       analytics.trackUsage('decorate', message, { type: 'word' });
     }

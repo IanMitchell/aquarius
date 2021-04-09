@@ -1,6 +1,7 @@
-import debug from 'debug';
+import chalk from 'chalk';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Support');
+const log = getLogger('Support');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -12,7 +13,7 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^support/i, (message) => {
-    log(`Support request in ${message.guild.name}`);
+    log.info(`Support request in ${chalk.green(message.guild.name)}`);
 
     message.channel.send('http://discord.companyinc.company');
     analytics.trackUsage('support', message);

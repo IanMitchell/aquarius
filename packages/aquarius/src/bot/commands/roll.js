@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import dedent from 'dedent-js';
 import { getInputAsNumber } from '../../core/helpers/input';
 import getLogger, { getMessageMeta } from '../../core/logging/log';
@@ -54,7 +55,7 @@ export default async ({ aquarius, analytics }) => {
     );
 
     if (values.length > 0) {
-      log.info(`Rolling ${roll}`, getMessageMeta(message));
+      log.info(`Rolling ${chalk.blue(roll)}`, getMessageMeta(message));
 
       const sequences = values.map((match) => {
         const { sign, dieCount, dieType, type, modifier } = match.groups;

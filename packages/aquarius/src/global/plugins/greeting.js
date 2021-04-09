@@ -1,10 +1,10 @@
-import debug from 'debug';
 import dedent from 'dedent-js';
 import { Permissions } from 'discord.js';
 import { getDocsLink } from '../../core/helpers/links';
 import { getBotOwner } from '../../core/helpers/users';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Greeting');
+const log = getLogger('Greeting');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -35,7 +35,7 @@ export default async ({ aquarius, analytics }) => {
     const message = await getWelcomeMessage(guild);
     const count = { success: 0, failure: 0 };
 
-    log('Sending message');
+    log.info('Sending message');
 
     guild.members.cache
       .filter((member) => member.hasPermission(Permissions.FLAGS.ADMINISTRATOR))

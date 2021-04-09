@@ -1,8 +1,8 @@
-import debug from 'debug';
 import aquarius from '../../aquarius';
+import getLogger from '../logging/log';
 import GuildSettings from '../settings/guild-settings';
 
-const log = debug('Guild Manager');
+const log = getLogger('Guild Manager');
 
 /**
  * Manages the list of Guilds Aquarius is part of
@@ -13,7 +13,7 @@ export default class GuildManager extends Map {
    * loads information on boot.
    */
   initialize() {
-    log('Initializing Settings');
+    log.info('Initializing Settings');
 
     this.loadSettings();
 

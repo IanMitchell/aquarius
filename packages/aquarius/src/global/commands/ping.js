@@ -1,6 +1,6 @@
-import debug from 'debug';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Ping');
+const log = getLogger('Ping');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -12,7 +12,7 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onTrigger(/^ping$/i, (message) => {
-    log("I'm up!");
+    log.info("I'm up!", getMessageMeta(message));
     message.channel.send('pong');
     analytics.trackUsage('ping', message);
   });

@@ -1,13 +1,14 @@
 import { isGuildAdmin } from '@aquarius-bot/permissions';
+import Sentry from '@aquarius-bot/sentry';
 import dateFns from 'date-fns';
-import debug from 'debug';
 import aquarius from '../../aquarius';
 import { ONE_DAY } from '../helpers/times';
+import getLogger from '../logging/log';
 
 // CJS / ESM compatibility
 const { startOfTomorrow } = dateFns;
 
-const log = debug('Discord Metric');
+const log = getLogger('Discord Metrics');
 
 export function getTotalUserCount() {
   return aquarius.guilds.cache.reduce(
@@ -63,13 +64,14 @@ export async function saveSnapshot() {
         snapshot,
       },
     });
-  } catch (err) {
-    log(err);
+  } catch (error) {
+    log.error(error.message);
+    Sentry.captureException(error);
   }
 }
 
 export async function setupDailySnapshotLoop() {
-  log('Registering Metric Tracking');
+  log.info('Registering Metric Tracking');
 
   setTimeout(() => {
     saveSnapshot();

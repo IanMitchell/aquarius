@@ -1,8 +1,9 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
+import chalk from 'chalk';
 import { getInputAsNumber } from '../../core/helpers/input';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Same');
+const log = getLogger('Same');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -17,7 +18,7 @@ function pushMessage(message, stackSize) {
   const { guild, channel } = message;
 
   if (!messageStack.get(guild.id)) {
-    log(`Creating entry for ${guild.name}`);
+    log.info(`Creating entry for ${chalk.green(guild.name)}`);
     const channelMap = new Map();
 
     message.guild.channels.cache
@@ -96,8 +97,10 @@ export default async ({ aquarius, settings, analytics }) => {
     }
 
     if (isSame(message, getSize(message.guild))) {
-      log(
-        `Sending '${message.content}' to ${message.guild.name}#${message.channel.name}`
+      log.info(
+        `Sending '${chalk.blue(message.content)}' to ${chalk.green(
+          message.guild.name
+        )}#${chalk.green(message.channel.name)}`
       );
       messageStack.get(message.guild.id).set(message.channel.id, []);
       message.channel.send(message.content);

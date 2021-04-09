@@ -1,7 +1,8 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
+import chalk from 'chalk';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Banlist');
+const log = getLogger('Banlist');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -13,7 +14,7 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   const checkBanlist = async () => {
-    log('Checking Guild Banlist');
+    log.info('Checking Guild Banlist');
     const list = await aquarius.database.banList.findMany({
       select: { guildId: true },
     });
@@ -21,7 +22,7 @@ export default async ({ aquarius, analytics }) => {
     list.forEach((entry) => {
       if (aquarius.guilds.cache.has(entry.id)) {
         const guild = aquarius.guilds.cache.get(entry.id);
-        log(`Leaving ${guild.name}`);
+        log.info(`Leaving ${chalk.green(guild.name)}`);
         guild.leave();
 
         analytics.trackUsage('banlist leave', null, {
@@ -38,7 +39,10 @@ export default async ({ aquarius, analytics }) => {
     /banlist add (?<input>\d+)(?: (?<reason>.+))?/i,
     async (message, { groups }) => {
       if (aquarius.permissions.isBotAdmin(message.author)) {
-        log(`Adding ${groups.input} to Banlist`);
+        log.info(
+          `Adding ${chalk.blue(groups.input)} to Banlist`,
+          getMessageMeta(message)
+        );
 
         try {
           await aquarius.database.banList.create({
@@ -50,7 +54,7 @@ export default async ({ aquarius, analytics }) => {
 
           message.channel.send(`Added ${groups.input} to my banlist.`);
         } catch (error) {
-          log(error);
+          log.error(error.message);
           Sentry.captureException(error);
           message.channel.send('Sorry, I encountered a problem!');
         }
@@ -64,7 +68,10 @@ export default async ({ aquarius, analytics }) => {
     /banlist remove (?<input>.+)/i,
     async (message, { groups }) => {
       if (aquarius.permissions.isBotAdmin(message.author)) {
-        log(`Removing ${groups.input} from Banlist`);
+        log.info(
+          `Removing ${chalk.blue(groups.input)} from Banlist`,
+          getMessageMeta(message)
+        );
 
         try {
           await aquarius.database.banList.delete({
@@ -89,7 +96,7 @@ export default async ({ aquarius, analytics }) => {
     /banlist lookup (?<input>.+)/i,
     async (message, { groups }) => {
       if (aquarius.permissions.isBotAdmin(message.author)) {
-        log('List Requested');
+        log.info('List Requested', getMessageMeta(message));
 
         try {
           const entry = await aquarius.database.banList.findUnique({
@@ -108,7 +115,7 @@ export default async ({ aquarius, analytics }) => {
             );
           }
         } catch (error) {
-          log(error);
+          log.error(error.message);
           Sentry.captureException(error);
           message.channel.send('Sorry, I encountered a problem!');
         }
@@ -120,14 +127,14 @@ export default async ({ aquarius, analytics }) => {
 
   aquarius.onCommand(/banlist count/i, async (message) => {
     if (aquarius.permissions.isBotAdmin(message.author)) {
-      log('Count Requested');
+      log.info('Count Requested', getMessageMeta(message));
 
       try {
         const count = await aquarius.database.banList.count();
 
         message.channel.send(`I currently have ${count} entries in my banlist`);
       } catch (error) {
-        log(error);
+        log.error(error.message);
         Sentry.captureException(error);
         message.channel.send('Sorry, I encountered a problem!');
       }
