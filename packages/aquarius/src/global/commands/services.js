@@ -1,10 +1,11 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
+import chalk from 'chalk';
 import dedent from 'dedent-js';
 import { MessageEmbed } from 'discord.js';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 import { helpMessage } from './help';
 
-const log = debug('Services');
+const log = getLogger('Services');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -43,19 +44,19 @@ function* getServiceLinkInformation(services) {
   `;
 
   while (!services.has(input.toLowerCase())) {
-    log(`Could not find account ${input}`);
+    log.warn(`Could not find account ${chalk.blue(input)}`);
     input = yield "Sorry, I don't know that account type - can you try spelling it like I listed above?";
   }
 
   accountInformation.name = input.toLowerCase();
 
-  log(`Prompting for ${input.toLowerCase()}`);
+  log.info(`Prompting for ${input.toLowerCase()}`);
   for (const step of services.getInformation(input.toLowerCase()).steps) {
     const value = yield step.instructions;
     accountInformation.fields.push({ name: step.field, value });
   }
 
-  log('Creating link');
+  log.info('Creating link');
   return accountInformation;
 }
 
@@ -63,7 +64,7 @@ function* getServiceLinkInformation(services) {
 export default async ({ aquarius, analytics }) => {
   // Gently guide people trying to link accounts in a guild channel
   aquarius.onCommand(/^services$/i, (message) => {
-    log('Service request in guild channel');
+    log.info('Service request in guild channel', getMessageMeta(message));
     message.channel.send(
       'To add a service, please send me `services add` via direct message'
     );
@@ -71,13 +72,19 @@ export default async ({ aquarius, analytics }) => {
   });
 
   aquarius.onDirectMessage(/^services$/i, async (message) => {
-    log('Service help request in DM');
+    log.info(
+      `Service help request in DM for ${chalk.green(message.author.username)}`,
+      getMessageMeta(message)
+    );
     message.channel.send(helpMessage(aquarius, info));
     analytics.trackUsage('dm help', message);
   });
 
   aquarius.onDirectMessage(/^services list$/i, async (message) => {
-    log(`Listing services for ${message.author.username}`);
+    log.info(
+      `Listing services for ${chalk.green(message.author.username)}`,
+      getMessageMeta(message)
+    );
     const services = await aquarius.services.getLinks(message.author);
 
     if (!services.length) {
@@ -93,7 +100,12 @@ export default async ({ aquarius, analytics }) => {
     /^services view (?<service>.+)$/i,
     async (message, { groups }) => {
       const serviceKey = groups.service.toLowerCase();
-      log(`Viewing ${serviceKey} for ${message.author.username}`);
+      log.info(
+        `Viewing ${chalk.blue(serviceKey)} for ${chalk.green(
+          message.author.username
+        )}`,
+        getMessageMeta(message)
+      );
 
       if (!aquarius.services.has(serviceKey)) {
         message.channel.send("Sorry but I don't know that service name");
@@ -135,7 +147,12 @@ export default async ({ aquarius, analytics }) => {
     /^services remove (?<service>.+)$/i,
     async (message, { groups }) => {
       const serviceKey = groups.service.toLowerCase();
-      log(`Removing ${serviceKey} for ${message.author.username}`);
+      log.info(
+        `Removing ${chalk.blue(serviceKey)} for ${chalk.green(
+          message.author.username
+        )}`,
+        getMessageMeta(message)
+      );
 
       if (!aquarius.services.has(serviceKey)) {
         message.channel.send("Sorry but I don't know that service name");
@@ -160,7 +177,10 @@ export default async ({ aquarius, analytics }) => {
 
   // Guide users through linking accounts in DM
   aquarius.onDirectMessage(/services add/i, async (message) => {
-    log(`Adding service to ${message.author.username}`);
+    log.info(
+      `Adding service to ${chalk.green(message.author.username)}`,
+      getMessageMeta(message)
+    );
 
     try {
       const link = getServiceLinkInformation(aquarius.services);
@@ -201,7 +221,7 @@ export default async ({ aquarius, analytics }) => {
         analytics.trackUsage('add timeout', message, { reason });
       } else {
         Sentry.captureException(reason);
-        log(reason);
+        log.warn(reason, getMessageMeta(message));
         message.channel.send(
           'Sorry, something went wrong. Please try again later!'
         );

@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import dedent from 'dedent-js';
 import getLogger, { getMessageMeta } from '../../core/logging/log';
 
@@ -56,7 +57,10 @@ export default async ({ aquarius, analytics }) => {
     const content = message.cleanContent.trim().toLowerCase();
 
     if (RESPONSES.has(id) && RESPONSES.get(id).has(content)) {
-      log.info(`Input: ${message.cleanContent}`, getMessageMeta(message));
+      log.info(
+        `Input: ${chalk.blue(message.cleanContent)}`,
+        getMessageMeta(message)
+      );
       const response = RESPONSES.get(id).get(content);
       message.channel.send(response);
       analytics.trackUsage('response', message, { response });
@@ -91,7 +95,10 @@ export default async ({ aquarius, analytics }) => {
     /^reply remove "(?<trigger>[\s\S]+)"$/i,
     async (message, { groups }) => {
       if (aquarius.permissions.isAdmin(message.guild, message.author)) {
-        log.info(`Removing ${groups.trigger}`, getMessageMeta(message));
+        log.info(
+          `Removing ${chalk.blue(groups.trigger)}`,
+          getMessageMeta(message)
+        );
 
         const response = await aquarius.database.reply.delete({
           where: {
@@ -129,7 +136,9 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       if (aquarius.permissions.isAdmin(message.guild, message.author)) {
         log.info(
-          `Adding reply: "${groups.trigger}" -> "${groups.response}"`,
+          `Adding reply: "${chalk.blue(groups.trigger)}" -> "${chalk.blue(
+            groups.response
+          )}"`,
           getMessageMeta(message)
         );
 

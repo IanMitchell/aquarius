@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import dateFns from 'date-fns';
 import dedent from 'dedent-js';
 import { getInputAsNumber } from '../../core/helpers/input';
@@ -69,7 +70,10 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^quotes read #?(?<id>[0-9]+)$/i,
     async (message, { groups }) => {
-      log.info(`Reading quote ${groups.id}`, getMessageMeta(message));
+      log.info(
+        `Reading quote ${chalk.blue(groups.id)}`,
+        getMessageMeta(message)
+      );
 
       const quoteId = getInputAsNumber(groups.id);
 
