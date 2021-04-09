@@ -3,14 +3,15 @@ import {
   getPermissionName,
 } from '@aquarius-bot/permissions';
 import { getNickname } from '@aquarius-bot/users';
-import debug from 'debug';
+import chalk from 'chalk';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { getGitHubLink, getHost } from '../../core/helpers/links';
 import { humanize, setDifference } from '../../core/helpers/lists';
 import { capitalize } from '../../core/helpers/strings';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Help');
+const log = getLogger('Help');
 
 const EMOJI = {
   VALID: ':white_check_mark:',
@@ -94,12 +95,17 @@ export function helpMessage(aquarius, commandInfo, guild) {
 export default async ({ aquarius, analytics }) => {
   // Handle generic help
   aquarius.onCommand(/^help$/i, (message) => {
-    log(`Help request in "${message.guild.name}#${message.channel.name}"`);
+    log.info(
+      `Help request in "${chalk.green(message.guild.name)}#${chalk.green(
+        message.channel.name
+      )}"`,
+      getMessageMeta(message)
+    );
 
     const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
-      log('Invalid permissions');
+      log.warn('Invalid permissions', getMessageMeta(message));
       message.channel.send(
         aquarius.permissions.getRequestMessage(check.missing)
       );
@@ -142,8 +148,11 @@ export default async ({ aquarius, analytics }) => {
 
   // Handle help for specific command
   aquarius.onCommand(/^help (?<command>.+)$/i, (message, { groups }) => {
-    log(
-      `Help request for ${groups.command} in "${message.guild.name}#${message.channel.name}"`
+    log.info(
+      `Help request for ${chalk.blue(groups.command)} in "${chalk.green(
+        message.guild.name
+      )}#${chalk.green(message.channel.name)}"`,
+      getMessageMeta(message)
     );
     const help = aquarius.help.get(groups.command);
 
@@ -151,7 +160,7 @@ export default async ({ aquarius, analytics }) => {
       const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
-        log('Invalid permissions');
+        log.warn('Invalid permissions', getMessageMeta(message));
         message.channel.send(
           aquarius.permissions.getRequestMessage(check.missing)
         );

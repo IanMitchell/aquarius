@@ -1,11 +1,12 @@
 import { getOrderedMentions } from '@aquarius-bot/messages';
 import { MENTION } from '@aquarius-bot/regex';
 import { getNickname } from '@aquarius-bot/users';
-import debug from 'debug';
+import chalk from 'chalk';
 import dedent from 'dedent-js';
 import { humanize } from '../../core/helpers/lists';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Ignore');
+const log = getLogger('Ignore');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -32,7 +33,12 @@ export default async ({ aquarius, analytics }) => {
         if (message.mentions.users.size > 0) {
           const mentions = await getOrderedMentions(message);
           const user = mentions[mentions.length - 1];
-          log(`Adding ${user.username} to ${message.guild.name}'s ignore list`);
+          log.info(
+            `Adding ${chalk.green(user.username)} to ${chalk.green(
+              message.guild.name
+            )}'s ignore list`,
+            getMessageMeta(message)
+          );
 
           aquarius.guildManager.get(message.guild.id).ignoreUser(user.id);
           message.channel.send(`Added ${user} to my ignore list`);
@@ -52,7 +58,12 @@ export default async ({ aquarius, analytics }) => {
         if (message.mentions.users.size > 0) {
           const mentions = await getOrderedMentions(message);
           const user = mentions[mentions.length - 1];
-          log(`Removing ${user.name} from ${message.guild.name}'s ignore list`);
+          log.info(
+            `Removing ${chalk.green(user.name)} from ${chalk.green(
+              message.guild.name
+            )}'s ignore list`,
+            getMessageMeta(message)
+          );
 
           aquarius.guildManager.get(message.guild.id).unignoreUser(user.id);
           message.channel.send(`Removed ${user} from my ignore list`);
@@ -68,7 +79,10 @@ export default async ({ aquarius, analytics }) => {
   );
 
   aquarius.onCommand(/^ignore list$/i, (message) => {
-    log(`Generating list for ${message.guild.name}`);
+    log.info(
+      `Generating list for ${chalk.green(message.guild.name)}`,
+      getMessageMeta(message)
+    );
     const ids = aquarius.guildManager.get(message.guild.id).ignoredUsers;
     const list = Array.from(ids).map((userId) =>
       getNickname(message.guild, userId)

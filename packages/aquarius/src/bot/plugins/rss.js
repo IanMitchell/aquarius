@@ -1,10 +1,11 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
+import chalk from 'chalk';
 import dedent from 'dedent-js';
 import Parser from 'rss-parser';
 import { FIVE_MINUTES } from '../../core/helpers/times';
+import getLogger from '../../core/logging/log';
 
-const log = debug('RSS');
+const log = getLogger('RSS');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -30,7 +31,7 @@ async function checkForPastContent(channel, content, limit = MESSAGE_LIMIT) {
       .array()
       .some((message) => message.content.includes(content));
   } catch (error) {
-    log(error);
+    log.error(error.message);
     Sentry.captureException(error);
 
     // Assume content exists
@@ -42,7 +43,9 @@ async function checkForUpdates(guild, url, name, analytics, errorName = null) {
   const channel = guild.channels.cache.find((c) => c.name === name);
 
   if (!url || !channel) {
-    log(`RSS command not properly configured in ${guild.name}`);
+    log.warn(
+      `RSS command not properly configured in ${chalk.green(guild.name)}`
+    );
 
     // TODO: Handle no channel better
     if (channel) {
@@ -61,7 +64,9 @@ async function checkForUpdates(guild, url, name, analytics, errorName = null) {
       const posted = await checkForPastContent(channel, entry.link);
 
       if (!posted) {
-        log(`Posting ${entry.title} to ${guild.name}`);
+        log.info(
+          `Posting ${chalk.blue(entry.title)} to ${chalk.green(guild.name)}`
+        );
         channel.send(dedent`📰 **${entry.title}**
 
         ${entry.link}`);
@@ -73,7 +78,7 @@ async function checkForUpdates(guild, url, name, analytics, errorName = null) {
       }
     });
   } catch (error) {
-    log(error);
+    log.error(error.message);
     Sentry.captureException(error);
 
     const errorChannel =
@@ -91,7 +96,7 @@ async function checkForUpdates(guild, url, name, analytics, errorName = null) {
 }
 
 function onLoop(aquarius, settings, analytics, guild) {
-  log(`Checking feed for ${guild.name}`);
+  log.info(`Checking feed for ${chalk.green(guild.name)}`);
   const url = settings.get(guild.id, 'url');
   const name = settings.get(guild.id, 'channel');
   const errorName = settings.get(guild.id, 'errorChannel');

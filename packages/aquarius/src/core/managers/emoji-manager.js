@@ -1,9 +1,8 @@
-import chalk from 'chalk';
-import debug from 'debug';
 import aquarius from '../../aquarius';
 import { ONE_HOUR } from '../helpers/times';
+import getLogger from '../logging/log';
 
-const log = debug('Emoji Manager');
+const log = getLogger('Emoji Manager');
 
 /**
  * Manages custom emoji for Aquarius
@@ -15,7 +14,7 @@ export default class EmojiManager extends Map {
    * loads information on boot.
    */
   initialize() {
-    log('Creating List');
+    log.info('Creating List');
 
     this.getList();
 
@@ -26,15 +25,13 @@ export default class EmojiManager extends Map {
    * Refreshes Map state with uploaded emojis in the Home Guild
    */
   getList() {
-    log('Refreshing emoji list');
+    log.info('Refreshing emoji list');
 
     const homeGuild = aquarius.guilds.cache.get(aquarius.config.home.guild);
 
     if (!homeGuild) {
-      log(
-        chalk.redBright(
-          'ERROR: Aquarius is not a member of the Home Server defined in `config.yml`'
-        )
+      log.error(
+        'Aquarius is not a member of the Home Server defined in `config.yml`'
       );
       return;
     }

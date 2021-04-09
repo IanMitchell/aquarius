@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import debug from 'debug';
+import getLogger from '../logging/log';
 
-const log = debug('Trigger Map');
+const log = getLogger('Trigger Map');
 
 /** @typedef {import('../../typedefs').CommandInfo} CommandInfo */
 
@@ -26,9 +26,7 @@ export default class TriggerMap extends Map {
     if (this.has(regex.toString())) {
       // TODO: Determine if this can be supported, should kill the bot,
       // or even matters
-      log(
-        `${chalk.red('WARNING:')} Duplicate Regex detected: ${regex.toString()}`
-      );
+      log.warn(`Duplicate Regex detected: ${chalk.blue(regex.toString())}`);
     }
 
     this.set(regex.toString(), this.currentCommand);

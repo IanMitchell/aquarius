@@ -1,13 +1,14 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
+import chalk from 'chalk';
 import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import { getIconColor } from '../../core/helpers/colors';
 import { humanize } from '../../core/helpers/lists';
 import { capitalize } from '../../core/helpers/strings';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Steam');
+const log = getLogger('Steam');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -22,12 +23,15 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^steam info (?<game>.*)$/i,
     async (message, { groups }) => {
-      log(`Looking up ${groups.game}`);
+      log.info(
+        `Looking up ${chalk.blue(groups.game)}`,
+        getMessageMeta(message)
+      );
 
       const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
-        log('Invalid permissions');
+        log.warn('Invalid permissions', getMessageMeta(message));
         message.channel.send(
           aquarius.permissions.getRequestMessage(check.missing)
         );
@@ -174,7 +178,7 @@ export default async ({ aquarius, analytics }) => {
 
         message.channel.send(embed);
       } catch (error) {
-        log(error);
+        log.error(error.message);
         Sentry.captureException(error);
         message.channel.send('Sorry, something went wrong!');
       }

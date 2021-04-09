@@ -184,7 +184,7 @@ export default async ({ aquarius, analytics }) => {
       const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
-        log.warn('Invalid permissions');
+        log.warn('Invalid permissions', getMessageMeta(message));
         message.channel.send(
           aquarius.permissions.getRequestMessage(check.missing)
         );

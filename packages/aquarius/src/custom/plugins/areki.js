@@ -1,13 +1,13 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
 import { getNickname } from '@aquarius-bot/users';
-import debug from 'debug';
 import { Permissions } from 'discord.js';
 import { getInputAsNumber } from '../../core/helpers/input';
 import { randomValue } from '../../core/helpers/lists';
 import { ONE_MINUTE } from '../../core/helpers/times';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Areki');
+const log = getLogger('Areki');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -42,7 +42,7 @@ async function updateNickname(aquarius) {
     const match = nickname.match(/\d+/);
 
     if (match) {
-      log("Updating Areki's nickname");
+      log.info("Updating Areki's nickname");
 
       let number = getInputAsNumber(match[0]) ?? 0;
 
@@ -58,7 +58,7 @@ async function updateNickname(aquarius) {
       try {
         await areki.setNickname(newName);
       } catch (error) {
-        log("Error updating Areki's nickname");
+        log.error("Error updating Areki's nickname");
         Sentry.captureException(error);
       }
     }
@@ -68,7 +68,7 @@ async function updateNickname(aquarius) {
     try {
       updateNickname(aquarius);
     } catch (error) {
-      log("Error checking Areki's nickname");
+      log.error("Error checking Areki's nickname");
       Sentry.captureException(error);
     }
   }, randomValue(LOOP_DURATIONS));
@@ -81,7 +81,7 @@ export default async ({ aquarius }) => {
       try {
         updateNickname(aquarius);
       } catch (error) {
-        log("Error starting Areki's nickname check");
+        log.error("Error starting Areki's nickname check");
         Sentry.captureException(error);
       }
     }, ONE_MINUTE);

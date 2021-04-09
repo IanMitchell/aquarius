@@ -1,9 +1,9 @@
 import { Constants } from 'discord.js';
 import fastify from 'fastify';
 import cors from 'fastify-cors';
-import getLogger from '../../core/logging/log';
 import aquarius from '../src/aquarius';
 import { botLink } from '../src/core/helpers/links';
+import getLogger from '../src/core/logging/log';
 import { getTotalUserCount } from '../src/core/metrics/discord';
 import createShield from './shields';
 // import { getMetricHandler } from './metrics';
