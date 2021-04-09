@@ -2,22 +2,28 @@ import logdna from '@logdna/logger';
 import debug from 'debug';
 import { once } from 'events';
 
-const logger = logdna.createLogger(process.env.LOGDNA_KEY, {
-  app: 'aquarius',
-  level: 'info',
-  indexMeta: true,
-});
+const logger = process.env.LOGDNA_KEY
+  ? logdna.createLogger(process.env.LOGDNA_KEY, {
+      app: 'aquarius',
+      level: 'info',
+      indexMeta: true,
+    })
+  : null;
 
 if (process.env.NODE_ENV === 'production') {
-  logger.info('Creating connection to LogDNA');
+  logger?.info('Creating connection to LogDNA');
 }
 
 async function shutdown() {
-  await once(logger, 'cleared');
+  if (logger) {
+    await once(logger, 'cleared');
+  } else {
+    await Promise.resolve();
+  }
 }
 
 function onSignal(signal) {
-  logger.warn({ signal }, 'received signal, shutting down');
+  logger?.warn({ signal }, 'received signal, shutting down');
   shutdown();
 }
 
@@ -79,7 +85,7 @@ export default function getLogger(name) {
               if (process.env.NODE_ENV !== 'production') {
                 log(message);
               } else {
-                logger.log(message, {
+                logger?.log(message, {
                   app: name ?? 'aquarius',
                   level: property,
                   meta: metaArgs,
