@@ -69,7 +69,7 @@ server.get('/health', async (request, response) => {
 
 export default (async () => {
   try {
-    await server.listen(3030);
+    await server.listen(process.env.NODE_ENV === 'development' ? 3030 : 3000);
   } catch (error) {
     log.fatal(error.message);
     process.exit(1);
