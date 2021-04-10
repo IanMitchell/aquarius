@@ -1,0 +1,65 @@
+databases:
+  - cluster_name: aquarius-deschtimes
+    db_name: aquarius
+    db_user: doadmin
+    engine: PG
+    name: aquarius-deschtimes
+    production: true
+    version: '12'
+envs:
+  - key: NODE_ENV
+    scope: RUN_AND_BUILD_TIME
+    value: production
+  - key: CLIENT_ID
+    scope: RUN_AND_BUILD_TIME
+    value: ${CLIENT_ID}
+  - key: SENTRY
+    scope: RUN_AND_BUILD_TIME
+    value: ${SENTRY}
+  - key: DICTIONARY_API_KEY
+    scope: RUN_AND_BUILD_TIME
+    value: ${DICTIONARY_API_KEY}
+  - key: HEARTHSTONE_KEY
+    scope: RUN_AND_BUILD_TIME
+    value: ${HEARTHSTONE_KEY}
+  - key: GITHUB_API_TOKEN
+    scope: RUN_AND_BUILD_TIME
+    value: ${GITHUB_API_TOKEN}
+  - key: DARK_SKY_API_KEY
+    scope: RUN_AND_BUILD_TIME
+    value: ${DARK_SKY_API_KEY}
+  - key: MAPBOX_API_KEY
+    scope: RUN_AND_BUILD_TIME
+    value: ${MAPBOX_API_KEY}
+  - key: ALPHA_VANTAGE_KEY
+    scope: RUN_AND_BUILD_TIME
+    value: ${ALPHA_VANTAGE_KEY}
+  - key: GIT_HASH
+    scope: RUN_AND_BUILD_TIME
+    value: ${GITHUB_SHA}
+  - key: FINANCIAL_MODELING_API_KEY
+    scope: RUN_AND_BUILD_TIME
+    value: ${FINANCIAL_MODELING_API_KEY}
+  - key: IQAIR_API_KEY
+    scope: RUN_AND_BUILD_TIME
+    value: ${IQAIR_API_KEY}
+  - key: LOGDNA_KEY
+    scope: RUN_AND_BUILD_TIME
+    value: ${LOGDNA_KEY}
+name: aquarius
+region: sfo
+services:
+  - dockerfile_path: Dockerfile
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: ${aquarius-deschtimes.DATABASE_URL}
+    github:
+      branch: main
+      repo: IanMitchell/aquarius
+    http_port: 3000
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    name: aquarius
+    routes:
+      - path: /
