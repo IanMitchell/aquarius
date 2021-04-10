@@ -58,7 +58,7 @@ services:
     github:
       branch: main
       repo: IanMitchell/aquarius
-    http_port: 3000
+    http_port: 3030
     instance_count: 1
     instance_size_slug: basic-xxs
     routes:

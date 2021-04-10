@@ -14,7 +14,7 @@ server.register(cors);
 const log = getLogger('Server');
 
 server.get('/', (request, response) => {
-  return response.json({
+  return response.send({
     server: 'hello world',
     whereAreTheDocs: "Yeah yeah, I'm working on it. DM me - Desch#3091",
   });
