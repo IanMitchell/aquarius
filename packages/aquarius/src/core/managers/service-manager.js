@@ -1,12 +1,13 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
+import chalk from 'chalk';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
 import database from '../database/database';
 import { getDirname } from '../helpers/files';
+import getLogger from '../logging/log';
 
-const log = debug('ServiceManager');
+const log = getLogger('ServiceManager');
 
 /**
  * @typedef {import('discord.js').User} User
@@ -42,7 +43,7 @@ export default class ServiceManager {
 
       files.forEach(async (file) => {
         if (file.endsWith('.yml')) {
-          log(`Loading ${file}`);
+          log.info(`Loading ${chalk.blue(file)}`);
 
           const filePath = path.join(serviceDirectory, file);
           const { name, version, steps } = yaml.safeLoad(
@@ -106,7 +107,7 @@ export default class ServiceManager {
 
       return services.map((service) => service.name);
     } catch (error) {
-      log(error);
+      log.error(error.message);
       Sentry.captureException(error);
       return [];
     }
@@ -118,7 +119,7 @@ export default class ServiceManager {
    * @returns {string[]} List of services linked to a User
    */
   async getLinks(user) {
-    log(`Retrieving service list for ${user.username}`);
+    log.info(`Retrieving service list for ${chalk.green(user.username)}`);
 
     const keys = await this.getKeysForUser(user);
     return keys
@@ -133,7 +134,9 @@ export default class ServiceManager {
    * @returns {?Object.<string, string>} Field name and User Input in a Key/Value structure
    */
   async getLink(user, service) {
-    log(`Retrieving ${service} for ${user.username}`);
+    log.info(
+      `Retrieving ${chalk.blue(service)} for ${chalk.green(user.username)}`
+    );
 
     return database.service.findUnique({
       where: {
@@ -153,7 +156,7 @@ export default class ServiceManager {
    * @returns {Promise} Promise of pending database transaction
    */
   async setLink(user, name, fields) {
-    log(`Setting ${name} for ${user.username}`);
+    log.info(`Setting ${chalk.blue(name)} for ${chalk.green(user.username)}`);
 
     return database.service.upsert({
       where: {
@@ -180,7 +183,9 @@ export default class ServiceManager {
    * @returns {Promise} Promise of pending database transaction
    */
   async removeLink(user, service) {
-    log(`Removing ${service} for user ${user.username}`);
+    log.info(
+      `Removing ${chalk.blue(service)} for user ${chalk.green(user.username)}`
+    );
 
     return database.service.delete({
       where: {

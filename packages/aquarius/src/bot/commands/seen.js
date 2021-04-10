@@ -1,14 +1,18 @@
 import { getOrderedMentions } from '@aquarius-bot/messages';
 import { MENTION_USER } from '@aquarius-bot/regex';
 import { getNickname } from '@aquarius-bot/users';
+import chalk from 'chalk';
 import dateFns from 'date-fns';
-import debug from 'debug';
 import dedent from 'dedent-js';
+import getLogger, {
+  getMessageMeta,
+  getPresenceMeta,
+} from '../../core/logging/log';
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;
 
-const log = debug('Seen');
+const log = getLogger('Seen');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -66,7 +70,10 @@ export default async ({ aquarius, analytics }) => {
     new RegExp(`^seen ${MENTION_USER.source}$`, 'i'),
     async (message) => {
       const [user] = await getOrderedMentions(message);
-      log(`Request for ${user.username}`);
+      log.info(
+        `Request for ${chalk.green(user.username)}`,
+        getMessageMeta(message)
+      );
 
       checkUser(user, message);
 
@@ -77,7 +84,10 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     new RegExp(`^seen id (?<id>\\d+)$`, 'i'),
     async (message, { groups }) => {
-      log(`ID Request for ${groups.id}`);
+      log.info(
+        `ID Request for ${chalk.green(groups.id)}`,
+        getMessageMeta(message)
+      );
 
       try {
         const member = await message.guild.members.fetch(groups.id);
@@ -96,7 +106,12 @@ export default async ({ aquarius, analytics }) => {
       !statusDebounce.has(newPresence.user.id)
     ) {
       statusDebounce.add(newPresence.user.id);
-      log(`${getNickname(newPresence.guild, newPresence.user)} signed off`);
+      log.info(
+        `${chalk.green(
+          getNickname(newPresence.guild, newPresence.user)
+        )} signed off`,
+        getPresenceMeta(newPresence)
+      );
 
       await aquarius.database.lastSeen.upsert({
         where: {

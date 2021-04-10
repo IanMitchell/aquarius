@@ -1,10 +1,11 @@
 import { getLink } from '@aquarius-bot/messages';
 import { getNickname } from '@aquarius-bot/users';
-import debug from 'debug';
+import chalk from 'chalk';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { getInputAsNumber } from '../../core/helpers/input';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Starboard');
+const log = getLogger('Starboard');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -75,7 +76,7 @@ export default async ({ aquarius, settings, analytics }) => {
           message.channel.send(errorMsg);
         }
 
-        log(`Could not find channel for ${guild.name}`);
+        log.info(`Could not find channel for ${chalk.green(guild.name)}`);
         return;
       }
 

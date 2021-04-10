@@ -1,11 +1,12 @@
 import { checkBotPermissions, isGuildAdmin } from '@aquarius-bot/permissions';
-import debug from 'debug';
+import chalk from 'chalk';
 import dedent from 'dedent-js';
 import { Permissions } from 'discord.js';
 import pluralize from 'pluralize';
 import { guildEmbed } from '../../core/helpers/embeds';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Guild');
+const log = getLogger('Guild');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -26,12 +27,15 @@ function formatGuild(guild, idx) {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^(?:server|guild)$/i, async (message) => {
-    log(`Info for ${message.guild.name}`);
+    log.info(
+      `Info for ${chalk.green(message.guild.name)}`,
+      getMessageMeta(message)
+    );
 
     const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
-      log('Invalid permissions');
+      log.warn('Invalid permissions', getMessageMeta(message));
       message.channel.send(
         aquarius.permissions.getRequestMessage(check.missing)
       );
@@ -53,7 +57,7 @@ export default async ({ aquarius, analytics }) => {
 
   aquarius.onCommand(/(server|guild) list/i, (message) => {
     if (aquarius.permissions.isBotOwner(message.author)) {
-      log('List Requested');
+      log.info('List Requested', getMessageMeta(message));
       const guilds = aquarius.guilds.cache.array();
 
       message.channel.send(dedent`
@@ -71,12 +75,15 @@ export default async ({ aquarius, analytics }) => {
     /(?:server|guild) info (?<name>.+)/i,
     async (message, { groups }) => {
       if (aquarius.permissions.isBotOwner(message.author)) {
-        log(`Specific request for ${groups.name}`);
+        log.info(
+          `Specific request for ${chalk.blue(groups.name)}`,
+          getMessageMeta(message)
+        );
 
         const check = checkBotPermissions(message.guild, ...info.permissions);
 
         if (!check.valid) {
-          log('Invalid permissions');
+          log.warn('Invalid permissions', getMessageMeta(message));
           message.channel.send(
             aquarius.permissions.getRequestMessage(check.missing)
           );

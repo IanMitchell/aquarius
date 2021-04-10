@@ -1,10 +1,10 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
 import path from 'path';
 import { getDirname } from '../../core/helpers/files';
 import { FIVE_MINUTES, ONE_HOUR, ONE_MINUTE } from '../../core/helpers/times';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Wilhelm');
+const log = getLogger('Wilhelm');
 
 const WILHELM_SCREAM = path.join(
   getDirname(import.meta.url),
@@ -35,13 +35,13 @@ async function playClip(channel, target, analytics) {
 
   const connection = await channel.join();
 
-  log('Waiting for activity');
+  log.info('Waiting for activity');
 
   const inactivityCheck = setTimeout(connection.disconnect, FIVE_MINUTES);
 
   connection.on('speaking', (user, speaking) => {
     if (user.id === target && speaking && dispatcher === null) {
-      log('Playing Clip');
+      log.info('Playing Clip');
       try {
         dispatcher = connection.playFile(WILHELM_SCREAM);
 
@@ -51,7 +51,7 @@ async function playClip(channel, target, analytics) {
         });
 
         dispatcher.on('end', () => {
-          log('Leaving channel');
+          log.info('Leaving channel');
           clearTimeout(inactivityCheck);
           setTimeout(() => connection.disconnect(), 3);
         });
@@ -59,14 +59,14 @@ async function playClip(channel, target, analytics) {
         dispatcher.on('error', log);
       } catch (error) {
         Sentry.captureException(error);
-        log(error);
+        log.error(error.message);
       }
     }
   });
 }
 
 function voiceCheck(guild, target, analytics) {
-  log('Checking for users');
+  log.info('Checking for users');
 
   guild.channels
     .filter((channel) => channel.type === 'voice')
@@ -83,7 +83,7 @@ function voiceCheck(guild, target, analytics) {
 }
 
 function onLoop(aquarius, settings, analytics, guild) {
-  log('Checking interval');
+  log.info('Checking interval');
 
   if (INTERVALS.has(guild.id)) {
     return;

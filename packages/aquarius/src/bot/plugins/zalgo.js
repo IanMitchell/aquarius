@@ -1,11 +1,12 @@
-import debug from 'debug';
+import chalk from 'chalk';
 import { Permissions } from 'discord.js';
 import Zalgo from 'unzalgo';
+import getLogger from '../../core/logging/log';
 
 // CJS / ESM compatibility
 const { isZalgo } = Zalgo;
 
-const log = debug('Zalgo');
+const log = getLogger('Zalgo');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -18,8 +19,10 @@ export const info = {
 export default async ({ aquarius, analytics }) => {
   aquarius.onMessage(info, (message) => {
     if (isZalgo(message.cleanContent) && message.deletable) {
-      log(
-        `Removing message from ${message.author.username} in ${message.guild.name}`
+      log.info(
+        `Removing message from ${chalk.green(
+          message.author.username
+        )} in ${chalk.green(message.guild.name)}`
       );
       message.delete();
       message.channel.send(

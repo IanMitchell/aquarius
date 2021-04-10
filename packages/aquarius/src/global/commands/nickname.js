@@ -1,9 +1,10 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
+import chalk from 'chalk';
 import { Permissions } from 'discord.js';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Nickname');
+const log = getLogger('Nickname');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -25,7 +26,7 @@ export default async ({ aquarius, analytics }) => {
         const check = checkBotPermissions(message.guild, ...info.permissions);
 
         if (!check.valid) {
-          log('Invalid permissions');
+          log.warn('Invalid permissions', getMessageMeta(message));
           message.channel.send(
             aquarius.permissions.getRequestMessage(check.missing)
           );
@@ -35,8 +36,10 @@ export default async ({ aquarius, analytics }) => {
         const member = await message.guild.members.fetch(aquarius.user);
 
         try {
-          log(
-            `Updating Nickname to '${groups.nickname}' in ${message.guild.name}`
+          log.info(
+            `Updating Nickname to '${chalk.blue(
+              groups.nickname
+            )}' in ${chalk.green(message.guild.name)}`
           );
           await member.setNickname(groups.nickname);
           message.channel.send('Nickname changed!');

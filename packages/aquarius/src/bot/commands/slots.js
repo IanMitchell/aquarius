@@ -1,8 +1,8 @@
-import debug from 'debug';
 import dedent from 'dedent-js';
 import { randomValue } from '../../core/helpers/lists';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Slots');
+const log = getLogger('Slots');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -29,7 +29,7 @@ const values = [
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^slots$/i, (message) => {
-    log('Rolling');
+    log.info('Rolling', getMessageMeta(message));
     message.channel.send(dedent`
       ${randomValue(values)} | ${randomValue(values)} | ${randomValue(values)}
     `);

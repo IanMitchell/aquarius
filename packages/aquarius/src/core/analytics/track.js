@@ -1,7 +1,7 @@
-import debug from 'debug';
 import database from '../database/database';
+import getLogger from '../logging/log';
 
-const log = debug('Analytics');
+const log = getLogger('Analytics');
 
 /**
  * Creates a event record in the Analytics table. Automatically associates a date with the action
@@ -11,7 +11,7 @@ const log = debug('Analytics');
  * @param {Object} context - Additional fields you want to associate with the record
  */
 export default async function track(category, label, action, context) {
-  log(`Tracking ${category}>${label}>${action}`);
+  log.info(`Tracking ${category}>${label}>${action}`);
 
   return database.analytic.create({
     data: {

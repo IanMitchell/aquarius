@@ -1,10 +1,11 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
+import chalk from 'chalk';
 import dedent from 'dedent-js';
 import pluralize from 'pluralize';
 import { humanize } from '../../core/helpers/lists';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Admin');
+const log = getLogger('Admin');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -60,7 +61,7 @@ async function getGuildTarget(aquarius, message) {
         return 0;
       }
     } catch (error) {
-      log(error);
+      log.error(error.message);
       Sentry.captureException(error);
 
       message.channel.send('Sorry, something happened. Please try again!');
@@ -79,20 +80,23 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onDirectMessage(
     /settings list (?<command>.+)/i,
     async (message, { groups }) => {
-      log('Setting list');
+      log.info('Setting list', getMessageMeta(message));
 
       const { channel } = message;
       const guild = await getGuildTarget(aquarius, message);
 
       if (!guild) {
-        log('Non-admin account, exiting');
+        log.info('Non-admin account, exiting');
         return;
       }
 
       const config = aquarius.commandConfigs.get(groups.command);
 
       if (!config) {
-        log(`No settings for ${groups.command}`);
+        log.info(
+          `No settings for ${chalk.blue(groups.command)}`,
+          getMessageMeta(message)
+        );
         channel.send(`I couldn't find a command names ${groups.command}`);
         return;
       }
@@ -124,25 +128,31 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onDirectMessage(
     /set (?<command>.+) (?<setting>.+) (?<value>.+)/i,
     async (message, { groups }) => {
-      log('Set command setting');
+      log.info('Set command setting', getMessageMeta(message));
       const { channel } = message;
       const { command, setting, value } = groups;
 
       const guild = await getGuildTarget(aquarius, message);
 
       if (!guild) {
-        log('Non-admin account, exiting');
+        log.info('Non-admin account, exiting', getMessageMeta(message));
         return;
       }
 
       if (!aquarius.commandList.has(command)) {
-        log(`No settings for ${command}`);
+        log.message(
+          `No settings for ${chalk.blue(command)}`,
+          getMessageMeta(message)
+        );
         channel.send(`I can't find a command named "${command}", sorry!`);
         return;
       }
 
       if (!aquarius.guildManager.get(guild).enabledCommands.has(command)) {
-        log(`${command} isn't enabled on server`);
+        log.info(
+          `${chalk.blue(command)} isn't enabled on server`,
+          getMessageMeta(message)
+        );
         channel.send(
           `It doesn't look like ${command} is enabled on your server!`
         );
@@ -150,7 +160,10 @@ export default async ({ aquarius, analytics }) => {
       }
 
       if (!aquarius.commandConfigs.get(command).keys().includes(setting)) {
-        log(`Invalid setting name: ${setting}`);
+        log.blue(
+          `Invalid setting name: ${chalk.blue(setting)}`,
+          getMessageMeta(message)
+        );
         channel.send(
           `It doesn't look like ${command} has a setting called "${setting}"`
         );
@@ -167,18 +180,21 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onDirectMessage(
     /unset (?<command>.+) (?<setting>.+)/i,
     async (message, { groups }) => {
-      log('Unset command setting');
+      log.info('Unset command setting', getMessageMeta(message));
       const { channel } = message;
       const { command, setting } = groups;
       const guild = await getGuildTarget(aquarius, message);
 
       if (!guild) {
-        log('Non-admin account, exiting');
+        log.info('Non-admin account, exiting', getMessageMeta(message));
         return;
       }
 
       if (!aquarius.commandList.has(command)) {
-        log(`No settings for ${command}`);
+        log.info(
+          `No settings for ${chalk.blue(command)}`,
+          getMessageMeta(message)
+        );
         channel.send(`I can't find a command named "${command}", sorry!`);
         return;
       }
@@ -186,7 +202,10 @@ export default async ({ aquarius, analytics }) => {
       if (
         !aquarius.guildManager.get(guild).enabledCommands.has(groups.command)
       ) {
-        log(`${command} isn't enabled on server`);
+        log.info(
+          `${chalk.blue(command)} isn't enabled on server`,
+          getMessageMeta(message)
+        );
         channel.send(
           `It doesn't look like ${groups.command} is enabled on your server!`
         );
@@ -194,7 +213,10 @@ export default async ({ aquarius, analytics }) => {
       }
 
       if (!aquarius.commandConfigs.get(command).keys().includes(setting)) {
-        log(`Invalid setting name: ${setting}`);
+        log.info(
+          `Invalid setting name: ${chalk.blue(setting)}`,
+          getMessageMeta(message)
+        );
         channel.send(
           `It doesn't look like ${command} has a setting called "${setting}"`
         );
@@ -212,8 +234,11 @@ export default async ({ aquarius, analytics }) => {
     /commands (add|enable) (?<commands>.+)/i,
     async (message, { groups }) => {
       if (aquarius.permissions.isAdmin(message.guild, message.author)) {
-        log(
-          `Add ${groups.commands} in ${message.guild.name} by ${message.author.username}`
+        log.info(
+          `Add ${chalk.blue(groups.commands)} in ${chalk.green(
+            message.guild.name
+          )} by ${chalk.green(message.author.username)}`,
+          getMessageMeta(message)
         );
 
         let response = '';
@@ -268,8 +293,11 @@ export default async ({ aquarius, analytics }) => {
     /commands (remove|disable) (?<commands>.+)/i,
     async (message, { groups }) => {
       if (aquarius.permissions.isAdmin(message.guild, message.author)) {
-        log(
-          `Remove ${groups.commands} in ${message.guild.name} by ${message.author.username}`
+        log.info(
+          `Remove ${chalk.blue(groups.commands)} in ${chalk.green(
+            message.guild.name
+          )} by ${chalk.green(message.author.username)}`,
+          getMessageMeta(message)
         );
 
         let response = '';

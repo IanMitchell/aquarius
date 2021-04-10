@@ -1,6 +1,7 @@
-import debug from 'debug';
+import chalk from 'chalk';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Donate');
+const log = getLogger('Donate');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -13,7 +14,10 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^donate/i, (message) => {
-    log(`Donate request in ${message.guild.name}`);
+    log.info(
+      `Donate request in ${chalk.green(message.guild.name)}`,
+      getMessageMeta(message)
+    );
 
     message.channel.send(
       "If you'd like to contribute to server and hosting costs you can donate by sending money to $IanMitchel1 via the Cash App"

@@ -1,18 +1,19 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import { getNickname } from '@aquarius-bot/users';
-import debug from 'debug';
+import chalk from 'chalk';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';
 import pluralize from 'pluralize';
 import pkg from '../../../package.json';
 import { getGitHubLink, getVanityBotLink } from '../../core/helpers/links';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 import {
   getTotalGuildCount,
   getTotalUserCount,
 } from '../../core/metrics/discord';
 import { getResourceUsage } from '../../core/metrics/resources';
 
-const log = debug('Info');
+const log = getLogger('Info');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -25,12 +26,15 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^info/i, async (message) => {
-    log(`Request in ${message.guild.name}`);
+    log.info(
+      `Request in ${chalk.green(message.guild.name)}`,
+      getMessageMeta(message)
+    );
 
     const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
-      log('Invalid permissions');
+      log.warn('Invalid permissions', getMessageMeta(message));
       message.channel.send(
         aquarius.permissions.getRequestMessage(check.missing)
       );

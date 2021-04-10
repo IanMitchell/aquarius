@@ -1,8 +1,9 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
-import debug from 'debug';
+import chalk from 'chalk';
 import { Permissions } from 'discord.js';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Nice');
+const log = getLogger('Nice');
 
 export const info = {
   name: 'nice',
@@ -17,7 +18,7 @@ export default async ({ aquarius, analytics }) => {
       message.cleanContent.includes('69') ||
       message.cleanContent.match(/(?:(?::six:)|6️⃣) ?(?:(?::nine:)|9️⃣)/)
     ) {
-      log(`69 in ${message.guild.name}`);
+      log.info(`69 in ${chalk.green(message.guild.name)}`);
 
       const check = checkBotPermissions(message.guild, ...info.permissions);
 

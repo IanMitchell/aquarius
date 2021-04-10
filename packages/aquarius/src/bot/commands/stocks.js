@@ -1,17 +1,18 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
 import alphaVantageAPI from 'alphavantage';
+import chalk from 'chalk';
 import dateFns from 'date-fns';
-import debug from 'debug';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import { getIconColor } from '../../core/helpers/colors';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
 // CJS / ESM compatibility
 const { parse } = dateFns;
 
-const log = debug('Stocks');
+const log = getLogger('Stocks');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -156,12 +157,15 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^stocks info \$?(?<sign>.+)$/i,
     async (message, { groups }) => {
-      log(`Looking up ${groups.sign}`);
+      log.info(
+        `Looking up ${chalk.blue(groups.sign)}`,
+        getMessageMeta(message)
+      );
 
       const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
-        log('Invalid permissions');
+        log.warn('Invalid permissions', getMessageMeta(message));
         message.channel.send(
           aquarius.permissions.getRequestMessage(check.missing)
         );
@@ -188,7 +192,7 @@ export default async ({ aquarius, analytics }) => {
           message.channel.send(embed);
         }
       } catch (error) {
-        log(error);
+        log.error(error.message);
         Sentry.captureException(error);
 
         message.channel.send(
@@ -203,12 +207,15 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^stocks rating \$?(?<sign>.+)$/i,
     async (message, { groups }) => {
-      log(`Looking up rating for ${groups.sign}`);
+      log.info(
+        `Looking up rating for ${chalk.blue(groups.sign)}`,
+        getMessageMeta(message)
+      );
 
       const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
-        log('Invalid permissions');
+        log.warn('Invalid permissions', getMessageMeta(message));
         message.channel.send(
           aquarius.permissions.getRequestMessage(check.missing)
         );
@@ -249,7 +256,7 @@ export default async ({ aquarius, analytics }) => {
           message.channel.send(embed);
         }
       } catch (error) {
-        log(error);
+        log.error(error.message);
         Sentry.captureException(error);
 
         message.channel.send(
@@ -267,12 +274,12 @@ export default async ({ aquarius, analytics }) => {
   // );
 
   aquarius.onCommand(/^stocks indexes$/, async (message) => {
-    log('Looking up indexes');
+    log.info('Looking up indexes', getMessageMeta(message));
 
     const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
-      log('Invalid permissions');
+      log.warn('Invalid permissions', getMessageMeta(message));
       message.channel.send(
         aquarius.permissions.getRequestMessage(check.missing)
       );
@@ -305,7 +312,7 @@ export default async ({ aquarius, analytics }) => {
 
       message.channel.send(embed);
     } catch (error) {
-      log(error);
+      log.error(error.message);
       Sentry.captureException(error);
 
       message.channel.send(
@@ -321,12 +328,15 @@ export default async ({ aquarius, analytics }) => {
     async (message, { groups }) => {
       const time = getKeyFromDuration(groups.time);
 
-      log(`Looking up sectors for ${time}`);
+      log.info(
+        `Looking up sectors for ${chalk.blue(time)}`,
+        getMessageMeta(message)
+      );
 
       const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
-        log('Invalid permissions');
+        log.warn('Invalid permissions', getMessageMeta(message));
         message.channel.send(
           aquarius.permissions.getRequestMessage(check.missing)
         );
@@ -354,7 +364,7 @@ export default async ({ aquarius, analytics }) => {
 
         message.channel.send(embed);
       } catch (error) {
-        log(error);
+        log.error(error.error);
         Sentry.captureException(error);
 
         message.channel.send(

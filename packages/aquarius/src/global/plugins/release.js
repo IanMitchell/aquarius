@@ -1,12 +1,13 @@
 import { isBot } from '@aquarius-bot/users';
-import debug from 'debug';
+import chalk from 'chalk';
 import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import pkg from '../../../package.json';
 import { getIconColor } from '../../core/helpers/colors';
 import { getDocsLink } from '../../core/helpers/links';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Release');
+const log = getLogger('Release');
 const GITHUB_API = 'https://api.github.com/repos';
 
 /** @type {import('../../typedefs').CommandInfo} */
@@ -33,7 +34,7 @@ export default async ({ aquarius, analytics }) => {
     const json = await response.json();
 
     if (json?.length && json[0].id > previousVersion) {
-      log('New version detected');
+      log.info('New version detected');
 
       const message = new MessageEmbed({
         title: 'New Release!',
@@ -50,7 +51,7 @@ export default async ({ aquarius, analytics }) => {
       });
 
       aquarius.guilds.cache.array().forEach((guild) => {
-        log(`Alerting ${guild.name}`);
+        log.info(`Alerting ${chalk.green(guild.name)}`);
         guild.members.cache
           .filter((member) => {
             return (

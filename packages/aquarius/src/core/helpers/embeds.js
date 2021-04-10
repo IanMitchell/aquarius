@@ -1,11 +1,11 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
 import dedent from 'dedent-js';
 import { MessageEmbed } from 'discord.js';
+import getLogger from '../logging/log';
 import { getIconColor } from './colors';
 import { getStandardDate } from './dates';
 
-const log = debug('Embeds');
+const log = getLogger('Embeds');
 
 /**
  * @typedef {import('discord.js').Guild} Guild
@@ -44,7 +44,7 @@ export async function guildEmbed(guild, ...fields) {
       color = await getIconColor(guild.iconURL({ format: 'png' }));
     }
   } catch (error) {
-    log(error);
+    log.error(error.message);
     Sentry.captureException(error);
   }
 

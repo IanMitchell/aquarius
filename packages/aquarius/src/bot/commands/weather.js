@@ -1,15 +1,15 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import chalk from 'chalk';
 import dateFns from 'date-fns';
-import debug from 'debug';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
 // CJS / ESM compatibility
 const { format } = dateFns;
 
-const log = debug('Weather');
+const log = getLogger('Weather');
 
 // TODO: Support Celcius
 // https://darksky.net/dev/docs#forecast-request
@@ -46,7 +46,7 @@ function getIcon(type) {
     case 'partly-cloudy-day':
       return '';
     default:
-      log(`${chalk.bold.red('ERROR:')} Unknown Weather Type '${type}'`);
+      log.error(`Unknown Weather Type '${chalk.blue(type)}'`);
       return null;
   }
 }
@@ -72,7 +72,7 @@ function getEmojiIcon(type) {
     case 'partly-cloudy-day':
       return ':white_sun_cloud:';
     default:
-      log(`${chalk.bold.red('ERROR:')} Unknown Weather Type '${type}'`);
+      log.error(`Unknown Weather Type '${chalk.blue(type)}'`);
       return ':question:';
   }
 }
@@ -176,12 +176,15 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^(?:w|weather) (?<input>.*)/i,
     async (message, { groups }) => {
-      log(`Weather request for ${groups.input}`);
+      log.info(
+        `Weather request for ${chalk.blue(groups.input)}`,
+        getMessageMeta(message)
+      );
 
       const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
-        log('Invalid permissions');
+        log.warn('Invalid permissions', getMessageMeta(message));
         message.channel.send(
           aquarius.permissions.getRequestMessage(check.missing)
         );

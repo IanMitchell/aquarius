@@ -1,10 +1,11 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
+import chalk from 'chalk';
 import aquarius from '../../aquarius';
 import database from '../database/database';
 import { TEN_MINUTES } from '../helpers/times';
+import getLogger from '../logging/log';
 
-const log = debug('Guild Setting');
+const log = getLogger('Guild Setting');
 
 /** @typedef { import('../commands/settings').default } Settings */
 
@@ -114,7 +115,7 @@ export default class GuildSettings {
           },
         });
       } catch (error) {
-        log(error);
+        log.error(error.message);
         Sentry.captureException(error);
       }
     }
@@ -136,7 +137,7 @@ export default class GuildSettings {
           },
         });
       } catch (error) {
-        log(error);
+        log.error(error.message);
         Sentry.captureException(error);
       }
     }
@@ -173,7 +174,7 @@ export default class GuildSettings {
           },
         });
       } catch (error) {
-        log(error);
+        log.error(error.message);
         Sentry.captureException(error);
       }
     }
@@ -200,7 +201,7 @@ export default class GuildSettings {
         },
       });
     } catch (error) {
-      log(error);
+      log.error(error.message);
       Sentry.captureException(error);
     }
   }
@@ -245,7 +246,7 @@ export default class GuildSettings {
    * @param {number} [duration=MUTE_DURATION] - Duration in seconds
    */
   async muteGuild(duration = MUTE_DURATION) {
-    log(`Muting ${this.id}`);
+    log.info(`Muting ${chalk.green(this.id)}`);
 
     this.muted = duration;
 
@@ -261,7 +262,7 @@ export default class GuildSettings {
         },
       });
     } catch (error) {
-      log(error);
+      log.error(error.message);
       Sentry.captureException(error);
     }
   }
@@ -271,7 +272,7 @@ export default class GuildSettings {
    */
   async unMuteGuild() {
     if (this.muted) {
-      log(`Unmuting ${this.id}`);
+      log.info(`Unmuting ${chalk.green(this.id)}`);
       this.muted = false;
 
       try {
@@ -284,7 +285,7 @@ export default class GuildSettings {
           },
         });
       } catch (error) {
-        log(error);
+        log.error(error.message);
         Sentry.captureException(error);
       }
     }
@@ -310,7 +311,7 @@ export default class GuildSettings {
       });
 
       if (!guildSetting) {
-        log(`No settings found for ${this.id}`);
+        log.info(`No settings found for ${chalk.green(this.id)}`);
         this.saveSettings();
       } else {
         this.guildSettingId = guildSetting.id;
@@ -345,7 +346,7 @@ export default class GuildSettings {
         }
       }
     } catch (error) {
-      log(error);
+      log.error(error.message);
       Sentry.captureException(error);
     }
   }
@@ -354,7 +355,7 @@ export default class GuildSettings {
    * Serializes the settings to a database
    */
   async saveSettings() {
-    log(`Saving settings for ${this.id}`);
+    log.info(`Saving settings for ${chalk.green(this.id)}`);
     try {
       // First save top level settings and commands
       const guildSetting = await database.guildSetting.upsert({
@@ -436,7 +437,7 @@ export default class GuildSettings {
         })
       );
     } catch (error) {
-      log(error);
+      log.error(error.message);
       Sentry.captureException(error);
     }
   }

@@ -1,12 +1,13 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
+import chalk from 'chalk';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import { getInputAsNumber } from '../../core/helpers/input';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('xkcd');
+const log = getLogger('xkcd');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -49,12 +50,12 @@ async function getPostJsonById(id) {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^xkcd$/i, async (message) => {
-    log('Retrieving latest comic');
+    log.info('Retrieving latest comic', getMessageMeta(message));
 
     const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
-      log('Invalid permissions');
+      log.warn('Invalid permissions', getMessageMeta(message));
       message.channel.send(
         aquarius.permissions.getRequestMessage(check.missing)
       );
@@ -67,7 +68,7 @@ export default async ({ aquarius, analytics }) => {
 
       message.channel.send(embed);
     } catch (error) {
-      log(error);
+      log.error(error.message);
       Sentry.captureException(error);
 
       message.channel.send('Sorry, there was a problem loading the comic.');
@@ -77,12 +78,12 @@ export default async ({ aquarius, analytics }) => {
   });
 
   aquarius.onCommand(/^xkcd random$/i, async (message) => {
-    log('Retrieving random comic');
+    log.info('Retrieving random comic', getMessageMeta(message));
 
     const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
-      log('Invalid permissions');
+      log.warn('Invalid permissions', getMessageMeta(message));
       message.channel.send(
         aquarius.permissions.getRequestMessage(check.missing)
       );
@@ -107,14 +108,17 @@ export default async ({ aquarius, analytics }) => {
       } while (postJson === null && countAttempts < 5);
 
       if (postJson === null) {
-        log('Random comic retrieval timed-out after 5 attempts.');
+        log.error(
+          'Random comic retrieval timed-out after 5 attempts.',
+          getMessageMeta(message)
+        );
         message.channel.send('Sorry, there was a problem loading the comic.');
       } else {
         const embed = createEmbedFromJson(postJson);
         message.channel.send(embed);
       }
     } catch (error) {
-      log(error);
+      log.error(error.message);
       Sentry.captureException(error);
 
       message.channel.send('Sorry, there was a problem loading the comic.');
@@ -124,12 +128,12 @@ export default async ({ aquarius, analytics }) => {
   });
 
   aquarius.onCommand(/^xkcd (?<id>\d+)$/i, async (message, { groups }) => {
-    log(`Retrieving comic ${groups.id}`);
+    log.info(`Retrieving comic ${chalk.blue(groups.id)}`);
 
     const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
-      log('Invalid permissions');
+      log.warn('Invalid permissions', getMessageMeta(message));
       message.channel.send(
         aquarius.permissions.getRequestMessage(check.missing)
       );
@@ -148,7 +152,7 @@ export default async ({ aquarius, analytics }) => {
         message.channel.send(embed);
       }
     } catch (error) {
-      log(error);
+      log.error(error.message);
       Sentry.captureException(error);
 
       message.channel.send('Sorry, there was a problem loading the comic.');

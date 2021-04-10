@@ -1,9 +1,9 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
 import { Permissions } from 'discord.js';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Areki');
+const log = getLogger('nbk');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -34,11 +34,11 @@ export default async ({ aquarius }) => {
 
         if (check.valid && enabled) {
           member.setNickname('nbk');
-          log("Updating nbk's nickname");
+          log.info("Updating nbk's nickname");
         }
       }
     } catch (error) {
-      log("Error updating nbk's nickname");
+      log.error("Error updating nbk's nickname");
       Sentry.captureException(error);
     }
   });

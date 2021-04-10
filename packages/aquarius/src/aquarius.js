@@ -9,7 +9,6 @@ import Sentry from '@aquarius-bot/sentry';
 import * as triggers from '@aquarius-bot/triggers';
 import { isBot } from '@aquarius-bot/users';
 import chalk from 'chalk';
-import debug from 'debug';
 import Discord, { Intents } from 'discord.js';
 import fs from 'fs';
 import yaml from 'js-yaml';
@@ -19,6 +18,7 @@ import Settings from './core/commands/settings';
 import database from './core/database/database';
 import { getDirname } from './core/helpers/files';
 import * as permissions from './core/helpers/permissions';
+import getLogger, { getMessageMeta } from './core/logging/log';
 import DirectMessageManager from './core/managers/direct-message-manager';
 import EmojiManager from './core/managers/emoji-manager';
 import GuildManager from './core/managers/guild-manager';
@@ -27,8 +27,7 @@ import { setupDailySnapshotLoop } from './core/metrics/discord';
 import CommandConfig from './core/settings/command-config';
 import TriggerMap from './core/settings/trigger-map';
 
-const log = debug('Aquarius');
-const errorLog = debug('Aquarius:Error');
+const log = getLogger('Aquarius');
 
 /**
  * @typedef { import('@prisma/client').PrismaClient } PrismaClient
@@ -45,7 +44,7 @@ const errorLog = debug('Aquarius:Error');
  */
 export class Aquarius extends Discord.Client {
   constructor() {
-    log('Booting up...');
+    log.info('Booting up...');
     super({ ws: { intents: Intents.ALL } });
 
     // We have more listeners than normal - each command registers one to
@@ -139,7 +138,7 @@ export class Aquarius extends Discord.Client {
 
     this.on('ready', this.initialize);
     this.on('error', (error) => {
-      errorLog(error);
+      log.fatal(error.message);
       Sentry.captureException(error);
     });
   }
@@ -168,12 +167,12 @@ export class Aquarius extends Discord.Client {
    * @todo Make this method private
    */
   loadGlobals() {
-    log('Loading Global Commands...');
+    log.info('Loading Global Commands...');
     this.loadDirectory(
       path.join(getDirname(import.meta.url), 'global/commands'),
       true
     );
-    log('Loading Global Plugins...');
+    log.info('Loading Global Plugins...');
     this.loadDirectory(
       path.join(getDirname(import.meta.url), 'global/plugins'),
       true
@@ -185,9 +184,9 @@ export class Aquarius extends Discord.Client {
    * @todo Make this method private
    */
   loadCommands() {
-    log('Loading Bot Commands...');
+    log.info('Loading Bot Commands...');
     this.loadDirectory(path.join(getDirname(import.meta.url), 'bot/commands'));
-    log('Loading Bot Plugins...');
+    log.info('Loading Bot Plugins...');
     this.loadDirectory(path.join(getDirname(import.meta.url), 'bot/plugins'));
 
     // Disabled until we have custom commands
@@ -195,7 +194,7 @@ export class Aquarius extends Discord.Client {
     // this.loadDirectory(
     //   path.join(getDirname(import.meta.url), 'custom/commands')
     // );
-    log('Loading Custom Bot Plugins...');
+    log.info('Loading Custom Bot Plugins...');
     this.loadDirectory(
       path.join(getDirname(import.meta.url), 'custom/plugins')
     );
@@ -227,7 +226,7 @@ export class Aquarius extends Discord.Client {
    */
   async loadFile(directory, file, globalFile) {
     if (file.endsWith('.js')) {
-      log(`Loading ${file}`);
+      log.info(`Loading ${chalk.blue(file)}`);
 
       try {
         const command = await import(path.join(directory, file));
@@ -237,7 +236,7 @@ export class Aquarius extends Discord.Client {
 
         // If command currently disabled, early exit
         if (command.info.disabled) {
-          log(`${chalk.yellow('Warning:')} ${command.info.name} is disabled`);
+          log.warn(`${chalk.blue(command.info.name)} is disabled`);
           return;
         }
 
@@ -275,12 +274,11 @@ export class Aquarius extends Discord.Client {
 
           this.commandList.set(command.info.name, command.info);
         } catch (error) {
-          errorLog(error);
+          log.error(error.message);
           Sentry.captureException(error);
         }
       } catch (error) {
-        errorLog(file);
-        errorLog(error);
+        log.fatal(error.message, { file });
         Sentry.captureException(error);
         process.exit(1);
       }
@@ -376,7 +374,7 @@ export class Aquarius extends Discord.Client {
           await handler(message, match);
         }
       } catch (error) {
-        errorLog(error);
+        log.error(error.message, getMessageMeta(message));
         Sentry.captureException(error);
       } finally {
         if (isLoading && isAsyncCommand(handler)) {
@@ -417,7 +415,7 @@ export class Aquarius extends Discord.Client {
           handler(message, match);
         }
       } catch (error) {
-        errorLog(error);
+        log.error(error, getMessageMeta(message));
         Sentry.captureException(error);
       } finally {
         if (isLoading && isAsyncCommand(handler)) {
@@ -445,8 +443,10 @@ export class Aquarius extends Discord.Client {
 
           if (match) {
             if (this.directMessages.isActive(message.author)) {
-              log(
-                `Ignoring Message due to inflight request: ${message.cleanContent}`
+              log.info(
+                `Ignoring Message due to inflight request: ${chalk.blue(
+                  message.cleanContent
+                )}`
               );
               message.channel.send(
                 "_(It looks like you might be trying to use a command - I can't do two at once! You can stop the current command by sending `Stop`)_"
@@ -574,7 +574,7 @@ export class Aquarius extends Discord.Client {
 
 const aquarius = (() => {
   const bot = new Aquarius();
-  bot.login(process.env.TOKEN).catch(errorLog);
+  bot.login(process.env.TOKEN).catch((error) => log.fatal(error.message));
   return bot;
 })();
 export default aquarius;

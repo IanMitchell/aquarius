@@ -1,12 +1,13 @@
 import Sentry from '@aquarius-bot/sentry';
 import { messageTriggered } from '@aquarius-bot/triggers';
-import debug from 'debug';
+import chalk from 'chalk';
 import dedent from 'dedent-js';
 import pluralize from 'pluralize';
 import { ONE_MINUTE } from '../../core/helpers/times';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 import { MUTE_DURATION } from '../../core/settings/guild-settings';
 
-const log = debug('Quiet');
+const log = getLogger('Quiet');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -29,7 +30,10 @@ export default async ({ aquarius, analytics }) => {
 
   aquarius.onCommand(/^quiet$/i, (message) => {
     if (aquarius.permissions.isAdmin(message.guild, message.author)) {
-      log(`Quiet request in ${message.guild.name}`);
+      log.info(
+        `Quiet request in ${chalk.green(message.guild.name)}`,
+        getMessageMeta(message)
+      );
       aquarius.guildManager.get(message.guild.id).muteGuild();
       message.channel.send(`Muting myself for ${duration}!`);
       analytics.trackUsage('start', message);
@@ -44,7 +48,7 @@ export default async ({ aquarius, analytics }) => {
         messageTriggered(message, /^quiet (?:stop|end)$/i) &&
         aquarius.permissions.isAdmin(message.guild, message.author)
       ) {
-        log(`Quiet end request in ${message.guild.name}`);
+        log.info(`Quiet end request in ${chalk.green(message.guild.name)}`);
         aquarius.guildManager.get(message.guild.id).unMuteGuild();
         message.channel.send("I've unmuted myself!");
         analytics.trackUsage('stop', message);

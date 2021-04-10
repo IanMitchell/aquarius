@@ -1,9 +1,9 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
 import dedent from 'dedent-js';
 import fetch from 'node-fetch';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Strawpoll');
+const log = getLogger('Strawpoll');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -29,7 +29,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^strawpoll(?: (?<multiple>multiple))? (?<title>.*) \| (?<input>.*)$/i,
     async (message, { groups }) => {
-      log('Creating strawpoll');
+      log.info('Creating strawpoll', getMessageMeta(message));
       const options = groups.input
         .split(/(?<!\\);/)
         .map((value) => value.trim().replace(/\\;/g, ';'))
@@ -55,6 +55,7 @@ export default async ({ aquarius, analytics }) => {
         const json = await response.json();
         message.channel.send(`:bar_chart: | https://strawpoll.me/${json.id}`);
       } catch (error) {
+        log.error(error.message);
         Sentry.captureException(error);
         message.channel.send('Sorry, something went wrong!');
       }

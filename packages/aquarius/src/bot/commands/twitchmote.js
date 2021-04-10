@@ -1,11 +1,11 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
 import { Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import { ONE_HOUR } from '../../core/helpers/times';
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 
-const log = debug('Twitchmote');
+const log = getLogger('Twitchmote');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -22,7 +22,7 @@ function getUrl(id) {
 }
 
 async function getTwitchEmoteList() {
-  log('Syncing Twitch Emotes');
+  log.info('Syncing Twitch Emotes');
 
   try {
     const response = await fetch(
@@ -33,7 +33,7 @@ async function getTwitchEmoteList() {
 
     json.emotes.forEach((emoji) => EMOTES.set(emoji.code, getUrl(emoji.id)));
   } catch (error) {
-    log(`Error syncing Twitch Emotes`);
+    log.error(`Error syncing Twitch Emotes`, { error: error.message });
     Sentry.captureException(error);
   }
 }
@@ -59,7 +59,7 @@ export default async ({ aquarius, analytics }) => {
       const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
-        log('Invalid permissions');
+        log.warn('Invalid permissions', getMessageMeta(message));
         message.channel.send(
           aquarius.permissions.getRequestMessage(check.missing)
         );
@@ -81,7 +81,7 @@ export default async ({ aquarius, analytics }) => {
 
         message.channel.send(`I've imported ${emote}!`);
       } catch (error) {
-        log(error);
+        log.error(error.message);
         Sentry.captureException(error);
 
         message.channel.send("Sorry, I wasn't able to import the emoji :sad:");
