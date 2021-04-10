@@ -49,7 +49,7 @@ envs:
 name: aquarius
 region: sfo
 services:
-  - dockerfile_path: Dockerfile
+  - name: aquarius
     envs:
       - key: DATABASE_URL
         scope: RUN_TIME
@@ -60,6 +60,5 @@ services:
     http_port: 3000
     instance_count: 1
     instance_size_slug: basic-xxs
-    name: aquarius
     routes:
       - path: /
