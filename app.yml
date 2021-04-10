@@ -10,6 +10,9 @@ envs:
   - key: NODE_ENV
     scope: RUN_AND_BUILD_TIME
     value: production
+  - key: TOKEN
+    scope: RUN_AND_BUILD_TIME
+    value: ${TOKEN}
   - key: CLIENT_ID
     scope: RUN_AND_BUILD_TIME
     value: '${CLIENT_ID}'
