@@ -50,6 +50,7 @@ name: aquarius
 region: sfo
 services:
   - name: aquarius
+    dockerfile_path: Dockerfile
     envs:
       - key: DATABASE_URL
         scope: RUN_TIME
