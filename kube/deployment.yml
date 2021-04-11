@@ -1,0 +1,95 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: aquarius
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aquarius
+  template:
+    metadata:
+      labels:
+        app: aquarius
+    spec:
+      containers:
+        - name: aquarius
+          image: <IMAGE>
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: TOKEN
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: CLIENT_ID
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: DATABASE_URL
+            - name: SENTRY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: SENTRY
+            - name: DICTIONARY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: DICTIONARY_API_KEY
+            - name: HEARTHSTONE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: HEARTHSTONE_KEY
+            - name: GITHUB_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: GITHUB_API_TOKEN
+            - name: DARK_SKY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: DARK_SKY_API_KEY
+            - name: MAPBOX_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: MAPBOX_API_KEY
+            - name: ALPHA_VANTAGE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: ALPHA_VANTAGE_KEY
+            - name: GIT_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: GIT_HASH
+            - name: FINANCIAL_MODELING_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: FINANCIAL_MODELING_API_KEY
+            - name: IQAIR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: IQAIR_API_KEY
+            - name: LOGDNA_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aquarius-secrets
+                  key: LOGDNA_KEY
+
+      imagePullSecrets:
+        - name: dockerhub
