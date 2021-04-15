@@ -33,14 +33,14 @@ function* getServiceLinkInformation(services) {
   };
 
   let input = yield dedent`
-    Hello! There are several services you can to:
+    Hello! There are several services you can link to your account:
 
     ${services
       .getNames()
       .map((name, index) => `${index + 1}) \`${name}\``)
       .join('\n')}
 
-    Which would you link to setup? (You can reply \`stop\` at any time to quit)
+    Which would you like to link? (You can reply \`stop\` at any time to quit)
   `;
 
   while (!services.has(input.toLowerCase())) {

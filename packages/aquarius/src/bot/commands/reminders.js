@@ -25,6 +25,9 @@ export const info = {
     **Remove Reminder in Server**
     \`\`\`@Aquarius reminders remove <number>\`\`\`
     _You can get the number of your reminder by running the list command above. **The order changes! Be careful not to do this when a reminder is about to be sent!**_
+
+    **Set a default timezone**
+    You can set your default timezone by DMing the bot \`services add\`
   `,
 };
 
