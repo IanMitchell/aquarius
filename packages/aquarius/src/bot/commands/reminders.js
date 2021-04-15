@@ -30,6 +30,23 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  const formatDate = async (date, user) => {
+    const service = await aquarius.services.getLink(user, 'Timezone');
+    const tz = service?.values?.Timezone;
+
+    try {
+      return date.toLocaleString('en-US', {
+        timeZone: tz ?? 'UTC',
+        timeZoneName: 'short',
+      });
+    } catch (error) {
+      return date.toLocaleString('en-US', {
+        timeZone: 'UTC',
+        timeZoneName: 'short',
+      });
+    }
+  };
+
   let reminderTimeout = null;
   const refreshTimeout = async () => {
     log.info('Setting up Reminder timeout');
@@ -139,9 +156,8 @@ export default async ({ aquarius, analytics }) => {
             },
           });
 
-          message.channel.send(
-            `Alright, I'll remind you on ${date.toLocaleString()}`
-          );
+          const time = await formatDate(date, message.author);
+          message.channel.send(`Alright, I'll remind you on ${time}`);
 
           refreshTimeout();
         }
@@ -177,17 +193,18 @@ export default async ({ aquarius, analytics }) => {
           "It doesn't look like you have any reminders set right now!"
         );
       } else {
-        const list = reminders.map((reminder, index) => {
-          const channel =
-            message.guild.channels.resolve(reminder.channelId) ??
-            '#deleted-channel';
+        const list = await Promise.all(
+          reminders.map(async (reminder, index) => {
+            const channel =
+              message.guild.channels.resolve(reminder.channelId) ??
+              '#deleted-channel';
 
-          return `${
-            index + 1
-          }. On ${reminder.time.toLocaleString()} in ${channel}, "${
-            reminder.message
-          }"`;
-        });
+            const time = await formatDate(reminder.time, message.author);
+            return `${index + 1}. On ${time} in ${channel}, "${
+              reminder.message
+            }"`;
+          })
+        );
 
         message.channel.send(dedent`
           **__Active Reminders__**
@@ -240,10 +257,9 @@ export default async ({ aquarius, analytics }) => {
 
           refreshTimeout();
 
+          const time = await formatDate(reminder.time, message.author);
           message.channel.send(
-            `Alright, I will no longer remind you on ${reminder.time.toLocaleString()} to "${
-              reminder.message
-            }"`
+            `Alright, I will no longer remind you on ${time} to "${reminder.message}"`
           );
         } else {
           message.channel.send(

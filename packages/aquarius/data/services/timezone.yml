@@ -1,0 +1,6 @@
+name: Timezone
+version: 1
+steps:
+  - field: Timezone
+    public: true
+    instructions: Enter your full timezone name (for example America/Los_Angeles - *not* PST or PDT)
