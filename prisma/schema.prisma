@@ -168,3 +168,17 @@ model BanList {
   @@index([guildId])
   @@map("guild_bans")
 }
+
+model Reminder {
+  id        Int      @id @default(autoincrement())
+  guildId   String
+  channelId String
+  userId    String
+  message   String
+  time      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([time])
+  @@index([guildId, userId])
+}

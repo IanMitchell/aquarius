@@ -36,6 +36,7 @@
     "alphavantage": "^2.0.1",
     "node-cache": "5.1.2",
     "chalk": "^4.0.0",
+    "chrono-node": "^2.2.6",
     "cross-env": "^7.0.0",
     "date-fns": "^2.9.0",
     "debug": "^4.1.1",
