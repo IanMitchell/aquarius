@@ -15,7 +15,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^games list$/i, (message) => {
     log('Getting game list');
 
-    const games = message.guild.members.reduce((list, member) => {
+    const games = message.guild.members.cache.reduce((list, member) => {
       const { game } = member.user.presence;
 
       if (!game || isBot(member.user)) {

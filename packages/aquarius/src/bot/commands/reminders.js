@@ -5,7 +5,7 @@ import dedent from 'dedent-js';
 import getLogger, { getMessageMeta } from '../../core/logging/log';
 
 // CJS / ESM compatibility
-const { startOfTomorrow } = dateFns;
+const { subWeeks, addDays, startOfTomorrow } = dateFns;
 
 const log = getLogger('Reminders');
 
@@ -37,7 +37,8 @@ export default async ({ aquarius, analytics }) => {
     const reminder = await aquarius.database.reminder.findFirst({
       where: {
         time: {
-          in: [new Date(), startOfTomorrow()],
+          gte: subWeeks(new Date(), 1),
+          lte: addDays(new Date(), 2),
         },
       },
       orderBy: {
