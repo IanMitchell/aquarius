@@ -79,14 +79,12 @@ export default async ({ aquarius, analytics }) => {
           });
         }
 
-        if (channel.type !== 'text') {
-          return;
+        if (channel.type === 'text') {
+          channel.send(dedent`
+            Hey ${user.toString()}! You asked me to remind you of this:
+            > ${reminder.message}
+          `);
         }
-
-        channel.send(dedent`
-        Hey ${user.toString()}! You asked me to remind you of this:
-        > ${reminder.message}
-      `);
 
         await aquarius.database.reminder.delete({
           where: {
