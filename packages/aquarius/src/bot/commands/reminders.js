@@ -2,6 +2,7 @@ import Sentry from '@aquarius-bot/sentry';
 import chronoNode from 'chrono-node';
 import dateFns from 'date-fns';
 import dedent from 'dedent-js';
+import { Permissions } from 'discord.js';
 import getLogger, { getMessageMeta } from '../../core/logging/log';
 
 // CJS / ESM compatibility
@@ -80,10 +81,20 @@ export default async ({ aquarius, analytics }) => {
           });
         }
 
+        let text = reminder.message;
+        if (
+          !user.hasPermission(Permissions.FLAGS.MENTION_EVERYONE) &&
+          (text.includes('@everyone') || text.includes('@here'))
+        ) {
+          text = text
+            .replace('@everyone', '@-everyone')
+            .replace('@here', '@-here');
+        }
+
         if (channel.type === 'text') {
           channel.send(dedent`
             Hey ${user.toString()}! You asked me to remind you of this:
-            > ${reminder.message}
+            > ${text}
           `);
         }
 
@@ -110,7 +121,11 @@ export default async ({ aquarius, analytics }) => {
         log.info('Adding reminder', getMessageMeta(message));
         const date = chronoNode.parseDate(groups.input);
 
-        if (date < new Date()) {
+        if (date == null) {
+          message.channel.send(
+            "Sorry, but I wasn't able to figure out a date for your reminder."
+          );
+        } else if (date < new Date()) {
           message.channel.send('Sorry, but it looks like that is in the past.');
         } else {
           // Add to database
@@ -157,7 +172,7 @@ export default async ({ aquarius, analytics }) => {
         },
       });
 
-      if (!reminders) {
+      if (!reminders || reminders.length === 0) {
         message.channel.send(
           "It doesn't look like you have any reminders set right now!"
         );
