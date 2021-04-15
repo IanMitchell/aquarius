@@ -5,7 +5,7 @@ import dedent from 'dedent-js';
 import getLogger, { getMessageMeta } from '../../core/logging/log';
 
 // CJS / ESM compatibility
-const { subWeeks, addDays, startOfTomorrow } = dateFns;
+const { subWeeks, startOfTomorrow } = dateFns;
 
 const log = getLogger('Reminders');
 
@@ -38,7 +38,7 @@ export default async ({ aquarius, analytics }) => {
       where: {
         time: {
           gte: subWeeks(new Date(), 1),
-          lte: addDays(new Date(), 2),
+          lte: startOfTomorrow(),
         },
       },
       orderBy: {
