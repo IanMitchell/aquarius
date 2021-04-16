@@ -80,7 +80,7 @@
     "prisma": "^2.20.1",
     "regenerator-runtime": "^0.13.5",
     "stylelint": "^13.3.3",
-    "stylelint-config-sass-guidelines": "^7.0.0",
+    "stylelint-config-sass-guidelines": "^8.0.0",
     "stylelint-config-standard": "^20.0.0"
   },
   "volta": {
