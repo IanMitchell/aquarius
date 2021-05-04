@@ -210,7 +210,7 @@ export default async ({ aquarius, analytics }) => {
         );
 
         message.channel.send(dedent`
-          **__Active Reminders__**
+          **__Your Active Reminders__**
           ${list.join('\n')}
         `);
       }
