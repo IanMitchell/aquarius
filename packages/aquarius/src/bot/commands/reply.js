@@ -67,6 +67,7 @@ export default async ({ aquarius, analytics }) => {
     }
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(/^reply list$/i, (message) => {
     log.info('Listing replies', getMessageMeta(message));
 

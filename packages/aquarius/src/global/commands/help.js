@@ -93,6 +93,7 @@ export function helpMessage(aquarius, commandInfo, guild) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   // Handle generic help
   aquarius.onCommand(/^help$/i, (message) => {
     log.info(
@@ -146,6 +147,7 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('list', message);
   });
 
+  // TODO: Switch to slash command
   // Handle help for specific command
   aquarius.onCommand(/^help (?<command>.+)$/i, (message, { groups }) => {
     log.info(

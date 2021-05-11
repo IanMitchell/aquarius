@@ -230,6 +230,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /commands (add|enable) (?<commands>.+)/i,
     async (message, { groups }) => {
@@ -289,6 +290,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /commands (remove|disable) (?<commands>.+)/i,
     async (message, { groups }) => {

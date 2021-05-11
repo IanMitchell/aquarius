@@ -53,6 +53,7 @@ function isWord(dom) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^define (?<word>.+)$/i, async (message, { groups }) => {
     const check = checkBotPermissions(message.guild, ...info.permissions);
 

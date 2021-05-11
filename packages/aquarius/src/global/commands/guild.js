@@ -26,6 +26,7 @@ function formatGuild(guild, idx) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^(?:server|guild)$/i, async (message) => {
     log.info(
       `Info for ${chalk.green(message.guild.name)}`,
@@ -55,6 +56,7 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('stats', message);
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(/(server|guild) list/i, (message) => {
     if (aquarius.permissions.isBotOwner(message.author)) {
       log.info('List Requested', getMessageMeta(message));
@@ -70,6 +72,7 @@ export default async ({ aquarius, analytics }) => {
     }
   });
 
+  // TODO: Switch to slash command
   // TODO: Broken
   aquarius.onCommand(
     /(?:server|guild) info (?<name>.+)/i,

@@ -17,6 +17,7 @@ function sarcastic(str) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^sarcastic (?<string>.+)$/i, (message, { groups }) => {
     log.info('Sarcastic request', getMessageMeta(message));
     message.channel.send(

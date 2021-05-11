@@ -26,6 +26,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(
     new RegExp(`^ignore add ${MENTION.source}`, 'i'),
     async (message) => {
@@ -51,6 +52,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     new RegExp(`^ignore remove ${MENTION.source}`, 'i'),
     async (message) => {
@@ -78,6 +80,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(/^ignore list$/i, (message) => {
     log.info(
       `Generating list for ${chalk.green(message.guild.name)}`,

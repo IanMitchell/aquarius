@@ -20,6 +20,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^steam info (?<game>.*)$/i,
     async (message, { groups }) => {

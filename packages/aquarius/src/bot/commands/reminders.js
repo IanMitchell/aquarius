@@ -134,6 +134,7 @@ export default async ({ aquarius, analytics }) => {
     refreshTimeout();
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^(remindme|reminders add) (?<input>.+)$/i,
     async (message, { groups }) => {
@@ -177,6 +178,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(/^reminders list$/i, async (message) => {
     try {
       log.info('Listing reminders', getMessageMeta(message));
@@ -226,6 +228,7 @@ export default async ({ aquarius, analytics }) => {
     }
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^reminders remove (?<input>\d+)$/i,
     async (message, { groups }) => {

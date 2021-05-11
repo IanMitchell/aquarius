@@ -47,6 +47,7 @@ const DIFFICULTIES = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^minesweeper(?: (?<difficulty>beginner|intermediate|expert))?$/i,
     (message, { groups }) => {
@@ -73,6 +74,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^minesweeper custom (?<count>\d{1,2})$/i,
     (message, { groups }) => {

@@ -19,6 +19,7 @@ const REGIONS = {
 // TODO: Switch to account lookup
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^overwatch (?:(?<region>[A-Za-z]{2}) )?(?<account>[\w]+#[\d]{4,5})$/i,
     (message, { groups }) => {

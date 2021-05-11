@@ -154,6 +154,7 @@ async function getStockEmbed(profileData, priceData) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^stocks info \$?(?<sign>.+)$/i,
     async (message, { groups }) => {
@@ -204,6 +205,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^stocks rating \$?(?<sign>.+)$/i,
     async (message, { groups }) => {
@@ -273,6 +275,7 @@ export default async ({ aquarius, analytics }) => {
   //   //https://financialmodelingprep.com/api/v3/historical-price-full/AAPL?serietype=line
   // );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(/^stocks indexes$/, async (message) => {
     log.info('Looking up indexes', getMessageMeta(message));
 
@@ -323,6 +326,7 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('indexes', message);
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^stocks sectors(?: (?<time>1d|5d|1m|3m|ytd|1y|3y|5y|10y))?$/i,
     async (message, { groups }) => {

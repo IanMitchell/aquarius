@@ -22,6 +22,7 @@ async function downloadImage(url) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^emojis download$/i, async (message) => {
     try {
       log('Creating emoji zip file for download');

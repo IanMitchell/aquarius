@@ -38,6 +38,7 @@ function countDecimals(number) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^c(?:hoose)? (?<input>.+)$/i, (message, { groups }) => {
     // Check for a choice in a range
     const rangeMatch = groups.input.match(RANGE_REGEX);

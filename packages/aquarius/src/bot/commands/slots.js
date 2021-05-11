@@ -28,6 +28,7 @@ const values = [
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^slots$/i, (message) => {
     log.info('Rolling', getMessageMeta(message));
     message.channel.send(dedent`
