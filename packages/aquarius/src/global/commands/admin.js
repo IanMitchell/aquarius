@@ -234,7 +234,11 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /commands (add|enable) (?<commands>.+)/i,
     async (message, { groups }) => {
-      if (aquarius.permissions.isAdmin(message.guild, message.author)) {
+      const isAdmin = await aquarius.permissions.isAdmin(
+        message.guild,
+        message.author
+      );
+      if (isAdmin) {
         log.info(
           `Add ${chalk.blue(groups.commands)} in ${chalk.green(
             message.guild.name
@@ -347,6 +351,40 @@ export default async ({ aquarius, analytics }) => {
 
         message.channel.send(response);
         analytics.trackUsage('remove', message);
+      }
+    }
+  );
+
+  aquarius.onCommand(
+    /interactions (add|enable) (?<command>.+)/i,
+    async (message, { groups }) => {
+      const isAdmin = await aquarius.permissions.isAdmin(
+        message.guild,
+        message.author
+      );
+      if (isAdmin) {
+        log.info(
+          `Add ${chalk.blue(groups.command)} interaction in ${chalk.green(
+            message.guild.name
+          )} by ${chalk.green(message.author.username)}`,
+          getMessageMeta(message)
+        );
+
+        let response = '';
+
+        const name = groups.command.toLowerCase();
+
+        if (aquarius.applicationCommands.has(name)) {
+          const guild = await aquarius.guilds.fetch(message.guild.id);
+          const { commandData } = aquarius.applicationCommands.get(name);
+          guild.commands.create(commandData);
+          response = `Added the ${name} slash command`;
+        } else {
+          response = `I don't recognize ${name}, sorry!`;
+        }
+
+        message.channel.send(response);
+        analytics.trackUsage('add', message);
       }
     }
   );

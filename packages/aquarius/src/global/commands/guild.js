@@ -44,7 +44,7 @@ export default async ({ aquarius, analytics }) => {
     }
 
     const { guild } = message;
-    const admin = isGuildAdmin(guild, guild.me);
+    const admin = await isGuildAdmin(guild, guild.me);
 
     const embed = await guildEmbed(guild, {
       title: 'Aquarius',

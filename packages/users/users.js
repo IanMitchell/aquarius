@@ -13,7 +13,7 @@ import { GuildMember } from 'discord.js';
  * @param {User} user - The User to get the nickname for
  * @returns {string} The User's Nickname or Username if not set
  */
-export function getNickname(guild, user) {
+export async function getNickname(guild, user) {
   if (!guild) {
     return user.username;
   }
@@ -21,7 +21,7 @@ export function getNickname(guild, user) {
   let member = user;
 
   if (!(member instanceof GuildMember)) {
-    member = guild.member(user);
+    member = await guild.members.fetch(user);
   }
 
   return member?.nickname ?? member.user.username;

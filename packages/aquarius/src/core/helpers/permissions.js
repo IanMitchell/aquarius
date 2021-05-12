@@ -32,8 +32,8 @@ export function isBotAdmin(user) {
  * @param {User} user - User to check admin status for
  * @returns {boolean} Whether the user is a Guild Admin or Bot Admin
  */
-export function isAdmin(guild, user) {
-  return isGuildAdmin(guild, user) || isBotAdmin(user);
+export async function isAdmin(guild, user) {
+  return (await isGuildAdmin(guild, user)) || isBotAdmin(user);
 }
 
 /**

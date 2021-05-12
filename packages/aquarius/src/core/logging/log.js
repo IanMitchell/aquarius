@@ -105,7 +105,7 @@ export default function getLogger(name) {
 /**
  * Creates a Log Meta object from a message
  * @param {Message} message - message associated with the log event
- * @returns {LogMeta} a consistent and formatted meta object for a messag event
+ * @returns {LogMeta} a consistent and formatted meta object for a message event
  */
 export function getMessageMeta(message) {
   return {
@@ -128,7 +128,7 @@ export function getMessageMeta(message) {
 /**
  * Creates a Log Meta object from a presence
  * @param {Presence} presence - presence associated with the log event
- * @returns {LogMeta} a consistent and formatted meta object for a messag event
+ * @returns {LogMeta} a consistent and formatted meta object for a message event
  */
 export function getPresenceMeta(presence) {
   return {
@@ -140,5 +140,31 @@ export function getPresenceMeta(presence) {
       id: presence.user.id,
       name: presence.user.username,
     },
+  };
+}
+
+/**
+ * Creates a Log Meta object from an interaction
+ * @param {Interaction} interaction - interaction associated with the log event
+ * @returns {LogMeta} a consistent and formatted meta object for a message event
+ */
+export function getInteractionMeta(interaction) {
+  return {
+    guild: {
+      id: interaction?.guildID,
+      name: interaction?.guild?.name,
+    },
+    channel: {
+      id: interaction?.channelID,
+      name: interaction?.channel?.name,
+    },
+    author: {
+      id: interaction?.user?.id,
+      name: interaction?.user?.username,
+    },
+    options: interaction?.options?.map((option) => ({
+      name: option.name,
+      value: option.value,
+    })),
   };
 }
