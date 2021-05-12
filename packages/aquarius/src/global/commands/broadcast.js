@@ -57,6 +57,7 @@ function setStreaming(aquarius, presence) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^broadcast (?<message>.*)$/i,
     async (message, { groups }) => {

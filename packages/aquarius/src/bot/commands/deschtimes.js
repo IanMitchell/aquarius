@@ -120,6 +120,7 @@ async function getShowEmbed(data, episodeNumber) {
 export default async ({ aquarius, analytics, settings }) => {
   settings.register('token', "Your Group's Deschtimes token", 0);
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^blame (?:#(?<episode>\d+) )?(?<show>[^.](?:.+)?)$/i,
     async (message, { groups }) => {
@@ -165,6 +166,7 @@ export default async ({ aquarius, analytics, settings }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^(?:(?:(?<status>done|undone) (?<position>\w+)(?: #(?<episode>\d+))? (?<show>[^.](?:.+)?)))$/i,
     async (message, { groups }) => {
@@ -226,6 +228,7 @@ export default async ({ aquarius, analytics, settings }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^release\s(?<show>[^.](?:.+)?)$/i,
     async (message, { groups }) => {

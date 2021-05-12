@@ -49,6 +49,7 @@ async function getPostJsonById(id) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^xkcd$/i, async (message) => {
     log.info('Retrieving latest comic', getMessageMeta(message));
 
@@ -77,6 +78,7 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('latest', message);
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(/^xkcd random$/i, async (message) => {
     log.info('Retrieving random comic', getMessageMeta(message));
 
@@ -127,6 +129,7 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('random', message);
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(/^xkcd (?<id>\d+)$/i, async (message, { groups }) => {
     log.info(`Retrieving comic ${chalk.blue(groups.id)}`);
 

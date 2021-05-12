@@ -28,6 +28,7 @@ export default async ({ aquarius, analytics }) => {
   const minutes = MUTE_DURATION / ONE_MINUTE;
   const duration = `${minutes} ${pluralize('minute', minutes)}`;
 
+  // TODO: Switch to slash command
   aquarius.onCommand(/^quiet$/i, (message) => {
     if (aquarius.permissions.isAdmin(message.guild, message.author)) {
       log.info(

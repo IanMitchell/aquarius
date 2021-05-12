@@ -43,14 +43,14 @@ const PERMISSION_NAMES = new Map([
  * @param {User} user - User to check admin status for
  * @returns {boolean} Whether the user is a Guild Admin
  */
-export function isGuildAdmin(guild, user) {
-  const member = guild.member(user);
+export async function isGuildAdmin(guild, user) {
+  const member = await guild.members.fetch(user);
 
   if (!member) {
     return false;
   }
 
-  return member.hasPermission(Permissions.FLAGS.ADMINISTRATOR);
+  return member.permissions.has(Permissions.FLAGS.ADMINISTRATOR);
 }
 
 /**

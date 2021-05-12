@@ -66,6 +66,7 @@ export default async ({ aquarius, analytics }) => {
     }
   };
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     new RegExp(`^seen ${MENTION_USER.source}$`, 'i'),
     async (message) => {
@@ -81,6 +82,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     new RegExp(`^seen id (?<id>\\d+)$`, 'i'),
     async (message, { groups }) => {

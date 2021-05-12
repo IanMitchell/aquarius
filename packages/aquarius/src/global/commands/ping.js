@@ -11,6 +11,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onTrigger(/^ping$/i, (message) => {
     log.info("I'm up!", getMessageMeta(message));
     message.channel.send('pong');

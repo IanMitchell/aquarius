@@ -18,7 +18,10 @@ import Settings from './core/commands/settings';
 import database from './core/database/database';
 import { getDirname } from './core/helpers/files';
 import * as permissions from './core/helpers/permissions';
-import getLogger, { getMessageMeta } from './core/logging/log';
+import getLogger, {
+  getInteractionMeta,
+  getMessageMeta,
+} from './core/logging/log';
 import DirectMessageManager from './core/managers/direct-message-manager';
 import EmojiManager from './core/managers/emoji-manager';
 import GuildManager from './core/managers/guild-manager';
@@ -33,6 +36,8 @@ const log = getLogger('Aquarius');
  * @typedef { import('@prisma/client').PrismaClient } PrismaClient
  * @typedef { import('discord.js').Guild } Guild
  * @typedef { import('discord.js').Message } Message
+ * @typedef { import('discord.js').ApplicationCommandData } ApplicationCommandData
+ * @typedef { import('discord.js').Interaction } Interaction
  * @typedef { import('./typedefs').CommandInfo } CommandInfo
  * @typedef { import('./typedefs').CommandHandler } CommandHandler
  *
@@ -45,7 +50,7 @@ const log = getLogger('Aquarius');
 export class Aquarius extends Discord.Client {
   constructor() {
     log.info('Booting up...');
-    super({ ws: { intents: Intents.ALL } });
+    super({ intents: Intents.ALL });
 
     // We have more listeners than normal - each command registers one to
     // several on average, so we hit the warning frequently. Small bumps
@@ -108,6 +113,12 @@ export class Aquarius extends Discord.Client {
      */
     this.triggerMap = new TriggerMap();
 
+    /**
+     * Stores interaction handlers
+     * @type {Map<string, {commandData: ApplicationCommandData, handler: Function }>}
+     */
+    this.applicationCommands = new Map();
+
     // Setup API
 
     /**
@@ -135,8 +146,10 @@ export class Aquarius extends Discord.Client {
     // Load Commands and Plugins
     this.loadGlobals();
     this.loadCommands();
+    this.loadInteractions();
 
     this.on('ready', this.initialize);
+    this.on('interaction', this.handleInteraction);
     this.on('error', (error) => {
       log.fatal(error.message);
       Sentry.captureException(error);
@@ -147,10 +160,38 @@ export class Aquarius extends Discord.Client {
    * Initialization logic that runs after the bot has logged in
    * @todo Make this method private
    */
-  initialize() {
+  async initialize() {
     this.guildManager.initialize();
     this.emojiList.initialize();
     setupDailySnapshotLoop();
+
+    // TODO: Is there a way of only checking this for one guild?
+    log.info('Running through Application Command Changes');
+    const guilds = await this.guilds.fetch();
+    guilds.forEach(async (guild) => {
+      const commands = await guild.commands.fetch();
+
+      commands.forEach(async (command) => {
+        const { name, options, description } = command;
+
+        // Remove non-existent commands
+        if (!this.applicationCommands.has(name)) {
+          guild.commands.delete(command);
+          return;
+        }
+
+        const { commandData } = this.applicationCommands.get(name);
+
+        // TODO: Check any other important data
+        // Update modified commands
+        if (
+          description !== commandData.description ||
+          commandData.options !== options
+        ) {
+          guild.commands.commands.edit(command, commandData);
+        }
+      });
+    });
   }
 
   /**
@@ -198,6 +239,20 @@ export class Aquarius extends Discord.Client {
     this.loadDirectory(
       path.join(getDirname(import.meta.url), 'custom/plugins')
     );
+  }
+
+  loadInteractions() {
+    log.info('Loading Interactions');
+
+    const directory = path.join(getDirname(import.meta.url), 'commands');
+
+    fs.readdir(directory, (err, files) => {
+      if (err) {
+        throw err;
+      }
+
+      files.forEach((file) => this.loadApplicationCommandFile(directory, file));
+    });
   }
 
   /**
@@ -272,6 +327,56 @@ export class Aquarius extends Discord.Client {
             analytics: {},
           });
 
+          this.commandList.set(command.info.name, command.info);
+        } catch (error) {
+          log.error(error.message);
+          Sentry.captureException(error);
+        }
+      } catch (error) {
+        log.fatal(error.message, { file });
+        Sentry.captureException(error);
+        process.exit(1);
+      }
+    }
+  }
+
+  /**
+   * Loads and initializes an interaction from the given file. Should only be
+   * called by Aquarius.
+   * @param {string} directory - directory to load files from
+   * @param {strong} file - path to the file to load
+   * @todo Make this method private
+   */
+  async loadApplicationCommandFile(directory, file) {
+    if (file.endsWith('.js')) {
+      log.info(`Loading ${chalk.blue(file)}`);
+
+      try {
+        const command = await import(path.join(directory, file));
+
+        // TODO: If command currently disabled, early exit
+        // and unregister
+        if (command.info.disabled) {
+          log.warn(`${chalk.blue(command.info.name)} is disabled`);
+          return;
+        }
+
+        // Initialize Command
+        try {
+          // TODO: Can slash commands have settings?
+          // Create Config
+          this.commandConfigs.set(
+            command.info.name,
+            new CommandConfig(command.info.name)
+          );
+
+          await command.default({
+            aquarius: this,
+            analytics: new Analytics(command.info.name),
+            settings: new Settings(command.info.name),
+          });
+
+          // TODO: Fix this to work with subcommands
           this.commandList.set(command.info.name, command.info);
         } catch (error) {
           log.error(error.message);
@@ -425,6 +530,34 @@ export class Aquarius extends Discord.Client {
     }
   }
 
+  handleInteraction(interaction) {
+    if (
+      !interaction.isCommand() ||
+      !this.applicationCommands.has(interaction.commandName)
+    ) {
+      return;
+    }
+
+    const { handler } = this.applicationCommands.get(interaction.commandName);
+    let isLoading = false;
+
+    try {
+      if (isAsyncCommand(handler)) {
+        isLoading = true;
+        startLoading(interaction.channel);
+      }
+
+      handler(interaction);
+    } catch (error) {
+      log.error(error, getInteractionMeta(interaction));
+      Sentry.captureException(error);
+    } finally {
+      if (isLoading && isAsyncCommand(handler)) {
+        stopLoading(interaction.channel);
+      }
+    }
+  }
+
   /**
    * Registers a handler function for Direct Messages that match the provided
    * RegExp pattern
@@ -549,6 +682,16 @@ export class Aquarius extends Discord.Client {
         this.handleMessage(message, commandInfo, handler, matchFn);
       });
     });
+  }
+
+  /**
+   * Registers a handler function for interactions. Will automatically update guild registrations if needed
+   * when the bot starts.
+   * @param {ApplicationCommandData} commandData - Command registering the interaction
+   * @param {(interaction: Interaction) => unknown} handler - Callback invoked for triggered interaction
+   */
+  onSlash(commandData, handler) {
+    this.applicationCommands.set(commandData.name, { commandData, handler });
   }
 
   /**

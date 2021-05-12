@@ -46,6 +46,7 @@ export default async ({ aquarius, analytics }) => {
     setInterval(getTwitchEmoteList, ONE_HOUR);
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^twitchmote add (?<name>.+)$/i,
     async (message, { groups }) => {

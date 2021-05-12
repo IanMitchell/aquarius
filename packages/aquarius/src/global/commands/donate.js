@@ -13,6 +13,7 @@ export const info = {
 // TODO: Write up donation message
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^donate/i, (message) => {
     log.info(
       `Donate request in ${chalk.green(message.guild.name)}`,

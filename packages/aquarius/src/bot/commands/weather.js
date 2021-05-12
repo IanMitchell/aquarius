@@ -173,6 +173,7 @@ function getWeatherEmbed(location, data) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^(?:w|weather) (?<input>.*)/i,
     async (message, { groups }) => {

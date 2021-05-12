@@ -38,6 +38,7 @@ const COOLDOWN = {
   DEFAULT: 60 * 5,
 };
 
+// TODO: Switch to slash command
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, settings, analytics }) => {
   settings.register(

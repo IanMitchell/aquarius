@@ -18,6 +18,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^morse encode (?<input>.+)$/i, (message, { groups }) => {
     log(`Encoding "${groups.input}"`);
     const str = morse.encode(groups.input);
@@ -25,6 +26,7 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('enocde', message);
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(/^morse decode (?<input>.+)$/i, (message, { groups }) => {
     log(`Decoding "${groups.input}"`);
     const str = morse.decode(groups.input);

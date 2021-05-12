@@ -70,6 +70,7 @@ export default async ({ aquarius, analytics }) => {
     stdTTL: ONE_HOUR / 1000,
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^(?:aqi) (?<location>.*)/i,
     async (message, { groups }) => {

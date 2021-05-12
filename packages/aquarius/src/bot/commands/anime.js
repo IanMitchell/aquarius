@@ -111,6 +111,7 @@ function createAnimeEmbed(data) {
 }
 
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^anime info (?<show>.+)$/i,
     async (message, { groups }) => {

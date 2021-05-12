@@ -31,25 +31,50 @@ export default class Analytics {
   trackUsage(action, message, context = {}) {
     const ctx = {};
 
-    if (message) {
-      if (message.guild) {
-        ctx.guildId = message.guild.id;
-      }
+    if (message?.guild) {
+      ctx.guildId = message.guild.id;
+    }
 
-      if (message.channel) {
-        ctx.channelId = message.channel.id;
-      }
+    if (message?.channel) {
+      ctx.channelId = message.channel.id;
+    }
 
-      if (message.author) {
-        ctx.userId = message.author.id;
-      }
+    if (message?.author) {
+      ctx.userId = message.author.id;
+    }
 
-      if (message.content) {
-        ctx.content = message.content;
-      }
+    if (message?.content) {
+      ctx.content = message.content;
     }
 
     this.track('usage', action, {
+      ...ctx,
+      ...context,
+    });
+  }
+
+  // TODO: Make this not nasty
+  // lol action / interaction
+  trackInteraction(action, interaction, context = {}) {
+    const ctx = {};
+
+    if (interaction?.guild) {
+      ctx.guildId = interaction?.guild.id;
+    }
+
+    if (interaction?.channel) {
+      ctx.channelId = interaction.channel.id;
+    }
+
+    if (interaction?.author) {
+      ctx.userId = interaction.author.id;
+    }
+
+    if (interaction?.content) {
+      ctx.content = interaction.content;
+    }
+
+    this.track('interaction', action, {
       ...ctx,
       ...context,
     });

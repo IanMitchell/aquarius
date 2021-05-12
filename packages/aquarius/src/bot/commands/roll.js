@@ -45,6 +45,7 @@ function getSequenceDescription({ sign, emoji, rolls, modifier }) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^roll (?<roll>.*)$/i, (message, { groups }) => {
     const { roll } = groups;
 
