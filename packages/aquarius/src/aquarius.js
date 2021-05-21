@@ -48,7 +48,7 @@ export class Aquarius extends Discord.Client {
     super({
       ws: { intents: Intents.ALL },
       disableMentions: 'everyone',
-      allowedMentions: { parse: ['users'] } 
+      allowedMentions: { parse: ['users'] }, 
     });
 
     // We have more listeners than normal - each command registers one to
