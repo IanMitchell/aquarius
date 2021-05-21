@@ -45,7 +45,11 @@ const log = getLogger('Aquarius');
 export class Aquarius extends Discord.Client {
   constructor() {
     log.info('Booting up...');
-    super({ ws: { intents: Intents.ALL }, disableMentions: "everyone", allowedMentions: { parse: ["users"] } });
+    super({
+      ws: { intents: Intents.ALL },
+      disableMentions: "everyone",
+      allowedMentions: { parse: ["users"] } 
+    });
 
     // We have more listeners than normal - each command registers one to
     // several on average, so we hit the warning frequently. Small bumps
