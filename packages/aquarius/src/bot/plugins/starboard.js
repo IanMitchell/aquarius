@@ -39,8 +39,8 @@ export default async ({ aquarius, settings, analytics }) => {
   aquarius.on('messageReactionAdd', async (messageReaction) => {
     const { message } = messageReaction;
     const { guild } = message;
-
-    if (messageReaction.emoji.name !== '⭐') {
+    
+    if (message.author.id === aquarius.user?.id || messageReaction.emoji.name !== '⭐') {
       return;
     }
 
