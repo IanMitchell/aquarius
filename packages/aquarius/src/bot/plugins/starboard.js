@@ -53,7 +53,7 @@ export default async ({ aquarius, settings, analytics }) => {
           .permissionsFor(guild.roles.everyone)
           .has(Permissions.FLAGS.VIEW_CHANNEL)
       ) {
-        log('Ignoring Starred message');
+        log.info('Ignoring Starred message');
         return;
       }
 
@@ -92,7 +92,7 @@ export default async ({ aquarius, settings, analytics }) => {
       );
 
       if (posted) {
-        log('Already posted starred message');
+        log.info('Already posted starred message');
         return;
       }
 
