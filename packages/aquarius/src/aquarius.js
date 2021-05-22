@@ -47,7 +47,6 @@ export class Aquarius extends Discord.Client {
     log.info('Booting up...');
     super({
       ws: { intents: Intents.ALL },
-      disableMentions: 'everyone',
       allowedMentions: { parse: ['users'] },
     });
 
