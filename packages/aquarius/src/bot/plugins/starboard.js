@@ -60,7 +60,7 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      const channel = guild.channels.find(
+      const channel = guild.channels.cache.find(
         (chan) => chan.name === settings.get(guild.id, 'channel')
       );
 
