@@ -63,6 +63,10 @@ export default async ({ aquarius, settings, analytics }) => {
 
       const target = settings.get(guild.id, 'channel');
       const channel = guild.channels.cache.find((chan) => chan.name === target);
+      
+      if (channel.id === message.channel.id) {
+        return;
+      }
 
       if (!channel) {
         const errorMsg =
