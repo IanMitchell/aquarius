@@ -100,6 +100,11 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
+      const image = message.attachments.find(
+        (attachment) =>
+          attachment.name.endsWith('.png') || attachment.name.endsWith('.jpg')
+      );
+
       const embed = new MessageEmbed()
         .setAuthor(
           getNickname(guild, message.author),
@@ -120,6 +125,10 @@ export default async ({ aquarius, settings, analytics }) => {
             day: 'numeric',
           })} ${message.createdAt.toLocaleTimeString()}`
         );
+
+      if (image != null) {
+        embed.setImage(image.url);
+      }
 
       channel.send(embed);
       analytics.trackUsage('starred', message.content);
