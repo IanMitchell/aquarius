@@ -2,6 +2,7 @@ import { checkBotPermissions } from '@aquarius-bot/permissions';
 import chalk from 'chalk';
 import { Permissions } from 'discord.js';
 import getLogger from '../../core/logging/log';
+import { randomChance } from '../../core/helpers/math';
 
 const log = getLogger('Nice');
 
@@ -26,7 +27,10 @@ export default async ({ aquarius, analytics }) => {
         message.react('👌');
       }
 
-      message.channel.send('nice');
+      if (randomChance(0.1)) {
+        message.channel.send('nice');
+      }
+      
       analytics.trackUsage('nice', message);
     }
   });
