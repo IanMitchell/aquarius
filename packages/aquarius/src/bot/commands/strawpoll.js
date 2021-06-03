@@ -8,7 +8,7 @@ const log = getLogger('Strawpoll');
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'strawpoll',
-  description: 'Creates a strawpoll',
+  description: 'Creates a Strawpoll',
   // TODO: Check docopt on this
   usage: dedent`
     To create a poll:
