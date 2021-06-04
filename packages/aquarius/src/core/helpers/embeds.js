@@ -51,7 +51,9 @@ export async function guildEmbed(guild, ...fields) {
   const embed = new MessageEmbed()
     .setTitle(guild.name)
     .setThumbnail(guild.iconURL({ format: 'png' }))
-    .setDescription(`Created on ${date} by ${guild.owner.displayName}`)
+    .setDescription(
+      `Created on ${date} by ${guild?.owner?.displayName ?? 'an unknown user'}`
+    )
     .setColor(color)
     .addField(
       'Channels',
