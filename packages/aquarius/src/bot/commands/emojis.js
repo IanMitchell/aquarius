@@ -1,10 +1,10 @@
 import { startLoading, stopLoading } from '@aquarius-bot/loading';
-import debug from 'debug';
 import { Permissions } from 'discord.js';
 import JSZip from 'jszip';
 import fetch from 'node-fetch';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Emojis');
+const log = getLogger('Emojis');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -24,7 +24,7 @@ async function downloadImage(url) {
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^emojis download$/i, async (message) => {
     try {
-      log('Creating emoji zip file for download');
+      log.info('Creating emoji zip file for download');
       startLoading(message.channel);
 
       const zip = new JSZip();
@@ -52,7 +52,7 @@ export default async ({ aquarius, analytics }) => {
 
       analytics.trackUsage('download', message);
     } catch (error) {
-      log(error);
+      log.error(error);
     } finally {
       stopLoading(message.channel);
     }

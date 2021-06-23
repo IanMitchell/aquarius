@@ -1,8 +1,8 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
 import fetch from 'node-fetch';
+import getLogger from '../../core/logging/log';
 
-const log = debug('DadJoke');
+const log = getLogger('DadJoke');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -14,7 +14,7 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^dadjoke$/i, async (message) => {
-    log('Sending dadjoke');
+    log.info('Sending dadjoke');
 
     try {
       const response = await fetch('https://icanhazdadjoke.com/', {
@@ -28,7 +28,7 @@ export default async ({ aquarius, analytics }) => {
       const body = await response.text();
       message.channel.send(body);
     } catch (error) {
-      log(error);
+      log.error(error);
       Sentry.captureException(error);
 
       message.channel.send("Sorry, I wasn't able to get a dad joke!");

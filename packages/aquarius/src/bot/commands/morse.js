@@ -1,8 +1,8 @@
-import debug from 'debug';
 import dedent from 'dedent-js';
 import morse from 'morse';
+import getLogger from '../../core/logging/log';
 
-const log = debug('DadJoke');
+const log = getLogger('Morse');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -19,14 +19,14 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^morse encode (?<input>.+)$/i, (message, { groups }) => {
-    log(`Encoding "${groups.input}"`);
+    log.info(`Encoding "${groups.input}"`);
     const str = morse.encode(groups.input);
     message.channel.send(str);
     analytics.trackUsage('enocde', message);
   });
 
   aquarius.onCommand(/^morse decode (?<input>.+)$/i, (message, { groups }) => {
-    log(`Decoding "${groups.input}"`);
+    log.info(`Decoding "${groups.input}"`);
     const str = morse.decode(groups.input);
     message.channel.send(str);
     analytics.trackUsage('decode', message);

@@ -1,7 +1,7 @@
-import debug from 'debug';
 import { humanize, randomValue } from '../../core/helpers/lists';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Choose');
+const log = getLogger('Choose');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -44,7 +44,7 @@ export default async ({ aquarius, analytics }) => {
 
     if (rangeMatch) {
       const { groups: rangeGroups } = rangeMatch;
-      log(
+      log.info(
         `Matching between ${rangeGroups.lowerBound} and ${rangeGroups.upperBound}`
       );
 
@@ -89,7 +89,7 @@ export default async ({ aquarius, analytics }) => {
       return;
     }
 
-    log(`Matching between ${humanize(choices)}`);
+    log.info(`Matching between ${humanize(choices)}`);
     message.channel.send(randomValue(choices));
     analytics.trackUsage('choose', message);
   });

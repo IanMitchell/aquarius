@@ -1,18 +1,18 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
 import dateFns from 'date-fns';
-import debug from 'debug';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';
 import downsize from 'downsize';
 import fetch from 'node-fetch';
 import Turndown from 'turndown';
 import { getEmbedColorFromHex } from '../../core/helpers/colors';
+import getLogger from '../../core/logging/log';
+
+const log = getLogger('Anime');
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;
-
-const log = debug('Anime');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -114,12 +114,12 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^anime info (?<show>.+)$/i,
     async (message, { groups }) => {
-      log(`Info for ${groups.show}`);
+      log.info(`Info for ${groups.show}`);
 
       const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
-        log('Invalid permissions');
+        log.info('Invalid permissions');
         message.channel.send(
           aquarius.permissions.getRequestMessage(check.missing)
         );
@@ -154,7 +154,7 @@ export default async ({ aquarius, analytics }) => {
 
         message.channel.send(embed);
       } catch (error) {
-        log(error);
+        log.error(error);
         Sentry.captureException(error);
         message.channel.send('Sorry, something went wrong');
       }

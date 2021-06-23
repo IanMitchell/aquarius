@@ -4,15 +4,15 @@ import Sentry from '@aquarius-bot/sentry';
 import { messageTriggered } from '@aquarius-bot/triggers';
 import { getNickname } from '@aquarius-bot/users';
 import dateFns from 'date-fns';
-import debug from 'debug';
 import dedent from 'dedent-js';
 import { getInputAsNumber } from '../../core/helpers/input';
 import { ONE_WEEK } from '../../core/helpers/times';
+import getLogger from '../../core/logging/log';
+
+const log = getLogger('Karma');
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;
-
-const log = debug('Karma');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -67,7 +67,7 @@ export default async ({ aquarius, settings, analytics }) => {
       return messageTriggered(message, regex);
     },
     async (message) => {
-      log('Leaderboard requested');
+      log.info('Leaderboard requested');
 
       const name = settings.get(message.guild.id, 'name');
 
@@ -130,7 +130,7 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      log(`Karma lookup for ${getNickname(message.guild, member)}`);
+      log.info(`Karma lookup for ${getNickname(message.guild, member)}`);
 
       const name = settings.get(message.guild.id, 'name');
 
@@ -180,7 +180,7 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      log(
+      log.info(
         `${message.author.username} gave karma to ${getNickname(
           message.guild,
           member
@@ -201,7 +201,7 @@ export default async ({ aquarius, settings, analytics }) => {
         });
 
         if (giver && cooldown > Date.now() - giver.lastUsage.getTime()) {
-          log('Karma cooldown');
+          log.info('Karma cooldown');
           message.channel.send(
             `You need to wait ${formatDistance(
               Date.now(),
@@ -256,7 +256,7 @@ export default async ({ aquarius, settings, analytics }) => {
         );
         analytics.trackUsage('increase', message);
       } catch (error) {
-        log(error);
+        log.error(error);
         Sentry.captureException(error);
       }
     }
@@ -287,7 +287,7 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      log(
+      log.info(
         `${message.author.username} took karma from ${getNickname(
           message.guild,
           member
@@ -308,7 +308,7 @@ export default async ({ aquarius, settings, analytics }) => {
         });
 
         if (giver && cooldown > Date.now() - giver.lastUsage.getTime()) {
-          log('Karma cooldown');
+          log.info('Karma cooldown');
           message.channel.send(
             `You need to wait ${formatDistance(
               Date.now(),
@@ -363,7 +363,7 @@ export default async ({ aquarius, settings, analytics }) => {
         );
         analytics.trackUsage('decrease', message);
       } catch (error) {
-        log(error);
+        log.error(error);
         Sentry.captureException(error);
       }
     }

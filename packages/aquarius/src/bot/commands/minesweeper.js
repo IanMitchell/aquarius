@@ -1,8 +1,8 @@
-import debug from 'debug';
 import dedent from 'dedent-js';
 import Minesweeper from 'discord.js-minesweeper';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Minesweeper');
+const log = getLogger('Minesweeper');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -50,7 +50,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^minesweeper(?: (?<difficulty>beginner|intermediate|expert))?$/i,
     (message, { groups }) => {
-      log('Generating game');
+      log.info('Generating game');
 
       const difficulty = groups.difficulty ?? 'beginner';
       const { rows, columns, mines, zeroFirstCell } = DIFFICULTIES[difficulty];
@@ -76,7 +76,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^minesweeper custom (?<count>\d{1,2})$/i,
     (message, { groups }) => {
-      log(`Generating custom game with ${groups.count} bombs`);
+      log.info(`Generating custom game with ${groups.count} bombs`);
 
       const mines = Math.min(groups.count, 24);
 

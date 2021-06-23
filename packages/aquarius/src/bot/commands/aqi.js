@@ -1,12 +1,12 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
 import { MessageEmbed, Permissions } from 'discord.js';
 import NodeCache from 'node-cache';
 import fetch from 'node-fetch';
 import { getEmbedColorFromHex } from '../../core/helpers/colors';
 import { ONE_HOUR } from '../../core/helpers/times';
+import getLogger from '../../core/logging/log';
 
-const log = debug('AQI');
+const log = getLogger('AQI');
 
 export const info = {
   name: 'aqi',
@@ -77,14 +77,14 @@ export default async ({ aquarius, analytics }) => {
         let data = cache.get(groups.location);
 
         if (!data) {
-          log(`Querying for ${groups.location}`);
+          log.info(`Querying for ${groups.location}`);
           const { coordinates } = await getLatitudeAndLongitude(
             groups.location
           );
           const forecast = await getForecast(...coordinates);
 
           if (forecast?.status !== 'success') {
-            log(`Unable to find information for ${groups.location}`);
+            log.warn(`Unable to find information for ${groups.location}`);
             message.channel.send(
               "Sorry, I wasn't able to find information about that location."
             );
@@ -110,7 +110,7 @@ export default async ({ aquarius, analytics }) => {
 
         message.channel.send(embed);
       } catch (error) {
-        log(error);
+        log.error(error);
         Sentry.captureException(error);
         message.channel.send("Sorry, I wasn't able to get the air quality.");
       }

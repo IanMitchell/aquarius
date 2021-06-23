@@ -1,10 +1,10 @@
-import debug from 'debug';
 import dedent from 'dedent-js';
 import { MessageEmbed } from 'discord.js';
 import parseColor from 'parse-color';
 import { getEmbedColorFromHex } from '../../core/helpers/colors';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Color');
+const log = getLogger('Color');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -23,7 +23,7 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^color (?<name>.+)$/i, (message, { groups }) => {
-    log(`Looking up color ${groups.name}`);
+    log.info(`Looking up color ${groups.name}`);
 
     let color;
 

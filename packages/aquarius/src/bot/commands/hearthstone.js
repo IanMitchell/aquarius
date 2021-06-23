@@ -1,11 +1,11 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
 import { bracketTrigger } from '@aquarius-bot/triggers';
-import debug from 'debug';
 import { Permissions } from 'discord.js';
 import fetch from 'node-fetch';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Hearthstone');
+const log = getLogger('Hearthstone');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -34,7 +34,7 @@ export default async ({ aquarius, analytics }) => {
     info,
     (message) => bracketTrigger(message),
     async (message, cardList) => {
-      log(
+      log.info(
         `Retrieving entries for: ${cardList
           .map((match) => match.groups.name)
           .join(', ')}`
@@ -57,7 +57,7 @@ export default async ({ aquarius, analytics }) => {
           const check = checkBotPermissions(message.guild, ...info.permissions);
 
           if (!check.valid) {
-            log('Invalid permissions');
+            log.info('Invalid permissions');
             message.channel.send(
               aquarius.permissions.getRequestMessage(check.missing)
             );
@@ -67,7 +67,7 @@ export default async ({ aquarius, analytics }) => {
           }
         }
       } catch (error) {
-        log(error);
+        log.error(error);
         Sentry.captureException(error);
       }
     }

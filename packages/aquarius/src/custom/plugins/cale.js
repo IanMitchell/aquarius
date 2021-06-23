@@ -1,6 +1,7 @@
+import Sentry from '@aquarius-bot/sentry';
 import getLogger from '../../core/logging/log';
 
-const log = getLogger('cale');
+const log = getLogger('Cale');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -10,18 +11,24 @@ export const info = {
 };
 
 const COMPANY_INC = '91318657375825920';
-const EMOJI = '857294888462319637';
+const EMOJI = '857294811199569930';
 const CALE = '103635479097769984';
 
 /** @type {import('../../typedefs').Command} */
-export default async ({ aquarius }) => {
+export default async ({ aquarius, analytics }) => {
   aquarius.onMessage(info, (message) => {
-    if (
-      message?.guild?.id === COMPANY_INC &&
-      message?.mentions?.members?.has(CALE)
-    ) {
-      log('pet');
-      message.react(EMOJI);
+    try {
+      if (
+        message?.guild?.id === COMPANY_INC &&
+        message?.mentions?.members?.has(CALE)
+      ) {
+        log.info('pet');
+        message.react(EMOJI);
+        analytics.trackUsage('cale', message);
+      }
+    } catch (error) {
+      log.error(error.message, { error });
+      Sentry.captureException(error);
     }
   });
 };
