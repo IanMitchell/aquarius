@@ -1,4 +1,3 @@
-import debug from 'debug';
 import fetch from 'node-fetch';
 import getLogger from '../../core/logging/log';
 
@@ -16,11 +15,14 @@ export default async ({ aquarius }) => {
     log.info('Cat image request');
 
     try {
-      const response = await fetch('https://api.thecatapi.com/v1/images/search', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        'https://api.thecatapi.com/v1/images/search',
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       const json = await response.json();
 
       log.info(json);
