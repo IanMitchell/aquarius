@@ -3,14 +3,11 @@ import fetch from 'node-fetch';
 
 const log = debug('Cat');
 
-// TODO: Implement and Test
-
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'cat',
   description: 'Posts an image of a cat',
   usage: '```@Aquarius cat```',
-  disabled: true, // API Issues
 };
 
 export default async ({ aquarius }) => {
@@ -18,8 +15,7 @@ export default async ({ aquarius }) => {
     log('Image request');
 
     try {
-      // TODO: Switch to thecatapi? This one takes forever and times out
-      const response = await fetch('http://aws.random.cat/meow', {
+      const response = await fetch('https://api.thecatapi.com/v1/images/search', {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -27,7 +23,7 @@ export default async ({ aquarius }) => {
       const json = await response.json();
 
       log(json);
-      message.channel.send({ file: json.file });
+      message.channel.send({ file: json[0].url });
     } catch (e) {
       log(e);
       message.channel.send("Sorry, I wasn't able to get an image!");
