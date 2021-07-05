@@ -1,7 +1,8 @@
 import debug from 'debug';
 import fetch from 'node-fetch';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Cat');
+const log = getLogger('Cat');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -12,7 +13,7 @@ export const info = {
 
 export default async ({ aquarius }) => {
   aquarius.onCommand(/^cat$/i, async (message) => {
-    log('Image request');
+    log.info('Cat image request');
 
     try {
       const response = await fetch('https://api.thecatapi.com/v1/images/search', {
@@ -22,10 +23,10 @@ export default async ({ aquarius }) => {
       });
       const json = await response.json();
 
-      log(json);
+      log.info(json);
       message.channel.send({ file: json[0].url });
     } catch (e) {
-      log(e);
+      log.error(e);
       message.channel.send("Sorry, I wasn't able to get an image!");
     }
   });
