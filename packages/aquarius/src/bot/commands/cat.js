@@ -25,8 +25,13 @@ export default async ({ aquarius }) => {
       );
       const json = await response.json();
 
-      log.info(json);
-      message.channel.send({ file: json[0].url });
+      message.channel.send({
+        files: [
+          {
+            attachment: json[0].url,
+          },
+        ],
+      });
     } catch (e) {
       log.error(e);
       message.channel.send("Sorry, I wasn't able to get an image!");
