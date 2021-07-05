@@ -1,3 +1,4 @@
+import Sentry from '@aquarius-bot/sentry';
 import fetch from 'node-fetch';
 import getLogger from '../../core/logging/log';
 
@@ -10,7 +11,7 @@ export const info = {
   usage: '```@Aquarius cat```',
 };
 
-export default async ({ aquarius }) => {
+export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^cat$/i, async (message) => {
     log.info('Cat image request');
 
@@ -32,9 +33,12 @@ export default async ({ aquarius }) => {
           },
         ],
       });
-    } catch (e) {
-      log.error(e);
+
+      analytics.trackUsage('cat', message);
+    } catch (error) {
       message.channel.send("Sorry, I wasn't able to get an image!");
+      log.error(error);
+      Sentry.captureException(error);
     }
   });
 };
