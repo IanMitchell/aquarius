@@ -1,0 +1,57 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  # TODO: Can we depend on Tests?
+  # TODO: Rename `pretest`
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Node.js 13.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 13.7
+      - run: |
+          npx lerna bootstrap --hoist
+          npm run pretest
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Node.js 13.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 13.7
+      - name: Publish to NPM
+        run: npx lerna publish from-package --yes
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+
+
+  publish-github:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Node.js 13.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 13.7
+          registry-url: https://npm.pkg.github.com/
+      - name: Update package.json
+        run: find . -name "package.json" -not -path "./node_modules/*" -exec sed -i '' 's/aquarius-bot/ianmitchell/g' {} \;
+      - name: Publish to GitHub
+        run: |
+          npx lerna bootstrap --hoist
+          npm run pretest
+          npx lerna publish from-package --yes
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
