@@ -46,6 +46,11 @@ server.get('/link', (request, response) => {
   return response.send({ url: botLink() });
 });
 
+server.get('/webhook/:id', (request, response) => {
+  log.info('Webhook Recieved');
+  return response.send({ success: true });
+});
+
 server.get('/ping', (request, response) => {
   log.info('Ping Request');
   if (aquarius.status === Constants.Status.READY) {
