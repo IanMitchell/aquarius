@@ -13,6 +13,7 @@ export const info = {
 
 const MAX_DECIMAL_PRECISION = 20;
 const RANGE_REGEX = /^(?<lowerBound>-?\d+(?<lowerBoundDecimal>\.\d+)?)-(?<upperBound>-?\d+(?<upperBoundDecimal>\.\d+)?)$/i;
+const JUKEY = '82715425338560512';
 
 function getChoices(input, delimiter) {
   const choices = [];
@@ -90,7 +91,13 @@ export default async ({ aquarius, analytics }) => {
     }
 
     log.info(`Matching between ${humanize(choices)}`);
-    message.channel.send(randomValue(choices));
+    let response = randomValue(choices);
+    
+    if (message.author.id === JUKEY) {
+      response += '... but really, play Golden Sun';
+    }
+    
+    message.channel.send(response);
     analytics.trackUsage('choose', message);
   });
 };
