@@ -187,7 +187,7 @@ export default async ({ aquarius, analytics, settings }) => {
             groups.show
           )}/staff`
         );
-        url.searchParams.append('finished', groups.status === 'done');
+        url.searchParams.append('finished', groups.status.toLowerCase() === 'done');
         url.searchParams.append('member', message.author.id);
         url.searchParams.append(
           'position',
