@@ -1,6 +1,6 @@
-import debug from 'debug';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Overwatch');
+const log = getLogger('Overwatch');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -29,7 +29,7 @@ export default async ({ aquarius, analytics }) => {
         region = REGIONS[groups.region.toUpperCase()];
       }
 
-      log(`Looking up ${groups.account} in ${region}`);
+      log.info(`Looking up ${groups.account} in ${region}`);
 
       message.channel.send(
         `${URL}/${region}/${groups.account.replace('#', '-')}`

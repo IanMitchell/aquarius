@@ -1,8 +1,8 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
 import fetch from 'node-fetch';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Fizzbuzz');
+const log = getLogger('Fizzbuzz');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -17,7 +17,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(
     /^fizzbuzz (?<input>[\d]+)$/i,
     async (message, { groups }) => {
-      log(`Checking ${groups.input}`);
+      log.info(`Checking ${groups.input}`);
 
       try {
         const response = await fetch(
@@ -35,7 +35,7 @@ export default async ({ aquarius, analytics }) => {
           message.channel.send(str);
         }
       } catch (error) {
-        log(error);
+        log.error(error);
         Sentry.captureException(error);
 
         message.channel.send(

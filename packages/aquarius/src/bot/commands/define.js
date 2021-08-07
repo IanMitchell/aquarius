@@ -1,15 +1,15 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
 import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import xmldom from 'xmldom';
 import { capitalize } from '../../core/helpers/strings';
+import getLogger from '../../core/logging/log';
 
+const log = getLogger('Define');
 // CJS / ESM compatibility
 const { DOMParser } = xmldom;
 
-const log = debug('Define');
 const API = 'http://www.dictionaryapi.com/api/v1/references/collegiate/xml';
 
 /** @type {import('../../typedefs').CommandInfo} */
@@ -58,7 +58,7 @@ export default async ({ aquarius, analytics }) => {
     const check = checkBotPermissions(message.guild, ...info.permissions);
 
     if (!check.valid) {
-      log('Invalid permissions');
+      log.info('Invalid permissions');
       message.channel.send(
         aquarius.permissions.getRequestMessage(check.missing)
       );
@@ -66,7 +66,7 @@ export default async ({ aquarius, analytics }) => {
     }
 
     try {
-      log(`Querying for '${groups.word}'`);
+      log.info(`Querying for '${groups.word}'`);
       const auth = `key=${process.env.DICTIONARY_API_KEY}`;
       const response = await fetch(`${API}/${groups.word}?${auth}`);
       const xml = await response.text();
@@ -96,7 +96,7 @@ export default async ({ aquarius, analytics }) => {
 
       analytics.trackUsage('define', message);
     } catch (error) {
-      log(error);
+      log.error(error);
       Sentry.captureException(error);
     }
   });

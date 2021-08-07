@@ -1,7 +1,7 @@
 import { isBot } from '@aquarius-bot/users';
-import debug from 'debug';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Games');
+const log = getLogger('Games');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -14,7 +14,7 @@ export const info = {
 export default async ({ aquarius, analytics }) => {
   // TODO: Switch to slash command
   aquarius.onCommand(/^games list$/i, (message) => {
-    log('Getting game list');
+    log.info('Getting game list');
 
     const games = message.guild.members.cache.reduce((list, member) => {
       const { game } = member.user.presence;

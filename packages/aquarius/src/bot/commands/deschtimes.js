@@ -1,14 +1,14 @@
 import { checkBotPermissions } from '@aquarius-bot/permissions';
 import Sentry from '@aquarius-bot/sentry';
 import formatDistance from 'date-fns/formatDistance';
-import debug from 'debug';
 import dedent from 'dedent-js';
 import { MessageEmbed, Permissions } from 'discord.js';
 import fetch from 'node-fetch';
 import { getIconColor } from '../../core/helpers/colors';
 import { getBotOwner } from '../../core/helpers/users';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Deschtimes');
+const log = getLogger('Deschtimes');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -124,12 +124,12 @@ export default async ({ aquarius, analytics, settings }) => {
   aquarius.onCommand(
     /^blame (?:#(?<episode>\d+) )?(?<show>[^.](?:.+)?)$/i,
     async (message, { groups }) => {
-      log(`Blame request for ${groups.show}`);
+      log.info(`Blame request for ${groups.show}`);
 
       const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
-        log('Invalid permissions');
+        log.info('Invalid permissions');
         message.channel.send(
           aquarius.permissions.getRequestMessage(check.missing)
         );
@@ -146,7 +146,7 @@ export default async ({ aquarius, analytics, settings }) => {
         const data = await response.json();
 
         if (data.message) {
-          log(`Error: ${data.message}`);
+          log.error(`Error: ${data.message}`);
           message.channel.send(data.message);
           return;
         }
@@ -155,7 +155,7 @@ export default async ({ aquarius, analytics, settings }) => {
         message.channel.send(embed);
         analytics.trackUsage('blame', message);
       } catch (error) {
-        log(error);
+        log.error(error);
         Sentry.captureException(error);
 
         const owner = await getBotOwner();
@@ -170,12 +170,12 @@ export default async ({ aquarius, analytics, settings }) => {
   aquarius.onCommand(
     /^(?:(?:(?<status>done|undone) (?<position>\w+)(?: #(?<episode>\d+))? (?<show>[^.](?:.+)?)))$/i,
     async (message, { groups }) => {
-      log(`Status update for ${groups.show}`);
+      log.info(`Status update for ${groups.show}`);
 
       const check = checkBotPermissions(message.guild, ...info.permissions);
 
       if (!check.valid) {
-        log('Invalid permissions');
+        log.info('Invalid permissions');
         message.channel.send(
           aquarius.permissions.getRequestMessage(check.missing)
         );
@@ -189,7 +189,7 @@ export default async ({ aquarius, analytics, settings }) => {
             groups.show
           )}/staff`
         );
-        url.searchParams.append('finished', groups.status === 'done');
+        url.searchParams.append('finished', groups.status.toLowerCase() === 'done');
         url.searchParams.append('member', message.author.id);
         url.searchParams.append(
           'position',
@@ -217,7 +217,7 @@ export default async ({ aquarius, analytics, settings }) => {
 
         analytics.trackUsage('status', message);
       } catch (error) {
-        log(error);
+        log.error(error);
         Sentry.captureException(error);
 
         const owner = await getBotOwner();
@@ -232,7 +232,7 @@ export default async ({ aquarius, analytics, settings }) => {
   aquarius.onCommand(
     /^release\s(?<show>[^.](?:.+)?)$/i,
     async (message, { groups }) => {
-      log(`Marking ${groups.show} as done`);
+      log.info(`Marking ${groups.show} as done`);
 
       try {
         const token = settings.get(message.guild.id, 'token');
@@ -257,7 +257,7 @@ export default async ({ aquarius, analytics, settings }) => {
 
         analytics.trackUsage('release', message);
       } catch (error) {
-        log(error);
+        log.error(error);
         Sentry.captureException(error);
 
         const owner = await getBotOwner();

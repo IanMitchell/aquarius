@@ -1,8 +1,8 @@
 import Sentry from '@aquarius-bot/sentry';
-import debug from 'debug';
 import fetch from 'node-fetch';
+import getLogger from '../../core/logging/log';
 
-const log = debug('GDQ');
+const log = getLogger('GDQ');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -15,14 +15,14 @@ export const info = {
 export default async ({ aquarius, analytics }) => {
   // TODO: Switch to slash command
   aquarius.onCommand(/^gdq$/i, async (message) => {
-    log('Getting message');
+    log.info('Getting message');
 
     try {
       const response = await fetch('http://taskinoz.com/gdq/api');
       const body = await response.text();
       message.channel.send(body);
     } catch (error) {
-      log(error);
+      log.error(error);
       Sentry.captureException(error);
 
       message.channel.send(

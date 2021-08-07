@@ -1,8 +1,8 @@
 import Sentry from '@aquarius-bot/sentry';
 import { getGame, getStream, isStreaming } from '@aquarius-bot/users';
-import debug from 'debug';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Broadcast');
+const log = getLogger('Broadcast');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -17,7 +17,7 @@ async function setBroadcastMessage(aquarius, message = null) {
   let msg = message;
 
   if (aquarius?.user) {
-    log('Setting game to generic instructions');
+    log.info('Setting game to generic instructions');
 
     if (msg) {
       aquarius.user.setActivity(msg);
@@ -41,7 +41,7 @@ async function setBroadcastMessage(aquarius, message = null) {
 
     aquarius.user.setActivity(msg);
   } else {
-    log('ERROR: No Aquarius User');
+    log.error('ERROR: No Aquarius User');
   }
 }
 
@@ -62,7 +62,7 @@ export default async ({ aquarius, analytics }) => {
     /^broadcast (?<message>.*)$/i,
     async (message, { groups }) => {
       if (aquarius.permissions.isBotOwner(message.author)) {
-        log(`Setting Broadcast Message to ${groups.message}`);
+        log.info(`Setting Broadcast Message to ${groups.message}`);
 
         try {
           await aquarius.database.setting.upsert({
@@ -83,7 +83,7 @@ export default async ({ aquarius, analytics }) => {
           setBroadcastMessage(aquarius, groups.message);
           message.channel.send('My broadcast message has been updated!');
         } catch (error) {
-          log(error);
+          log.error(error);
           Sentry.captureException(error);
           message.channel.send('Sorry, I encountered a problem!');
         }
@@ -97,7 +97,7 @@ export default async ({ aquarius, analytics }) => {
     const owner = await aquarius.users.fetch(aquarius.config.owner);
 
     if (isStreaming(owner.presence)) {
-      log('Broadcasting Stream');
+      log.info('Broadcasting Stream');
 
       setStreaming(aquarius, owner.presence);
       analytics.trackUsage('broadcast twitch');
@@ -125,7 +125,7 @@ export default async ({ aquarius, analytics }) => {
 
     // User signing off
     if (newPresence.status === 'offline') {
-      log('Ending Stream Broadcast');
+      log.info('Ending Stream Broadcast');
 
       setBroadcastMessage(aquarius);
       analytics.trackUsage('broadcast twitch');
@@ -137,7 +137,7 @@ export default async ({ aquarius, analytics }) => {
       newPresence?.status !== 'offline' &&
       isStreaming(newPresence)
     ) {
-      log('Broadcasting Stream');
+      log.info('Broadcasting Stream');
 
       setStreaming(aquarius, newPresence);
       analytics.trackUsage('broadcast twitch');
@@ -146,7 +146,7 @@ export default async ({ aquarius, analytics }) => {
 
     // If owner starts streaming, advertise it.
     if (!isStreaming(oldPresence) && isStreaming(newPresence)) {
-      log('Broadcasting Stream');
+      log.info('Broadcasting Stream');
 
       setStreaming(aquarius, newPresence);
       analytics.trackUsage('broadcast twitch');
@@ -155,7 +155,7 @@ export default async ({ aquarius, analytics }) => {
 
     // If a user stops streaming, also stop.
     if (isStreaming(oldPresence) && !isStreaming(newPresence)) {
-      log('Ending Stream Broadcast');
+      log.info('Ending Stream Broadcast');
 
       setBroadcastMessage(aquarius);
       analytics.trackUsage('broadcast twitch');

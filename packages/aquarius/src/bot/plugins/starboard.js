@@ -53,6 +53,7 @@ export default async ({ aquarius, settings, analytics }) => {
           .permissionsFor(guild.roles.everyone)
           .has(Permissions.FLAGS.VIEW_CHANNEL)
       ) {
+        log.info('Ignoring Starred message');
         return;
       }
 
@@ -60,9 +61,12 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      const channel = guild.channels.find(
-        (chan) => chan.name === settings.get(guild.id, 'channel')
-      );
+      const target = settings.get(guild.id, 'channel');
+      const channel = guild.channels.cache.find((chan) => chan.name === target);
+
+      if (channel.id === message.channel.id) {
+        return;
+      }
 
       if (!channel) {
         const errorMsg =
@@ -92,8 +96,14 @@ export default async ({ aquarius, settings, analytics }) => {
       );
 
       if (posted) {
+        log.info('Already posted starred message');
         return;
       }
+
+      const image = message.attachments.find(
+        (attachment) =>
+          attachment.name.endsWith('.png') || attachment.name.endsWith('.jpg')
+      );
 
       const embed = new MessageEmbed()
         .setAuthor(
@@ -115,6 +125,10 @@ export default async ({ aquarius, settings, analytics }) => {
             day: 'numeric',
           })} ${message.createdAt.toLocaleTimeString()}`
         );
+
+      if (image != null) {
+        embed.setImage(image.url);
+      }
 
       channel.send(embed);
       analytics.trackUsage('starred', message.content);

@@ -84,7 +84,7 @@ export default async ({ aquarius, analytics }) => {
 
           message.channel.send(`Removed ${groups.input} from my banlist.`);
         } catch (error) {
-          log(error);
+          log.error(error);
           Sentry.captureException(error);
           message.channel.send('Sorry, I encountered a problem!');
         }

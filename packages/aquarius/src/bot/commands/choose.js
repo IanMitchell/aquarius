@@ -1,7 +1,7 @@
-import debug from 'debug';
 import { humanize, randomValue } from '../../core/helpers/lists';
+import getLogger from '../../core/logging/log';
 
-const log = debug('Choose');
+const log = getLogger('Choose');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
@@ -13,6 +13,7 @@ export const info = {
 
 const MAX_DECIMAL_PRECISION = 20;
 const RANGE_REGEX = /^(?<lowerBound>-?\d+(?<lowerBoundDecimal>\.\d+)?)-(?<upperBound>-?\d+(?<upperBoundDecimal>\.\d+)?)$/i;
+const JUKEY = '82715425338560512';
 
 function getChoices(input, delimiter) {
   const choices = [];
@@ -45,7 +46,7 @@ export default async ({ aquarius, analytics }) => {
 
     if (rangeMatch) {
       const { groups: rangeGroups } = rangeMatch;
-      log(
+      log.info(
         `Matching between ${rangeGroups.lowerBound} and ${rangeGroups.upperBound}`
       );
 
@@ -90,8 +91,14 @@ export default async ({ aquarius, analytics }) => {
       return;
     }
 
-    log(`Matching between ${humanize(choices)}`);
-    message.channel.send(randomValue(choices));
+    log.info(`Matching between ${humanize(choices)}`);
+    let response = randomValue(choices);
+    
+    if (message.author.id === JUKEY) {
+      response += '... but really, play Golden Sun';
+    }
+    
+    message.channel.send(response);
     analytics.trackUsage('choose', message);
   });
 };
