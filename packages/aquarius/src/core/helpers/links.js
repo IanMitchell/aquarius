@@ -3,13 +3,13 @@ import pkg from '../../../package.json';
 import aquarius from '../../aquarius';
 
 /**
- * Get the raw URL to add Aquarius to your Guild
+ * Get the invite URL to add Aquarius to your Guild
  * @returns {string} The raw URL for Discord's Add Bot prompt
  */
-export function botLink() {
+export function getBotInviteLink() {
   const url = new URL('https://discordapp.com/oauth2/authorize');
   url.searchParams.append('client_id', process.env.CLIENT_ID);
-  url.searchParams.append('scope', 'bot');
+  url.searchParams.append('scope', 'bot%20applications.commands');
 
   // TODO: Can this be dynamically calculated from flags in Commands?
   url.searchParams.append('permissions', '1543892032');
@@ -24,14 +24,6 @@ export function getHost() {
   return process.env.NODE_ENV === 'development'
     ? 'http://localhost:3000'
     : aquarius.config.url;
-}
-
-/**
- * Get the URL redirect to add Aquarius to your Guild
- * @returns {string} The URL redirect for Discord's Add Bot prompt
- */
-export function getVanityBotLink() {
-  return `${getHost()}/link`;
 }
 
 /**

@@ -2,7 +2,6 @@ import { checkBotPermissions, isGuildAdmin } from '@aquarius-bot/permissions';
 import chalk from 'chalk';
 import dedent from 'dedent-js';
 import { Permissions } from 'discord.js';
-import pluralize from 'pluralize';
 import { guildEmbed } from '../../core/helpers/embeds';
 import getLogger, { getMessageMeta } from '../../core/logging/log';
 
@@ -15,14 +14,6 @@ export const info = {
   permissions: [Permissions.FLAGS.EMBED_LINKS],
   usage: '```@Aquarius guild```',
 };
-
-function formatGuild(guild, idx) {
-  const members = `${guild.memberCount} ${pluralize(
-    'Member',
-    guild.memberCount
-  )}`;
-  return `${idx + 1}. ${guild.name} -- *(${members})*\n`;
-}
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {

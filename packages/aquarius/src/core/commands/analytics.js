@@ -1,4 +1,7 @@
-import trackEvent from '../analytics/track';
+import trackEvent, {
+  getInteractionContext,
+  getMessageContext,
+} from '../analytics/track';
 
 /**
  * Used to create and store analytic events in Commands and Plugins
@@ -29,23 +32,7 @@ export default class Analytics {
    * @param {Object} context - Additional data to associate with the analytic event
    */
   trackUsage(action, message, context = {}) {
-    const ctx = {};
-
-    if (message?.guild) {
-      ctx.guildId = message.guild.id;
-    }
-
-    if (message?.channel) {
-      ctx.channelId = message.channel.id;
-    }
-
-    if (message?.author) {
-      ctx.userId = message.author.id;
-    }
-
-    if (message?.content) {
-      ctx.content = message.content;
-    }
+    const ctx = getMessageContext(message);
 
     this.track('usage', action, {
       ...ctx,
@@ -56,23 +43,7 @@ export default class Analytics {
   // TODO: Make this not nasty
   // lol action / interaction
   trackInteraction(action, interaction, context = {}) {
-    const ctx = {};
-
-    if (interaction?.guild) {
-      ctx.guildId = interaction?.guild.id;
-    }
-
-    if (interaction?.channel) {
-      ctx.channelId = interaction.channel.id;
-    }
-
-    if (interaction?.author) {
-      ctx.userId = interaction.author.id;
-    }
-
-    if (interaction?.content) {
-      ctx.content = interaction.content;
-    }
+    const ctx = getInteractionContext(interaction);
 
     this.track('interaction', action, {
       ...ctx,

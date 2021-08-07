@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { getVanityBotLink } from '../../core/helpers/links';
+import { getBotLink } from '../../core/helpers/links';
 import getLogger, { getMessageMeta } from '../../core/logging/log';
 
 const log = getLogger('Invite');
@@ -20,7 +20,7 @@ export default async ({ aquarius, analytics }) => {
       getMessageMeta(message)
     );
 
-    message.channel.send(getVanityBotLink());
+    message.channel.send(getBotLink());
     analytics.trackUsage('invite', message);
   });
 };

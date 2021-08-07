@@ -93,11 +93,11 @@ export default async ({ aquarius, analytics }) => {
 
     log.info(`Matching between ${humanize(choices)}`);
     let response = randomValue(choices);
-    
+
     if (message.author.id === JUKEY) {
       response += '... but really, play Golden Sun';
     }
-    
+
     message.channel.send(response);
     analytics.trackUsage('choose', message);
   });

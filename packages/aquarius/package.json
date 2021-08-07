@@ -31,6 +31,7 @@
     "@aquarius-bot/permissions": "file:../permissions",
     "@aquarius-bot/triggers": "file:../triggers",
     "@aquarius-bot/users": "file:../users",
+    "@discordjs/builders": "0.4.0",
     "@prisma/client": "^2.8.0",
     "@sentry/node": "^6.11.0",
     "alphavantage": "^2.0.1",

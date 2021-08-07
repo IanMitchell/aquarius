@@ -25,6 +25,7 @@
     "lint:scss": "stylelint \"**/*.scss\"",
     "lint:js": "eslint . --ext .js --ignore-path .gitignore",
     "lint": "npm run lint:js",
+    "prettier": "prettier packages/**/*.js --check",
     "pretest": "pectin",
     "test": "jest",
     "db:create": "npx prisma migrate deploy && npx prisma generate",

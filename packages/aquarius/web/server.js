@@ -2,7 +2,7 @@ import { Constants } from 'discord.js';
 import fastify from 'fastify';
 import cors from 'fastify-cors';
 import aquarius from '../src/aquarius';
-import { botLink } from '../src/core/helpers/links';
+import { getBotInviteLink } from '../src/core/helpers/links';
 import getLogger from '../src/core/logging/log';
 import { getTotalUserCount } from '../src/core/metrics/discord';
 import createShield from './shields';
@@ -40,7 +40,7 @@ server.get('/shield/commands', (request, response) => {
 
 server.get('/link', (request, response) => {
   log.info('Link Request');
-  return response.send({ url: botLink() });
+  return response.send({ url: getBotInviteLink() });
 });
 
 server.get('/ping', (request, response) => {

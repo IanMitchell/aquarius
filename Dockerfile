@@ -1,4 +1,4 @@
-FROM node:14.9
+FROM node:16.6
 
 # Setup Bot directory
 WORKDIR /usr/src/bot

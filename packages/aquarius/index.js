@@ -6,10 +6,10 @@ const log = getLogger('Host');
 async function initialize() {
   try {
     log.info('Loading Bot');
-    await import('./src/aquarius.js');
+    await import('./src/aquarius');
 
     log.info('Starting Server');
-    await import('./web/server.js');
+    await import('./web/server');
   } catch (error) {
     log.fatal(error.message, { error });
     Sentry.captureException(error);

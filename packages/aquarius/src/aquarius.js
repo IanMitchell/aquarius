@@ -1,44 +1,48 @@
 import {
   fixPartialReactionEvents,
   INTENTS_DOT_ALL,
-} from '@aquarius-bot/discordjs-fixes';
-import { isAsyncCommand, startLoading } from '@aquarius-bot/loading';
-import { isDirectMessage } from '@aquarius-bot/messages';
-import Sentry from '@aquarius-bot/sentry';
-import * as triggers from '@aquarius-bot/triggers';
-import { isBot } from '@aquarius-bot/users';
-import chalk from 'chalk';
-import Discord from 'discord.js';
-import fs from 'fs';
-import yaml from 'js-yaml';
-import path from 'path';
-import Analytics from './core/commands/analytics';
-import Settings from './core/commands/settings';
-import database from './core/database/database';
-import { getDirname } from './core/helpers/files';
-import * as permissions from './core/helpers/permissions';
+} from "@aquarius-bot/discordjs-fixes";
+import { isAsyncCommand, startLoading } from "@aquarius-bot/loading";
+import { isDirectMessage } from "@aquarius-bot/messages";
+import Sentry from "@aquarius-bot/sentry";
+import * as triggers from "@aquarius-bot/triggers";
+import { isBot } from "@aquarius-bot/users";
+import chalk from "chalk";
+import Discord from "discord.js";
+import fs from "fs";
+import yaml from "js-yaml";
+import path from "path";
+import Analytics from "./core/commands/analytics";
+import Settings from "./core/commands/settings";
+import { getSlashCommandKey } from "./core/commands/slash";
+import database from "./core/database/database";
+import { getDirname } from "./core/helpers/files";
+import * as permissions from "./core/helpers/permissions";
 import getLogger, {
   getInteractionMeta,
   getMessageMeta,
-} from './core/logging/log';
-import DirectMessageManager from './core/managers/direct-message-manager';
-import EmojiManager from './core/managers/emoji-manager';
-import GuildManager from './core/managers/guild-manager';
-import ServiceManager from './core/managers/service-manager';
-import { setupDailySnapshotLoop } from './core/metrics/discord';
-import CommandConfig from './core/settings/command-config';
-import TriggerMap from './core/settings/trigger-map';
+} from "./core/logging/log";
+import DirectMessageManager from "./core/managers/direct-message-manager";
+import EmojiManager from "./core/managers/emoji-manager";
+import GuildManager from "./core/managers/guild-manager";
+import ServiceManager from "./core/managers/service-manager";
+import { setupDailySnapshotLoop } from "./core/metrics/discord";
+import CommandConfig from "./core/settings/command-config";
+import TriggerMap from "./core/settings/trigger-map";
 
-const log = getLogger('Aquarius');
+const log = getLogger("Aquarius");
 
 /**
  * @typedef { import('@prisma/client').PrismaClient } PrismaClient
  * @typedef { import('discord.js').Guild } Guild
  * @typedef { import('discord.js').Message } Message
  * @typedef { import('discord.js').ApplicationCommandData } ApplicationCommandData
- * @typedef { import('discord.js').Interaction } Interaction
+ * @typedef { import('discord.js').CommandInteraction } CommandInteraction
+ * @typedef { import('discord.js').MessageComponent } MessageComponent
+ * @typedef { import('discord.js').MessageComponentInteraction} MessageComponentInteraction
  * @typedef { import('./typedefs').CommandInfo } CommandInfo
  * @typedef { import('./typedefs').CommandHandler } CommandHandler
+ * @typedef {import('@discordjs/builders').SlashCommandBuilder} SlashCommandBuilder
  *
  * @typedef {( message: Message, regex: RegExp ) => RegExpMatchArray|false} MatchFn
  */
@@ -48,10 +52,10 @@ const log = getLogger('Aquarius');
  */
 export class Aquarius extends Discord.Client {
   constructor() {
-    log.info('Booting up...');
+    log.info("Booting up...");
     super({
       intents: INTENTS_DOT_ALL,
-      allowedMentions: { parse: ['users'] },
+      allowedMentions: { parse: ["users"] },
     });
 
     // We have more listeners than normal - each command registers one to
@@ -150,9 +154,9 @@ export class Aquarius extends Discord.Client {
     this.loadCommands();
     this.loadInteractions();
 
-    this.on('ready', this.initialize);
-    this.on('interaction', this.handleInteraction);
-    this.on('error', (error) => {
+    this.on("ready", this.initialize);
+    this.on("interaction", this.handleInteraction);
+    this.on("error", (error) => {
       log.fatal(error.message);
       Sentry.captureException(error);
     });
@@ -168,7 +172,7 @@ export class Aquarius extends Discord.Client {
     setupDailySnapshotLoop();
 
     // TODO: Is there a way of only checking this for one guild?
-    log.info('Running through Application Command Changes');
+    log.info("Running through Application Command Changes");
     this.guilds.cache.forEach(async (guild) => {
       try {
         const commands = await guild.commands.fetch();
@@ -208,7 +212,7 @@ export class Aquarius extends Discord.Client {
    * @todo Make this method private
    */
   loadConfig() {
-    const configPath = path.join(getDirname(import.meta.url), '../config.yml');
+    const configPath = path.join(getDirname(import.meta.url), "../config.yml");
     return Object.freeze(yaml.load(fs.readFileSync(configPath)));
   }
 
@@ -217,14 +221,14 @@ export class Aquarius extends Discord.Client {
    * @todo Make this method private
    */
   loadGlobals() {
-    log.info('Loading Global Commands...');
+    log.info("Loading Global Commands...");
     this.loadDirectory(
-      path.join(getDirname(import.meta.url), 'global/commands'),
+      path.join(getDirname(import.meta.url), "global/commands"),
       true
     );
-    log.info('Loading Global Plugins...');
+    log.info("Loading Global Plugins...");
     this.loadDirectory(
-      path.join(getDirname(import.meta.url), 'global/plugins'),
+      path.join(getDirname(import.meta.url), "global/plugins"),
       true
     );
   }
@@ -234,26 +238,26 @@ export class Aquarius extends Discord.Client {
    * @todo Make this method private
    */
   loadCommands() {
-    log.info('Loading Bot Commands...');
-    this.loadDirectory(path.join(getDirname(import.meta.url), 'bot/commands'));
-    log.info('Loading Bot Plugins...');
-    this.loadDirectory(path.join(getDirname(import.meta.url), 'bot/plugins'));
+    log.info("Loading Bot Commands...");
+    this.loadDirectory(path.join(getDirname(import.meta.url), "bot/commands"));
+    log.info("Loading Bot Plugins...");
+    this.loadDirectory(path.join(getDirname(import.meta.url), "bot/plugins"));
 
     // Disabled until we have custom commands
     // log('Loading Custom Bot Commands...');
     // this.loadDirectory(
     //   path.join(getDirname(import.meta.url), 'custom/commands')
     // );
-    log.info('Loading Custom Bot Plugins...');
+    log.info("Loading Custom Bot Plugins...");
     this.loadDirectory(
-      path.join(getDirname(import.meta.url), 'custom/plugins')
+      path.join(getDirname(import.meta.url), "custom/plugins")
     );
   }
 
   loadInteractions() {
-    log.info('Loading Interactions');
+    log.info("Loading Interactions");
 
-    const directory = path.join(getDirname(import.meta.url), 'commands');
+    const directory = path.join(getDirname(import.meta.url), "commands");
 
     fs.readdir(directory, (err, files) => {
       if (err) {
@@ -289,7 +293,7 @@ export class Aquarius extends Discord.Client {
    * @todo Make this method private
    */
   async loadFile(directory, file, globalFile) {
-    if (file.endsWith('.js')) {
+    if (file.endsWith(".js")) {
       log.info(`Loading ${chalk.blue(file)}`);
 
       try {
@@ -307,7 +311,7 @@ export class Aquarius extends Discord.Client {
         // Initialize Command
         try {
           if (this.commandConfigs.has(command.info.name)) {
-            throw new Error('Duplicate Name Registration In Config Manager');
+            throw new Error("Duplicate Name Registration In Config Manager");
           }
 
           // Create Config
@@ -357,7 +361,7 @@ export class Aquarius extends Discord.Client {
    * @todo Make this method private
    */
   async loadApplicationCommandFile(directory, file) {
-    if (file.endsWith('.js')) {
+    if (file.endsWith(".js")) {
       log.info(`Loading ${chalk.blue(file)}`);
 
       try {
@@ -417,7 +421,7 @@ export class Aquarius extends Discord.Client {
    */
   addHelp(commandInfo) {
     if (this.help.has(commandInfo.name)) {
-      throw new Error('Duplicate Help Registration');
+      throw new Error("Duplicate Help Registration");
     }
 
     this.help.set(commandInfo.name, commandInfo);
@@ -555,7 +559,7 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Handler function for matching messages
    */
   onDirectMessage(regex, handler) {
-    this.on('messageCreate', (message) => {
+    this.on("messageCreate", (message) => {
       Sentry.withMessageScope(message, () => {
         if (message.channel.type === Discord.Constants.ChannelTypes.DM) {
           if (isBot(message.author)) {
@@ -593,7 +597,7 @@ export class Aquarius extends Discord.Client {
    * `match` will be set to `true`
    */
   onMessage(info, handler) {
-    this.on('messageCreate', (message) => {
+    this.on("messageCreate", (message) => {
       Sentry.withMessageScope(message, () => {
         this.handleMessage(message, info, handler, () => true);
       });
@@ -616,7 +620,7 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onCommand(regex, handler) {
-    this.on('messageCreate', (message) => {
+    this.on("messageCreate", (message) => {
       Sentry.withMessageScope(message, () => {
         this.handleCommand(
           message,
@@ -642,7 +646,7 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onTrigger(regex, handler) {
-    this.on('messageCreate', (message) => {
+    this.on("messageCreate", (message) => {
       Sentry.withMessageScope(message, () => {
         this.handleCommand(
           message,
@@ -667,7 +671,7 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onDynamicTrigger(commandInfo, matchFn, handler) {
-    this.on('messageCreate', (message) => {
+    this.on("messageCreate", (message) => {
       Sentry.withMessageScope(message, () => {
         this.handleMessage(message, commandInfo, handler, matchFn);
       });
@@ -677,12 +681,22 @@ export class Aquarius extends Discord.Client {
   /**
    * Registers a handler function for interactions. Will automatically update guild registrations if needed
    * when the bot starts.
-   * @param {ApplicationCommandData} commandData - Command registering the interaction
-   * @param {(interaction: Interaction) => unknown} handler - Callback invoked for triggered interaction
+   * @param {SlashCommandBuilder | SlashCommandBuilder[]} commandData - Command registering the interaction
+   * @param {(interaction: CommandInteraction) => unknown} handler - Callback invoked for triggered interaction
    */
   onSlash(commandData, handler) {
-    this.applicationCommands.set(commandData.name, { commandData, handler });
+    this.applicationCommands.set(getSlashCommandKey(commandData), {
+      commandData,
+      handler,
+    });
   }
+
+  /**
+   * todo
+   * @param {MessageComponent} componentData - todo
+   * @param {(interaction: MessageComponentInteraction) => unknown} handler - todo
+   */
+  onComponent(componentData, handler) {}
 
   /**
    * Creates a periodic loop that triggers the callback for each guild that has enabled the command.
@@ -691,7 +705,7 @@ export class Aquarius extends Discord.Client {
    * @param {number} frequency - How frequently to run the loop
    */
   loop(commandInfo, callback, frequency) {
-    this.on('ready', () => {
+    this.on("ready", () => {
       setInterval(() => {
         this.guilds.cache.forEach((guild) => {
           if (
