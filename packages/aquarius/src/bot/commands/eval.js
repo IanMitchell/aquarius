@@ -1,13 +1,10 @@
-import { randomValue } from '../../core/helpers/lists';
-import getLogger, { getMessageMeta } from '../../core/logging/log';
-
 const log = getLogger('eval');
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
   name: 'eval',
   description: 'Evaluate arbitrary code.',
-  usage: '```@Aquarius eval```',
+  usage: '```@Aquarius eval <input>```',
 };
 
 
