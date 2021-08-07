@@ -22,10 +22,7 @@ server.get('/', (request, response) => {
 
 server.get('/shield/guilds', (request, response) => {
   return response.send(
-    createShield(
-      'Guilds',
-      aquarius.guilds.cache.array().length.toLocaleString()
-    )
+    createShield('Guilds', aquarius.guilds.cache.size.toLocaleString())
   );
 });
 

@@ -27,6 +27,6 @@
     "skip": true
   },
   "peerDependencies": {
-    "@sentry/node": "^5.15.0"
+    "@sentry/node": "^6.11.0"
   }
 }

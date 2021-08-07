@@ -67,7 +67,7 @@ export default async ({ aquarius, analytics }) => {
       const postJson = await getLatestPostJson();
       const embed = createEmbedFromJson(postJson);
 
-      message.channel.send(embed);
+      message.channel.send({ embeds: [embed] });
     } catch (error) {
       log.error(error.message);
       Sentry.captureException(error);
@@ -117,7 +117,7 @@ export default async ({ aquarius, analytics }) => {
         message.channel.send('Sorry, there was a problem loading the comic.');
       } else {
         const embed = createEmbedFromJson(postJson);
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
       }
     } catch (error) {
       log.error(error.message);
@@ -152,7 +152,7 @@ export default async ({ aquarius, analytics }) => {
         const postJson = await getPostJsonById(id);
         const embed = createEmbedFromJson(postJson);
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
       }
     } catch (error) {
       log.error(error.message);

@@ -1,4 +1,5 @@
 import Sentry from '@aquarius-bot/sentry';
+import { Constants } from 'discord.js';
 import path from 'path';
 import { getDirname } from '../../core/helpers/files';
 import { FIVE_MINUTES, ONE_HOUR, ONE_MINUTE } from '../../core/helpers/times';
@@ -69,7 +70,7 @@ function voiceCheck(guild, target, analytics) {
   log.info('Checking for users');
 
   guild.channels
-    .filter((channel) => channel.type === 'voice')
+    .filter((channel) => channel.type === Constants.ChannelTypes.GUILD_VOICE)
     .forEach((channel) => {
       if (channel.members.some((member) => member.user.id === target)) {
         playClip(channel, target, analytics);

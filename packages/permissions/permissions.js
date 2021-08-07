@@ -34,7 +34,7 @@ const PERMISSION_NAMES = new Map([
   [Permissions.FLAGS.MANAGE_NICKNAMES, 'Manage Nicknames'],
   [Permissions.FLAGS.MANAGE_ROLES, 'Manage Roles'],
   [Permissions.FLAGS.MANAGE_WEBHOOKS, 'Manage Webhooks'],
-  [Permissions.FLAGS.MANAGE_EMOJIS, 'Manage Emojis'],
+  [Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS, 'Manage Emojis and Stickers'],
 ]);
 
 /**
@@ -79,7 +79,7 @@ export function checkBotPermissions(guild, ...permissions) {
   const missingPermissions = new Set();
 
   permissions.forEach((permission) => {
-    if (!guild.me.hasPermission(permission)) {
+    if (!guild.me.permissions.has(permission)) {
       missingPermissions.add(permission);
     }
   });

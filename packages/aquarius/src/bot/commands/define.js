@@ -83,7 +83,7 @@ export default async ({ aquarius, analytics }) => {
           .addField('Plural', getPlural(dom))
           .addField('Pronunciation', getPronunciation(dom));
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
       } else {
         const words = Array.from(dom.getElementsByTagName('suggestion'))
           .map((element) => element.textContent)

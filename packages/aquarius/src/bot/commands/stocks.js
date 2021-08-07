@@ -190,7 +190,7 @@ export default async ({ aquarius, analytics }) => {
             profileData,
             normalize(priceData).data
           );
-          message.channel.send(embed);
+          message.channel.send({ embeds: [embed] });
         }
       } catch (error) {
         log.error(error.message);
@@ -255,7 +255,7 @@ export default async ({ aquarius, analytics }) => {
             embed.setColor(0xff0000);
           }
 
-          message.channel.send(embed);
+          message.channel.send({ embeds: [embed] });
         }
       } catch (error) {
         log.error(error.message);
@@ -313,7 +313,7 @@ export default async ({ aquarius, analytics }) => {
         );
       });
 
-      message.channel.send(embed);
+      message.channel.send({ embeds: [embed] });
     } catch (error) {
       log.error(error.message);
       Sentry.captureException(error);
@@ -366,7 +366,7 @@ export default async ({ aquarius, analytics }) => {
           embed.addField(`**${sector}**`, data[time][sector], true);
         });
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
       } catch (error) {
         log.error(error.error);
         Sentry.captureException(error);

@@ -151,11 +151,11 @@ export function getPresenceMeta(presence) {
 export function getInteractionMeta(interaction) {
   return {
     guild: {
-      id: interaction?.guildID,
+      id: interaction?.guildId,
       name: interaction?.guild?.name,
     },
     channel: {
-      id: interaction?.channelID,
+      id: interaction?.channelId,
       name: interaction?.channel?.name,
     },
     author: {

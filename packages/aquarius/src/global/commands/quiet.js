@@ -43,7 +43,7 @@ export default async ({ aquarius, analytics }) => {
 
   // The one case we need to break out of our APIs, since
   // they don't trigger when a guild is in a muted state
-  aquarius.on('message', (message) => {
+  aquarius.on('messageCreate', (message) => {
     Sentry.withMessageScope(message, () => {
       if (
         messageTriggered(message, /^quiet (?:stop|end)$/i) &&

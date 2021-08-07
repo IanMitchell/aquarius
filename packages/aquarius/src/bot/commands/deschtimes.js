@@ -152,7 +152,7 @@ export default async ({ aquarius, analytics, settings }) => {
         }
 
         const embed = await getShowEmbed(data, parseInt(groups.episode, 10));
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
         analytics.trackUsage('blame', message);
       } catch (error) {
         log.error(error);
@@ -189,7 +189,10 @@ export default async ({ aquarius, analytics, settings }) => {
             groups.show
           )}/staff`
         );
-        url.searchParams.append('finished', groups.status.toLowerCase() === 'done');
+        url.searchParams.append(
+          'finished',
+          groups.status.toLowerCase() === 'done'
+        );
         url.searchParams.append('member', message.author.id);
         url.searchParams.append(
           'position',
@@ -210,7 +213,7 @@ export default async ({ aquarius, analytics, settings }) => {
 
         if (response.ok) {
           const embed = await getShowEmbed(data, parseInt(groups.episode, 10));
-          message.channel.send(embed);
+          message.channel.send({ embeds: [embed] });
         } else {
           message.channel.send(data.message);
         }

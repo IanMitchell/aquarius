@@ -71,7 +71,7 @@ export function helpMessage(aquarius, commandInfo, guild) {
     embed.addField(
       'Permissions',
       commandInfo.permissions.map((permission) => {
-        if (guild.me.hasPermission(permission)) {
+        if (guild.me.permissions.has(permission)) {
           return `${EMOJI.VALID} ${getPermissionName(permission)}`;
         }
 
@@ -143,7 +143,7 @@ export default async ({ aquarius, analytics }) => {
 
     embed.addField('Global Commands', humanize(globalList.sort()));
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
     analytics.trackUsage('list', message);
   });
 

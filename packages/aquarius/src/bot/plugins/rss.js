@@ -27,9 +27,9 @@ const parser = new Parser({
 async function checkForPastContent(channel, content, limit = MESSAGE_LIMIT) {
   try {
     const messages = await channel.messages.fetch({ limit });
-    return messages
-      .array()
-      .some((message) => message.content.includes(content));
+    return Array.from(messages.values()).some((message) =>
+      message.content.includes(content)
+    );
   } catch (error) {
     log.error(error.message);
     Sentry.captureException(error);

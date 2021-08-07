@@ -1,4 +1,4 @@
-import { startLoading, stopLoading } from '@aquarius-bot/loading';
+import { startLoading } from '@aquarius-bot/loading';
 import { Permissions } from 'discord.js';
 import JSZip from 'jszip';
 import fetch from 'node-fetch';
@@ -54,8 +54,6 @@ export default async ({ aquarius, analytics }) => {
       analytics.trackUsage('download', message);
     } catch (error) {
       log.error(error);
-    } finally {
-      stopLoading(message.channel);
     }
   });
 };

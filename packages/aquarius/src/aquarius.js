@@ -1,15 +1,14 @@
-import { fixPartialReactionEvents } from '@aquarius-bot/discordjs-fixes';
 import {
-  isAsyncCommand,
-  startLoading,
-  stopLoading,
-} from '@aquarius-bot/loading';
+  fixPartialReactionEvents,
+  INTENTS_DOT_ALL,
+} from '@aquarius-bot/discordjs-fixes';
+import { isAsyncCommand, startLoading } from '@aquarius-bot/loading';
 import { isDirectMessage } from '@aquarius-bot/messages';
 import Sentry from '@aquarius-bot/sentry';
 import * as triggers from '@aquarius-bot/triggers';
 import { isBot } from '@aquarius-bot/users';
 import chalk from 'chalk';
-import Discord, { Intents } from 'discord.js';
+import Discord, { ChannelTypes } from 'discord.js';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
@@ -51,7 +50,7 @@ export class Aquarius extends Discord.Client {
   constructor() {
     log.info('Booting up...');
     super({
-      intents: Intents.ALL,
+      intents: INTENTS_DOT_ALL,
       allowedMentions: { parse: ['users'] },
     });
 
@@ -467,14 +466,12 @@ export class Aquarius extends Discord.Client {
     }
 
     const commandInfo = this.triggerMap.get(regex.toString());
-    let isLoading = false;
 
     if (this.isUsageAllowed(message, commandInfo)) {
       try {
         const match = matchFn(message, regex);
         if (match) {
           if (isAsyncCommand(handler)) {
-            isLoading = true;
             startLoading(message.channel);
           }
 
@@ -484,10 +481,6 @@ export class Aquarius extends Discord.Client {
       } catch (error) {
         log.error(error.message, getMessageMeta(message));
         Sentry.captureException(error);
-      } finally {
-        if (isLoading && isAsyncCommand(handler)) {
-          stopLoading(message.channel);
-        }
       }
     }
   }
@@ -507,15 +500,12 @@ export class Aquarius extends Discord.Client {
       return;
     }
 
-    let isLoading = false;
-
     if (this.isUsageAllowed(message, commandInfo) && !isBot(message.author)) {
       try {
         const match = matchFn(message);
 
         if (match) {
           if (isAsyncCommand(handler)) {
-            isLoading = true;
             startLoading(message.channel);
           }
 
@@ -525,10 +515,6 @@ export class Aquarius extends Discord.Client {
       } catch (error) {
         log.error(error, getMessageMeta(message));
         Sentry.captureException(error);
-      } finally {
-        if (isLoading && isAsyncCommand(handler)) {
-          stopLoading(message.channel);
-        }
       }
     }
   }
@@ -542,11 +528,9 @@ export class Aquarius extends Discord.Client {
     }
 
     const { handler } = this.applicationCommands.get(interaction.commandName);
-    let isLoading = false;
 
     try {
       if (isAsyncCommand(handler)) {
-        isLoading = true;
         startLoading(interaction.channel);
       }
 
@@ -554,10 +538,6 @@ export class Aquarius extends Discord.Client {
     } catch (error) {
       log.error(error, getInteractionMeta(interaction));
       Sentry.captureException(error);
-    } finally {
-      if (isLoading && isAsyncCommand(handler)) {
-        stopLoading(interaction.channel);
-      }
     }
   }
 
@@ -568,9 +548,9 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Handler function for matching messages
    */
   onDirectMessage(regex, handler) {
-    this.on('message', (message) => {
+    this.on('messageCreate', (message) => {
       Sentry.withMessageScope(message, () => {
-        if (message.channel.type === 'dm') {
+        if (message.channel.type === ChannelTypes.DM) {
           if (isBot(message.author)) {
             return;
           }
@@ -606,7 +586,7 @@ export class Aquarius extends Discord.Client {
    * `match` will be set to `true`
    */
   onMessage(info, handler) {
-    this.on('message', (message) => {
+    this.on('messageCreate', (message) => {
       Sentry.withMessageScope(message, () => {
         this.handleMessage(message, info, handler, () => true);
       });
@@ -629,7 +609,7 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onCommand(regex, handler) {
-    this.on('message', (message) => {
+    this.on('messageCreate', (message) => {
       Sentry.withMessageScope(message, () => {
         this.handleCommand(
           message,
@@ -655,7 +635,7 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onTrigger(regex, handler) {
-    this.on('message', (message) => {
+    this.on('messageCreate', (message) => {
       Sentry.withMessageScope(message, () => {
         this.handleCommand(
           message,
@@ -680,7 +660,7 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onDynamicTrigger(commandInfo, matchFn, handler) {
-    this.on('message', (message) => {
+    this.on('messageCreate', (message) => {
       Sentry.withMessageScope(message, () => {
         this.handleMessage(message, commandInfo, handler, matchFn);
       });

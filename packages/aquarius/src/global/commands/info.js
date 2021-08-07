@@ -2,7 +2,7 @@ import { checkBotPermissions } from '@aquarius-bot/permissions';
 import { getNickname } from '@aquarius-bot/users';
 import chalk from 'chalk';
 import dedent from 'dedent-js';
-import { MessageEmbed, Permissions } from 'discord.js';
+import { Constants, MessageEmbed, Permissions } from 'discord.js';
 import pluralize from 'pluralize';
 import pkg from '../../../package.json';
 import { getGitHubLink, getVanityBotLink } from '../../core/helpers/links';
@@ -44,7 +44,10 @@ export default async ({ aquarius, analytics }) => {
 
     const guilds = getTotalGuildCount();
     const channels = aquarius.channels.cache.reduce((value, channel) => {
-      if (channel.type === 'text' || channel.type === 'voice') {
+      if (
+        channel.type === Constants.ChannelTypes.GUILD_TEXT ||
+        channel.type === Constants.ChannelTypes.GUILD_VOICE
+      ) {
         return value + 1;
       }
 
@@ -100,7 +103,7 @@ export default async ({ aquarius, analytics }) => {
       )
       .setFooter(`Version: ${pkg.version} | Server Donations: $IanMitchel1`);
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 
     analytics.trackUsage('info', message);
   });

@@ -11,6 +11,7 @@ export const info = {
   usage: '```@Aquarius cat```',
 };
 
+// TODO: Switch to slash command
 export default async ({ aquarius, analytics }) => {
   aquarius.onCommand(/^cat$/i, async (message) => {
     log.info('Cat image request');

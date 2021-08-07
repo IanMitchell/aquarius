@@ -50,23 +50,25 @@ export default async ({ aquarius, analytics }) => {
         }
       });
 
-      aquarius.guilds.cache.array().forEach((guild) => {
+      // TODO: Rewrite using collection native methods
+      Array.from(aquarius.guilds.cache.values()).forEach((guild) => {
         log.info(`Alerting ${chalk.green(guild.name)}`);
-        guild.members.cache
-          .filter((member) => {
-            return (
-              member.hasPermission(Permissions.FLAGS.ADMINISTRATOR) &&
-              !isBot(member.user)
-            );
-          })
-          .array()
-          .forEach(async (member) => {
-            try {
-              member.send(message);
-            } catch (error) {
-              // Oh well
-            }
-          });
+        Array.from(
+          guild.members.cache
+            .filter((member) => {
+              return (
+                member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) &&
+                !isBot(member.user)
+              );
+            })
+            .values()
+        ).forEach(async (member) => {
+          try {
+            member.send(message);
+          } catch (error) {
+            // Oh well
+          }
+        });
       });
 
       await aquarius.database.setting.upsert({

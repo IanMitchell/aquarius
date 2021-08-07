@@ -48,6 +48,9 @@ export default class GuildManager extends Map {
    * For each Guild Aquarius is in add the Guild to the list
    */
   loadSettings() {
-    aquarius.guilds.cache.array().forEach((guild) => this.addGuild(guild.id));
+    // TODO: This can be optomized to use better collection methods
+    Array.from(aquarius.guilds.cache.values()).forEach((guild) =>
+      this.addGuild(guild.id)
+    );
   }
 }

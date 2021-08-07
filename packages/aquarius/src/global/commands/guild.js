@@ -51,25 +51,9 @@ export default async ({ aquarius, analytics }) => {
       content: dedent`**Admin:** ${admin ? 'Yes' : 'No'}`,
     });
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 
     analytics.trackUsage('stats', message);
-  });
-
-  // TODO: Switch to slash command
-  aquarius.onCommand(/(server|guild) list/i, (message) => {
-    if (aquarius.permissions.isBotOwner(message.author)) {
-      log.info('List Requested', getMessageMeta(message));
-      const guilds = aquarius.guilds.cache.array();
-
-      message.channel.send(dedent`
-      **I'm in ${guilds.length} ${pluralize('Server', guilds.length)}**
-
-      ${guilds.reduce((str, guild, idx) => str + formatGuild(guild, idx), '')}
-    `);
-
-      analytics.trackUsage('list', message);
-    }
   });
 
   // TODO: Switch to slash command
@@ -99,7 +83,7 @@ export default async ({ aquarius, analytics }) => {
 
         if (guild) {
           const embed = await guildEmbed(guild);
-          message.channel.send(embed);
+          message.channel.send({ embeds: [embed] });
         } else {
           message.channel.send("Sorry, I couldn't find that guild!");
         }

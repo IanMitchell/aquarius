@@ -2,7 +2,7 @@ import Sentry from '@aquarius-bot/sentry';
 import chronoNode from 'chrono-node';
 import dateFns from 'date-fns';
 import dedent from 'dedent-js';
-import { Permissions } from 'discord.js';
+import { Constants, Permissions } from 'discord.js';
 import getLogger, { getMessageMeta } from '../../core/logging/log';
 
 // CJS / ESM compatibility
@@ -90,9 +90,9 @@ export default async ({ aquarius, analytics }) => {
         }
 
         const channel = guild.channels.resolve(reminder.channelId);
-        const user = await guild.members.fetch(reminder.userId);
+        const member = await guild.members.fetch(reminder.userId);
 
-        if (!user) {
+        if (!member) {
           aquarius.database.reminder.deleteMany({
             where: {
               guildId: reminder.guildId,
@@ -101,21 +101,20 @@ export default async ({ aquarius, analytics }) => {
           });
         }
 
-        let text = reminder.message;
-        if (
-          !user.hasPermission(Permissions.FLAGS.MENTION_EVERYONE) &&
-          (text.includes('@everyone') || text.includes('@here'))
-        ) {
-          text = text
-            .replace('@everyone', '@-everyone')
-            .replace('@here', '@-here');
-        }
+        const allowedMentions = member.permissions.has(
+          Permissions.FLAGS.MENTION_EVERYONE
+        )
+          ? ['everyone', 'users', 'roles']
+          : ['users'];
 
-        if (channel.type === 'text') {
-          channel.send(dedent`
-            Hey ${user.toString()}! You asked me to remind you of this:
-            > ${text}
-          `);
+        if (channel.type === Constants.ChannelTypes.GUILD_TEXT) {
+          channel.send({
+            content: dedent`
+              Hey ${member.toString()}! You asked me to remind you of this:
+              > ${reminder.message}
+            `,
+            allowedMentions: { parse: allowedMentions },
+          });
         }
 
         await aquarius.database.reminder.delete({

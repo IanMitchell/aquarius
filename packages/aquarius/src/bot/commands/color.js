@@ -56,7 +56,7 @@ export default async ({ aquarius, analytics }) => {
         .addField('HSV', color.hsv.join(', '), true)
         .addField('RGB', color.rgb.join(', '), true);
 
-      message.channel.send(embed);
+      message.channel.send({ embeds: [embed] });
     }
 
     analytics.trackUsage('color', message);

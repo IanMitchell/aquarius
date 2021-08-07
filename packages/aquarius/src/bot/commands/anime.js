@@ -153,7 +153,7 @@ export default async ({ aquarius, analytics }) => {
           return;
         }
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
       } catch (error) {
         log.error(error);
         Sentry.captureException(error);
