@@ -1,3 +1,4 @@
+import getLogger, { getMessageMeta } from '../../core/logging/log';
 const log = getLogger('eval');
 
 /** @type {import('../../typedefs').CommandInfo} */
