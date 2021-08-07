@@ -1,6 +1,6 @@
-import { Constants, MessageActionRow, MessageButton } from 'discord.js';
-import { getMessageContext } from '../analytics/track';
-import { getBotInviteLink } from '../helpers/links';
+import { Constants, MessageActionRow, MessageButton } from "discord.js";
+import { getMessageContext } from "../analytics/track";
+import { getBotInviteLink } from "../helpers/links";
 
 /**
  * @typedef {import('@discordjs/builders').SlashCommandBuilder} SlashCommandBuilder
@@ -13,7 +13,7 @@ import { getBotInviteLink } from '../helpers/links';
  */
 export function getSlashCommandKey(definition) {
   if (Array.isArray(definition)) {
-    return definition.reduce((name, builder) => `${name}-${builder.name}`, '');
+    return definition.reduce((name, builder) => `${name}-${builder.name}`, "");
   }
 
   return definition.name;
@@ -27,7 +27,7 @@ export function getSlashCommandDeprecationMessage() {
       new MessageActionRow().addComponents(
         new MessageButton()
           .setURL(getBotInviteLink())
-          .setLabel('Add Slash Command Scope')
+          .setLabel("Add Slash Command Scope")
           .setStyle(Constants.MessageButtonStyles.LINK)
       ),
     ],
@@ -37,6 +37,6 @@ export function getSlashCommandDeprecationMessage() {
 export function handleDeprecatedCommand(analytics) {
   return (message) => {
     message.channel.send(getSlashCommandDeprecationMessage());
-    analytics.track('deprecation', 'uptime', getMessageContext(message));
+    analytics.track("deprecation", "uptime", getMessageContext(message));
   };
 }

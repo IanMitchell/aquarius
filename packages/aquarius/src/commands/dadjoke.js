@@ -1,6 +1,7 @@
 import Sentry from "@aquarius-bot/sentry";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import fetch from "node-fetch";
+import { handleDeprecatedCommand } from "../core/commands/slash";
 import getLogger from "../core/logging/log";
 
 const log = getLogger("DadJoke");
@@ -34,4 +35,10 @@ export default async ({ aquarius, analytics }) => {
 
     analytics.trackInteraction("dadjoke", interaction);
   });
+
+  /**
+   * Remove after all scopes are good
+   * @deprecated
+   */
+  aquarius.onCommand(/^dadjoke$/i, handleDeprecatedCommand(analytics));
 };
