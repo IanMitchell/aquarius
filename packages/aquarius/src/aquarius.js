@@ -121,9 +121,15 @@ export class Aquarius extends Discord.Client {
 
     /**
      * Stores interaction handlers
-     * @type {Map<string, {commandData: ApplicationCommandData, handler: Function }>}
+     * @type {Map<string, {command: ApplicationCommandData, handler: Function }>}
      */
     this.applicationCommands = new Map();
+
+    /**
+     * Stores message component handlers
+     * @type {Map<string, { component: MessageComponent, handler: Function }>}
+     */
+    this.messageComponents = new Map();
 
     // Setup API
 
@@ -187,7 +193,7 @@ export class Aquarius extends Discord.Client {
               return;
             }
 
-            const { commandData } = this.applicationCommands.get(name);
+            const { command: commandData } = this.applicationCommands.get(name);
 
             // TODO: Check any other important data
             // Update modified commands
@@ -679,24 +685,29 @@ export class Aquarius extends Discord.Client {
   }
 
   /**
-   * Registers a handler function for interactions. Will automatically update guild registrations if needed
+   * Registers a handler function for Application Commands. Will automatically update guild registrations if needed
    * when the bot starts.
-   * @param {SlashCommandBuilder | SlashCommandBuilder[]} commandData - Command registering the interaction
+   * @param {SlashCommandBuilder | SlashCommandBuilder[]} command - Command registering the interaction
    * @param {(interaction: CommandInteraction) => unknown} handler - Callback invoked for triggered interaction
    */
-  onSlash(commandData, handler) {
-    this.applicationCommands.set(getSlashCommandKey(commandData), {
-      commandData,
+  onSlash(command, handler) {
+    this.applicationCommands.set(getSlashCommandKey(command), {
+      command,
       handler,
     });
   }
 
   /**
-   * todo
-   * @param {MessageComponent} componentData - todo
-   * @param {(interaction: MessageComponentInteraction) => unknown} handler - todo
+   * Registers a handler function for Message Component Interactions.
+   * @param {MessageComponent} component - Component registering the interaction handler
+   * @param {(interaction: MessageComponentInteraction) => unknown} handler - Callback invoked for triggered interaction
    */
-  onComponent(componentData, handler) {}
+  onComponent(component, handler) {
+    this.messageComponents.set(component.customId, {
+      component,
+      handler,
+    });
+  }
 
   /**
    * Creates a periodic loop that triggers the callback for each guild that has enabled the command.
