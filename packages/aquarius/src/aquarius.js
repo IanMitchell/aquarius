@@ -409,6 +409,9 @@ export class Aquarius extends Discord.Client {
     }
   }
 
+  // TODO: Iterate over application commands and add, update, or remove as needed
+  setApplicationCommands() {}
+
   /**
    * Get the list of Global Command Names
    * @return {string[]} List of Global Command Names
