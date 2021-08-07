@@ -253,7 +253,10 @@ export default async ({ aquarius, analytics, settings }) => {
 
         if (response.ok) {
           const embed = await getShowEmbed(data);
-          message.channel.send('Episode released!', embed);
+          message.channel.send({
+            content: 'Episode released!',
+            embeds: [embed],
+          });
         } else {
           message.channel.send(data.message);
         }

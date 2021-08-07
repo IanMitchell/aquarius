@@ -36,7 +36,7 @@ export default async ({ aquarius, analytics }) => {
     if (json?.length && json[0].id > previousVersion) {
       log.info('New version detected');
 
-      const message = new MessageEmbed({
+      const embed = new MessageEmbed({
         title: 'New Release!',
         description:
           'A new version of Aquarius has been released! The changelog is below:',
@@ -46,7 +46,7 @@ export default async ({ aquarius, analytics }) => {
 
       json.forEach(async (release) => {
         if (release.id > previousVersion) {
-          message.addField(release.name, release.body);
+          embed.addField(release.name, release.body);
         }
       });
 
@@ -64,7 +64,7 @@ export default async ({ aquarius, analytics }) => {
             .values()
         ).forEach(async (member) => {
           try {
-            member.send(message);
+            member.send({ embeds: [embed] });
           } catch (error) {
             // Oh well
           }

@@ -8,7 +8,7 @@ import Sentry from '@aquarius-bot/sentry';
 import * as triggers from '@aquarius-bot/triggers';
 import { isBot } from '@aquarius-bot/users';
 import chalk from 'chalk';
-import Discord, { ChannelTypes } from 'discord.js';
+import Discord from 'discord.js';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
@@ -169,30 +169,37 @@ export class Aquarius extends Discord.Client {
 
     // TODO: Is there a way of only checking this for one guild?
     log.info('Running through Application Command Changes');
-    const guilds = await this.guilds.fetch();
-    guilds.forEach(async (guild) => {
-      const commands = await guild.commands.fetch();
+    this.guilds.cache.forEach(async (guild) => {
+      try {
+        const commands = await guild.commands.fetch();
 
-      commands.forEach(async (command) => {
-        const { name, options, description } = command;
+        commands.forEach(async (command) => {
+          try {
+            const { name, options, description } = command;
 
-        // Remove non-existent commands
-        if (!this.applicationCommands.has(name)) {
-          guild.commands.delete(command);
-          return;
-        }
+            // Remove non-existent commands
+            if (!this.applicationCommands.has(name)) {
+              guild.commands.delete(command);
+              return;
+            }
 
-        const { commandData } = this.applicationCommands.get(name);
+            const { commandData } = this.applicationCommands.get(name);
 
-        // TODO: Check any other important data
-        // Update modified commands
-        if (
-          description !== commandData.description ||
-          commandData.options !== options
-        ) {
-          guild.commands.commands.edit(command, commandData);
-        }
-      });
+            // TODO: Check any other important data
+            // Update modified commands
+            if (
+              description !== commandData.description ||
+              commandData.options !== options
+            ) {
+              guild.commands.edit(command, commandData);
+            }
+          } catch (error) {
+            // TODO: Error
+          }
+        });
+      } catch (error) {
+        // TODO: error
+      }
     });
   }
 
@@ -202,7 +209,7 @@ export class Aquarius extends Discord.Client {
    */
   loadConfig() {
     const configPath = path.join(getDirname(import.meta.url), '../config.yml');
-    return Object.freeze(yaml.safeLoad(fs.readFileSync(configPath)));
+    return Object.freeze(yaml.load(fs.readFileSync(configPath)));
   }
 
   /**
@@ -550,7 +557,7 @@ export class Aquarius extends Discord.Client {
   onDirectMessage(regex, handler) {
     this.on('messageCreate', (message) => {
       Sentry.withMessageScope(message, () => {
-        if (message.channel.type === ChannelTypes.DM) {
+        if (message.channel.type === Discord.Constants.ChannelTypes.DM) {
           if (isBot(message.author)) {
             return;
           }

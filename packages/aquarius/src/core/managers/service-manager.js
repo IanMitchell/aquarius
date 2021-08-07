@@ -46,9 +46,7 @@ export default class ServiceManager {
           log.info(`Loading ${chalk.blue(file)}`);
 
           const filePath = path.join(serviceDirectory, file);
-          const { name, version, steps } = yaml.safeLoad(
-            fs.readFileSync(filePath)
-          );
+          const { name, version, steps } = yaml.load(fs.readFileSync(filePath));
 
           this.services.set(name.toLowerCase(), { name, version, steps });
         }

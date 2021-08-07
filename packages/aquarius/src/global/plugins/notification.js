@@ -33,7 +33,7 @@ export default async ({ aquarius, analytics }) => {
     const embed = await guildEmbed(guild);
     embed.setColor('2ECC40');
 
-    channel.send('**Joined Server**', embed);
+    channel.send({ content: '**Joined Server**', embeds: [embed] });
 
     analytics.trackUsage('guild join', null, {
       guildId: guild.id,
@@ -58,7 +58,7 @@ export default async ({ aquarius, analytics }) => {
     const embed = await guildEmbed(guild);
     embed.setColor('FF4136');
 
-    channel.send('**Left Server**', embed);
+    channel.send({ content: '**Left Server**', embeds: [embed] });
 
     analytics.trackUsage('guild leave', null, {
       guildId: guild.id,
