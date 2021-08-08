@@ -1,23 +1,23 @@
-import { getOrderedMentions } from '@aquarius-bot/messages';
-import { MENTION_USER } from '@aquarius-bot/regex';
-import Sentry from '@aquarius-bot/sentry';
-import { messageTriggered } from '@aquarius-bot/triggers';
-import { getNickname } from '@aquarius-bot/users';
-import dateFns from 'date-fns';
-import dedent from 'dedent-js';
-import { getInputAsNumber } from '../../core/helpers/input';
-import { ONE_WEEK } from '../../core/helpers/times';
-import getLogger from '../../core/logging/log';
+import { getOrderedMentions } from "@aquarius-bot/messages";
+import { MENTION_USER } from "@aquarius-bot/regex";
+import Sentry from "@aquarius-bot/sentry";
+import { messageTriggered } from "@aquarius-bot/triggers";
+import { getNickname } from "@aquarius-bot/users";
+import dateFns from "date-fns";
+import dedent from "dedent-js";
+import { getInputAsNumber } from "../../core/helpers/input";
+import { ONE_WEEK } from "../../core/helpers/times";
+import getLogger from "../../core/logging/log";
 
-const log = getLogger('Karma');
+const log = getLogger("Karma");
 
 // CJS / ESM compatibility
 const { formatDistance } = dateFns;
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
-  name: 'karma',
-  description: 'A Karma system for users in your server.',
+  name: "karma",
+  description: "A Karma system for users in your server.",
   usage: dedent`
     **Karma Leaderboard**
     \`\`\`@Aquarius karma leaderboard\`\`\`
@@ -42,19 +42,19 @@ const COOLDOWN = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, settings, analytics }) => {
   settings.register(
-    'name',
-    'Name for the Karma command in your guild',
-    'Karma'
+    "name",
+    "Name for the Karma command in your guild",
+    "Karma"
   );
   settings.register(
-    'cooldown',
-    'Timeout in seconds before a user can use the command again',
+    "cooldown",
+    "Timeout in seconds before a user can use the command again",
     COOLDOWN.DEFAULT
   );
 
   const getCooldown = (guild) => {
     const cooldown =
-      getInputAsNumber(settings.get(guild.id, 'cooldown')) ?? COOLDOWN.DEFAULT;
+      getInputAsNumber(settings.get(guild.id, "cooldown")) ?? COOLDOWN.DEFAULT;
 
     return Math.max(COOLDOWN.MIN, cooldown) * 1000;
   };
@@ -63,14 +63,14 @@ export default async ({ aquarius, settings, analytics }) => {
   aquarius.onDynamicTrigger(
     info,
     (message) => {
-      const name = settings.get(message.guild.id, 'name');
-      const regex = new RegExp(`^(?:karma|${name}) leaderboard$`, 'i');
+      const name = settings.get(message.guild.id, "name");
+      const regex = new RegExp(`^(?:karma|${name}) leaderboard$`, "i");
       return messageTriggered(message, regex);
     },
     async (message) => {
-      log.info('Leaderboard requested');
+      log.info("Leaderboard requested");
 
-      const name = settings.get(message.guild.id, 'name');
+      const name = settings.get(message.guild.id, "name");
 
       const list = await aquarius.database.karma.findMany({
         select: {
@@ -81,14 +81,14 @@ export default async ({ aquarius, settings, analytics }) => {
           guildId: message.guild.id,
         },
         orderBy: {
-          karma: 'desc',
+          karma: "desc",
         },
         take: 5,
       });
 
       if (!list.length) {
         message.channel.send(
-          'It appears no one in this server has any karma yet!'
+          "It appears no one in this server has any karma yet!"
         );
         return;
       }
@@ -105,11 +105,11 @@ export default async ({ aquarius, settings, analytics }) => {
       const str = dedent`
         **${name} Leaderboard**
 
-        ${entries.join('\n')}
+        ${entries.join("\n")}
       `;
 
       message.channel.send(str);
-      analytics.trackUsage('leaderboard', message);
+      analytics.trackUsage("leaderboard", message);
     }
   );
 
@@ -117,10 +117,10 @@ export default async ({ aquarius, settings, analytics }) => {
   aquarius.onDynamicTrigger(
     info,
     (message) => {
-      const name = settings.get(message.guild.id, 'name');
+      const name = settings.get(message.guild.id, "name");
       const regex = new RegExp(
         `^(?:karma|${name}) ${MENTION_USER.source}$`,
-        'i'
+        "i"
       );
       return messageTriggered(message, regex);
     },
@@ -133,7 +133,7 @@ export default async ({ aquarius, settings, analytics }) => {
 
       log.info(`Karma lookup for ${getNickname(message.guild, member)}`);
 
-      const name = settings.get(message.guild.id, 'name');
+      const name = settings.get(message.guild.id, "name");
 
       const record = await aquarius.database.karma.findUnique({
         select: {
@@ -152,7 +152,7 @@ export default async ({ aquarius, settings, analytics }) => {
         : "They don't have any karma yet!";
 
       message.channel.send(str);
-      analytics.trackUsage('lookup', message);
+      analytics.trackUsage("lookup", message);
     }
   );
 
@@ -160,7 +160,7 @@ export default async ({ aquarius, settings, analytics }) => {
   aquarius.onDynamicTrigger(
     info,
     (message) => {
-      const regex = new RegExp(`^${MENTION_USER.source} ?\\+\\+.*$`, 'i');
+      const regex = new RegExp(`^${MENTION_USER.source} ?\\+\\+.*$`, "i");
       return message.content.match(regex);
     },
     async (message) => {
@@ -170,7 +170,7 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      const name = settings.get(message.guild.id, 'name');
+      const name = settings.get(message.guild.id, "name");
       const cooldown = getCooldown(message.guild);
 
       if (
@@ -202,7 +202,7 @@ export default async ({ aquarius, settings, analytics }) => {
         });
 
         if (giver && cooldown > Date.now() - giver.lastUsage.getTime()) {
-          log.info('Karma cooldown');
+          log.info("Karma cooldown");
           message.channel.send(
             `You need to wait ${formatDistance(
               Date.now(),
@@ -255,7 +255,7 @@ export default async ({ aquarius, settings, analytics }) => {
         message.channel.send(
           `${name} given! ${nickname} now has ${receiver.karma} ${name}.`
         );
-        analytics.trackUsage('increase', message);
+        analytics.trackUsage("increase", message);
       } catch (error) {
         log.error(error);
         Sentry.captureException(error);
@@ -267,7 +267,7 @@ export default async ({ aquarius, settings, analytics }) => {
   aquarius.onDynamicTrigger(
     info,
     (message) => {
-      const regex = new RegExp(`^${MENTION_USER.source} ?--.*$`, 'i');
+      const regex = new RegExp(`^${MENTION_USER.source} ?--.*$`, "i");
       return message.content.match(regex);
     },
     async (message) => {
@@ -277,7 +277,7 @@ export default async ({ aquarius, settings, analytics }) => {
         return;
       }
 
-      const name = settings.get(message.guild.id, 'name');
+      const name = settings.get(message.guild.id, "name");
       const cooldown = getCooldown(message.guild);
 
       if (
@@ -309,7 +309,7 @@ export default async ({ aquarius, settings, analytics }) => {
         });
 
         if (giver && cooldown > Date.now() - giver.lastUsage.getTime()) {
-          log.info('Karma cooldown');
+          log.info("Karma cooldown");
           message.channel.send(
             `You need to wait ${formatDistance(
               Date.now(),
@@ -362,7 +362,7 @@ export default async ({ aquarius, settings, analytics }) => {
         message.channel.send(
           `${name} taken! ${nickname} now has ${receiver.karma} ${name}.`
         );
-        analytics.trackUsage('decrease', message);
+        analytics.trackUsage("decrease", message);
       } catch (error) {
         log.error(error);
         Sentry.captureException(error);

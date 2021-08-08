@@ -392,12 +392,12 @@ export class Aquarius extends Discord.Client {
     // TODO: We are currently registering global commands as guild commands - they will show up twice.
 
     const commands = guildId
-      ? this.guilds.cache.get(guildId)
+      ? this.guilds.cache.get(guildId).commands
       : this.application.commands;
 
     log.info("Validating Global Application Commands");
     try {
-      commands.forEach(async (command) => {
+      commands.cache.forEach(async (command) => {
         if (!this.applicationCommands.has(command.name)) {
           command.delete();
         } else if (
@@ -411,7 +411,7 @@ export class Aquarius extends Discord.Client {
       });
 
       Array.from(this.applicationCommands.keys())
-        .filter((key) => !commands.has(key))
+        .filter((key) => !commands.cache.has(key))
         .forEach((key) => {
           const data = this.applicationCommands.get(key).command;
           commands.create(data);
@@ -430,11 +430,12 @@ export class Aquarius extends Discord.Client {
     await this.application.commands.fetch();
     this.upsertApplicationCommand();
 
-    log.info("Validating Guild Application Commands");
-    this.guilds.cache.forEach(async (guild) => {
-      await guild.commands.fetch();
-      this.upsertApplicationCommand(guild.id);
-    });
+    // TODO: Problem for future me
+    // log.info("Validating Guild Application Commands");
+    // this.guilds.cache.forEach(async (guild) => {
+    //   await guild.commands.fetch();
+    //   this.upsertApplicationCommand(guild.id);
+    // });
   }
 
   /**
