@@ -45,12 +45,12 @@ export function semicolonTrigger(message) {
 }
 
 /**
- * Check to see if a message starts with `?`
+ * Check to see if a message starts with `eval`
  * @param {Message} message - the message to check
- * @returns {boolean} Whether the message starts with `?`
+ * @returns {boolean} Whether the message starts with `eval`
  */
-export function questionTrigger(message) {
-  return startsWithTrigger(message, '?');
+export function evalTrigger(message) {
+  return startsWithTrigger(message, 'eval');
 }
 
 /**
