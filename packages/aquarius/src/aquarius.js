@@ -14,7 +14,10 @@ import yaml from "js-yaml";
 import path from "path";
 import Analytics from "./core/commands/analytics";
 import Settings from "./core/commands/settings";
-import { getSlashCommandKey } from "./core/commands/slash";
+import {
+  getSlashCommandKey,
+  isApplicationCommandEqual,
+} from "./core/commands/slash";
 import database from "./core/database/database";
 import { getDirname } from "./core/helpers/files";
 import * as permissions from "./core/helpers/permissions";
@@ -126,6 +129,12 @@ export class Aquarius extends Discord.Client {
     this.applicationCommands = new Map();
 
     /**
+     * Stores guild specific interaction handlers
+     * @type {Map<Snowflake, Map<string, {command: ApplicationCommandData, handler: Function }>>}
+     */
+    this.guildApplicationCommands = new Map();
+
+    /**
      * Stores message component handlers
      * @type {Map<string, { component: MessageComponent, handler: Function }>}
      */
@@ -157,11 +166,11 @@ export class Aquarius extends Discord.Client {
 
     // Load Commands and Plugins
     this.loadGlobals();
+    this.loadLegacyCommands();
     this.loadCommands();
-    this.loadInteractions();
 
     this.on("ready", this.initialize);
-    this.on("interaction", this.handleInteraction);
+    this.on("interactionCreate", this.handleInteraction);
     this.on("error", (error) => {
       log.fatal(error.message);
       Sentry.captureException(error);
@@ -176,41 +185,7 @@ export class Aquarius extends Discord.Client {
     this.guildManager.initialize();
     this.emojiList.initialize();
     setupDailySnapshotLoop();
-
-    // TODO: Is there a way of only checking this for one guild?
-    log.info("Running through Application Command Changes");
-    this.guilds.cache.forEach(async (guild) => {
-      try {
-        const commands = await guild.commands.fetch();
-
-        commands.forEach(async (command) => {
-          try {
-            const { name, options, description } = command;
-
-            // Remove non-existent commands
-            if (!this.applicationCommands.has(name)) {
-              guild.commands.delete(command);
-              return;
-            }
-
-            const { command: commandData } = this.applicationCommands.get(name);
-
-            // TODO: Check any other important data
-            // Update modified commands
-            if (
-              description !== commandData.description ||
-              commandData.options !== options
-            ) {
-              guild.commands.edit(command, commandData);
-            }
-          } catch (error) {
-            // TODO: Error
-          }
-        });
-      } catch (error) {
-        // TODO: error
-      }
-    });
+    this.upsertApplicationCommands();
   }
 
   /**
@@ -243,7 +218,7 @@ export class Aquarius extends Discord.Client {
    * Loads and initializes all non-global commands and plugins
    * @todo Make this method private
    */
-  loadCommands() {
+  loadLegacyCommands() {
     log.info("Loading Bot Commands...");
     this.loadDirectory(path.join(getDirname(import.meta.url), "bot/commands"));
     log.info("Loading Bot Plugins...");
@@ -260,8 +235,8 @@ export class Aquarius extends Discord.Client {
     );
   }
 
-  loadInteractions() {
-    log.info("Loading Interactions");
+  loadCommands() {
+    log.info("Loading Application Commands");
 
     const directory = path.join(getDirname(import.meta.url), "commands");
 
@@ -409,8 +384,58 @@ export class Aquarius extends Discord.Client {
     }
   }
 
-  // TODO: Iterate over application commands and add, update, or remove as needed
-  setApplicationCommands() {}
+  /**
+   * TODO: write words
+   * @param {*} guildId
+   */
+  async upsertApplicationCommand(guildId) {
+    // TODO: We are currently registering global commands as guild commands - they will show up twice.
+
+    const commands = guildId
+      ? this.guilds.cache.get(guildId)
+      : this.application.commands;
+
+    log.info("Validating Global Application Commands");
+    try {
+      commands.forEach(async (command) => {
+        if (!this.applicationCommands.has(command.name)) {
+          command.delete();
+        } else if (
+          !isApplicationCommandEqual(
+            command,
+            this.applicationCommands.get(command.name)
+          )
+        ) {
+          command.edit(this.applicationCommands.get(command.name).command);
+        }
+      });
+
+      Array.from(this.applicationCommands.keys())
+        .filter((key) => !commands.has(key))
+        .forEach((key) => {
+          const data = this.applicationCommands.get(key).command;
+          commands.create(data);
+        });
+    } catch (error) {
+      log.error(error.message);
+      Sentry.captureException(error);
+    }
+  }
+
+  /**
+   * TODO: write words
+   */
+  async upsertApplicationCommands() {
+    log.info("Validating Global Application Commands");
+    await this.application.commands.fetch();
+    this.upsertApplicationCommand();
+
+    log.info("Validating Guild Application Commands");
+    this.guilds.cache.forEach(async (guild) => {
+      await guild.commands.fetch();
+      this.upsertApplicationCommand(guild.id);
+    });
+  }
 
   /**
    * Get the list of Global Command Names

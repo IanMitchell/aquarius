@@ -13,6 +13,7 @@ const command = new SlashCommandBuilder()
 /** @type {import('../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onSlash(command, async (interaction) => {
+    interaction.deferReply();
     log.info("Sending dadjoke");
 
     try {
@@ -25,7 +26,7 @@ export default async ({ aquarius, analytics }) => {
       });
 
       const body = await response.text();
-      interaction.reply(body);
+      interaction.editReply(body);
     } catch (error) {
       log.error(error);
       Sentry.captureException(error);
@@ -40,5 +41,8 @@ export default async ({ aquarius, analytics }) => {
    * Remove after all scopes are good
    * @deprecated
    */
-  aquarius.onCommand(/^dadjoke$/i, handleDeprecatedCommand(analytics));
+  aquarius.onCommand(
+    /^dadjoke$/i,
+    handleDeprecatedCommand("dadjoke", analytics)
+  );
 };

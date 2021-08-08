@@ -79,5 +79,8 @@ export default async ({ aquarius, analytics }) => {
    * Remove after all scopes are good
    * @deprecated
    */
-  aquarius.onCommand(/^8ball .+$/i, handleDeprecatedCommand(analytics));
+  aquarius.onCommand(
+    /^8ball .+$/i,
+    handleDeprecatedCommand("8ball", analytics)
+  );
 };

@@ -1,9 +1,16 @@
 import { Constants, MessageActionRow, MessageButton } from "discord.js";
 import { getMessageContext } from "../analytics/track";
 import { getBotInviteLink } from "../helpers/links";
+import getLogger from "../logging/log";
+
+// TODO: Rename
+const log = getLogger("Slash");
 
 /**
  * @typedef {import('@discordjs/builders').SlashCommandBuilder} SlashCommandBuilder
+ * @typedef {import('discord.js').ApplicationCommand} ApplicationCommand
+ * @typedef {import('discord.js').ApplicationCommandData} ApplicationCommandData
+ * @typedef {import("discord.js").ApplicationCommandOption} ApplicationCommandOption
  */
 
 /**
@@ -17,6 +24,46 @@ export function getSlashCommandKey(definition) {
   }
 
   return definition.name;
+}
+
+/**
+ * Checks to see if two Application Commands share the same interface
+ * @param {ApplicationCommand | ApplicationCommandOption} record - The Application Command to verify
+ * @param {ApplicationCommandData | ApplicationCommandOption} reference - The Application Command Data to check against
+ * @returns {bool} Whether the two commands are equal
+ */
+export function isApplicationCommandEqual(record, reference) {
+  if (
+    record.name !== reference.name ||
+    record.description !== reference.description ||
+    record.defaultPermission !== reference.defaultPermission ||
+    record.type !== reference.type
+  ) {
+    return false;
+  }
+
+  if (record.choices?.length !== reference.choices?.length) {
+    return false;
+  }
+
+  if (!record.choices.every((choice) => reference.choices.includes(choice))) {
+    return false;
+  }
+
+  if (record.options == null && reference.options == null) {
+    return true;
+  }
+
+  if (record.options.length !== reference.options.length) {
+    return false;
+  }
+
+  return record.options.every((option) =>
+    isApplicationCommandEqual(
+      option,
+      reference.options.find((opt) => opt.name === option.name)
+    )
+  );
 }
 
 export function getSlashCommandDeprecationMessage() {
@@ -34,9 +81,16 @@ export function getSlashCommandDeprecationMessage() {
   };
 }
 
-export function handleDeprecatedCommand(analytics) {
+/**
+ * Handles deprecated command invocations
+ * @param {string} name - Name of the executed command
+ * @param {import('../commands/analytics').default} analytics - Analytics object for the command
+ * @returns {import('../../typedefs').CommandHandler} Command Handler
+ */
+export function handleDeprecatedCommand(name, analytics) {
   return (message) => {
+    log.info(`Sending ${name} deprecation message`);
     message.channel.send(getSlashCommandDeprecationMessage());
-    analytics.track("deprecation", "uptime", getMessageContext(message));
+    analytics.track("deprecation", name, getMessageContext(message));
   };
 }

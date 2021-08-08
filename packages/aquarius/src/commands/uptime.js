@@ -26,5 +26,5 @@ export default async ({ aquarius, analytics }) => {
    * Remove after all scopes are good
    * @deprecated
    */
-  aquarius.onCommand(/^uptime/i, handleDeprecatedCommand(analytics));
+  aquarius.onCommand(/^uptime/i, handleDeprecatedCommand("uptime", analytics));
 };

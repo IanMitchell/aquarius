@@ -1,11 +1,10 @@
-import Sentry from '@aquarius-bot/sentry';
-import chalk from 'chalk';
-import aquarius from '../../aquarius';
-import database from '../database/database';
-import { TEN_MINUTES } from '../helpers/times';
-import getLogger from '../logging/log';
+import Sentry from "@aquarius-bot/sentry";
+import chalk from "chalk";
+import database from "../database/database";
+import { TEN_MINUTES } from "../helpers/times";
+import getLogger from "../logging/log";
 
-const log = getLogger('Guild Setting');
+const log = getLogger("Guild Setting");
 
 /** @typedef { import('../commands/settings').default } Settings */
 
@@ -49,7 +48,7 @@ export default class GuildSettings {
      * available when Aquarius joins a server
      * @type {Set}
      */
-    this.enabledCommands = new Set(aquarius.config.defaultCommands);
+    this.enabledCommands = new Set();
 
     /**
      * Command configuration options per guild
