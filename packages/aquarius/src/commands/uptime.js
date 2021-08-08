@@ -5,7 +5,7 @@ import getLogger, { getInteractionMeta } from "../core/logging/log";
 
 const log = getLogger("Uptime");
 
-const command = new SlashCommandBuilder()
+export const command = new SlashCommandBuilder()
   .setName("uptime")
   .setDescription("Displays how long the bot has been running.");
 

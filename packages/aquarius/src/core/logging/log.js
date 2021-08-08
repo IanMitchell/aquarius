@@ -1,38 +1,39 @@
-import logdna from '@logdna/logger';
-import debug from 'debug';
-import { once } from 'events';
+import logdna from "@logdna/logger";
+import debug from "debug";
+import { once } from "events";
 
 const logger = process.env.LOGDNA_KEY
   ? logdna.createLogger(process.env.LOGDNA_KEY, {
-      app: 'aquarius',
-      level: 'info',
+      app: "aquarius",
+      level: "info",
       indexMeta: true,
     })
   : null;
 
-if (process.env.NODE_ENV === 'production') {
-  logger?.info('Creating connection to LogDNA');
+if (process.env.NODE_ENV === "production") {
+  logger?.info("Creating connection to LogDNA");
 }
 
 async function shutdown() {
   if (logger) {
-    await once(logger, 'cleared');
+    await once(logger, "cleared");
   } else {
     await Promise.resolve();
   }
 }
 
 function onSignal(signal) {
-  logger?.warn({ signal }, 'received signal, shutting down');
+  logger?.warn({ signal }, "received signal, shutting down");
   shutdown();
 }
 
-process.on('SIGTERM', onSignal);
-process.on('SIGINT', onSignal);
+process.on("SIGTERM", onSignal);
+process.on("SIGINT", onSignal);
 
 /**
  * @typedef { import('discord.js').Message } Message
  * @typedef { import('discord.js').Presence } Presence
+ * @typedef { import('discord.js').Interaction } Interaction
  */
 
 /**
@@ -82,11 +83,11 @@ export default function getLogger(name) {
               const [message, metaArgs] = argumentList;
               // For dev and test environments, we want simple easy-to-read
               // logging, so we drop the level and meta information.
-              if (process.env.NODE_ENV !== 'production') {
+              if (process.env.NODE_ENV !== "production") {
                 log(message);
               } else {
                 logger?.log(message, {
-                  app: name ?? 'aquarius',
+                  app: name ?? "aquarius",
                   level: property,
                   meta: metaArgs,
                 });
@@ -149,7 +150,7 @@ export function getPresenceMeta(presence) {
  * @returns {LogMeta} a consistent and formatted meta object for a message event
  */
 export function getInteractionMeta(interaction) {
-  return {
+  const meta = {
     guild: {
       id: interaction?.guildId,
       name: interaction?.guild?.name,
@@ -162,9 +163,22 @@ export function getInteractionMeta(interaction) {
       id: interaction?.user?.id,
       name: interaction?.user?.username,
     },
-    options: interaction?.options?.map((option) => ({
+  };
+
+  if (interaction.isCommand()) {
+    meta.type = "command";
+    meta.options = interaction.options?.data?.map((option) => ({
       name: option.name,
       value: option.value,
-    })),
-  };
+    }));
+  }
+
+  if (interaction.isButton()) {
+    meta.type = "button";
+    meta.customId = interaction.customId;
+  }
+
+  // TODO: Wtf do I log
+
+  return meta;
 }

@@ -6,7 +6,7 @@ import getLogger, { getInteractionMeta } from "../core/logging/log";
 
 const log = getLogger("DadJoke");
 
-const command = new SlashCommandBuilder()
+export const command = new SlashCommandBuilder()
   .setName("dadjoke")
   .setDescription("Sends a random dad joke.");
 

@@ -15,6 +15,8 @@ import path from "path";
 import Analytics from "./core/commands/analytics";
 import Settings from "./core/commands/settings";
 import {
+  getMergedApplicationCommandData,
+  getSerializedCommandInteractionKey,
   getSlashCommandKey,
   isApplicationCommandEqual,
 } from "./core/commands/slash";
@@ -40,6 +42,7 @@ const log = getLogger("Aquarius");
  * @typedef { import('discord.js').Guild } Guild
  * @typedef { import('discord.js').Message } Message
  * @typedef { import('discord.js').ApplicationCommandData } ApplicationCommandData
+ * @typedef { import('discord.js').Interaction } Interaction
  * @typedef { import('discord.js').CommandInteraction } CommandInteraction
  * @typedef { import('discord.js').MessageComponent } MessageComponent
  * @typedef { import('discord.js').MessageComponentInteraction} MessageComponentInteraction
@@ -124,19 +127,19 @@ export class Aquarius extends Discord.Client {
 
     /**
      * Stores interaction handlers
-     * @type {Map<string, {command: ApplicationCommandData, handler: Function }>}
+     * @type {Map<string, {commands: SlashCommandBuilder[], handler: (CommandInteraction) => unknown}>}
      */
     this.applicationCommands = new Map();
 
     /**
      * Stores guild specific interaction handlers
-     * @type {Map<Snowflake, Map<string, {command: ApplicationCommandData, handler: Function }>>}
+     * @type {Map<Snowflake, Map<string, {command: ApplicationCommandData, handler: (CommandInteraction) => unknown }>>}
      */
     this.guildApplicationCommands = new Map();
 
     /**
      * Stores message component handlers
-     * @type {Map<string, { component: MessageComponent, handler: Function }>}
+     * @type {Map<string, { component: MessageComponent, handler: (MessageComponentInteraction) => unknown }>}
      */
     this.messageComponents = new Map();
 
@@ -346,32 +349,22 @@ export class Aquarius extends Discord.Client {
       log.info(`Loading ${chalk.blue(file)}`);
 
       try {
-        const command = await import(path.join(directory, file));
-
-        // TODO: If command currently disabled, early exit
-        // and unregister
-        if (command.info.disabled) {
-          log.warn(`${chalk.blue(command.info.name)} is disabled`);
-          return;
-        }
+        const data = await import(path.join(directory, file));
 
         // Initialize Command
         try {
           // TODO: Can slash commands have settings?
           // Create Config
           this.commandConfigs.set(
-            command.info.name,
-            new CommandConfig(command.info.name)
+            data.command.name,
+            new CommandConfig(data.command.name)
           );
 
-          await command.default({
+          await data.default({
             aquarius: this,
-            analytics: new Analytics(command.info.name),
-            settings: new Settings(command.info.name),
+            analytics: new Analytics(data.command.name),
+            settings: new Settings(data.command.name),
           });
-
-          // TODO: Fix this to work with subcommands
-          this.commandList.set(command.info.name, command.info);
         } catch (error) {
           log.error(error.message);
           Sentry.captureException(error);
@@ -384,11 +377,31 @@ export class Aquarius extends Discord.Client {
     }
   }
 
+  getSerializedApplicationData() {
+    const commands = new Map();
+
+    Array.from(this.applicationCommands.values()).forEach((entry) => {
+      const [{ name }] = entry.commands;
+      if (commands.has(name)) {
+        const command = commands.get(name);
+        commands.set(
+          name,
+          getMergedApplicationCommandData(entry.commands, command)
+        );
+      } else {
+        commands.set(name, getMergedApplicationCommandData(entry.commands));
+      }
+    });
+
+    return commands;
+  }
+
   /**
    * TODO: write words
    * @param {*} guildId
    */
   async upsertApplicationCommand(guildId) {
+    const serializedCommands = this.getSerializedApplicationData();
     // TODO: We are currently registering global commands as guild commands - they will show up twice.
 
     const commands = guildId
@@ -398,24 +411,23 @@ export class Aquarius extends Discord.Client {
     log.info("Validating Global Application Commands");
     try {
       commands.cache.forEach(async (command) => {
-        if (!this.applicationCommands.has(command.name)) {
+        if (!serializedCommands.has(command.name)) {
           command.delete();
         } else if (
           !isApplicationCommandEqual(
             command,
-            this.applicationCommands.get(command.name)
+            serializedCommands.get(command.name)
           )
         ) {
-          command.edit(this.applicationCommands.get(command.name).command);
+          command.edit(serializedCommands.get(command.name).toJSON());
         }
       });
 
-      Array.from(this.applicationCommands.keys())
+      Array.from(serializedCommands.keys())
         .filter((key) => !commands.cache.has(key))
-        .forEach((key) => {
-          const data = this.applicationCommands.get(key).command;
-          commands.create(data);
-        });
+        .forEach((key) =>
+          commands.create(serializedCommands.get(key).toJSON())
+        );
     } catch (error) {
       log.error(error.message);
       Sentry.captureException(error);
@@ -426,9 +438,17 @@ export class Aquarius extends Discord.Client {
    * TODO: write words
    */
   async upsertApplicationCommands() {
-    log.info("Validating Global Application Commands");
-    await this.application.commands.fetch();
-    this.upsertApplicationCommand();
+    if (process.env.NODE_ENV !== "production") {
+      log.info("Skipping Global Application Command Validation");
+    } else {
+      log.info("Validating Global Application Commands");
+      await this.application.commands.fetch();
+      this.upsertApplicationCommand();
+    }
+
+    // Devmode lol
+    await this.guilds.fetch("356522910569201664");
+    this.upsertApplicationCommand("356522910569201664");
 
     // TODO: Problem for future me
     // log.info("Validating Guild Application Commands");
@@ -565,26 +585,30 @@ export class Aquarius extends Discord.Client {
     }
   }
 
+  /**
+   * Handles incoming interactions and routes them to the appropriate handler
+   * @param {CommandInteraction | MessageComponentInteraction} interaction - Event interaction
+   */
   handleInteraction(interaction) {
-    if (
-      !interaction.isCommand() ||
-      !this.applicationCommands.has(interaction.commandName)
-    ) {
-      return;
-    }
+    if (interaction.isCommand()) {
+      const key = getSerializedCommandInteractionKey(interaction);
 
-    const { handler } = this.applicationCommands.get(interaction.commandName);
-
-    try {
-      if (isAsyncCommand(handler)) {
-        startLoading(interaction.channel);
+      if (this.applicationCommands.has(key)) {
+        try {
+          this.applicationCommands.get(key).handler(interaction);
+        } catch (error) {
+          log.error(error, getInteractionMeta(interaction));
+          Sentry.captureException(error);
+        }
+      } else {
+        log.error(
+          `Unknown interaction: ${key}`,
+          getInteractionMeta(interaction)
+        );
       }
-
-      handler(interaction);
-    } catch (error) {
-      log.error(error, getInteractionMeta(interaction));
-      Sentry.captureException(error);
     }
+
+    // TODO: Handle MessageComponentInteractions
   }
 
   /**
@@ -721,7 +745,7 @@ export class Aquarius extends Discord.Client {
    */
   onSlash(command, handler) {
     this.applicationCommands.set(getSlashCommandKey(command), {
-      command,
+      commands: Array.isArray(command) ? command : [command],
       handler,
     });
   }

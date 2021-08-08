@@ -13,7 +13,7 @@ function sarcastic(str) {
     .join("");
 }
 
-const command = new SlashCommandBuilder()
+export const command = new SlashCommandBuilder()
   .setName("sarcastic")
   .setDescription("Makes input text sarcastic.")
   .addStringOption(

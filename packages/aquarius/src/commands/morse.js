@@ -8,7 +8,7 @@ import getLogger, { getInteractionMeta } from "../core/logging/log";
 
 const log = getLogger("Morse");
 
-const command = new SlashCommandBuilder()
+export const command = new SlashCommandBuilder()
   .setName("morse")
   .setDescription("Encode or decode morse code.");
 
@@ -33,7 +33,7 @@ export default async ({ aquarius, analytics }) => {
 
     log.info(`Encoding "${input}"`, getInteractionMeta(interaction));
     interaction.reply(morse.encode(input));
-    analytics.trackInteraction("enocde", interaction);
+    analytics.trackInteraction("encode", interaction);
   });
 
   aquarius.onSlash([command, commandDecode], (interaction) => {

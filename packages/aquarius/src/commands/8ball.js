@@ -32,7 +32,7 @@ const responses = [
   "Very doubtful",
 ];
 
-const command = new SlashCommandBuilder()
+export const command = new SlashCommandBuilder()
   .setName("8ball")
   .setDescription("Outputs one of the classic 8ball responses.")
   .addStringOption(

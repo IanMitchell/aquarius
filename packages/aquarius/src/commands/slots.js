@@ -6,13 +6,6 @@ import getLogger, { getInteractionMeta } from "../core/logging/log";
 
 const log = getLogger("Slots");
 
-/** @type {import('../../typedefs').CommandInfo} */
-export const info = {
-  name: "slots",
-  description: "Simulates a slot roller.",
-  usage: "```@Aquarius slots```",
-};
-
 const values = [
   "🍇",
   "🍊",
@@ -28,7 +21,7 @@ const values = [
   "🍑",
 ];
 
-const command = new SlashCommandBuilder()
+export const command = new SlashCommandBuilder()
   .setName("slots")
   .setDescription("Simulates a slot roller.");
 

@@ -11,6 +11,7 @@ const log = getLogger("Slash");
  * @typedef {import('discord.js').ApplicationCommand} ApplicationCommand
  * @typedef {import('discord.js').ApplicationCommandData} ApplicationCommandData
  * @typedef {import("discord.js").ApplicationCommandOption} ApplicationCommandOption
+ * @typedef {import("discord.js").CommandInteraction} CommandInteraction
  */
 
 /**
@@ -24,6 +25,39 @@ export function getSlashCommandKey(definition) {
   }
 
   return definition.name;
+}
+
+/**
+ * Serializes a Command Interaction event into a key
+ * @param {CommandInteraction} interaction - Command Interaction event data
+ * @returns {string} Serialized key for the Command Interaction
+ */
+export function getSerializedCommandInteractionKey(interaction) {
+  const name = interaction.commandName;
+  const group = interaction.options.getSubcommandGroup(false);
+  const subcommand = interaction.options.getSubcommand(false);
+
+  return [name, group, subcommand].filter((value) => Boolean(value)).join("-");
+}
+
+/**
+ * Merges different Slash Command Builders
+ * @param {SlashCommandBuilder[]} data - Slash Command Builders to merge together
+ * @param {SlashCommandBuilder} base=null - Slash Command Builder to extend
+ */
+export function getMergedApplicationCommandData(data, base = null) {
+  const command = base ?? data[0];
+
+  const [subcommand, group] = data.slice(1, 3);
+
+  if (group != null) {
+    group.addSubcommand(subcommand);
+    command.addSubcommandGroup(group);
+  } else if (subcommand != null) {
+    command.addSubcommand(subcommand);
+  }
+
+  return command;
 }
 
 /**
