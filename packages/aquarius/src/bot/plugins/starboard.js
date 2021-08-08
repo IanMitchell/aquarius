@@ -113,10 +113,9 @@ export default async ({ aquarius, settings, analytics }) => {
         .setColor('GOLD')
         .setURL(getLink(message))
         .setDescription(message.content)
-        .addField(
-          'Source',
-          `[#${message.channel.name}](${getLink(message)})`,
-          true
+        .addFields(
+          { name: 'Source', value: `[#${message.channel.name}](${getLink(message)})`, inline: true },
+          { name: 'Stars', value: `${messageReaction.count}`, inline: true },
         )
         .setFooter(
           `Posted ${message.createdAt.toLocaleDateString('en-US', {
