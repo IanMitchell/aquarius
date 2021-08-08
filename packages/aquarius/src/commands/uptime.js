@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { handleDeprecatedCommand } from "../core/commands/slash";
 import { getExactTimeInterval } from "../core/helpers/dates";
-import getLogger from "../core/logging/log";
+import getLogger, { getInteractionMeta } from "../core/logging/log";
 
 const log = getLogger("Uptime");
 
@@ -12,7 +12,7 @@ const command = new SlashCommandBuilder()
 /** @type {import('../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onSlash(command, (interaction) => {
-    log.info("Uptime Requested");
+    log.info("Uptime Requested", getInteractionMeta(interaction));
     const uptime = getExactTimeInterval(
       Date.now() - aquarius.uptime,
       Date.now()

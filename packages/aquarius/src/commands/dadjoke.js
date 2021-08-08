@@ -2,7 +2,7 @@ import Sentry from "@aquarius-bot/sentry";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import fetch from "node-fetch";
 import { handleDeprecatedCommand } from "../core/commands/slash";
-import getLogger from "../core/logging/log";
+import getLogger, { getInteractionMeta } from "../core/logging/log";
 
 const log = getLogger("DadJoke");
 
@@ -14,7 +14,7 @@ const command = new SlashCommandBuilder()
 export default async ({ aquarius, analytics }) => {
   aquarius.onSlash(command, async (interaction) => {
     interaction.deferReply();
-    log.info("Sending dadjoke");
+    log.info("Sending dadjoke", getInteractionMeta(interaction));
 
     try {
       const response = await fetch("https://icanhazdadjoke.com/", {
@@ -31,7 +31,7 @@ export default async ({ aquarius, analytics }) => {
       log.error(error);
       Sentry.captureException(error);
 
-      interaction.reply("Sorry, I wasn't able to get a dad joke!");
+      interaction.editReply("Sorry, I wasn't able to get a dad joke!");
     }
 
     analytics.trackInteraction("dadjoke", interaction);
