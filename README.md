@@ -12,7 +12,7 @@
 
 ---
 
-Aquarius is an officially verified general purpose [Discord](https://discordapp.com/) chat bot. If you have questions, concerns, suggestions, or need general assistance, please create an issue, tweet [@IanMitchel1](https://twitter.com/ianmitchel1), or join [Aquarius's Discord Server](http://discord.companyinc.company/).
+Aquarius is an officially verified general purpose [Discord](https://discord.com/) chat bot. If you have questions, concerns, suggestions, or need general assistance, please create an issue, tweet [@IanMitchel1](https://twitter.com/ianmitchel1), or join [Aquarius's Discord Server](http://discord.companyinc.company/).
 
 ## Overview
 
@@ -46,7 +46,7 @@ Aquarius development happens on the [Company Inc](http://companyinc.company) Dis
 
 ## Announcements
 
-Very rarely we'll announce new features or planned downtime in the Discord server linked above. You can [follow to the announcement channel](https://support.discordapp.com/hc/en-us/articles/360028384531-Channel-Following-FAQ) to receive these notifications.
+Very rarely we'll announce new features or planned downtime in the Discord server linked above. You can [follow to the announcement channel](https://support.discord.com/hc/en-us/articles/360028384531-Channel-Following-FAQ) to receive these notifications.
 
 ## Development
 
