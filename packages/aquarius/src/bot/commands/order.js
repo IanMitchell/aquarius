@@ -59,6 +59,7 @@ function getChoices(input, delimiter) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^o(?:rder)? (?<input>.+)$/i, (message, { groups }) => {
     // Check for a range
     const rangeMatch = groups.input.match(RANGE_REGEX);

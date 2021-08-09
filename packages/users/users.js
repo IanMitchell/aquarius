@@ -1,5 +1,4 @@
-import { ActivityTypes } from '@aquarius-bot/discordjs-fixes';
-import { GuildMember } from 'discord.js';
+import { Constants, GuildMember } from 'discord.js';
 /**
  * @typedef {import('discord.js').User} User
  * @typedef {import('discord.js').Guild} Guild
@@ -13,7 +12,7 @@ import { GuildMember } from 'discord.js';
  * @param {User} user - The User to get the nickname for
  * @returns {string} The User's Nickname or Username if not set
  */
-export function getNickname(guild, user) {
+export async function getNickname(guild, user) {
   if (!guild) {
     return user.username;
   }
@@ -21,7 +20,7 @@ export function getNickname(guild, user) {
   let member = user;
 
   if (!(member instanceof GuildMember)) {
-    member = guild.member(user);
+    member = await guild.members.fetch(user);
   }
 
   return member?.nickname ?? member.user.username;
@@ -48,7 +47,7 @@ export function isBot(user) {
 export function isStreaming(presence) {
   return (
     presence?.activities?.some(
-      (activity) => activity.type === ActivityTypes.STREAMING
+      (activity) => activity.type === Constants.ActivityTypes.STREAMING
     ) ?? false
   );
 }
@@ -60,7 +59,7 @@ export function isStreaming(presence) {
  */
 export function getGame(presence) {
   return presence?.activities?.find(
-    (activity) => activity.type === ActivityTypes.PLAYING
+    (activity) => activity.type === Constants.ActivityTypes.PLAYING
   );
 }
 
@@ -71,6 +70,6 @@ export function getGame(presence) {
  */
 export function getStream(presence) {
   return presence?.activities?.find(
-    (activity) => activity.type === ActivityTypes.STREAMING
+    (activity) => activity.type === Constants.ActivityTypes.STREAMING
   );
 }

@@ -36,7 +36,7 @@ export default async ({ aquarius, analytics }) => {
     if (json?.length && json[0].id > previousVersion) {
       log.info('New version detected');
 
-      const message = new MessageEmbed({
+      const embed = new MessageEmbed({
         title: 'New Release!',
         description:
           'A new version of Aquarius has been released! The changelog is below:',
@@ -46,27 +46,29 @@ export default async ({ aquarius, analytics }) => {
 
       json.forEach(async (release) => {
         if (release.id > previousVersion) {
-          message.addField(release.name, release.body);
+          embed.addField(release.name, release.body);
         }
       });
 
-      aquarius.guilds.cache.array().forEach((guild) => {
+      // TODO: Rewrite using collection native methods
+      Array.from(aquarius.guilds.cache.values()).forEach((guild) => {
         log.info(`Alerting ${chalk.green(guild.name)}`);
-        guild.members.cache
-          .filter((member) => {
-            return (
-              member.hasPermission(Permissions.FLAGS.ADMINISTRATOR) &&
-              !isBot(member.user)
-            );
-          })
-          .array()
-          .forEach(async (member) => {
-            try {
-              member.send(message);
-            } catch (error) {
-              // Oh well
-            }
-          });
+        Array.from(
+          guild.members.cache
+            .filter((member) => {
+              return (
+                member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) &&
+                !isBot(member.user)
+              );
+            })
+            .values()
+        ).forEach(async (member) => {
+          try {
+            member.send({ embeds: [embed] });
+          } catch (error) {
+            // Oh well
+          }
+        });
       });
 
       await aquarius.database.setting.upsert({

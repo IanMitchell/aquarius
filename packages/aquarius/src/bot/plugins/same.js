@@ -76,7 +76,7 @@ export default async ({ aquarius, settings, analytics }) => {
   };
 
   // We want to track bot messages for this too, otherwise it looks weird
-  aquarius.on('message', (message) => {
+  aquarius.on('messageCreate', (message) => {
     Sentry.withMessageScope(message, () => {
       if (
         message.content === '' ||

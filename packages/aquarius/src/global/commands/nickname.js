@@ -16,12 +16,13 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^nick(?:name)? (?<nickname>.*)/i,
     async (message, { groups }) => {
       if (
         aquarius.permissions.isBotAdmin(message.author) ||
-        message.member.hasPermission(Permissions.FLAGS.MANAGE_NICKNAMES)
+        message.member.permissions.has(Permissions.FLAGS.MANAGE_NICKNAMES)
       ) {
         const check = checkBotPermissions(message.guild, ...info.permissions);
 

@@ -37,7 +37,7 @@ function getQuoteMessage(quote) {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   // TODO: Add a `.quotes find phrase` command
-
+  // TODO: Switch to slash command
   aquarius.onCommand(/^quotes random$/, async (message) => {
     log.info('Getting random quote', getMessageMeta(message));
 
@@ -67,6 +67,7 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('random', message);
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^quotes read #?(?<id>[0-9]+)$/i,
     async (message, { groups }) => {
@@ -101,6 +102,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^quotes (?:new|add) (?<quote>[^]*)$/i,
     async (message, { groups }) => {

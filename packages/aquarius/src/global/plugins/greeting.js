@@ -31,23 +31,28 @@ async function getWelcomeMessage(guild) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Make less shitty
   aquarius.on('guildCreate', async (guild) => {
     const message = await getWelcomeMessage(guild);
     const count = { success: 0, failure: 0 };
 
     log.info('Sending message');
 
-    guild.members.cache
-      .filter((member) => member.hasPermission(Permissions.FLAGS.ADMINISTRATOR))
-      .array()
-      .forEach(async (member) => {
-        try {
-          await member.send(message);
-          count.success += 1;
-        } catch (error) {
-          count.failure += 1;
-        }
-      });
+    // TODO: Use better collection methods
+    Array.from(
+      guild.members.cache
+        .filter((member) =>
+          member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+        )
+        .values()
+    ).forEach(async (member) => {
+      try {
+        await member.send(message);
+        count.success += 1;
+      } catch (error) {
+        count.failure += 1;
+      }
+    });
 
     analytics.trackUsage('greeting', null, {
       guildId: guild.id,

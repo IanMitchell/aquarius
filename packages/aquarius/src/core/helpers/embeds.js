@@ -23,7 +23,7 @@ export async function guildEmbed(guild, ...fields) {
   const date = getStandardDate(guild.createdAt);
 
   const activeMembers = guild.members.cache.filter(
-    (member) => member.presence.status === 'online'
+    (member) => member.presence.status !== 'offline'
   );
 
   const channelTypes = {

@@ -22,6 +22,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^color (?<name>.+)$/i, (message, { groups }) => {
     log.info(`Looking up color ${groups.name}`);
 
@@ -55,7 +56,7 @@ export default async ({ aquarius, analytics }) => {
         .addField('HSV', color.hsv.join(', '), true)
         .addField('RGB', color.rgb.join(', '), true);
 
-      message.channel.send(embed);
+      message.channel.send({ embeds: [embed] });
     }
 
     analytics.trackUsage('color', message);

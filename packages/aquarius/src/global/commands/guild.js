@@ -2,7 +2,6 @@ import { checkBotPermissions, isGuildAdmin } from '@aquarius-bot/permissions';
 import chalk from 'chalk';
 import dedent from 'dedent-js';
 import { Permissions } from 'discord.js';
-import pluralize from 'pluralize';
 import { guildEmbed } from '../../core/helpers/embeds';
 import getLogger, { getMessageMeta } from '../../core/logging/log';
 
@@ -16,16 +15,9 @@ export const info = {
   usage: '```@Aquarius guild```',
 };
 
-function formatGuild(guild, idx) {
-  const members = `${guild.memberCount} ${pluralize(
-    'Member',
-    guild.memberCount
-  )}`;
-  return `${idx + 1}. ${guild.name} -- *(${members})*\n`;
-}
-
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^(?:server|guild)$/i, async (message) => {
     log.info(
       `Info for ${chalk.green(message.guild.name)}`,
@@ -43,33 +35,19 @@ export default async ({ aquarius, analytics }) => {
     }
 
     const { guild } = message;
-    const admin = isGuildAdmin(guild, guild.me);
+    const admin = await isGuildAdmin(guild, guild.me);
 
     const embed = await guildEmbed(guild, {
       title: 'Aquarius',
       content: dedent`**Admin:** ${admin ? 'Yes' : 'No'}`,
     });
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 
     analytics.trackUsage('stats', message);
   });
 
-  aquarius.onCommand(/(server|guild) list/i, (message) => {
-    if (aquarius.permissions.isBotOwner(message.author)) {
-      log.info('List Requested', getMessageMeta(message));
-      const guilds = aquarius.guilds.cache.array();
-
-      message.channel.send(dedent`
-      **I'm in ${guilds.length} ${pluralize('Server', guilds.length)}**
-
-      ${guilds.reduce((str, guild, idx) => str + formatGuild(guild, idx), '')}
-    `);
-
-      analytics.trackUsage('list', message);
-    }
-  });
-
+  // TODO: Switch to slash command
   // TODO: Broken
   aquarius.onCommand(
     /(?:server|guild) info (?<name>.+)/i,
@@ -96,7 +74,7 @@ export default async ({ aquarius, analytics }) => {
 
         if (guild) {
           const embed = await guildEmbed(guild);
-          message.channel.send(embed);
+          message.channel.send({ embeds: [embed] });
         } else {
           message.channel.send("Sorry, I couldn't find that guild!");
         }

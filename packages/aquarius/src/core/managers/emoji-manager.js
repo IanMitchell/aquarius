@@ -36,9 +36,11 @@ export default class EmojiManager extends Map {
       return;
     }
 
-    homeGuild.emojis.cache
-      .filter((emoji) => emoji.name.startsWith('aquarius'))
-      .array()
-      .forEach((emoji) => this.set(emoji.name.replace(/aquarius_/, ''), emoji));
+    // TODO: This can be updated to use smarter collection methods
+    Array.from(
+      homeGuild.emojis.cache
+        .filter((emoji) => emoji.name.startsWith('aquarius'))
+        .values()
+    ).forEach((emoji) => this.set(emoji.name.replace(/aquarius_/, ''), emoji));
   }
 }

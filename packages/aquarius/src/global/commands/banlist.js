@@ -35,6 +35,7 @@ export default async ({ aquarius, analytics }) => {
     });
   };
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /banlist add (?<input>\d+)(?: (?<reason>.+))?/i,
     async (message, { groups }) => {
@@ -64,6 +65,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /banlist remove (?<input>.+)/i,
     async (message, { groups }) => {
@@ -92,6 +94,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /banlist lookup (?<input>.+)/i,
     async (message, { groups }) => {
@@ -125,6 +128,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(/banlist count/i, async (message) => {
     if (aquarius.permissions.isBotAdmin(message.author)) {
       log.info('Count Requested', getMessageMeta(message));

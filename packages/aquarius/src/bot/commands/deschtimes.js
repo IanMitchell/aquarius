@@ -120,6 +120,7 @@ async function getShowEmbed(data, episodeNumber) {
 export default async ({ aquarius, analytics, settings }) => {
   settings.register('token', "Your Group's Deschtimes token", 0);
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^blame (?:#(?<episode>\d+) )?(?<show>[^.](?:.+)?)$/i,
     async (message, { groups }) => {
@@ -151,7 +152,7 @@ export default async ({ aquarius, analytics, settings }) => {
         }
 
         const embed = await getShowEmbed(data, parseInt(groups.episode, 10));
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
         analytics.trackUsage('blame', message);
       } catch (error) {
         log.error(error);
@@ -165,6 +166,7 @@ export default async ({ aquarius, analytics, settings }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^(?:(?:(?<status>done|undone) (?<position>\w+)(?: #(?<episode>\d+))? (?<show>[^.](?:.+)?)))$/i,
     async (message, { groups }) => {
@@ -187,7 +189,10 @@ export default async ({ aquarius, analytics, settings }) => {
             groups.show
           )}/staff`
         );
-        url.searchParams.append('finished', groups.status.toLowerCase() === 'done');
+        url.searchParams.append(
+          'finished',
+          groups.status.toLowerCase() === 'done'
+        );
         url.searchParams.append('member', message.author.id);
         url.searchParams.append(
           'position',
@@ -208,7 +213,7 @@ export default async ({ aquarius, analytics, settings }) => {
 
         if (response.ok) {
           const embed = await getShowEmbed(data, parseInt(groups.episode, 10));
-          message.channel.send(embed);
+          message.channel.send({ embeds: [embed] });
         } else {
           message.channel.send(data.message);
         }
@@ -226,6 +231,7 @@ export default async ({ aquarius, analytics, settings }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^release\s(?<show>[^.](?:.+)?)$/i,
     async (message, { groups }) => {
@@ -247,7 +253,10 @@ export default async ({ aquarius, analytics, settings }) => {
 
         if (response.ok) {
           const embed = await getShowEmbed(data);
-          message.channel.send('Episode released!', embed);
+          message.channel.send({
+            content: 'Episode released!',
+            embeds: [embed],
+          });
         } else {
           message.channel.send(data.message);
         }

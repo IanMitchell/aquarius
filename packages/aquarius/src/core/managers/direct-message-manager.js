@@ -43,10 +43,10 @@ export default class DirectMessageManager {
         log.info(`Prompting ${chalk.green(user.username)}`);
         user.send(str);
 
-        const collector = user.dmChannel.createMessageCollector(
-          (msg) => !msg.author.bot,
-          { time: this.defaultMaxResponseTime }
-        );
+        const collector = user.dmChannel.createMessageCollector({
+          filter: (msg) => !msg.author.bot,
+          time: this.defaultMaxResponseTime,
+        });
 
         collector.on('collect', (msg) => {
           if (msg.cleanContent.toLowerCase() === 'stop') {

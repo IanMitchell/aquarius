@@ -1,40 +1,55 @@
-import { fixPartialReactionEvents } from '@aquarius-bot/discordjs-fixes';
 import {
-  isAsyncCommand,
-  startLoading,
-  stopLoading,
-} from '@aquarius-bot/loading';
-import { isDirectMessage } from '@aquarius-bot/messages';
-import Sentry from '@aquarius-bot/sentry';
-import * as triggers from '@aquarius-bot/triggers';
-import { isBot } from '@aquarius-bot/users';
-import chalk from 'chalk';
-import Discord, { Intents } from 'discord.js';
-import fs from 'fs';
-import yaml from 'js-yaml';
-import path from 'path';
-import Analytics from './core/commands/analytics';
-import Settings from './core/commands/settings';
-import database from './core/database/database';
-import { getDirname } from './core/helpers/files';
-import * as permissions from './core/helpers/permissions';
-import getLogger, { getMessageMeta } from './core/logging/log';
-import DirectMessageManager from './core/managers/direct-message-manager';
-import EmojiManager from './core/managers/emoji-manager';
-import GuildManager from './core/managers/guild-manager';
-import ServiceManager from './core/managers/service-manager';
-import { setupDailySnapshotLoop } from './core/metrics/discord';
-import CommandConfig from './core/settings/command-config';
-import TriggerMap from './core/settings/trigger-map';
+  fixPartialReactionEvents,
+  INTENTS_DOT_ALL,
+} from "@aquarius-bot/discordjs-fixes";
+import { isAsyncCommand, startLoading } from "@aquarius-bot/loading";
+import { isDirectMessage } from "@aquarius-bot/messages";
+import Sentry from "@aquarius-bot/sentry";
+import * as triggers from "@aquarius-bot/triggers";
+import { isBot } from "@aquarius-bot/users";
+import chalk from "chalk";
+import Discord from "discord.js";
+import fs from "fs";
+import yaml from "js-yaml";
+import path from "path";
+import Analytics from "./core/commands/analytics";
+import Settings from "./core/commands/settings";
+import {
+  getMergedApplicationCommandData,
+  getSerializedCommandInteractionKey,
+  getSlashCommandKey,
+  isApplicationCommandEqual,
+} from "./core/commands/slash";
+import database from "./core/database/database";
+import { getDirname } from "./core/helpers/files";
+import * as permissions from "./core/helpers/permissions";
+import getLogger, {
+  getInteractionMeta,
+  getMessageMeta,
+} from "./core/logging/log";
+import DirectMessageManager from "./core/managers/direct-message-manager";
+import EmojiManager from "./core/managers/emoji-manager";
+import GuildManager from "./core/managers/guild-manager";
+import ServiceManager from "./core/managers/service-manager";
+import { setupDailySnapshotLoop } from "./core/metrics/discord";
+import CommandConfig from "./core/settings/command-config";
+import TriggerMap from "./core/settings/trigger-map";
 
-const log = getLogger('Aquarius');
+const log = getLogger("Aquarius");
 
 /**
  * @typedef { import('@prisma/client').PrismaClient } PrismaClient
  * @typedef { import('discord.js').Guild } Guild
  * @typedef { import('discord.js').Message } Message
+ * @typedef { import('discord.js').ApplicationCommandData } ApplicationCommandData
+ * @typedef { import('discord.js').Interaction } Interaction
+ * @typedef { import('discord.js').CommandInteraction } CommandInteraction
+ * @typedef { import('discord.js').MessageComponent } MessageComponent
+ * @typedef { import('discord.js').MessageComponentInteraction} MessageComponentInteraction
  * @typedef { import('./typedefs').CommandInfo } CommandInfo
  * @typedef { import('./typedefs').CommandHandler } CommandHandler
+ * @typedef { import('./typedefs').ApplicationCommandOptions } ApplicationCommandOptions
+ * @typedef {import('@discordjs/builders').SlashCommandBuilder} SlashCommandBuilder
  *
  * @typedef {( message: Message, regex: RegExp ) => RegExpMatchArray|false} MatchFn
  */
@@ -44,10 +59,10 @@ const log = getLogger('Aquarius');
  */
 export class Aquarius extends Discord.Client {
   constructor() {
-    log.info('Booting up...');
+    log.info("Booting up...");
     super({
-      ws: { intents: Intents.ALL },
-      allowedMentions: { parse: ['users'] },
+      intents: INTENTS_DOT_ALL,
+      allowedMentions: { parse: ["users"] },
     });
 
     // We have more listeners than normal - each command registers one to
@@ -111,6 +126,18 @@ export class Aquarius extends Discord.Client {
      */
     this.triggerMap = new TriggerMap();
 
+    /**
+     * Stores interaction handlers
+     * @type {Map<string, {commands: SlashCommandBuilder[], options: ApplicationCommandOptions, handler: (CommandInteraction) => unknown}>}
+     */
+    this.applicationCommands = new Map();
+
+    /**
+     * Stores message component handlers
+     * @type {Map<string, { component: MessageComponent, handler: (MessageComponentInteraction) => unknown }>}
+     */
+    this.messageComponents = new Map();
+
     // Setup API
 
     /**
@@ -137,10 +164,12 @@ export class Aquarius extends Discord.Client {
 
     // Load Commands and Plugins
     this.loadGlobals();
+    this.loadLegacyCommands();
     this.loadCommands();
 
-    this.on('ready', this.initialize);
-    this.on('error', (error) => {
+    this.on("ready", this.initialize);
+    this.on("interactionCreate", this.handleInteraction);
+    this.on("error", (error) => {
       log.fatal(error.message);
       Sentry.captureException(error);
     });
@@ -150,10 +179,11 @@ export class Aquarius extends Discord.Client {
    * Initialization logic that runs after the bot has logged in
    * @todo Make this method private
    */
-  initialize() {
+  async initialize() {
     this.guildManager.initialize();
     this.emojiList.initialize();
     setupDailySnapshotLoop();
+    this.upsertApplicationCommands();
   }
 
   /**
@@ -161,8 +191,8 @@ export class Aquarius extends Discord.Client {
    * @todo Make this method private
    */
   loadConfig() {
-    const configPath = path.join(getDirname(import.meta.url), '../config.yml');
-    return Object.freeze(yaml.safeLoad(fs.readFileSync(configPath)));
+    const configPath = path.join(getDirname(import.meta.url), "../config.yml");
+    return Object.freeze(yaml.load(fs.readFileSync(configPath)));
   }
 
   /**
@@ -170,14 +200,14 @@ export class Aquarius extends Discord.Client {
    * @todo Make this method private
    */
   loadGlobals() {
-    log.info('Loading Global Commands...');
+    log.info("Loading Global Commands...");
     this.loadDirectory(
-      path.join(getDirname(import.meta.url), 'global/commands'),
+      path.join(getDirname(import.meta.url), "global/commands"),
       true
     );
-    log.info('Loading Global Plugins...');
+    log.info("Loading Global Plugins...");
     this.loadDirectory(
-      path.join(getDirname(import.meta.url), 'global/plugins'),
+      path.join(getDirname(import.meta.url), "global/plugins"),
       true
     );
   }
@@ -186,21 +216,35 @@ export class Aquarius extends Discord.Client {
    * Loads and initializes all non-global commands and plugins
    * @todo Make this method private
    */
-  loadCommands() {
-    log.info('Loading Bot Commands...');
-    this.loadDirectory(path.join(getDirname(import.meta.url), 'bot/commands'));
-    log.info('Loading Bot Plugins...');
-    this.loadDirectory(path.join(getDirname(import.meta.url), 'bot/plugins'));
+  loadLegacyCommands() {
+    log.info("Loading Bot Commands...");
+    this.loadDirectory(path.join(getDirname(import.meta.url), "bot/commands"));
+    log.info("Loading Bot Plugins...");
+    this.loadDirectory(path.join(getDirname(import.meta.url), "bot/plugins"));
 
     // Disabled until we have custom commands
     // log('Loading Custom Bot Commands...');
     // this.loadDirectory(
     //   path.join(getDirname(import.meta.url), 'custom/commands')
     // );
-    log.info('Loading Custom Bot Plugins...');
+    log.info("Loading Custom Bot Plugins...");
     this.loadDirectory(
-      path.join(getDirname(import.meta.url), 'custom/plugins')
+      path.join(getDirname(import.meta.url), "custom/plugins")
     );
+  }
+
+  loadCommands() {
+    log.info("Loading Application Commands");
+
+    const directory = path.join(getDirname(import.meta.url), "commands");
+
+    fs.readdir(directory, (err, files) => {
+      if (err) {
+        throw err;
+      }
+
+      files.forEach((file) => this.loadApplicationCommandFile(directory, file));
+    });
   }
 
   /**
@@ -228,7 +272,7 @@ export class Aquarius extends Discord.Client {
    * @todo Make this method private
    */
   async loadFile(directory, file, globalFile) {
-    if (file.endsWith('.js')) {
+    if (file.endsWith(".js")) {
       log.info(`Loading ${chalk.blue(file)}`);
 
       try {
@@ -246,7 +290,7 @@ export class Aquarius extends Discord.Client {
         // Initialize Command
         try {
           if (this.commandConfigs.has(command.info.name)) {
-            throw new Error('Duplicate Name Registration In Config Manager');
+            throw new Error("Duplicate Name Registration In Config Manager");
           }
 
           // Create Config
@@ -289,6 +333,188 @@ export class Aquarius extends Discord.Client {
   }
 
   /**
+   * Loads and initializes an interaction from the given file. Should only be
+   * called by Aquarius.
+   * @param {string} directory - directory to load files from
+   * @param {strong} file - path to the file to load
+   * @todo Make this method private
+   */
+  async loadApplicationCommandFile(directory, file) {
+    if (file.endsWith(".js")) {
+      log.info(`Loading ${chalk.blue(file)}`);
+
+      try {
+        const data = await import(path.join(directory, file));
+
+        // Initialize Command
+        try {
+          // Handle Deprecated Commands
+          this.triggerMap.setCurrentCommand(data.info);
+          await data.default({
+            aquarius: this.triggerMap,
+            settings: {
+              register: () => {},
+            },
+            analytics: {},
+          });
+
+          this.commandList.set(data.info.name, data.info);
+
+          // Create Config
+          if (this.commandConfigs.has(data.info.name)) {
+            throw new Error("Duplicate Name Registration In Config Manager");
+          }
+
+          this.commandConfigs.set(
+            data.command.name,
+            new CommandConfig(data.command.name)
+          );
+
+          await data.default({
+            aquarius: this,
+            analytics: new Analytics(data.command.name),
+            settings: new Settings(data.command.name),
+          });
+        } catch (error) {
+          log.error(error.message);
+          Sentry.captureException(error);
+        }
+      } catch (error) {
+        log.fatal(error.message, { file });
+        Sentry.captureException(error);
+        process.exit(1);
+      }
+    }
+  }
+
+  /**
+   * Serializes all of the Application Command fragments into complete data structures
+   * @param {boolean} [includeGlobal=true] - Whether to include global commands
+   * @param {boolean} [includeGuild=true] - Whether to include guild-only commands
+   * @returns {Map<string, ApplicationCommandData>} The complete application command data structures
+   */
+  getSerializedApplicationData(includeGlobal = true, includeGuild = true) {
+    const commands = new Map();
+
+    Array.from(this.applicationCommands.values()).forEach((entry) => {
+      if (
+        (includeGlobal && entry.options.guild != null) ||
+        (includeGuild && entry.options.guild == null)
+      ) {
+        return;
+      }
+
+      const [{ name }] = entry.commands;
+      if (commands.has(name)) {
+        const command = commands.get(name);
+        commands.set(
+          name,
+          getMergedApplicationCommandData(entry.commands, command)
+        );
+      } else {
+        commands.set(name, getMergedApplicationCommandData(entry.commands));
+      }
+    });
+
+    return commands;
+  }
+
+  /**
+   * TODO: Make this work with the guild function. Right now they both exist in a great way for prod, but I need something
+   * special for dev. That sucks, but there should be a way to make it work.
+   */
+  async upsertGlobalApplicationCommand(serializedCommands) {
+    await this.application.commands.fetch();
+
+    try {
+      this.application.commands.cache.forEach(async (command) => {
+        if (!serializedCommands.has(command.name)) {
+          log.info(`Deleting ${command.name}`);
+          command.delete();
+        } else if (
+          !isApplicationCommandEqual(
+            command,
+            serializedCommands.get(command.name)
+          )
+        ) {
+          log.info(`Updating ${command.name}`);
+          command.edit(serializedCommands.get(command.name).toJSON());
+        }
+      });
+
+      Array.from(serializedCommands.keys())
+        .filter((key) => !this.application.commands.cache.has(key))
+        .forEach((key) => {
+          log.info(`Creating ${serializedCommands.get(key).name}`);
+          this.application.commands.create(
+            serializedCommands.get(key).toJSON()
+          );
+        });
+    } catch (error) {
+      log.error(error.message);
+      Sentry.captureException(error);
+    }
+  }
+
+  async updateGuildApplicationCommand(guildId, serializedCommands) {
+    const guild = this.guilds.cache.get(guildId);
+    await guild.commands.fetch();
+
+    try {
+      guild.commands.cache.forEach(async (command) => {
+        if (!serializedCommands.has(command.name)) {
+          log.info(`Deleting ${command.name} in ${guildId}`);
+          command.delete();
+        } else if (
+          !isApplicationCommandEqual(
+            command,
+            serializedCommands.get(command.name)
+          )
+        ) {
+          log.info(`Updating ${command.name} in ${guildId}`);
+          command.edit(serializedCommands.get(command.name).toJSON());
+        }
+      });
+    } catch (error) {
+      log.error(error.message);
+      Sentry.captureException(error);
+    }
+  }
+
+  /**
+   * TODO: write words
+   */
+  async upsertApplicationCommands() {
+    let serializedCommands = this.getSerializedApplicationData(true, false);
+
+    if (process.env.NODE_ENV !== "production") {
+      log.info("Skipping Global Application Command Validation");
+    } else {
+      log.info("Validating Global Application Commands");
+      this.upsertGlobalApplicationCommand(serializedCommands);
+    }
+
+    log.info("Validating Guild Application Commands");
+    serializedCommands = this.getSerializedApplicationData(false, true);
+
+    this.guilds.cache.forEach(async (guild) => {
+      await guild.commands.fetch();
+      this.updateGuildApplicationCommand(guild.id, serializedCommands);
+    });
+
+    // Devmode lol
+    if (process.env.NODE_ENV === "development") {
+      log.info("Validating Developer Server Guild Application Commands");
+      serializedCommands = this.getSerializedApplicationData(true, true);
+      await this.guilds.fetch("356522910569201664");
+      this.updateGuildApplicationCommand(
+        "356522910569201664",
+        serializedCommands
+      );
+    }
+  }
+
+  /**
    * Get the list of Global Command Names
    * @return {string[]} List of Global Command Names
    */
@@ -306,10 +532,12 @@ export class Aquarius extends Discord.Client {
    */
   addHelp(commandInfo) {
     if (this.help.has(commandInfo.name)) {
-      throw new Error('Duplicate Help Registration');
+      throw new Error("Duplicate Help Registration");
     }
 
-    this.help.set(commandInfo.name, commandInfo);
+    if (!commandInfo.deprecated) {
+      this.help.set(commandInfo.name, commandInfo);
+    }
   }
 
   /**
@@ -362,14 +590,12 @@ export class Aquarius extends Discord.Client {
     }
 
     const commandInfo = this.triggerMap.get(regex.toString());
-    let isLoading = false;
 
     if (this.isUsageAllowed(message, commandInfo)) {
       try {
         const match = matchFn(message, regex);
         if (match) {
           if (isAsyncCommand(handler)) {
-            isLoading = true;
             startLoading(message.channel);
           }
 
@@ -379,10 +605,6 @@ export class Aquarius extends Discord.Client {
       } catch (error) {
         log.error(error.message, getMessageMeta(message));
         Sentry.captureException(error);
-      } finally {
-        if (isLoading && isAsyncCommand(handler)) {
-          stopLoading(message.channel);
-        }
       }
     }
   }
@@ -402,15 +624,12 @@ export class Aquarius extends Discord.Client {
       return;
     }
 
-    let isLoading = false;
-
     if (this.isUsageAllowed(message, commandInfo) && !isBot(message.author)) {
       try {
         const match = matchFn(message);
 
         if (match) {
           if (isAsyncCommand(handler)) {
-            isLoading = true;
             startLoading(message.channel);
           }
 
@@ -420,10 +639,45 @@ export class Aquarius extends Discord.Client {
       } catch (error) {
         log.error(error, getMessageMeta(message));
         Sentry.captureException(error);
-      } finally {
-        if (isLoading && isAsyncCommand(handler)) {
-          stopLoading(message.channel);
+      }
+    }
+  }
+
+  /**
+   * Handles incoming interactions and routes them to the appropriate handler
+   * @param {CommandInteraction | MessageComponentInteraction} interaction - Event interaction
+   */
+  handleInteraction(interaction) {
+    if (interaction.isCommand()) {
+      const key = getSerializedCommandInteractionKey(interaction);
+
+      if (this.applicationCommands.has(key)) {
+        try {
+          this.applicationCommands.get(key).handler(interaction);
+        } catch (error) {
+          log.error(error, getInteractionMeta(interaction));
+          Sentry.captureException(error);
         }
+      } else {
+        log.error(
+          `Unknown command interaction: ${key}`,
+          getInteractionMeta(interaction)
+        );
+      }
+    } else {
+      if (!this.messageComponents.has(interaction.customId)) {
+        log.error(
+          `Unknown component interaction: ${interaction.customId}`,
+          getInteractionMeta(interaction)
+        );
+        return;
+      }
+
+      try {
+        this.messageComponents.get(interaction.customId).handler(interaction);
+      } catch (error) {
+        log.error(error, getInteractionMeta(interaction));
+        Sentry.captureException(error);
       }
     }
   }
@@ -435,9 +689,9 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Handler function for matching messages
    */
   onDirectMessage(regex, handler) {
-    this.on('message', (message) => {
+    this.on("messageCreate", (message) => {
       Sentry.withMessageScope(message, () => {
-        if (message.channel.type === 'dm') {
+        if (message.channel.type === Discord.Constants.ChannelTypes.DM) {
           if (isBot(message.author)) {
             return;
           }
@@ -473,7 +727,7 @@ export class Aquarius extends Discord.Client {
    * `match` will be set to `true`
    */
   onMessage(info, handler) {
-    this.on('message', (message) => {
+    this.on("messageCreate", (message) => {
       Sentry.withMessageScope(message, () => {
         this.handleMessage(message, info, handler, () => true);
       });
@@ -496,7 +750,7 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onCommand(regex, handler) {
-    this.on('message', (message) => {
+    this.on("messageCreate", (message) => {
       Sentry.withMessageScope(message, () => {
         this.handleCommand(
           message,
@@ -522,7 +776,7 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onTrigger(regex, handler) {
-    this.on('message', (message) => {
+    this.on("messageCreate", (message) => {
       Sentry.withMessageScope(message, () => {
         this.handleCommand(
           message,
@@ -547,10 +801,37 @@ export class Aquarius extends Discord.Client {
    * @param {CommandHandler} handler - Callback invoked for trigger messages
    */
   onDynamicTrigger(commandInfo, matchFn, handler) {
-    this.on('message', (message) => {
+    this.on("messageCreate", (message) => {
       Sentry.withMessageScope(message, () => {
         this.handleMessage(message, commandInfo, handler, matchFn);
       });
+    });
+  }
+
+  /**
+   * Registers a handler function for Application Commands. Will automatically update guild registrations if needed
+   * when the bot starts.
+   * @param {SlashCommandBuilder | SlashCommandBuilder[]} command - Command registering the interaction
+   * @param {(interaction: CommandInteraction) => unknown} handler - Callback invoked for triggered interaction
+   * @param {ApplicationCommandOptions} options - Application Command options
+   */
+  onSlash(command, handler, options = {}) {
+    this.applicationCommands.set(getSlashCommandKey(command), {
+      commands: Array.isArray(command) ? command : [command],
+      options,
+      handler,
+    });
+  }
+
+  /**
+   * Registers a handler function for Message Component Interactions.
+   * @param {MessageComponent} component - Component registering the interaction handler
+   * @param {(interaction: MessageComponentInteraction) => unknown} handler - Callback invoked for triggered interaction
+   */
+  onComponent(component, handler) {
+    this.messageComponents.set(component.customId, {
+      component,
+      handler,
     });
   }
 
@@ -561,7 +842,7 @@ export class Aquarius extends Discord.Client {
    * @param {number} frequency - How frequently to run the loop
    */
   loop(commandInfo, callback, frequency) {
-    this.on('ready', () => {
+    this.on("ready", () => {
       setInterval(() => {
         this.guilds.cache.forEach((guild) => {
           if (

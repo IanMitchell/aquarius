@@ -1,4 +1,4 @@
-import { startLoading, stopLoading } from '@aquarius-bot/loading';
+import { startLoading } from '@aquarius-bot/loading';
 import { Permissions } from 'discord.js';
 import JSZip from 'jszip';
 import fetch from 'node-fetch';
@@ -22,6 +22,7 @@ async function downloadImage(url) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^emojis download$/i, async (message) => {
     try {
       log.info('Creating emoji zip file for download');
@@ -53,8 +54,6 @@ export default async ({ aquarius, analytics }) => {
       analytics.trackUsage('download', message);
     } catch (error) {
       log.error(error);
-    } finally {
-      stopLoading(message.channel);
     }
   });
 };

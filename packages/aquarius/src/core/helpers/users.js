@@ -6,15 +6,6 @@ import aquarius from '../../aquarius';
  */
 
 /**
- * Get an array of guilds Aquarius is in that are owned for a user
- * @param {User} user - User to return owned guilds for
- * @return {Guild[]} Array of Guilds
- */
-export function getOwnedGuilds(user) {
-  return aquarius.guilds.cache.filter((guild) => guild.owner === user).array();
-}
-
-/**
  * Gets the Discord User for Aquarius's owner
  * @returns {User} The Owner's user
  */

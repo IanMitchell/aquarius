@@ -138,7 +138,7 @@ export default async ({ aquarius, analytics }) => {
         embed.addField(name, value, true)
       );
 
-      message.channel.send(embed);
+      message.channel.send({ embeds: [embed] });
       analytics.trackUsage('view', message);
     }
   );

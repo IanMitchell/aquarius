@@ -12,6 +12,7 @@ export const info = {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: switch to slash command
   aquarius.onCommand(/^support/i, (message) => {
     log.info(`Support request in ${chalk.green(message.guild.name)}`);
 

@@ -10,7 +10,8 @@
       "request": "launch",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "debug"],
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal"
     },
     {
       "name": "Launch Migrate",

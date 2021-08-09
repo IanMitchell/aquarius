@@ -5,15 +5,7 @@
  * @param {TextChannel} channel - The Text Channel to start the typing indicator
  */
 export function startLoading(channel) {
-  return channel.startTyping();
-}
-
-/**
- * Indicates Aquarius has finished loading something by using the Typing indicator
- * @param {TextChannel} channel - The Text Channel to stop the typing indicator
- */
-export function stopLoading(channel) {
-  return channel.stopTyping();
+  return channel.sendTyping();
 }
 
 /**

@@ -66,7 +66,7 @@ export async function getMetricHandler() {
   let messagesReceived = 0;
   // let guildMetricCache = await getGuildMetrics();
 
-  aquarius.on('message', () => {
+  aquarius.on('messageCreate', () => {
     messagesReceived += 1;
   });
 

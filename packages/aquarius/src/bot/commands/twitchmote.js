@@ -11,7 +11,7 @@ const log = getLogger('Twitchmote');
 export const info = {
   name: 'twitchmote',
   description: 'Imports global Twitch Emoji.',
-  permissions: [Permissions.FLAGS.MANAGE_EMOJIS],
+  permissions: [Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS],
   usage: '```@Aquarius twitchmote add <emoji name>```',
 };
 
@@ -46,10 +46,15 @@ export default async ({ aquarius, analytics }) => {
     setInterval(getTwitchEmoteList, ONE_HOUR);
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^twitchmote add (?<name>.+)$/i,
     async (message, { groups }) => {
-      if (!message.member.hasPermission(Permissions.FLAGS.MANAGE_EMOJIS)) {
+      if (
+        !message.member.permissions.has(
+          Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS
+        )
+      ) {
         message.channel.send(
           "You don't have permission to edit emoji on this server!"
         );

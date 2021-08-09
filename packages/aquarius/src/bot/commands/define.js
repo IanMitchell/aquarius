@@ -53,6 +53,7 @@ function isWord(dom) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(/^define (?<word>.+)$/i, async (message, { groups }) => {
     const check = checkBotPermissions(message.guild, ...info.permissions);
 
@@ -82,7 +83,7 @@ export default async ({ aquarius, analytics }) => {
           .addField('Plural', getPlural(dom))
           .addField('Pronunciation', getPronunciation(dom));
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
       } else {
         const words = Array.from(dom.getElementsByTagName('suggestion'))
           .map((element) => element.textContent)

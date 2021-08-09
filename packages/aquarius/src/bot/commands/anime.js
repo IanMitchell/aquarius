@@ -111,6 +111,7 @@ function createAnimeEmbed(data) {
 }
 
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^anime info (?<show>.+)$/i,
     async (message, { groups }) => {
@@ -152,7 +153,7 @@ export default async ({ aquarius, analytics }) => {
           return;
         }
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
       } catch (error) {
         log.error(error);
         Sentry.captureException(error);

@@ -70,6 +70,7 @@ export default async ({ aquarius, analytics }) => {
     stdTTL: ONE_HOUR / 1000,
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^(?:aqi) (?<location>.*)/i,
     async (message, { groups }) => {
@@ -108,7 +109,7 @@ export default async ({ aquarius, analytics }) => {
             'https://www.iqair.com/assets/favicons/favicon-32x32.png'
           );
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
       } catch (error) {
         log.error(error);
         Sentry.captureException(error);

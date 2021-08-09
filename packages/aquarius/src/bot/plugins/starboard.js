@@ -130,7 +130,7 @@ export default async ({ aquarius, settings, analytics }) => {
         embed.setImage(image.url);
       }
 
-      channel.send(embed);
+      channel.send({ embeds: [embed] });
       analytics.trackUsage('starred', message.content);
     }
   });

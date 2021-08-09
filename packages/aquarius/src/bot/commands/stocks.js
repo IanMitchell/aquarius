@@ -154,6 +154,7 @@ async function getStockEmbed(profileData, priceData) {
 
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^stocks info \$?(?<sign>.+)$/i,
     async (message, { groups }) => {
@@ -189,7 +190,7 @@ export default async ({ aquarius, analytics }) => {
             profileData,
             normalize(priceData).data
           );
-          message.channel.send(embed);
+          message.channel.send({ embeds: [embed] });
         }
       } catch (error) {
         log.error(error.message);
@@ -204,6 +205,7 @@ export default async ({ aquarius, analytics }) => {
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^stocks rating \$?(?<sign>.+)$/i,
     async (message, { groups }) => {
@@ -253,7 +255,7 @@ export default async ({ aquarius, analytics }) => {
             embed.setColor(0xff0000);
           }
 
-          message.channel.send(embed);
+          message.channel.send({ embeds: [embed] });
         }
       } catch (error) {
         log.error(error.message);
@@ -273,6 +275,7 @@ export default async ({ aquarius, analytics }) => {
   //   //https://financialmodelingprep.com/api/v3/historical-price-full/AAPL?serietype=line
   // );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(/^stocks indexes$/, async (message) => {
     log.info('Looking up indexes', getMessageMeta(message));
 
@@ -310,7 +313,7 @@ export default async ({ aquarius, analytics }) => {
         );
       });
 
-      message.channel.send(embed);
+      message.channel.send({ embeds: [embed] });
     } catch (error) {
       log.error(error.message);
       Sentry.captureException(error);
@@ -323,6 +326,7 @@ export default async ({ aquarius, analytics }) => {
     analytics.trackUsage('indexes', message);
   });
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /^stocks sectors(?: (?<time>1d|5d|1m|3m|ytd|1y|3y|5y|10y))?$/i,
     async (message, { groups }) => {
@@ -362,7 +366,7 @@ export default async ({ aquarius, analytics }) => {
           embed.addField(`**${sector}**`, data[time][sector], true);
         });
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
       } catch (error) {
         log.error(error.error);
         Sentry.captureException(error);

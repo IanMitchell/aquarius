@@ -1,16 +1,16 @@
-import Sentry from '@aquarius-bot/sentry';
-import chalk from 'chalk';
-import dedent from 'dedent-js';
-import pluralize from 'pluralize';
-import { humanize } from '../../core/helpers/lists';
-import getLogger, { getMessageMeta } from '../../core/logging/log';
+import Sentry from "@aquarius-bot/sentry";
+import chalk from "chalk";
+import dedent from "dedent-js";
+import pluralize from "pluralize";
+import { humanize } from "../../core/helpers/lists";
+import getLogger, { getMessageMeta } from "../../core/logging/log";
 
-const log = getLogger('Admin');
+const log = getLogger("Admin");
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
-  name: 'admin',
-  description: 'Add, remove, and configure commands for your server.',
+  name: "admin",
+  description: "Add, remove, and configure commands for your server.",
   usage: dedent`
     **Add a Command:**
     \`\`\`@Aquarius commands add <name>...\`\`\`
@@ -44,7 +44,7 @@ async function getGuildTarget(aquarius, message) {
   );
 
   if (guilds.size === 0) {
-    message.channel.send('You need to be a guild admin to use this command!');
+    message.channel.send("You need to be a guild admin to use this command!");
   } else if (guilds.size === 1) {
     // eslint-disable-next-line prefer-destructuring
     target = Array.from(guilds.keys())[0];
@@ -64,7 +64,7 @@ async function getGuildTarget(aquarius, message) {
       log.error(error.message);
       Sentry.captureException(error);
 
-      message.channel.send('Sorry, something happened. Please try again!');
+      message.channel.send("Sorry, something happened. Please try again!");
       return 0;
     }
   }
@@ -80,13 +80,13 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onDirectMessage(
     /settings list (?<command>.+)/i,
     async (message, { groups }) => {
-      log.info('Setting list', getMessageMeta(message));
+      log.info("Setting list", getMessageMeta(message));
 
       const { channel } = message;
       const guild = await getGuildTarget(aquarius, message);
 
       if (!guild) {
-        log.info('Non-admin account, exiting');
+        log.info("Non-admin account, exiting");
         return;
       }
 
@@ -106,7 +106,7 @@ export default async ({ aquarius, analytics }) => {
         .keys()
         .reduce(
           (str, key) => `${str}* \`${key}\`: ${config.get(guild, key)}\n`,
-          ''
+          ""
         );
 
       const msg = dedent`
@@ -121,21 +121,21 @@ export default async ({ aquarius, analytics }) => {
       `;
 
       channel.send(msg);
-      analytics.trackUsage('settings list', message);
+      analytics.trackUsage("settings list", message);
     }
   );
 
   aquarius.onDirectMessage(
     /set (?<command>.+) (?<setting>.+) (?<value>.+)/i,
     async (message, { groups }) => {
-      log.info('Set command setting', getMessageMeta(message));
+      log.info("Set command setting", getMessageMeta(message));
       const { channel } = message;
       const { command, setting, value } = groups;
 
       const guild = await getGuildTarget(aquarius, message);
 
       if (!guild) {
-        log.info('Non-admin account, exiting', getMessageMeta(message));
+        log.info("Non-admin account, exiting", getMessageMeta(message));
         return;
       }
 
@@ -173,20 +173,20 @@ export default async ({ aquarius, analytics }) => {
       aquarius.commandConfigs.get(command).set(guild, setting, value);
 
       channel.send(`Updated ${command}!`);
-      analytics.trackUsage('set', message);
+      analytics.trackUsage("set", message);
     }
   );
 
   aquarius.onDirectMessage(
     /unset (?<command>.+) (?<setting>.+)/i,
     async (message, { groups }) => {
-      log.info('Unset command setting', getMessageMeta(message));
+      log.info("Unset command setting", getMessageMeta(message));
       const { channel } = message;
       const { command, setting } = groups;
       const guild = await getGuildTarget(aquarius, message);
 
       if (!guild) {
-        log.info('Non-admin account, exiting', getMessageMeta(message));
+        log.info("Non-admin account, exiting", getMessageMeta(message));
         return;
       }
 
@@ -226,14 +226,19 @@ export default async ({ aquarius, analytics }) => {
       aquarius.commandConfigs.get(command).remove(guild, setting);
 
       channel.send(`Updated ${groups.command}!`);
-      analytics.trackUsage('unset', message);
+      analytics.trackUsage("unset", message);
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /commands (add|enable) (?<commands>.+)/i,
     async (message, { groups }) => {
-      if (aquarius.permissions.isAdmin(message.guild, message.author)) {
+      const isAdmin = await aquarius.permissions.isAdmin(
+        message.guild,
+        message.author
+      );
+      if (isAdmin) {
         log.info(
           `Add ${chalk.blue(groups.commands)} in ${chalk.green(
             message.guild.name
@@ -241,12 +246,12 @@ export default async ({ aquarius, analytics }) => {
           getMessageMeta(message)
         );
 
-        let response = '';
+        let response = "";
         const addedCommands = [];
         const commandsWithSettings = [];
         const unknownCommands = [];
 
-        groups.commands.split(' ').forEach((command) => {
+        groups.commands.split(" ").forEach((command) => {
           const name = command.toLowerCase();
 
           if (aquarius.commandList.has(name)) {
@@ -263,7 +268,7 @@ export default async ({ aquarius, analytics }) => {
 
         if (addedCommands.length > 0) {
           response += `Added the ${humanize(addedCommands)} ${pluralize(
-            'command',
+            "command",
             addedCommands.length
           )}. \n\n`;
         }
@@ -272,7 +277,7 @@ export default async ({ aquarius, analytics }) => {
           response += `You can configure the ${humanize(
             commandsWithSettings
           )} ${pluralize(
-            'command',
+            "command",
             commandsWithSettings.length
           )} - direct message me \`settings list <name>\` with a command name to learn more.\n\n`;
         }
@@ -280,15 +285,16 @@ export default async ({ aquarius, analytics }) => {
         if (unknownCommands.length > 0) {
           response += `I don't recognize the ${humanize(
             unknownCommands
-          )} ${pluralize('command', unknownCommands.length)}.`;
+          )} ${pluralize("command", unknownCommands.length)}.`;
         }
 
         message.channel.send(response);
-        analytics.trackUsage('add', message);
+        analytics.trackUsage("add", message);
       }
     }
   );
 
+  // TODO: Switch to slash command
   aquarius.onCommand(
     /commands (remove|disable) (?<commands>.+)/i,
     async (message, { groups }) => {
@@ -300,12 +306,12 @@ export default async ({ aquarius, analytics }) => {
           getMessageMeta(message)
         );
 
-        let response = '';
+        let response = "";
         const removedCommands = [];
         const unknownCommands = [];
         const globalCommands = [];
 
-        groups.commands.split(' ').forEach((command) => {
+        groups.commands.split(" ").forEach((command) => {
           const name = command.toLowerCase();
 
           if (aquarius.commandList.has(name)) {
@@ -324,7 +330,7 @@ export default async ({ aquarius, analytics }) => {
 
         if (removedCommands.length > 0) {
           response += `Removed the ${humanize(removedCommands)} ${pluralize(
-            'command',
+            "command",
             removedCommands.length
           )}. `;
         }
@@ -332,19 +338,19 @@ export default async ({ aquarius, analytics }) => {
         if (unknownCommands.length > 0) {
           response += `I don't recognize the ${humanize(
             unknownCommands
-          )} ${pluralize('command', unknownCommands.length)}.`;
+          )} ${pluralize("command", unknownCommands.length)}.`;
         }
 
         if (globalCommands.length > 0) {
           response += `The ${humanize(globalCommands)} ${pluralize(
-            'command is',
+            "command is",
             globalCommands.length,
-            'commands are'
+            "commands are"
           )} considered 'Global' - Global commands are core to Aquarius and can't be disabled.`;
         }
 
         message.channel.send(response);
-        analytics.trackUsage('remove', message);
+        analytics.trackUsage("remove", message);
       }
     }
   );
