@@ -6,6 +6,17 @@ import getLogger, { getInteractionMeta } from "../core/logging/log";
 
 const log = getLogger("Slots");
 
+/**
+ * @deprecated
+ * @type {import('../typedefs').CommandInfo}
+ */
+export const info = {
+  name: "slots",
+  description: "Simulates a slot roller.",
+  usage: "```@Aquarius slots```",
+  deprecated: true,
+};
+
 const values = [
   "🍇",
   "🍊",

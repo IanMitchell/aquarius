@@ -40,15 +40,15 @@ async def on_message(message: discord.Message) -> None:
 bot.run(os.getenv('TOKEN'))
  */
 
-import getLogger from '../../core/logging/log';
+import getLogger from "../../core/logging/log";
 
-const log = getLogger('smol');
+const log = getLogger("smol");
 
 /** @type {import('../../typedefs').CommandInfo} */
 export const info = {
-  name: 'smol',
+  name: "smol",
   hidden: true,
-  description: 'Crop.',
+  description: "Crop.",
   //   permissions: [Permissions.FLAGS.MANAGE_NICKNAMES],
 };
 

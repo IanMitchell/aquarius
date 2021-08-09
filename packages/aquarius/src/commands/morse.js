@@ -2,11 +2,28 @@ import {
   SlashCommandBuilder,
   SlashCommandSubcommandBuilder,
 } from "@discordjs/builders";
+import dedent from "dedent-js";
 import morse from "morse";
 import { handleDeprecatedCommand } from "../core/commands/slash";
 import getLogger, { getInteractionMeta } from "../core/logging/log";
 
 const log = getLogger("Morse");
+
+/**
+ * @deprecated
+ * @type {import('../typedefs').CommandInfo}
+ */
+export const info = {
+  name: "morse",
+  description: "Encode or decode morse code.",
+  usage: dedent`
+  To encode a message:
+  \`\`\`@Aquarius morse encode <message>\`\`\`
+  To decode a message:
+  \`\`\`@Aquarius morse decode <message>\`\`\`
+  `,
+  deprecated: true,
+};
 
 export const command = new SlashCommandBuilder()
   .setName("morse")

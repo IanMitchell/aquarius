@@ -353,8 +353,23 @@ export class Aquarius extends Discord.Client {
 
         // Initialize Command
         try {
-          // TODO: Can slash commands have settings?
+          // Handle Deprecated Commands
+          this.triggerMap.setCurrentCommand(data.info);
+          await data.default({
+            aquarius: this.triggerMap,
+            settings: {
+              register: () => {},
+            },
+            analytics: {},
+          });
+
+          this.commandList.set(data.info.name, data.info);
+
           // Create Config
+          if (this.commandConfigs.has(data.info.name)) {
+            throw new Error("Duplicate Name Registration In Config Manager");
+          }
+
           this.commandConfigs.set(
             data.command.name,
             new CommandConfig(data.command.name)
@@ -479,7 +494,9 @@ export class Aquarius extends Discord.Client {
       throw new Error("Duplicate Help Registration");
     }
 
-    this.help.set(commandInfo.name, commandInfo);
+    if (!commandInfo.deprecated) {
+      this.help.set(commandInfo.name, commandInfo);
+    }
   }
 
   /**
@@ -602,13 +619,26 @@ export class Aquarius extends Discord.Client {
         }
       } else {
         log.error(
-          `Unknown interaction: ${key}`,
+          `Unknown command interaction: ${key}`,
           getInteractionMeta(interaction)
         );
       }
-    }
+    } else {
+      if (!this.messageComponents.has(interaction.customId)) {
+        log.error(
+          `Unknown component interaction: ${interaction.customId}`,
+          getInteractionMeta(interaction)
+        );
+        return;
+      }
 
-    // TODO: Handle MessageComponentInteractions
+      try {
+        this.messageComponents.get(interaction.customId).handler(interaction);
+      } catch (error) {
+        log.error(error, getInteractionMeta(interaction));
+        Sentry.captureException(error);
+      }
+    }
   }
 
   /**

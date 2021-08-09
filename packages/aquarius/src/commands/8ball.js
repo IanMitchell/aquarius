@@ -9,6 +9,17 @@ import getLogger, { getInteractionMeta } from "../core/logging/log";
 
 const log = getLogger("8ball");
 
+/**
+ * @deprecated
+ * @type {import('../typedefs').CommandInfo}
+ */
+export const info = {
+  name: "8ball",
+  description: "Outputs one of the classic 8ball responses.",
+  usage: "```@Aquarius 8ball <message>```",
+  deprecated: true,
+};
+
 const responses = [
   "It is certain",
   "It is decidedly so",
@@ -50,11 +61,6 @@ const component = new MessageButton()
 
 /** @type {import('../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
-  // aquarius.onSlash(info, (interaction) => {});
-  // aquarius.onSlash([cmd, info], (interaction) => {});
-  // aquarius.onSlash([cmd, group, info], (interaction) => {});
-  // aquarius.onComponent(component, (interaction) => {});
-
   aquarius.onSlash(command, (interaction) => {
     log.info("Generating response", getInteractionMeta(interaction));
     interaction.reply({
@@ -67,7 +73,7 @@ export default async ({ aquarius, analytics }) => {
 
   aquarius.onComponent(component, (interaction) => {
     log.info("Generating response", getInteractionMeta(interaction));
-    interaction.message.edit({
+    interaction.update({
       content: `🎱 | ${randomValue(responses)}`,
       components: [new MessageActionRow().addComponents(component)],
     });

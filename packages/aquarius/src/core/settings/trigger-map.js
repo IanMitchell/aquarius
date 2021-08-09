@@ -1,7 +1,7 @@
-import chalk from 'chalk';
-import getLogger from '../logging/log';
+import chalk from "chalk";
+import getLogger from "../logging/log";
 
-const log = getLogger('Trigger Map');
+const log = getLogger("Trigger Map");
 
 /** @typedef {import('../../typedefs').CommandInfo} CommandInfo */
 
@@ -49,6 +49,10 @@ export default class TriggerMap extends Map {
   onDynamicTrigger() {}
 
   onDirectMessage() {}
+
+  onSlash() {}
+
+  onComponent() {}
 
   loop() {}
 }

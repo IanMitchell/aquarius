@@ -5,6 +5,17 @@ import getLogger, { getInteractionMeta } from "../core/logging/log";
 
 const log = getLogger("Uptime");
 
+/**
+ * @deprecated
+ * @type {import('../typedefs').CommandInfo}
+ */
+export const info = {
+  name: "uptime",
+  description: "Displays how long the bot has been running.",
+  usage: "```@Aquarius uptime```",
+  deprecated: true,
+};
+
 export const command = new SlashCommandBuilder()
   .setName("uptime")
   .setDescription("Displays how long the bot has been running.");

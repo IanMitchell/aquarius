@@ -41,6 +41,7 @@
  * @property {number[]} [permissions] - An array of required permissions for the command
  * @property {boolean} [hidden] - Whether the command should show up in the command list or not
  * @property {boolean} [disabled] - Whether the command is currently disabled or not
+ * @property {boolean} [deprecated] - Whether the command is deprecated or not
  */
 
 // Needed to have typedefs work

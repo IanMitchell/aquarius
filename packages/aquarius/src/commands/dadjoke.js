@@ -6,6 +6,17 @@ import getLogger, { getInteractionMeta } from "../core/logging/log";
 
 const log = getLogger("DadJoke");
 
+/**
+ * @deprecated
+ * @type {import('../typedefs').CommandInfo}
+ */
+export const info = {
+  name: "dadjoke",
+  description: "Sends a random dad joke.",
+  usage: "```@Aquarius dadjoke```",
+  deprecated: true,
+};
+
 export const command = new SlashCommandBuilder()
   .setName("dadjoke")
   .setDescription("Sends a random dad joke.");
