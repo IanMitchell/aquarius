@@ -54,7 +54,7 @@ export default async ({ aquarius, analytics }) => {
   });
 
   aquarius.onSlash([command, commandDecode], (interaction) => {
-    const input = interaction.options.getString("sequence");
+    const input = interaction.options.getString("morse");
 
     log.info(`Decoding "${input}"`, getInteractionMeta(interaction));
     interaction.reply(morse.decode(input));

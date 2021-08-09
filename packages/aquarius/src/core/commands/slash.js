@@ -21,7 +21,7 @@ const log = getLogger("Slash");
  */
 export function getSlashCommandKey(definition) {
   if (Array.isArray(definition)) {
-    return definition.reduce((name, builder) => `${name}-${builder.name}`, "");
+    return definition.map((component) => component.name).join("-");
   }
 
   return definition.name;

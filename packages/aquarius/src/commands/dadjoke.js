@@ -24,7 +24,7 @@ export const command = new SlashCommandBuilder()
 /** @type {import('../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onSlash(command, async (interaction) => {
-    interaction.deferReply();
+    await interaction.deferReply();
     log.info("Sending dadjoke", getInteractionMeta(interaction));
 
     try {
