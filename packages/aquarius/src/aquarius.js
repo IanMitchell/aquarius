@@ -419,11 +419,13 @@ export class Aquarius extends Discord.Client {
     return commands;
   }
 
-  async upsertGlobalApplicationCommand() {
-    // TODO: filter out guild cmds
-    const serializedCommands = this.getSerializedApplicationData(true, false);
+  /**
+   * TODO: Make this work with the guild function. Right now they both exist in a great way for prod, but I need something
+   * special for dev. That sucks, but there should be a way to make it work.
+   */
+  async upsertGlobalApplicationCommand(serializedCommands) {
+    await this.application.commands.fetch();
 
-    log.info("Validating Global Application Commands");
     try {
       this.application.commands.cache.forEach(async (command) => {
         if (!serializedCommands.has(command.name)) {
@@ -454,12 +456,10 @@ export class Aquarius extends Discord.Client {
     }
   }
 
-  async updateGuildApplicationCommand(guildId) {
+  async updateGuildApplicationCommand(guildId, serializedCommands) {
     const guild = this.guilds.cache.get(guildId);
     await guild.commands.fetch();
-    const serializedCommands = this.getSerializedApplicationData();
 
-    log.info("Validating Global Application Commands");
     try {
       guild.commands.cache.forEach(async (command) => {
         if (!serializedCommands.has(command.name)) {
@@ -485,23 +485,33 @@ export class Aquarius extends Discord.Client {
    * TODO: write words
    */
   async upsertApplicationCommands() {
+    let serializedCommands = this.getSerializedApplicationData(true, false);
+
     if (process.env.NODE_ENV !== "production") {
       log.info("Skipping Global Application Command Validation");
     } else {
       log.info("Validating Global Application Commands");
-      await this.application.commands.fetch();
-      this.upsertGlobalApplicationCommand();
+      this.upsertGlobalApplicationCommand(serializedCommands);
     }
 
-    // Devmode lol
-    await this.guilds.fetch("356522910569201664");
-    this.updateGuildApplicationCommand("356522910569201664");
-
     log.info("Validating Guild Application Commands");
+    serializedCommands = this.getSerializedApplicationData(false, true);
+
     this.guilds.cache.forEach(async (guild) => {
       await guild.commands.fetch();
-      this.updateGuildApplicationCommand(guild.id);
+      this.updateGuildApplicationCommand(guild.id, serializedCommands);
     });
+
+    // Devmode lol
+    if (process.env.NODE_ENV === "development") {
+      log.info("Validating Developer Server Guild Application Commands");
+      serializedCommands = this.getSerializedApplicationData(true, true);
+      await this.guilds.fetch("356522910569201664");
+      this.updateGuildApplicationCommand(
+        "356522910569201664",
+        serializedCommands
+      );
+    }
   }
 
   /**
