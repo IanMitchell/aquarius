@@ -48,6 +48,7 @@ const log = getLogger("Aquarius");
  * @typedef { import('discord.js').MessageComponentInteraction} MessageComponentInteraction
  * @typedef { import('./typedefs').CommandInfo } CommandInfo
  * @typedef { import('./typedefs').CommandHandler } CommandHandler
+ * @typedef { import('./typedefs').ApplicationCommandOptions } ApplicationCommandOptions
  * @typedef {import('@discordjs/builders').SlashCommandBuilder} SlashCommandBuilder
  *
  * @typedef {( message: Message, regex: RegExp ) => RegExpMatchArray|false} MatchFn
@@ -127,15 +128,9 @@ export class Aquarius extends Discord.Client {
 
     /**
      * Stores interaction handlers
-     * @type {Map<string, {commands: SlashCommandBuilder[], handler: (CommandInteraction) => unknown}>}
+     * @type {Map<string, {commands: SlashCommandBuilder[], options: ApplicationCommandOptions, handler: (CommandInteraction) => unknown}>}
      */
     this.applicationCommands = new Map();
-
-    /**
-     * Stores guild specific interaction handlers
-     * @type {Map<Snowflake, Map<string, {command: ApplicationCommandData, handler: (CommandInteraction) => unknown }>>}
-     */
-    this.guildApplicationCommands = new Map();
 
     /**
      * Stores message component handlers
@@ -392,10 +387,23 @@ export class Aquarius extends Discord.Client {
     }
   }
 
-  getSerializedApplicationData() {
+  /**
+   * Serializes all of the Application Command fragments into complete data structures
+   * @param {boolean} [includeGlobal=true] - Whether to include global commands
+   * @param {boolean} [includeGuild=true] - Whether to include guild-only commands
+   * @returns {Map<string, ApplicationCommandData>} The complete application command data structures
+   */
+  getSerializedApplicationData(includeGlobal = true, includeGuild = true) {
     const commands = new Map();
 
     Array.from(this.applicationCommands.values()).forEach((entry) => {
+      if (
+        (includeGlobal && entry.options.guild != null) ||
+        (includeGuild && entry.options.guild == null)
+      ) {
+        return;
+      }
+
       const [{ name }] = entry.commands;
       if (commands.has(name)) {
         const command = commands.get(name);
@@ -411,22 +419,15 @@ export class Aquarius extends Discord.Client {
     return commands;
   }
 
-  /**
-   * TODO: write words
-   * @param {*} guildId
-   */
-  async upsertApplicationCommand(guildId) {
-    const serializedCommands = this.getSerializedApplicationData();
-    // TODO: We are currently registering global commands as guild commands - they will show up twice.
-
-    const commands = guildId
-      ? this.guilds.cache.get(guildId).commands
-      : this.application.commands;
+  async upsertGlobalApplicationCommand() {
+    // TODO: filter out guild cmds
+    const serializedCommands = this.getSerializedApplicationData(true, false);
 
     log.info("Validating Global Application Commands");
     try {
-      commands.cache.forEach(async (command) => {
+      this.application.commands.cache.forEach(async (command) => {
         if (!serializedCommands.has(command.name)) {
+          log.info(`Deleting ${command.name}`);
           command.delete();
         } else if (
           !isApplicationCommandEqual(
@@ -434,15 +435,46 @@ export class Aquarius extends Discord.Client {
             serializedCommands.get(command.name)
           )
         ) {
+          log.info(`Updating ${command.name}`);
           command.edit(serializedCommands.get(command.name).toJSON());
         }
       });
 
       Array.from(serializedCommands.keys())
-        .filter((key) => !commands.cache.has(key))
-        .forEach((key) =>
-          commands.create(serializedCommands.get(key).toJSON())
-        );
+        .filter((key) => !this.application.commands.cache.has(key))
+        .forEach((key) => {
+          log.info(`Creating ${serializedCommands.get(key).name}`);
+          this.application.commands.create(
+            serializedCommands.get(key).toJSON()
+          );
+        });
+    } catch (error) {
+      log.error(error.message);
+      Sentry.captureException(error);
+    }
+  }
+
+  async updateGuildApplicationCommand(guildId) {
+    const guild = this.guilds.cache.get(guildId);
+    await guild.commands.fetch();
+    const serializedCommands = this.getSerializedApplicationData();
+
+    log.info("Validating Global Application Commands");
+    try {
+      guild.commands.cache.forEach(async (command) => {
+        if (!serializedCommands.has(command.name)) {
+          log.info(`Deleting ${command.name} in ${guildId}`);
+          command.delete();
+        } else if (
+          !isApplicationCommandEqual(
+            command,
+            serializedCommands.get(command.name)
+          )
+        ) {
+          log.info(`Updating ${command.name} in ${guildId}`);
+          command.edit(serializedCommands.get(command.name).toJSON());
+        }
+      });
     } catch (error) {
       log.error(error.message);
       Sentry.captureException(error);
@@ -458,19 +490,18 @@ export class Aquarius extends Discord.Client {
     } else {
       log.info("Validating Global Application Commands");
       await this.application.commands.fetch();
-      this.upsertApplicationCommand();
+      this.upsertGlobalApplicationCommand();
     }
 
     // Devmode lol
     await this.guilds.fetch("356522910569201664");
-    this.upsertApplicationCommand("356522910569201664");
+    this.updateGuildApplicationCommand("356522910569201664");
 
-    // TODO: Problem for future me
-    // log.info("Validating Guild Application Commands");
-    // this.guilds.cache.forEach(async (guild) => {
-    //   await guild.commands.fetch();
-    //   this.upsertApplicationCommand(guild.id);
-    // });
+    log.info("Validating Guild Application Commands");
+    this.guilds.cache.forEach(async (guild) => {
+      await guild.commands.fetch();
+      this.updateGuildApplicationCommand(guild.id);
+    });
   }
 
   /**
@@ -772,10 +803,12 @@ export class Aquarius extends Discord.Client {
    * when the bot starts.
    * @param {SlashCommandBuilder | SlashCommandBuilder[]} command - Command registering the interaction
    * @param {(interaction: CommandInteraction) => unknown} handler - Callback invoked for triggered interaction
+   * @param {ApplicationCommandOptions} options - Application Command options
    */
-  onSlash(command, handler) {
+  onSlash(command, handler, options = {}) {
     this.applicationCommands.set(getSlashCommandKey(command), {
       commands: Array.isArray(command) ? command : [command],
+      options,
       handler,
     });
   }

@@ -13,6 +13,12 @@
  */
 
 /**
+ * Options for Application Commands
+ * @typedef {Object} ApplicationCommandOptions
+ * @property {boolean} guild - Whether the command is guild level only
+ */
+
+/**
  * Description of a CommandParameter passed into Plugins and Commands
  * @typedef {Object} CommandParameter
  * @property {Aquarius} aquarius - reference to the Aquarius Client
