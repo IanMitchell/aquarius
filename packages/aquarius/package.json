@@ -48,7 +48,7 @@
     "downsize": "^0.0.8",
     "form-data": "^3.0.0",
     "js-yaml": "^3.10.0",
-    "jszip": "3.6.0",
+    "jszip": "3.7.0",
     "morse": "^0.1.0",
     "node-fetch": "^2.3.0",
     "node-vibrant": "^3.1.5",
