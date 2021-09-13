@@ -25,6 +25,6 @@
   },
   "dependencies": {
     "jest-discord": "file:../jest-discord",
-    "jest-environment-node": "^26.0.0"
+    "jest-environment-node": "^27.2.0"
   }
 }
