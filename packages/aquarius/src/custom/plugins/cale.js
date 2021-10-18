@@ -10,7 +10,10 @@ export const info = {
   description: 'GJ Cale!',
 };
 
-const COMPANY_INC = '91318657375825920';
+const SERVERS = new Set([
+  '91318657375825920', // Company Inc
+  '815369174096412692' // Sol Sanctum
+]);
 const EMOJI = '857294811199569930';
 const CALE = '103635479097769984';
 
@@ -19,7 +22,7 @@ export default async ({ aquarius, analytics }) => {
   aquarius.onMessage(info, (message) => {
     try {
       if (
-        message?.guild?.id === COMPANY_INC &&
+        SERVERS.has(message?.guild?.id) &&
         message?.mentions?.members?.has(CALE)
       ) {
         log.info('pet');
