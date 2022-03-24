@@ -36,7 +36,7 @@ export default async ({ aquarius, settings, analytics }) => {
     return Math.max(1, value);
   };
 
-  aquarius.on('messageReactionAdd', async (messageReaction) => {
+  aquarius.on('messageReactionAdd', async (messageReaction, reactionUser) => {
     const { message } = messageReaction;
     const { guild } = message;
 
@@ -54,6 +54,12 @@ export default async ({ aquarius, settings, analytics }) => {
           .has(Permissions.FLAGS.VIEW_CHANNEL)
       ) {
         log.info('Ignoring Starred message');
+        return;
+      }
+      
+      if (reactionUser.id == message.author.id) {
+        message.channel.send(`Bad ${reactionUser}, trying to star your own message.`);
+        messageReaction.remove();
         return;
       }
 
