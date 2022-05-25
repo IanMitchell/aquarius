@@ -103,7 +103,7 @@ export default async ({ aquarius, settings, analytics }) => {
         )}#${chalk.green(message.channel.name)}`
       );
       messageStack.get(message.guild.id).set(message.channel.id, []);
-      message.channel.send(message.content);
+      message.channel.send(message.content, {"allowedMentions": { "parse": [] } });
 
       analytics.trackUsage('same', message);
     }
