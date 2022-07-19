@@ -50,7 +50,7 @@
     "js-yaml": "^3.10.0",
     "jszip": "3.7.1",
     "morse": "^0.1.0",
-    "node-fetch": "^2.3.0",
+    "node-fetch": "^3.2.9",
     "node-vibrant": "^3.1.5",
     "parse-color": "^1.0.0",
     "pluralize": "^8.0.0",
