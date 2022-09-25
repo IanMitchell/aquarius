@@ -9,17 +9,5 @@ coverage
 # Logs
 *.log
 
-# Builds
-prisma/client
-.next
-*/**/lib
-
 # System
 .DS_Store
-
-# Auth
-.keyfile.json
-
-# Facebook-specific Files
-# See: https://github.com/facebook/create-react-app/issues/346
-.watchmanconfig

@@ -1,6 +1,0 @@
-name: Nintendo Switch
-version: 1
-steps:
-  - field: Friend Code
-    public: true
-    instructions: Enter your Nintendo Switch Friend ID code

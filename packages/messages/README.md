@@ -1,3 +1,0 @@
-# @aquarius-bot/messages
-
-TODO!

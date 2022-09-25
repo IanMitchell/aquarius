@@ -1,90 +1,66 @@
 {
-  "name": "aquarius-core",
-  "version": "2.0.0",
-  "description": "A highly configurable Discord chatbot",
-  "main": "index.js",
-  "repository": "ianmitchell/aquarius",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "author": {
-    "name": "Ian Mitchell",
-    "email": "ian.mitchel1@live.com",
-    "url": "http://ianmitchell.io"
-  },
-  "license": "MIT",
-  "type": "module",
-  "engines": {
-    "node": ">=14.2.0"
-  },
-  "scripts": {
-    "start": "lerna run --scope aquarius --stream --no-prefix start",
-    "debug": "lerna run --scope aquarius --stream --no-prefix debug ",
-    "dev": "lerna run dev --stream",
-    "lint:scss": "stylelint \"**/*.scss\"",
-    "lint:js": "eslint . --ext .js --ignore-path .gitignore",
-    "lint": "npm run lint:js",
-    "prettier": "prettier packages/**/*.js --check",
-    "pretest": "pectin",
-    "test": "jest",
-    "db:create": "npx prisma migrate deploy && npx prisma generate",
-    "db:migrate": "npx prisma migrate dev && npx prisma generate"
-  },
-  "dependencies": {
-    "@aquarius-bot/discordjs-fixes": "file:packages/discordjs-fixes",
-    "@aquarius-bot/loading": "file:packages/loading",
-    "@aquarius-bot/messages": "file:packages/messages",
-    "@aquarius-bot/permissions": "file:packages/permissions",
-    "@aquarius-bot/progress-bar": "file:packages/progress-bar",
-    "@aquarius-bot/regex": "file:packages/regex",
-    "@aquarius-bot/sentry": "file:packages/sentry",
-    "@aquarius-bot/testing": "file:packages/testing",
-    "@aquarius-bot/triggers": "file:packages/triggers",
-    "@aquarius-bot/users": "file:packages/users",
-    "@prisma/client": "^2.20.1",
-    "aquarius": "file:packages/aquarius",
-    "aquarius-dashboard": "file:packages/dashboard"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@babel/preset-env": "^7.9.5",
-    "@sentry/node": "^6.11.0",
-    "babel-eslint": "^10.0.3",
-    "babel-jest": "^27.0.2",
-    "babel-plugin-add-module-exports": "^1.0.2",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-replace-object-assign": "^2.0.0",
-    "discord.js": "^13.0.1",
-    "eslint": "^7.12.1",
-    "eslint-config-airbnb": "^18.1.0",
-    "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jest": "^24.0.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.3",
-    "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-react": "^7.19.0",
-    "eslint-plugin-react-hooks": "^4.1.2",
-    "jest": "^27.0.6",
-    "jest-discord": "file:packages/jest-discord",
-    "jest-discord-bot": "file:packages/jest-discord-bot",
-    "jest-discord-fakes": "file:packages/jest-discord-fakes",
-    "jest-environment-discord": "file:packages/jest-environment-discord",
-    "jest-github-actions-reporter": "^1.0.2",
-    "lerna": "^4.0.0",
-    "pectin": "3.6.2",
-    "prettier": "^2.0.4",
-    "prisma": "^2.20.1",
-    "regenerator-runtime": "^0.13.5",
-    "stylelint": "^13.3.3",
-    "stylelint-config-sass-guidelines": "^8.0.0",
-    "stylelint-config-standard": "^22.0.0"
-  },
-  "volta": {
-    "node": "16.6.1"
-  }
+	"name": "aquarius",
+	"version": "3.0.0",
+	"description": "A highly configurable Discord chatbot",
+	"main": "index.js",
+	"repository": "ianmitchell/aquarius",
+	"author": {
+		"name": "Ian Mitchell",
+		"email": "ian.mitchell@hey.com",
+		"url": "http://ianmitchell.dev"
+	},
+	"license": "MIT",
+	"type": "module",
+	"engines": {
+		"node": ">=18.9.0"
+	},
+	"scripts": {
+		"start": "cross-env DEBUG_COLORS=true DEBUG=*,-engine*,-babel*,-send,-ref*,-express*,-prisma:*,-avvio,-plusX,-agentkeepalive,-follow-redirects node -r dotenv/config --es-module-specifier-resolution=node index.js",
+		"debug": "cross-env DEBUG_COLORS=true DEBUG=*,-socket.io*,-engine*,-babel*,-send,-ref* node --nolazy --inspect -r dotenv/config --es-module-specifier-resolution=node index.js --color",
+		"lint": "eslint . --ext .js --ignore-path .gitignore",
+		"prettier": "prettier **/*.js --check",
+		"db:create": "npx prisma migrate deploy && npx prisma generate",
+		"db:migrate": "npx prisma migrate dev && npx prisma generate"
+	},
+	"dependencies": {
+		"@discordjs/builders": "^1.2.0",
+		"@fastify/cors": "^8.1.0",
+		"@prisma/client": "^4.3.1",
+		"@sentry/node": "^7.13.0",
+		"chalk": "^5.0.1",
+		"cross-env": "^7.0.0",
+		"date-fns": "^2.29.3",
+		"debug": "^4.1.1",
+		"dedent-js": "^1.0.1",
+		"discord.js": "^14.5.0",
+		"dotenv": "^16.0.2",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-config-xo": "^0.42.0",
+		"eslint-config-xo-typescript": "^0.53.0",
+		"eslint-import-resolver-typescript": "^3.5.1",
+		"eslint-plugin-prettier": "^4.2.1",
+		"fastify": "^4.6.0",
+		"node-cache": "5.1.2",
+		"node-vibrant": "^3.2.1-alpha.1",
+		"pluralize": "^8.0.0",
+		"pretty-bytes": "^6.0.0",
+		"rgb-hex": "^4.0.0",
+		"rss-parser": "^3.7.3",
+		"supports-color": "^9.2.3"
+	},
+	"devDependencies": {
+		"@types/debug": "^4.1.7",
+		"@types/node": "^18.7.3",
+		"@types/pluralize": "^0.0.29",
+		"@typescript-eslint/eslint-plugin": "^5.33.0",
+		"@typescript-eslint/parser": "^5.33.0",
+		"eslint": "^8.24.0",
+		"eslint-plugin-import": "^2.26.0",
+		"prettier": "^2.7.1",
+		"prisma": "^4.2.0",
+		"typescript": "^4.7.4"
+	},
+	"volta": {
+		"node": "18.9.1"
+	}
 }

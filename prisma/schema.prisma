@@ -7,17 +7,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model LastSeen {
-  id        Int      @id @default(autoincrement())
-  userId    String   @unique
-  lastSeen  DateTime @default(now())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId])
-  @@map("last_seen")
-}
-
 model Karma {
   id        Int      @id @default(autoincrement())
   guildId   String
@@ -45,30 +34,6 @@ model Reply {
   @@map("replies")
 }
 
-model Service {
-  id        Int      @id @default(autoincrement())
-  userId    String
-  name      String
-  values    Json
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId, name])
-  @@index([userId, name])
-  @@map("linked_services")
-}
-
-model Setting {
-  id        Int      @id @default(autoincrement())
-  key       String   @unique
-  value     Json
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([key])
-  @@map("settings")
-}
-
 model Quote {
   id        Int      @id @default(autoincrement())
   guildId   String
@@ -93,33 +58,6 @@ model Snapshot {
   @@map("snapshots")
 }
 
-model GuildSetting {
-  id           Int              @id @default(autoincrement())
-  guildId      String           @unique
-  mute         Int?
-  ignoredUsers IgnoredUser[]
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  commands     EnabledCommand[]
-
-  @@index([guildId])
-  @@map("guild_settings")
-}
-
-model EnabledCommand {
-  id             Int             @id @default(autoincrement())
-  guildSetting   GuildSetting    @relation(fields: [guildSettingId], references: [id])
-  guildSettingId Int
-  name           String
-  enabled        Boolean
-  configs        CommandConfig[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-
-  @@unique([guildSettingId, name])
-  @@map("enabled_commands")
-}
-
 model CommandConfig {
   id        Int            @id @default(autoincrement())
   command   EnabledCommand @relation(fields: [commandId], references: [id])
@@ -131,54 +69,4 @@ model CommandConfig {
 
   @@unique([commandId, key])
   @@map("command_configs")
-}
-
-model IgnoredUser {
-  id             Int          @id @default(autoincrement())
-  guildSetting   GuildSetting @relation(fields: [guildSettingId], references: [id])
-  guildSettingId Int
-  userId         String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-
-  @@unique([guildSettingId, userId])
-  @@map("ignored_users")
-}
-
-model Analytic {
-  id        Int      @id @default(autoincrement())
-  action    String
-  category  String
-  label     String
-  context   Json
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([action])
-  @@map("analytic_events")
-}
-
-model BanList {
-  id        Int      @id @default(autoincrement())
-  guildId   String   @unique
-  reason    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([guildId])
-  @@map("guild_bans")
-}
-
-model Reminder {
-  id        Int      @id @default(autoincrement())
-  guildId   String
-  channelId String
-  userId    String
-  message   String
-  time      DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([time])
-  @@index([guildId, userId])
 }

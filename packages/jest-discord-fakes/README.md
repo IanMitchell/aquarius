@@ -1,3 +1,0 @@
-# jest-discord-fakes
-
-TODO!
