@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import dedent from "dedent-js";
-import { CommandArgs } from "src/typedefs";
-import { randomValue } from "../core/helpers/lists";
+import { randomValue } from "../lib/aquarius/list";
+import { CommandArgs } from "../typedefs";
 
 const values = [
 	"🍇",
