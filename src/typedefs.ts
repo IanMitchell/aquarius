@@ -12,6 +12,10 @@ import {
 } from "discord.js";
 import Application from "./bot";
 
+declare global {
+	var fetch: typeof import("undici").fetch;
+}
+
 type Bot = typeof Application;
 
 export type CommandModule = {
