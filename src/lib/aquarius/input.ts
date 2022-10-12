@@ -1,4 +1,8 @@
-export function getInputAsNumber(input: string) {
+export function getInputAsNumber(input: string | null | undefined) {
+	if (input == null) {
+		return null;
+	}
+
 	const value = parseInt(input, 10);
 
 	if (Number.isNaN(value)) {
