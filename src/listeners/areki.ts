@@ -31,7 +31,7 @@ async function updateNickname(bot: Application) {
 
 		if (nickname.endsWith("%-slowly-depleting Ganbareki")) {
 			number -= 1;
-		} else if (nickname.endsWith("%-slowly-uppleting Ganbareki")) {
+		} else if (nickname.endsWith("%-slowly-impleting Ganbareki")) {
 			number += 1;
 		}
 

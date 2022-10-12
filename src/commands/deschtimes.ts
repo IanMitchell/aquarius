@@ -169,9 +169,14 @@ async function getShowEmbed(data: ShowRecord, episodeNumber: number | null) {
 		.setColor(0x008000);
 
 	if (data.poster) {
-		const color = await getIconColor(data.poster);
-		embed.setColor(color);
-		embed.setThumbnail(data.poster);
+		try {
+			const color = await getIconColor(data.poster);
+			embed.setColor(color);
+			embed.setThumbnail(data.poster);
+		} catch (error) {
+			console.error(error);
+			Sentry.captureException(error);
+		}
 	}
 
 	if (data.status) {
