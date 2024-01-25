@@ -26,6 +26,7 @@ const PERMISSION_NAMES = new Map([
   [Permissions.FLAGS.USE_EXTERNAL_EMOJIS, 'Use External Emojis'],
   [Permissions.FLAGS.CONNECT, 'Connect'],
   [Permissions.FLAGS.SPEAK, 'Speak'],
+  [Permissions.FLAGS.STREAM, 'Stream'],
   [Permissions.FLAGS.MUTE_MEMBERS, 'Mute Members'],
   [Permissions.FLAGS.DEAFEN_MEMBERS, 'Deafen Members'],
   [Permissions.FLAGS.MOVE_MEMBERS, 'Move Members'],
