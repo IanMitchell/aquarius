@@ -1,8 +1,7 @@
 {
-  "recommendations": [
-    "dbaeumer.vscode-eslint",
-    "wix.vscode-import-cost",
-    "esbenp.prettier-vscode",
-    "prisma.prisma"
-  ]
+	"recommendations": [
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode",
+		"prisma.prisma"
+	]
 }

@@ -11,7 +11,7 @@ import { CommandArgs } from "../typedefs";
 
 export const command = new SlashCommandBuilder()
 	.setName("quote")
-	.setDescription("Outputs one of the classic 8ball responses.")
+	.setDescription("Save memorable moments.")
 	.setDMPermission(false);
 
 const addCommand = new SlashCommandSubcommandBuilder()
