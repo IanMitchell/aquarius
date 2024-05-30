@@ -18,7 +18,7 @@ export const info = {
 /** @type {import('../../typedefs').Command} */
 export default async ({ aquarius, analytics }) => {
   aquarius.onMessage(info, (message) => {
-    if (isZalgo(message.cleanContent) && message.deletable) {
+    if (isZalgo(message.cleanContent.replace(':','')) && message.deletable) {
       log.info(
         `Removing message from ${chalk.green(
           message.author.username

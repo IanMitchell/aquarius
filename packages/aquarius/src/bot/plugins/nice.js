@@ -16,7 +16,7 @@ export const info = {
 export default async ({ aquarius, analytics }) => {
   aquarius.onMessage(info, (message) => {
     if (
-      message.cleanContent.includes('69') ||
+      message.cleanContent.match(/\b69\b/) ||
       message.cleanContent.match(/(?:(?::six:)|6️⃣) ?(?:(?::nine:)|9️⃣)/)
     ) {
       log.info(`69 in ${chalk.green(message.guild.name)}`);
